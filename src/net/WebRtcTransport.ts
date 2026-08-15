@@ -96,8 +96,15 @@ export interface PeerOptions {
   timeoutMs?: number;
 }
 
-/** How long to keep trying before settling for the relay. */
-const DEFAULT_TIMEOUT_MS = 6000;
+/**
+ * How long to keep trying before settling for the relay.
+ *
+ * Generous on purpose. Negotiation starts as soon as the room fills, so the wait
+ * is normally hidden behind character select, and giving up early costs the
+ * player a permanently worse match — on a busy machine or a slow network ICE can
+ * take well past six seconds and still succeed.
+ */
+const DEFAULT_TIMEOUT_MS = 12_000;
 
 /**
  * Start negotiating a peer connection.
