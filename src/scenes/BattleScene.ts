@@ -71,6 +71,9 @@ export class BattleScene extends Phaser.Scene {
 
   private debugEnabled = false;
   private debugText!: Phaser.GameObjects.Text;
+  private ticksPerSecond = 0;
+  private rateSampledAtMs = 0;
+  private rateSampledTick = 0;
 
   constructor() {
     super('BattleScene');
@@ -290,8 +293,26 @@ export class BattleScene extends Phaser.Scene {
   private drawDebug(): void {
     if (!this.debugEnabled) return;
     const [p1, p2] = this.world.fighters;
+
+    // Ticks per second is the number that matters online: the frame rate can be
+    // low and the match still perfect, but a simulation running below sixty ticks
+    // a second is one being held up by the connection.
+    const now = this.time.now;
+    if (now - this.rateSampledAtMs >= 1000) {
+      this.ticksPerSecond = ((this.world.tick - this.rateSampledTick) * 1000) / (now - this.rateSampledAtMs);
+      this.rateSampledAtMs = now;
+      this.rateSampledTick = this.world.tick;
+    }
+
+    const session = this.online ? onlineMatch.current?.session : null;
+    const net = session
+      ? `NET ${session.status} delay=${session.inputDelay} stalled=${session.stalledTicks}` +
+        `${session.desyncTick === null ? '' : ` DESYNC@${session.desyncTick}`}`
+      : 'NET local';
+
     this.debugText.setText([
-      `FPS ${this.game.loop.actualFps.toFixed(1)}  TICK ${this.world.tick}  PHASE ${this.world.phase}  STAGE ${this.world.stage}`,
+      net,
+      `FPS ${this.game.loop.actualFps.toFixed(1)}  TPS ${this.ticksPerSecond.toFixed(1)}  TICK ${this.world.tick}  PHASE ${this.world.phase}`,
       `HITSTOP ${this.world.hitStopTicks}  PROJ ${this.world.projectiles.length}  ZONES ${this.world.zones.length}`,
       `P1 ${p1.state} HP=${p1.hp.toFixed(1)} E=${p1.energy.toFixed(0)} CD=${Math.max(0, p1.nextSpecialTick - this.world.tick).toFixed(0)}t`,
       `P2 ${p2.state} HP=${p2.hp.toFixed(1)} E=${p2.energy.toFixed(0)} CD=${Math.max(0, p2.nextSpecialTick - this.world.tick).toFixed(0)}t`,
