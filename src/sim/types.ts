@@ -27,6 +27,17 @@ export type PlayerIndex = 0 | 1;
 export type SimEvent =
   | { t: 'jump'; player: PlayerIndex }
   | { t: 'attackStart'; player: PlayerIndex; specId: string; state: FighterState }
+  | { t: 'roundStart'; round: number }
+  | { t: 'announce'; text: string }
+  | { t: 'roundEnd'; winner: RoundWinner; reason: 'KO' | 'TIME' }
+  | { t: 'matchEnd'; winner: PlayerIndex }
+  | { t: 'ultimateStart'; player: PlayerIndex; specId: string }
+  | { t: 'projectileSpawn'; id: number; player: PlayerIndex; specId: string; x: number; y: number }
+  | { t: 'projectileEnd'; id: number }
+  | { t: 'zoneSpawn'; id: number; player: PlayerIndex; specId: string; x: number }
+  | { t: 'zoneTrigger'; id: number }
+  | { t: 'zoneEnd'; id: number }
+  | { t: 'beam'; player: PlayerIndex; specId: string; x: number; y: number; width: number }
   | {
       t: 'hit';
       /** The attacker. */
@@ -48,6 +59,63 @@ export interface Rect {
   y: number;
   width: number;
   height: number;
+}
+
+/** 0 means a draw; otherwise the one-based player number, matching the original. */
+export type RoundWinner = 0 | 1 | 2;
+
+export type RoundPhase = 'intro' | 'fight' | 'ending';
+
+export interface SimProjectile {
+  id: number;
+  ownerIndex: PlayerIndex;
+  specId: string;
+  x: number;
+  y: number;
+  vx: number;
+  width: number;
+  height: number;
+  lifeTicks: number;
+  hitMask: number;
+}
+
+export interface SimZone {
+  id: number;
+  ownerIndex: PlayerIndex;
+  specId: string;
+  x: number;
+  /** Telegraph countdown; the zone is harmless until it reaches zero. */
+  timerTicks: number;
+  activeTicks: number;
+  triggered: boolean;
+  hitMask: number;
+}
+
+/**
+ * The complete simulation state.
+ *
+ * Everything a match needs to advance lives here — including the round phase
+ * timers that used to be Phaser `delayedCall`s and the hit-stop that used to be a
+ * scene field. If it is not in this object, it cannot be snapshotted, hashed or
+ * rolled back, and two clients will eventually disagree about it.
+ */
+export interface SimWorld {
+  tick: number;
+  phase: RoundPhase;
+  /** Ticks elapsed inside the current phase. Replaces the scene's delayed calls. */
+  phaseTicks: number;
+  roundNumber: number;
+  roundTicksRemaining: number;
+  /** While positive the whole simulation is frozen, including the round clock. */
+  hitStopTicks: number;
+  fighters: [SimFighter, SimFighter];
+  projectiles: SimProjectile[];
+  zones: SimZone[];
+  nextEntityId: number;
+  roundWins: [number, number];
+  matchWinner: PlayerIndex | null;
+  stage: string;
+  rng: { state: number };
 }
 
 export interface SimAttack {
@@ -72,6 +140,8 @@ export interface SimAttack {
   airborne: boolean;
   /** Targets already hit by this instance, as HIT_P1 | HIT_P2. */
   hitMask: number;
+  /** Whether the ultimate's one-off presentation has already fired. */
+  presented: boolean;
 }
 
 export interface SimFighter {

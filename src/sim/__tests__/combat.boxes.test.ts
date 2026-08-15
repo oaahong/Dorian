@@ -5,6 +5,7 @@ import { HEAVY_SPEC, LIGHT_SPEC } from '../attackSpecs';
 import { createFighter } from '../fighter';
 import { getHurtbox, getMeleeHitbox, rectsIntersect } from '../combat';
 import type { SimFighter } from '../types';
+import { attackRuntime } from './factories';
 
 /** Box geometry, ported from Fighter.getHurtbox / getMeleeHitbox. See docs/sim-spec.md §6. */
 
@@ -17,15 +18,7 @@ const attacking = (x: number, facing: 1 | -1, crouching = false, airborne = fals
   at(x, {
     facing,
     state: FighterState.LIGHT_ATTACK,
-    attack: {
-      specId: LIGHT_SPEC.id,
-      kind: LIGHT_SPEC.kind,
-      elapsedTicks: LIGHT_SPEC.startupTicks,
-      activeJustStarted: false,
-      crouching,
-      airborne,
-      hitMask: 0,
-    },
+    attack: attackRuntime({ elapsedTicks: LIGHT_SPEC.startupTicks, crouching, airborne }),
   });
 
 describe('rectsIntersect', () => {
@@ -147,13 +140,24 @@ describe('reach in practice', () => {
     expect(rectsIntersect(getMeleeHitbox(attacker, LIGHT_SPEC), getHurtbox(defender))).toBe(false);
   });
 
-  it('lets a crouching defender duck a standing attack', () => {
-    // The standing box is centred 108 px up with a height of 100, so it spans
-    // roughly 58..158 above the feet; a crouched hurtbox tops out at 128.
+  it('does not let a crouching defender duck a standing light attack', () => {
+    /**
+     * Characterizing the geometry as it is, not as a fighting game would usually
+     * have it: the standing melee box is centred 108 px up with a height of 100,
+     * so it spans roughly 58..158 above the feet, while a crouched hurtbox still
+     * reaches 128. They overlap, so crouching is not an evasion in this game — it
+     * only shrinks the target.
+     */
     const attacker = attacking(500, 1);
     const standing = at(560);
     const crouched = at(560, { state: FighterState.CROUCH });
     expect(rectsIntersect(getMeleeHitbox(attacker, LIGHT_SPEC), getHurtbox(standing))).toBe(true);
     expect(rectsIntersect(getMeleeHitbox(attacker, LIGHT_SPEC), getHurtbox(crouched))).toBe(true);
+  });
+
+  it('lets a jumping defender clear a standing attack', () => {
+    const attacker = attacking(500, 1);
+    const airborne = at(560, { y: GROUND_Y - 170 });
+    expect(rectsIntersect(getMeleeHitbox(attacker, LIGHT_SPEC), getHurtbox(airborne))).toBe(false);
   });
 });

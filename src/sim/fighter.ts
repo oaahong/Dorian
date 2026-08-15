@@ -396,6 +396,7 @@ function startAttack(
     crouching,
     airborne,
     hitMask: 0,
+    presented: false,
   };
   events.push({ t: 'attackStart', player, specId: spec.id, state });
 }

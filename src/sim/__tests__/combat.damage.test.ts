@@ -5,6 +5,7 @@ import { getSpec, HEAVY_SPEC, LIGHT_SPEC } from '../attackSpecs';
 import { createFighter } from '../fighter';
 import { addEnergy, canBlockImpact, receiveImpact, resolveHit } from '../combat';
 import type { SimEvent, SimFighter } from '../types';
+import { attackRuntime } from './factories';
 
 /** Hit resolution, ported from CombatSystem.resolveHit. See docs/sim-spec.md §7. */
 
@@ -182,10 +183,7 @@ describe('receiveImpact', () => {
   it('cancels the defender’s own attack', () => {
     const d = defender({
       state: FighterState.HEAVY_ATTACK,
-      attack: {
-        specId: HEAVY_SPEC.id, kind: 'melee', elapsedTicks: 4,
-        activeJustStarted: false, crouching: false, airborne: false, hitMask: 0,
-      },
+      attack: attackRuntime({ specId: HEAVY_SPEC.id, elapsedTicks: 4 }),
     });
     receiveImpact(d, 5, LIGHT_SPEC, 1, false, 0);
     expect(d.attack).toBeNull();

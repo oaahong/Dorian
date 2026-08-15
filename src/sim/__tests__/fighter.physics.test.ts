@@ -11,6 +11,7 @@ import {
 } from '../constants';
 import { createFighter, isAirborne, stepPhysics } from '../fighter';
 import type { SimFighter } from '../types';
+import { attackRuntime } from './factories';
 
 /**
  * Physics is ported from Fighter.applyPhysics — see docs/sim-spec.md §4. The
@@ -128,7 +129,7 @@ describe('horizontal motion', () => {
     for (const kind of ['dash', 'slide'] as const) {
       const fighter = spawn({
         vx: 280,
-        attack: { specId: 'x', kind, elapsedTicks: 0, activeJustStarted: false, crouching: false, airborne: false, hitMask: 0 },
+        attack: attackRuntime({ specId: 'x', kind }),
       });
       stepPhysics(fighter);
       expect(fighter.x, kind).toBe(350);
@@ -138,7 +139,7 @@ describe('horizontal motion', () => {
   it('still applies vx for a grounded non-dash attack', () => {
     const fighter = spawn({
       vx: 280,
-      attack: { specId: 'x', kind: 'melee', elapsedTicks: 0, activeJustStarted: false, crouching: false, airborne: false, hitMask: 0 },
+      attack: attackRuntime({ specId: 'x', kind: 'melee' }),
     });
     stepPhysics(fighter);
     expect(fighter.x).toBeCloseTo(350 + 280 * DT, 10);
