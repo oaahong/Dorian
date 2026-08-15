@@ -128,7 +128,7 @@ describe('horizontal motion', () => {
     for (const kind of ['dash', 'slide'] as const) {
       const fighter = spawn({
         vx: 280,
-        attack: { specId: 'x', kind, elapsedTicks: 0, crouching: false, airborne: false, hitMask: 0 },
+        attack: { specId: 'x', kind, elapsedTicks: 0, activeJustStarted: false, crouching: false, airborne: false, hitMask: 0 },
       });
       stepPhysics(fighter);
       expect(fighter.x, kind).toBe(350);
@@ -138,7 +138,7 @@ describe('horizontal motion', () => {
   it('still applies vx for a grounded non-dash attack', () => {
     const fighter = spawn({
       vx: 280,
-      attack: { specId: 'x', kind: 'melee', elapsedTicks: 0, crouching: false, airborne: false, hitMask: 0 },
+      attack: { specId: 'x', kind: 'melee', elapsedTicks: 0, activeJustStarted: false, crouching: false, airborne: false, hitMask: 0 },
     });
     stepPhysics(fighter);
     expect(fighter.x).toBeCloseTo(350 + 280 * DT, 10);

@@ -16,6 +16,18 @@ export const HIT_P2 = 1 << 1;
 /** Index of a fighter within `SimWorld.fighters`. */
 export type PlayerIndex = 0 | 1;
 
+/**
+ * Something the simulation did that the presentation layer may want to react to.
+ *
+ * The simulation never calls AudioManager or VFXManager directly — it appends to
+ * an event list, and the render layer drains it each frame. That keeps sound and
+ * particles out of the deterministic path (so they can stay random) and makes the
+ * behaviour assertable in a headless test.
+ */
+export type SimEvent =
+  | { t: 'jump'; player: PlayerIndex }
+  | { t: 'attackStart'; player: PlayerIndex; specId: string; state: FighterState };
+
 export interface SimAttack {
   /** Identifies the AttackSpec this instance came from. */
   specId: string;
@@ -26,6 +38,12 @@ export interface SimAttack {
    */
   kind: AttackKind;
   elapsedTicks: number;
+  /**
+   * True only on the tick the active window opens. Recomputed every tick from
+   * `elapsedTicks`, so it is derived rather than free-running state — the
+   * one-shot attack kinds (projectiles, zones, beams) fire off it.
+   */
+  activeJustStarted: boolean;
   /** Whether the attack was started from a crouch — changes its boxes. */
   crouching: boolean;
   /** Whether the attack was started in the air. */
