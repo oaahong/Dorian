@@ -101,6 +101,24 @@ That also makes the server almost irrelevant to how the game feels. It handles
 room codes and passes a handful of negotiation messages, then steps out of the
 way.
 
+## Deploying
+
+One process serves the client and the signalling socket, so there is nothing to
+configure — `render.yaml` and `Dockerfile` describe the whole deployment.
+
+```bash
+git push                      # then point Render at the repo as a Blueprint
+curl https://<app>/healthz    # should answer "ok"
+```
+
+`fly.toml` is kept as an alternative. Note that it pins exactly one always-running
+machine: rooms live in that process's memory, so an autoscaled second machine
+would put the two players of a room on different boxes.
+
+Because matches connect directly, the server is only needed for the few seconds
+it takes to exchange a room code — which is why a free tier that sleeps when idle
+is a reasonable trade here, and why its region barely affects how the game feels.
+
 ## Game Modes
 
 - `1P VS CPU`: Easy / Normal / Hard finite-state CPU AI

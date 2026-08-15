@@ -1,0 +1,14 @@
+# Blueprint for a one-step deploy: point Render at this repo and it reads this
+# file instead of asking for settings.
+services:
+  - type: web
+    name: meme-cat-fighter
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    # Closest Render region to Taiwan. It matters less than it looks: matches
+    # connect directly, so this path carries only the room code exchange and the
+    # relay fallback for players whose NAT blocks a direct connection.
+    region: singapore
+    healthCheckPath: /healthz
+    autoDeploy: true
