@@ -190,6 +190,18 @@ export async function startServer(options: ServerOptions = {}): Promise<RunningS
         if (isReadyToStart(result.room)) beginMatch(result.room);
         return;
       }
+      case 'signal': {
+        // Passed through untouched. The server has no opinion about WebRTC; it
+        // just puts the blob in front of the other player.
+        const room = roomOf(registry, connection.id);
+        if (!room) return sendError(connection.socket, 'not-in-room', 'Not in a room');
+        for (const player of room.players) {
+          if (!player || player.connId === connection.id) continue;
+          const socket = connections.get(player.connId)?.socket;
+          if (socket) send(socket, { t: 'signal', payload: message.payload });
+        }
+        return;
+      }
       case 'ping':
         send(connection.socket, { t: 'pong', id: message.id });
         return;

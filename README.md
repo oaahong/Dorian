@@ -89,6 +89,18 @@ clients run the same deterministic simulation. They exchange a checksum every
 second, so a divergence is reported rather than left to show up as two screens
 quietly disagreeing.
 
+The two clients try to connect **directly** to each other and only fall back to
+routing through the server if that fails — the lobby shows which it got. It is
+worth the trouble: two players in the same country are perhaps 10-15 ms apart
+directly but 60 ms apart via a datacentre in another one, and the input delay is
+sized from that number. Traversal uses public STUN; when it does not work, the
+relay that is already connected takes over, so there is no TURN server to pay
+for.
+
+That also makes the server almost irrelevant to how the game feels. It handles
+room codes and passes a handful of negotiation messages, then steps out of the
+way.
+
 ## Game Modes
 
 - `1P VS CPU`: Easy / Normal / Hard finite-state CPU AI

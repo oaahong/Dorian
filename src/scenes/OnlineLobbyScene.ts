@@ -1,7 +1,10 @@
 import * as Phaser from 'phaser';
 import { FIGHTERS, thumbTextureKey } from '../fighters/fighterData';
 import { LockstepSession } from '../net/LockstepSession';
-import { OnlineClient, type RoomState } from '../net/OnlineClient';
+import { OnlineClient, type MatchStart, type RoomState } from '../net/OnlineClient';
+import { connectPeer, WebRtcTransport, type PeerConnectionHandle } from '../net/WebRtcTransport';
+import type { Transport } from '../net/Transport';
+import type { TransportKind } from '../net/onlineMatch';
 import { endOnlineMatch, onlineMatch } from '../net/onlineMatch';
 import { ROOM_CODE_ALPHABET } from '../net/roomCode';
 import { AudioManager } from '../systems/AudioManager';
@@ -31,6 +34,12 @@ export class OnlineLobbyScene extends Phaser.Scene {
   private inputLockedUntil = 0;
   private leaving = false;
 
+  private peer: PeerConnectionHandle | null = null;
+  private peerChannel: RTCDataChannel | null = null;
+  /** The host's verdict on which connection to use; null until it is decided. */
+  private transportKind: TransportKind | null = null;
+  private pendingStart: MatchStart | null = null;
+
   private title!: Phaser.GameObjects.Text;
   private body!: Phaser.GameObjects.Text;
   private hint!: Phaser.GameObjects.Text;
@@ -49,6 +58,10 @@ export class OnlineLobbyScene extends Phaser.Scene {
     this.locked = false;
     this.message = '';
     this.leaving = false;
+    this.peer = null;
+    this.peerChannel = null;
+    this.transportKind = null;
+    this.pendingStart = null;
     this.inputLockedUntil = this.time.now + 300;
 
     this.cameras.main.setBackgroundColor(COLORS.bg);
@@ -86,8 +99,24 @@ export class OnlineLobbyScene extends Phaser.Scene {
         this.refresh();
       });
       this.client = new OnlineClient(socket, {
-        onRoomState: (room) => { this.room = room; this.phase = 'in-room'; this.refresh(); },
-        onMatchStart: (start) => this.beginMatch(start),
+        onRoomState: (room) => {
+          this.room = room;
+          this.phase = 'in-room';
+          this.startPeerNegotiation();
+          this.refresh();
+        },
+        onMatchStart: (start) => { this.pendingStart = start; this.tryBeginMatch(); },
+        onSignal: (payload) => {
+          if (payload.kind === 'transport') {
+            // The host has decided. Its channel opening means the association is
+            // established, so this client's channel is open too.
+            this.transportKind = payload.data === 'p2p' ? 'p2p' : 'relay';
+            this.refresh();
+            this.tryBeginMatch();
+            return;
+          }
+          this.peer?.accept(payload);
+        },
         onOpponentLeft: () => { this.locked = false; this.message = 'OPPONENT LEFT'; this.refresh(); },
         onError: (_code, message) => { this.message = message.toUpperCase(); this.refresh(); },
         onClose: () => {
@@ -104,8 +133,43 @@ export class OnlineLobbyScene extends Phaser.Scene {
     }
   }
 
-  private beginMatch(start: { seed: number; stage: string; p1Character: string; p2Character: string; inputDelay: number }): void {
-    if (!this.client || !this.room) return;
+  /**
+   * Start negotiating a direct connection as soon as the room has two people, so
+   * it is usually settled before anybody presses ready.
+   *
+   * Only the host decides the outcome, and it announces the decision over the
+   * relay. That is what keeps the two clients in agreement: if the host's data
+   * channel is open then the peer association exists, so the guest's channel is
+   * open as well — whereas two independent timeouts could disagree.
+   */
+  private startPeerNegotiation(): void {
+    if (this.peer || !this.client || !this.room) return;
+    if (this.room.slots.some((slot) => slot === null)) return;
+
+    const client = this.client;
+    const isHost = this.room.seat === 0;
+    this.peer = connectPeer({
+      isOfferer: isHost,
+      sendSignal: (payload) => client.sendSignal(payload),
+    });
+
+    void this.peer.channel.then((channel) => {
+      this.peerChannel = channel;
+      if (!isHost) return;
+      this.transportKind = channel ? 'p2p' : 'relay';
+      client.sendSignal({ kind: 'transport', data: this.transportKind });
+      this.refresh();
+      this.tryBeginMatch();
+    });
+  }
+
+  /** Both the server's go-ahead and the transport decision are needed to start. */
+  private tryBeginMatch(): void {
+    if (this.pendingStart && this.transportKind) this.beginMatch(this.pendingStart);
+  }
+
+  private beginMatch(start: MatchStart): void {
+    if (!this.client || !this.room || this.leaving) return;
 
     gameState.data.mode = 'online';
     gameState.data.seed = start.seed;
@@ -114,16 +178,21 @@ export class OnlineLobbyScene extends Phaser.Scene {
     gameState.data.p2Character = start.p2Character;
     gameState.resetMatch();
 
+    // Direct when the peer connection came up, otherwise the relay that is
+    // already connected. A direct link is roughly a third of the round trip, so
+    // it also earns a tighter input delay.
+    const direct = this.transportKind === 'p2p' && this.peerChannel !== null;
+    const transport: Transport = direct ? new WebRtcTransport(this.peerChannel!) : this.client;
+    const inputDelay = direct
+      ? Math.max(2, Math.ceil(this.client.suggestedInputDelay() / 2))
+      : Math.max(start.inputDelay, this.client.suggestedInputDelay());
+
     onlineMatch.current = {
       client: this.client,
       seat: this.room.seat,
-      session: new LockstepSession({
-        localPlayer: this.room.seat,
-        // The server's suggestion, widened if this client is measuring a worse
-        // round trip than the delay would cover.
-        inputDelay: Math.max(start.inputDelay, this.client.suggestedInputDelay()),
-        transport: this.client,
-      }),
+      transportKind: direct ? 'p2p' : 'relay',
+      disposePeer: () => this.peer?.close(),
+      session: new LockstepSession({ localPlayer: this.room.seat, inputDelay, transport }),
     };
 
     this.leaving = true;
@@ -149,8 +218,10 @@ export class OnlineLobbyScene extends Phaser.Scene {
     window.addEventListener('keydown', this.onKey);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       window.removeEventListener('keydown', this.onKey);
-      // Only tear the socket down if we are not handing it to the battle.
-      if (!onlineMatch.current) endOnlineMatch();
+      // Only tear things down if we are not handing them to the battle.
+      if (onlineMatch.current) return;
+      this.peer?.close();
+      endOnlineMatch();
     });
   }
 
@@ -298,8 +369,13 @@ export class OnlineLobbyScene extends Phaser.Scene {
     }
 
     const rtt = this.client?.roundTripMs;
+    const link =
+      this.transportKind === 'p2p' ? 'DIRECT LINK'
+      : this.transportKind === 'relay' ? 'VIA SERVER'
+      : this.room && this.room.slots.every((slot) => slot !== null) ? 'LINKING...'
+      : '';
     this.status.setText(
-      [this.message, rtt !== null && rtt !== undefined ? `PING ${Math.round(rtt)}MS` : '']
+      [this.message, link, rtt !== null && rtt !== undefined ? `PING ${Math.round(rtt)}MS` : '']
         .filter(Boolean)
         .join('     '),
     );

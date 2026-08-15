@@ -13,8 +13,13 @@
     "types": ["node"]
   },
   "include": ["server/**/*.ts", "src/net/**/*.ts", "src/sim/**/*.ts", "src/fighters/**/*.ts", "src/combat/**/*.ts"],
-  // OnlineClient is browser-only: it reads `location` to derive the socket URL.
-  // The server never loads it, and including it would drag the DOM lib into a
-  // Node build.
-  "exclude": ["**/__tests__/**", "src/net/OnlineClient.ts", "src/net/onlineMatch.ts"]
+  // These are browser-only: OnlineClient reads `location`, WebRtcTransport needs
+  // RTCPeerConnection. The server loads neither, and including them would drag
+  // the DOM lib into a Node build.
+  "exclude": [
+    "**/__tests__/**",
+    "src/net/OnlineClient.ts",
+    "src/net/onlineMatch.ts",
+    "src/net/WebRtcTransport.ts"
+  ]
 }

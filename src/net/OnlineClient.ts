@@ -7,6 +7,7 @@ import {
   type ClientMessage,
   type RoomSlot,
   type ServerMessage,
+  type SignalPayload,
 } from './protocol';
 import type { ChecksumMessage, InputMessage, Transport } from './Transport';
 import type { PlayerIndex } from '../sim/types';
@@ -38,6 +39,7 @@ export interface OnlineClientEvents {
   onRoomState?(state: RoomState): void;
   onMatchStart?(start: MatchStart): void;
   onOpponentLeft?(): void;
+  onSignal?(payload: SignalPayload): void;
   onError?(code: string, message: string): void;
   onClose?(): void;
 }
@@ -134,6 +136,8 @@ export class OnlineClient implements Transport {
   selectCharacter(characterId: string): void { this.sendMessage({ t: 'selectCharacter', characterId }); }
   setReady(ready: boolean): void { this.sendMessage({ t: 'ready', ready }); }
   leave(): void { this.sendMessage({ t: 'leave' }); }
+  /** Pass a WebRTC negotiation blob to the other player, via the server. */
+  sendSignal(payload: SignalPayload): void { this.sendMessage({ t: 'signal', payload }); }
 
   close(): void {
     this.stopPinging();
@@ -194,6 +198,9 @@ export class OnlineClient implements Transport {
         return;
       case 'opponentLeft':
         this.events.onOpponentLeft?.();
+        return;
+      case 'signal':
+        this.events.onSignal?.(message.payload);
         return;
       case 'pong': {
         const sentAt = this.pingSentAt.get(message.id);

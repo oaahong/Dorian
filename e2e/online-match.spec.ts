@@ -25,11 +25,21 @@ async function openLobby(page: Page): Promise<void> {
   await page.keyboard.press('f');
 
   await waitForScene(page, 'OnlineLobbyScene');
-  // The scene only leaves 'connecting' once the socket is open.
+
+  /**
+   * Two conditions, not one. The scene leaves 'connecting' as soon as the socket
+   * opens, which can easily be inside the 300 ms `inputLockedUntil` guard that
+   * every menu scene arms — so returning on the phase alone left the next
+   * keypress to be silently swallowed, and which test noticed depended on how
+   * fast the other browser happened to be.
+   */
   await page.waitForFunction(
     () => {
-      const lobby = window.__MEME_CAT_GAME__?.scene.getScene('OnlineLobbyScene');
-      return (lobby as unknown as { phase?: string } | null)?.phase === 'menu';
+      const lobby = window.__MEME_CAT_GAME__?.scene.getScene('OnlineLobbyScene') as unknown as
+        | { phase?: string; inputLockedUntil?: number; time?: { now: number } }
+        | null;
+      if (!lobby || lobby.phase !== 'menu') return false;
+      return (lobby.time?.now ?? 0) >= (lobby.inputLockedUntil ?? Number.POSITIVE_INFINITY);
     },
     undefined,
     { timeout: 15_000 },
@@ -84,6 +94,21 @@ test('two players meet with a room code and fight', async ({ browser }) => {
     await waitForFightPhase(host);
     await waitForFightPhase(guest);
 
+    // Which connection carried the match. Two browsers on one machine can always
+    // reach each other, so this should be direct; if it ever is not, the relay
+    // fallback kept the match playable and that is worth knowing rather than
+    // silently accepting.
+    const link = await host.evaluate(() => {
+      const scene = window.__MEME_CAT_GAME__!.scene.getScene('BattleScene') as unknown as {
+        online: boolean;
+      };
+      return {
+        online: scene.online,
+        kind: (window as unknown as { __ONLINE_KIND__?: string }).__ONLINE_KIND__,
+      };
+    });
+    expect(link.online).toBe(true);
+
     // The proof: a key pressed in one browser moves a fighter in the other.
     const before = await readBattle(guest);
     await host.keyboard.down('d');
@@ -100,6 +125,48 @@ test('two players meet with a room code and fight', async ({ browser }) => {
     expect(Math.abs(hostView.tick - guestView.tick)).toBeLessThan(30);
     expect(hostView.p1.hp).toBe(guestView.p1.hp);
     expect(hostView.p2.hp).toBe(guestView.p2.hp);
+  } finally {
+    await hostContext.close();
+    await guestContext.close();
+  }
+});
+
+test('a direct peer connection is preferred over the relay', async ({ browser }) => {
+  /**
+   * Relaying every keypress through a datacentre roughly triples the round trip
+   * for two players in the same country, and the input delay is sized from it —
+   * so a direct link is worth about half the delay a player feels. This asserts
+   * the negotiation actually reaches one, rather than quietly always falling back.
+   */
+  const hostContext = await browser.newContext();
+  const guestContext = await browser.newContext();
+  const host = await hostContext.newPage();
+  const guest = await guestContext.newPage();
+
+  try {
+    await openLobby(host);
+    await openLobby(guest);
+
+    await host.keyboard.press('f');
+    const code = await roomCode(host);
+    await guest.keyboard.press('j');
+    await guest.waitForTimeout(150);
+    for (const character of code) await guest.keyboard.press(character);
+    await guest.keyboard.press('Enter');
+    await roomCode(guest);
+
+    const verdict = (page: Page) =>
+      page.waitForFunction(
+        () => {
+          const lobby = window.__MEME_CAT_GAME__?.scene.getScene('OnlineLobbyScene');
+          return (lobby as unknown as { transportKind?: string } | null)?.transportKind ?? null;
+        },
+        undefined,
+        { timeout: 20_000 },
+      ).then((handle) => handle.jsonValue());
+
+    expect(await verdict(host)).toBe('p2p');
+    expect(await verdict(guest)).toBe('p2p');
   } finally {
     await hostContext.close();
     await guestContext.close();

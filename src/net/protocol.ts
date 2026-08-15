@@ -20,8 +20,26 @@ export interface RoomSlot {
   ready: boolean;
 }
 
+/**
+ * A WebRTC negotiation payload, passed through the server untouched.
+ *
+ * The server does not parse or care what is inside; it is an opaque blob that one
+ * client needs the other to see. Keeping it opaque means the signalling code can
+ * change without touching the server.
+ */
+export interface SignalPayload {
+  /**
+   * `transport` is the host's verdict on which connection the match will use.
+   * It travels over the relay, which is always available, so both clients agree
+   * even when the peer connection is still settling.
+   */
+  kind: 'offer' | 'answer' | 'candidate' | 'transport';
+  data: string;
+}
+
 export type ClientMessage =
   | { t: 'createRoom' }
+  | { t: 'signal'; payload: SignalPayload }
   | { t: 'joinRoom'; code: string }
   | { t: 'selectCharacter'; characterId: string }
   | { t: 'ready'; ready: boolean }
@@ -39,6 +57,7 @@ export type ServerMessage =
       inputDelay: number;
     }
   | { t: 'opponentLeft' }
+  | { t: 'signal'; payload: SignalPayload }
   | { t: 'pong'; id: number }
   | { t: 'error'; code: ErrorCode; message: string };
 
@@ -51,7 +70,10 @@ export type ErrorCode =
   | 'rate-limited';
 
 /** Largest lobby message accepted, to bound what a peer can make the server parse. */
-export const MAX_JSON_BYTES = 4 * 1024;
+export const MAX_JSON_BYTES = 16 * 1024;
+
+/** Session descriptions run to a few kilobytes; candidates are far smaller. */
+export const MAX_SIGNAL_BYTES = 12 * 1024;
 
 export function encodeJson(message: ClientMessage | ServerMessage): string {
   return JSON.stringify(message);
@@ -90,6 +112,16 @@ export function decodeClientMessage(raw: string): ClientMessage | null {
         : null;
     case 'ready':
       return typeof message.ready === 'boolean' ? { t: 'ready', ready: message.ready } : null;
+    case 'signal': {
+      const payload = message.payload as Record<string, unknown> | undefined;
+      if (!payload || typeof payload.data !== 'string') return null;
+      const kinds = ['offer', 'answer', 'candidate', 'transport'];
+      if (typeof payload.kind !== 'string' || !kinds.includes(payload.kind)) return null;
+      // Bounded so one peer cannot make the server hold an arbitrary string for
+      // the other; real SDP is a couple of kilobytes at most.
+      if (payload.data.length > MAX_SIGNAL_BYTES) return null;
+      return { t: 'signal', payload: { kind: payload.kind as SignalPayload['kind'], data: payload.data } };
+    }
     case 'ping':
       return Number.isFinite(message.id) ? { t: 'ping', id: message.id as number } : null;
     default:
