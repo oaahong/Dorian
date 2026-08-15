@@ -213,6 +213,43 @@ describe('LockstepSession', () => {
     });
   });
 
+  describe('send throttling', () => {
+    it('sends once per newly sampled tick', () => {
+      for (let tick = 0; tick < 5; tick += 1) session.submitLocalInput(tick, BUTTON.Right);
+      expect(transport.sentInputs).toHaveLength(5);
+    });
+
+    it('does not resend on every re-offer of the same tick', () => {
+      /**
+       * A stalled client re-offers its current tick every frame. Sending each time
+       * is 60 messages a second saying nothing new, which is enough to trip the
+       * server's flood protection when a client is catching up.
+       */
+      session.submitLocalInput(0, BUTTON.Right);
+      const afterFirst = transport.sentInputs.length;
+
+      for (let i = 0; i < 6; i += 1) session.submitLocalInput(0, BUTTON.Right);
+      expect(transport.sentInputs).toHaveLength(afterFirst);
+    });
+
+    it('still resends periodically, so a lost message can be recovered', () => {
+      // Going fully silent would deadlock both clients if the message carrying
+      // that frame was the one that got dropped.
+      session.submitLocalInput(0, BUTTON.Right);
+      const afterFirst = transport.sentInputs.length;
+
+      for (let i = 0; i < 40; i += 1) session.submitLocalInput(0, BUTTON.Right);
+      expect(transport.sentInputs.length).toBeGreaterThan(afterFirst);
+    });
+
+    it('sends immediately when the frame for a tick changes', () => {
+      session.submitLocalInput(0, BUTTON.Right);
+      const afterFirst = transport.sentInputs.length;
+      session.submitLocalInput(0, BUTTON.Left);
+      expect(transport.sentInputs.length).toBe(afterFirst + 1);
+    });
+  });
+
   describe('stall reporting', () => {
     it('tracks how long it has been waiting so the view can say so', () => {
       session.submitLocalInput(0, BUTTON.Right);

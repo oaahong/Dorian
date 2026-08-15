@@ -28,6 +28,13 @@ export interface LockstepOptions {
 
 const DEFAULT_REDUNDANCY = 8;
 
+/**
+ * How often an unchanged batch is resent while stalled. At 60 Hz this is about
+ * eight times a second — enough to recover from a lost message quickly, quiet
+ * enough not to trip a server's flood protection.
+ */
+const RESEND_EVERY = 8;
+
 export class LockstepSession implements Session {
   readonly localPlayer: PlayerIndex;
   readonly inputDelay: number;
@@ -45,6 +52,7 @@ export class LockstepSession implements Session {
 
   private currentStatus: SessionStatus = 'ok';
   private stalled = 0;
+  private repeatedSubmits = 0;
   private divergedAt: number | null = null;
   /** Highest tick already handed to the simulation; frames for it are now history. */
   private consumedThrough = -1;
@@ -82,8 +90,19 @@ export class LockstepSession implements Session {
     const appliesAt = tick + this.inputDelay;
     const frame = input & INPUT_FRAME_MASK;
 
+    // A stalled client re-offers the same tick every frame while it waits. There
+    // is nothing new to say, so the batch is not resent every time — but it is
+    // resent periodically, because if the message carrying that frame was the one
+    // that got lost, going silent would leave both clients waiting forever.
+    const changed = this.local.get(appliesAt) !== frame;
     this.local.set(appliesAt, frame);
     this.pushRecent(appliesAt, frame);
+
+    if (changed) {
+      this.repeatedSubmits = 0;
+    } else if (++this.repeatedSubmits % RESEND_EVERY !== 0) {
+      return;
+    }
     this.transport.sendInput({ startTick: this.recentStartTick, frames: [...this.recent] });
   }
 
