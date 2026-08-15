@@ -90,8 +90,18 @@ export class OnlineClient implements Transport {
     });
   }
 
-  /** Open a connection to the server this page was served from. */
+  /**
+   * Where to reach the signalling server.
+   *
+   * Defaults to the origin the page came from, which is the single-process
+   * deployment. Set `VITE_WS_URL` at build time to point somewhere else — that is
+   * what lets the client be served from a CDN close to the players while the
+   * server lives wherever is cheapest, which matters here because the card art is
+   * several megabytes and the server is only needed for a few seconds per match.
+   */
   static url(): string {
+    const configured = import.meta.env?.VITE_WS_URL;
+    if (typeof configured === 'string' && configured.length > 0) return configured;
     const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
     return `${protocol}//${location.host}/ws`;
   }

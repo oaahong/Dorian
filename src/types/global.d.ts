@@ -11,6 +11,19 @@ declare global {
      */
     __MEME_CAT_GAME__?: Phaser.Game;
   }
+
+  interface ImportMetaEnv {
+    /**
+     * Absolute WebSocket URL for the signalling server, e.g.
+     * `wss://meme-cat-fighter.fly.dev/ws`. Leave unset when one process serves
+     * both the client and the socket.
+     */
+    readonly VITE_WS_URL?: string;
+  }
+
+  interface ImportMeta {
+    readonly env: ImportMetaEnv;
+  }
 }
 
 export {};

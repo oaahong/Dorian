@@ -46,15 +46,41 @@ async function openLobby(page: Page): Promise<void> {
   );
 }
 
-async function roomCode(page: Page): Promise<string> {
-  await page.waitForFunction(
-    () => {
-      const lobby = window.__MEME_CAT_GAME__?.scene.getScene('OnlineLobbyScene');
-      return !!(lobby as unknown as { room?: { code: string } } | null)?.room?.code;
-    },
-    undefined,
-    { timeout: 10_000 },
-  );
+/** Everything about the lobby worth seeing when something goes wrong. */
+async function lobbyState(page: Page): Promise<Record<string, unknown>> {
+  return page.evaluate(() => {
+    const lobby = window.__MEME_CAT_GAME__?.scene.getScene('OnlineLobbyScene') as unknown as
+      | { phase?: string; typedCode?: string; message?: string; room?: { code: string } | null; transportKind?: string | null }
+      | null;
+    return {
+      scenes: window.__MEME_CAT_GAME__?.scene.getScenes(true).map((s) => s.scene.key) ?? [],
+      phase: lobby?.phase ?? null,
+      typedCode: lobby?.typedCode ?? null,
+      message: lobby?.message ?? null,
+      room: lobby?.room?.code ?? null,
+      transportKind: lobby?.transportKind ?? null,
+    };
+  });
+}
+
+async function roomCode(page: Page, who = 'player'): Promise<string> {
+  try {
+    await page.waitForFunction(
+      () => {
+        const lobby = window.__MEME_CAT_GAME__?.scene.getScene('OnlineLobbyScene');
+        return !!(lobby as unknown as { room?: { code: string } } | null)?.room?.code;
+      },
+      undefined,
+      { timeout: 10_000 },
+    );
+  } catch (error) {
+    // A bare timeout says nothing about why. The lobby's own state distinguishes
+    // "the keypress was dropped" from "the server refused" from "the socket died".
+    throw new Error(
+      `${who} never received a room. Lobby state: ${JSON.stringify(await lobbyState(page))}`,
+      { cause: error },
+    );
+  }
   return page.evaluate(() => {
     const lobby = window.__MEME_CAT_GAME__!.scene.getScene('OnlineLobbyScene') as unknown as {
       room: { code: string };
@@ -74,7 +100,7 @@ test('two players meet with a room code and fight', async ({ browser }) => {
     await openLobby(guest);
 
     await host.keyboard.press('f'); // create a room
-    const code = await roomCode(host);
+    const code = await roomCode(host, 'host');
     expect(code).toHaveLength(6);
 
     await guest.keyboard.press('j'); // join with a code
@@ -83,7 +109,7 @@ test('two players meet with a room code and fight', async ({ browser }) => {
     await guest.keyboard.press('Enter');
 
     // Both sides now see a full room.
-    await roomCode(guest);
+    await roomCode(guest, 'guest');
 
     await host.keyboard.press('f'); // pick and ready
     await guest.waitForTimeout(120);
@@ -148,12 +174,12 @@ test('a direct peer connection is preferred over the relay', async ({ browser })
     await openLobby(guest);
 
     await host.keyboard.press('f');
-    const code = await roomCode(host);
+    const code = await roomCode(host, 'host');
     await guest.keyboard.press('j');
     await guest.waitForTimeout(150);
     for (const character of code) await guest.keyboard.press(character);
     await guest.keyboard.press('Enter');
-    await roomCode(guest);
+    await roomCode(guest, 'guest');
 
     const verdict = (page: Page) =>
       page.waitForFunction(
