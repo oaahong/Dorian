@@ -12,6 +12,7 @@ import {
   ROUND_CALL_TICKS,
   ROUND_TICKS,
   ROUNDS_TO_WIN,
+  MAX_ENERGY,
 } from '../constants';
 import { BUTTON, EMPTY_INPUT, type InputFrame } from '../input';
 import { createWorld, checksum, stepWorld, type MatchSetup } from '../world';
@@ -439,6 +440,88 @@ describe('zones', () => {
     w.fighters[1].x = ARENA_MAX_X;
     run(w, 60);
     expect(w.fighters[1].hp).toBe(100);
+  });
+});
+
+describe('ultimates', () => {
+  /**
+   * Each ultimate kind resolves through a different path — a wide box, a
+   * screen-wide hit with no geometry at all, or a delayed ground zone. They are
+   * the least-exercised code in the simulation and the most spectacular when they
+   * break, so each family gets a case.
+   */
+  const fireUltimate = (w: SimWorld, ticks = 90) => {
+    w.fighters[0].energy = MAX_ENERGY;
+    run(w, 1, BUTTON.Down | BUTTON.Special);
+    run(w, ticks);
+  };
+
+  it('announces itself once and freezes the action', () => {
+    const w = toFight(world({ p1Character: 'collapse' }));
+    w.fighters[0].energy = MAX_ENERGY;
+    const events = run(w, 1, BUTTON.Down | BUTTON.Special);
+    expect(events).toContainEqual(
+      expect.objectContaining({ t: 'ultimateStart', player: 0 }),
+    );
+    expect(w.hitStopTicks).toBeGreaterThan(0);
+
+    // The presentation must not repeat every tick of the attack.
+    const later = run(w, 60);
+    expect(later.filter((e) => e.t === 'ultimateStart')).toHaveLength(0);
+  });
+
+  it('lands a wide-box ultimate', () => {
+    // 'collapse' has ultimate-sonic: a tall box in front of the attacker.
+    const w = toFight(world({ p1Character: 'collapse' }));
+    w.fighters[1].x = 800;
+    fireUltimate(w);
+    expect(w.fighters[1].hp).toBeLessThan(100);
+  });
+
+  it('does not let a wide-box ultimate reach across the whole arena', () => {
+    // collapse's ultimate-sonic has reach 540, so from one wall it covers roughly
+    // half the 1090 px arena. It aims correctly — facing is recomputed toward the
+    // opponent every tick — it simply falls short.
+    const w = toFight(world({ p1Character: 'collapse' }));
+    w.fighters[0].x = 1100;
+    w.fighters[1].x = 150;
+    fireUltimate(w);
+    expect(w.fighters[0].facing).toBe(-1);
+    expect(w.fighters[1].hp).toBe(100);
+  });
+
+  it('lands a screen-wide ultimate regardless of distance', () => {
+    // 'cry' has ultimate-water, which hits unconditionally.
+    const w = toFight(world({ p1Character: 'cry' }));
+    w.fighters[0].x = ARENA_MAX_X;
+    w.fighters[1].x = 120;
+    fireUltimate(w, 120);
+    expect(w.fighters[1].hp).toBeLessThan(100);
+  });
+
+  it('drops a delayed ground zone for the salad ultimate', () => {
+    // 'salad' has ultimate-salad: a telegraphed zone under the defender. The
+    // spawn tick is not asserted directly — the ultimate's own presentation
+    // hit-stop shifts it — so the test waits for the zone to appear instead.
+    const w = toFight(world({ p1Character: 'salad' }));
+    w.fighters[1].x = 700;
+    w.fighters[0].energy = MAX_ENERGY;
+    run(w, 1, BUTTON.Down | BUTTON.Special);
+
+    for (let i = 0; i < 120 && w.zones.length === 0; i += 1) run(w, 1);
+    expect(w.zones).toHaveLength(1);
+    expect(w.zones[0]!.triggered).toBe(false);
+    expect(w.fighters[1].hp).toBe(100); // harmless while telegraphing
+
+    run(w, 90);
+    expect(w.fighters[1].hp).toBeLessThan(100);
+  });
+
+  it('spends the meter even if the ultimate whiffs', () => {
+    const w = toFight(world({ p1Character: 'collapse' }));
+    w.fighters[0].energy = MAX_ENERGY;
+    run(w, 1, BUTTON.Down | BUTTON.Special);
+    expect(w.fighters[0].energy).toBe(0);
   });
 });
 

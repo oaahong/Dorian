@@ -121,12 +121,23 @@ test('an attack that connects actually deals damage', async ({ page }) => {
   await startVersusBattle(page);
   await waitForFightPhase(page);
 
-  // Walk P1 into P2, then swing repeatedly.
+  // Walk P1 into P2 until they are actually in range, rather than walking for a
+  // fixed wall-clock duration: how far a fixed duration carries the fighter
+  // depends on frame timing, which made this flaky.
   await page.keyboard.down('d');
-  await page.waitForTimeout(1200);
+  await page.waitForFunction(
+    () => {
+      const w = (window.__MEME_CAT_GAME__!.scene.getScene('BattleScene') as unknown as {
+        world: { fighters: [{ x: number }, { x: number }] };
+      }).world;
+      return Math.abs(w.fighters[1].x - w.fighters[0].x) < 120;
+    },
+    undefined,
+    { timeout: 15_000 },
+  );
   await page.keyboard.up('d');
 
-  for (let i = 0; i < 8; i += 1) {
+  for (let i = 0; i < 6; i += 1) {
     await page.keyboard.press('f');
     await page.waitForTimeout(250);
   }

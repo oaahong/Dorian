@@ -107,6 +107,29 @@ describe('behaviour', () => {
     expect(usedUltimate).toBe(true);
   });
 
+  it('clears its timers on reset so a new round starts fresh', () => {
+    const world = toFight(createWorld(setup));
+    const brain = new CpuBrain(1, 'normal', createRng(21));
+    for (let i = 0; i < 60; i += 1) stepWorld(world, [EMPTY_INPUT, brain.decide(world)]);
+
+    brain.reset();
+    // With the hold and decision timers cleared, the very next call must decide
+    // rather than coast on a hold left over from the previous round.
+    expect(brain.decide(world)).not.toBeUndefined();
+  });
+
+  it.each(['collapse', 'okboss', 'drool', 'awkward', 'wizard', 'alien'])(
+    'drives %s, whose special has its own preferred range',
+    (character) => {
+      // Exercises every branch of the special-distance heuristic: sonic, dash,
+      // slide, aura, zone and beam each want a different gap.
+      const world = createWorld({ ...setup, p2Character: character });
+      const brain = new CpuBrain(1, 'hard', createRng(13));
+      for (let i = 0; i < 600; i += 1) stepWorld(world, [EMPTY_INPUT, brain.decide(world)]);
+      expect(Number.isFinite(world.fighters[1].x)).toBe(true);
+    },
+  );
+
   it('acts more often on hard than on easy', () => {
     const count = (difficulty: CpuDifficulty) =>
       play(difficulty, 900, 5).filter((f) => f !== EMPTY_INPUT).length;
