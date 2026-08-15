@@ -185,6 +185,16 @@ test('two players meet with a room code and fight', async ({ browser }) => {
     const after = await readBattle(guest);
     expect(after.p1.x, 'the guest should see the host walking').toBeGreaterThan(before.p1.x);
 
+    // The simulation must keep up with real time. A stall used to leave a backlog
+    // that lockstep can never work off — both clients are gated on the same
+    // inputs, so neither is ever ahead — and the match drifted seconds behind,
+    // which feels like a dead connection rather than a slow one.
+    const beforeIdle = await readBattle(host);
+    await host.waitForTimeout(2000);
+    const afterIdle = await readBattle(host);
+    const ticksIn2s = afterIdle.tick - beforeIdle.tick;
+    expect(ticksIn2s, 'the match should run at roughly 60 ticks per second').toBeGreaterThan(90);
+
     // And both simulations agree about where everyone is.
     const hostView = await readBattle(host);
     const guestView = await readBattle(guest);

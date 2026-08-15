@@ -30,6 +30,21 @@ import { COLORS, FONT_FAMILY, GAME_HEIGHT, GAME_WIDTH } from '../utils/constants
  */
 const MAX_CATCHUP_MS = 250;
 
+/**
+ * How much backlog may survive a stall, in ticks.
+ *
+ * A stall is not a debt to repay. Both clients are gated on the same inputs, so
+ * neither is ever "ahead" — the simulation simply cannot run faster than the
+ * opponent supplies frames, and carrying the waiting time forward leaves the game
+ * permanently behind real time. Left unbounded it reached several seconds within
+ * one exchange, at which point every keypress lands seconds late and the match
+ * feels disconnected.
+ *
+ * A few ticks are kept rather than none, so a client on a 30 Hz display can still
+ * run two ticks per frame and hold 60 Hz.
+ */
+const MAX_STALL_BACKLOG_TICKS = 4;
+
 /** Ticks of waiting before the player is told the game is waiting. */
 const STALL_NOTICE_TICKS = 30;
 /** Ticks of waiting before the match is abandoned. */
@@ -120,7 +135,10 @@ export class BattleScene extends Phaser.Scene {
   update(_time: number, delta: number): void {
     if (this.paused || this.leaving) return;
 
-    this.accumulator += Math.min(delta, MAX_CATCHUP_MS);
+    // Bounded on both sides: a single long frame cannot contribute more than
+    // MAX_CATCHUP_MS, and the running total cannot exceed it either.
+    this.accumulator = Math.min(this.accumulator + Math.min(delta, MAX_CATCHUP_MS), MAX_CATCHUP_MS);
+
     while (this.accumulator >= TICK_MS) {
       const tick = this.world.tick;
 
@@ -141,7 +159,10 @@ export class BattleScene extends Phaser.Scene {
       // Online this returns null while the opponent's frame is in flight; the
       // simulation must hold rather than guess. Locally it never does.
       const inputs = this.session.inputsForTick(tick);
-      if (!inputs) break;
+      if (!inputs) {
+        this.accumulator = Math.min(this.accumulator, TICK_MS * MAX_STALL_BACKLOG_TICKS);
+        break;
+      }
 
       this.accumulator -= TICK_MS;
       const events = stepWorld(this.world, inputs);
