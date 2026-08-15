@@ -36,8 +36,9 @@ export class OnlineLobbyScene extends Phaser.Scene {
 
   private peer: PeerConnectionHandle | null = null;
   private peerChannel: RTCDataChannel | null = null;
-  /** The host's verdict on which connection to use; null until it is decided. */
+  /** The agreed connection and delay; null until both clients have settled them. */
   private transportKind: TransportKind | null = null;
+  private agreedInputDelay = 0;
   private pendingStart: MatchStart | null = null;
 
   private title!: Phaser.GameObjects.Text;
@@ -61,6 +62,7 @@ export class OnlineLobbyScene extends Phaser.Scene {
     this.peer = null;
     this.peerChannel = null;
     this.transportKind = null;
+    this.agreedInputDelay = 0;
     this.pendingStart = null;
     this.inputLockedUntil = this.time.now + 300;
 
@@ -145,7 +147,8 @@ export class OnlineLobbyScene extends Phaser.Scene {
       this.peerChannel = channel;
       if (!isHost) return;
       // The host proposes; it does not decide alone. See onTransportSignal.
-      client.sendSignal({ kind: 'transport', data: channel ? 'p2p' : 'relay' });
+      const kind: TransportKind = channel ? 'p2p' : 'relay';
+      client.sendSignal({ kind: 'transport', data: encodeTerms(kind, this.localInputDelay(kind)) });
       this.refresh();
     });
   }
@@ -167,32 +170,52 @@ export class OnlineLobbyScene extends Phaser.Scene {
    * That costs one round trip in the lobby and removes the disagreement entirely.
    */
   private onTransportSignal(proposed: string): void {
-    const isHost = this.room?.seat === 0;
+    const terms = decodeTerms(proposed);
 
-    if (isHost) {
+    if (this.room?.seat === 0) {
       // Only the guest's echo reaches here; it is the settled answer.
-      this.transportKind = proposed === 'p2p' ? 'p2p' : 'relay';
+      this.transportKind = terms.kind;
+      this.agreedInputDelay = terms.inputDelay;
       this.refresh();
       this.tryBeginMatch();
       return;
     }
 
-    if (proposed !== 'p2p') return this.commitTransport('relay');
-    if (this.peerChannel) return this.commitTransport('p2p');
+    if (terms.kind !== 'p2p') return this.commitTerms('relay', terms.inputDelay);
+    if (this.peerChannel) return this.commitTerms('p2p', terms.inputDelay);
 
     void this.peer?.channel.then((channel) => {
       this.peerChannel = channel;
-      this.commitTransport(channel ? 'p2p' : 'relay');
+      this.commitTerms(channel ? 'p2p' : 'relay', terms.inputDelay);
     });
   }
 
-  /** Record the agreed transport, tell the host, and start if the server is ready. */
-  private commitTransport(kind: TransportKind): void {
+  /**
+   * Settle on the connection *and* the input delay, then tell the host.
+   *
+   * The delay has to be identical on both sides. It decides how many opening
+   * ticks run on primed neutral input, so two different values leave each client
+   * waiting for a frame the other was never going to send — a permanent stall a
+   * few ticks in, which looks like a dead connection.
+   *
+   * The guest takes the larger of the two measurements: a delay that covers the
+   * worse link covers the better one, and the reverse stalls.
+   */
+  private commitTerms(kind: TransportKind, proposedDelay: number): void {
     if (this.transportKind) return;
     this.transportKind = kind;
-    this.client?.sendSignal({ kind: 'transport', data: kind });
+    this.agreedInputDelay = Math.max(proposedDelay, this.localInputDelay(kind));
+    this.client?.sendSignal({ kind: 'transport', data: encodeTerms(kind, this.agreedInputDelay) });
     this.refresh();
     this.tryBeginMatch();
+  }
+
+  /** What this client would ask for, before the two are reconciled. */
+  private localInputDelay(kind: TransportKind): number {
+    const suggested = this.client?.suggestedInputDelay() ?? 3;
+    // A direct link carries a frame one way rather than via the server, so it
+    // needs roughly half the cover.
+    return kind === 'p2p' ? Math.max(2, Math.ceil(suggested / 2)) : suggested;
   }
 
   /** Both the server's go-ahead and the agreed transport are needed to start. */
@@ -210,14 +233,11 @@ export class OnlineLobbyScene extends Phaser.Scene {
     gameState.data.p2Character = start.p2Character;
     gameState.resetMatch();
 
-    // Both sides agreed on this value, so `peerChannel` is guaranteed present
-    // when it says direct. A direct link is roughly a third of the round trip, so
-    // it also earns a tighter input delay.
+    // Both sides agreed on these, so `peerChannel` is guaranteed present when the
+    // agreement says direct, and the delay is identical on both clients.
     const direct = this.transportKind === 'p2p' && this.peerChannel !== null;
     const transport: Transport = direct ? new WebRtcTransport(this.peerChannel!) : this.client;
-    const inputDelay = direct
-      ? Math.max(2, Math.ceil(this.client.suggestedInputDelay() / 2))
-      : Math.max(start.inputDelay, this.client.suggestedInputDelay());
+    const inputDelay = Math.max(this.agreedInputDelay, direct ? 2 : start.inputDelay);
 
     onlineMatch.current = {
       client: this.client,
@@ -412,6 +432,23 @@ export class OnlineLobbyScene extends Phaser.Scene {
         .join('     '),
     );
   }
+}
+
+/**
+ * The agreed terms travel as `"<kind>:<delay>"` in the signal blob the server
+ * passes through untouched, so adding them needed no protocol change.
+ */
+function encodeTerms(kind: TransportKind, inputDelay: number): string {
+  return `${kind}:${inputDelay}`;
+}
+
+function decodeTerms(raw: string): { kind: TransportKind; inputDelay: number } {
+  const [kind, delay] = raw.split(':');
+  const parsed = Number(delay);
+  return {
+    kind: kind === 'p2p' ? 'p2p' : 'relay',
+    inputDelay: Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : 3,
+  };
 }
 
 function nameOf(characterId: string | null | undefined): string {

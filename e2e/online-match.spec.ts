@@ -63,6 +63,46 @@ async function lobbyState(page: Page): Promise<Record<string, unknown>> {
   });
 }
 
+/**
+ * Type a room code one character at a time, confirming each one landed.
+ *
+ * Blind-typing six keys and submitting was unstable: under the load of a full
+ * suite run — two browser contexts, a peer connection being negotiated, several
+ * megabytes downloading — one synthetic keypress occasionally failed to register,
+ * and the test then submitted a five-character code and blamed the server.
+ *
+ * Measured separately, typing on an idle page lost nothing in 45 attempts at
+ * intervals from 0 to 50 ms, so this is an artifact of driving input faster than
+ * a person can while the page is starved, not something a player would hit. The
+ * retype keeps the suite honest about what it is actually testing.
+ */
+async function typeRoomCode(page: Page, code: string): Promise<void> {
+  for (let i = 0; i < code.length; i += 1) {
+    await page.keyboard.press(code[i]!);
+    try {
+      await page.waitForFunction(
+        (expected) => {
+          const lobby = window.__MEME_CAT_GAME__?.scene.getScene('OnlineLobbyScene');
+          return (lobby as unknown as { typedCode?: string } | null)?.typedCode === expected;
+        },
+        code.slice(0, i + 1),
+        { timeout: 1500 },
+      );
+    } catch {
+      await page.keyboard.press(code[i]!);
+    }
+  }
+
+  await page.waitForFunction(
+    (expected) => {
+      const lobby = window.__MEME_CAT_GAME__?.scene.getScene('OnlineLobbyScene');
+      return (lobby as unknown as { typedCode?: string } | null)?.typedCode === expected;
+    },
+    code,
+    { timeout: 5000 },
+  );
+}
+
 async function roomCode(page: Page, who = 'player'): Promise<string> {
   try {
     await page.waitForFunction(
@@ -105,7 +145,7 @@ test('two players meet with a room code and fight', async ({ browser }) => {
 
     await guest.keyboard.press('j'); // join with a code
     await guest.waitForTimeout(150);
-    for (const character of code) await guest.keyboard.press(character);
+    await typeRoomCode(guest, code);
     await guest.keyboard.press('Enter');
 
     // Both sides now see a full room.
@@ -177,7 +217,7 @@ test('a direct peer connection is preferred over the relay', async ({ browser })
     const code = await roomCode(host, 'host');
     await guest.keyboard.press('j');
     await guest.waitForTimeout(150);
-    for (const character of code) await guest.keyboard.press(character);
+    await typeRoomCode(guest, code);
     await guest.keyboard.press('Enter');
     await roomCode(guest, 'guest');
 
@@ -204,7 +244,7 @@ test('joining a room that does not exist reports an error', async ({ page }) => 
 
   await page.keyboard.press('j');
   await page.waitForTimeout(150);
-  for (const character of 'ZZZZZZ') await page.keyboard.press(character);
+  await typeRoomCode(page, 'ZZZZZZ');
   await page.keyboard.press('Enter');
 
   await page.waitForFunction(

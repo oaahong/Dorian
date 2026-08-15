@@ -268,6 +268,43 @@ describe('lockstep over a simulated link', () => {
   });
 });
 
+describe('the input delay must be identical on both clients', () => {
+  it('deadlocks when the two disagree', () => {
+    /**
+     * Not a suggestion — a requirement, and an invisible one. The delay decides
+     * how many opening ticks run on primed neutral input. A client with delay 3
+     * primes ticks 0-2 and first transmits a frame for tick 3; a client with
+     * delay 2 primes 0-1 and waits for a frame for tick 2 that the other was
+     * never going to send. Both stall a few ticks in, which looks exactly like a
+     * dead connection.
+     *
+     * This cost a deployment to find, because every client on one machine
+     * measures the same round trip and agrees by accident. The lobby now settles
+     * the delay between the two clients rather than each computing its own.
+     */
+    const link = new FakeLink({ latencyTicks: 1 });
+    const a = new Client(0, link.transports[0], 3, p1Script);
+    const b = new Client(1, link.transports[1], 2, p2Script);
+
+    for (let i = 0; i < 400; i += 1) {
+      link.tick();
+      a.step();
+      b.step();
+    }
+
+    expect(a.world.tick, 'the client with the larger delay stalls early').toBeLessThan(10);
+    expect(b.world.tick, 'so does the other one').toBeLessThan(10);
+    expect(a.session.status).toBe('waiting');
+    expect(b.session.status).toBe('waiting');
+  });
+
+  it('runs normally when they match', () => {
+    const { a, b } = runMatch({ latencyTicks: 1 }, 300, 3);
+    expect(a.world.tick).toBeGreaterThanOrEqual(300);
+    expectAgreement(a, b);
+  });
+});
+
 describe('desync detection over a link', () => {
   it('catches a client whose simulation was tampered with', () => {
     /**
