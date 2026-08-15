@@ -52,17 +52,54 @@ test('renders a canvas at the 1280x720 logical resolution', async ({ page }) => 
   expect(size).toEqual({ width: 1280, height: 720 });
 });
 
-test('extracts every combat pose for all eight fighters at boot', async ({ page }) => {
+test('boots with menu thumbnails only, not the full card art', async ({ page }) => {
   await page.goto('/');
   await waitForScene(page, 'TitleScene', BOOT_TIMEOUT_MS);
 
-  // SpriteExtractor registers one CanvasTexture per fighter per pose, keyed
-  // `pose-<fighterId>-<pose>`. A failed extraction falls back to placeholder art
-  // rather than throwing, so counting the textures is the only way to catch it.
-  const poseTextureCount = await page.evaluate(() =>
-    window.__MEME_CAT_GAME__!.textures.getTextureKeys().filter((key) => key.startsWith('pose-')).length,
+  /**
+   * Boot used to pull 26 MB of source PNG and cut 104 poses before the title
+   * screen appeared. The menus only ever show a card at 238x298, so they load
+   * thumbnails; the full art waits until a match knows which two it needs. This
+   * asserts the split has not quietly regressed.
+   */
+  const loaded = await page.evaluate(() => {
+    const keys = window.__MEME_CAT_GAME__!.textures.getTextureKeys();
+    return {
+      thumbs: keys.filter((key) => key.startsWith('thumb-')).length,
+      poses: keys.filter((key) => key.startsWith('pose-')).length,
+      fullCards: keys.filter((key) => key.startsWith('card-')).length,
+    };
+  });
+
+  expect(loaded.thumbs).toBe(8);
+  expect(loaded.poses).toBe(0);
+  expect(loaded.fullCards).toBe(0);
+
+  // Counted per directory rather than over everything under /assets, which would
+  // also sweep in the JavaScript bundle and say nothing about the art.
+  const art = await page.evaluate(() => {
+    const bytesUnder = (path: string) =>
+      performance
+        .getEntriesByType('resource')
+        .filter((entry) => entry.name.includes(path))
+        .reduce((sum, entry) => sum + ((entry as PerformanceResourceTiming).encodedBodySize || 0), 0);
+    return { cards: bytesUnder('/assets/cards/'), thumbs: bytesUnder('/assets/thumbs/') };
+  });
+
+  expect(art.cards, 'no full-resolution card should be fetched at boot').toBe(0);
+  expect(art.thumbs, 'thumbnails should stay under a megabyte').toBeLessThan(1_000_000);
+  expect(art.thumbs, 'thumbnails should actually have loaded').toBeGreaterThan(0);
+});
+
+test('cuts the poses for exactly the two fighters in the match', async ({ page }) => {
+  await page.goto('/');
+  await startVersusBattle(page);
+
+  const keys = await page.evaluate(() =>
+    window.__MEME_CAT_GAME__!.textures.getTextureKeys().filter((key) => key.startsWith('pose-')),
   );
-  expect(poseTextureCount).toBe(8 * 13);
+  // Thirteen poses each, and nobody else's art is cut.
+  expect(keys.length).toBe(2 * 13);
 });
 
 test('navigates title -> mode select -> character select -> battle', async ({ page }) => {

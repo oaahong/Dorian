@@ -1,12 +1,11 @@
 import * as Phaser from 'phaser';
-import { FIGHTERS } from '../fighters/fighterData';
+import { FIGHTERS, thumbTextureKey } from '../fighters/fighterData';
 import { LockstepSession } from '../net/LockstepSession';
 import { OnlineClient, type RoomState } from '../net/OnlineClient';
 import { endOnlineMatch, onlineMatch } from '../net/onlineMatch';
 import { ROOM_CODE_ALPHABET } from '../net/roomCode';
 import { AudioManager } from '../systems/AudioManager';
 import { gameState, type StageId } from '../systems/GameState';
-import { SpriteExtractor } from '../systems/SpriteExtractor';
 import { COLORS, FONT_FAMILY, GAME_HEIGHT, GAME_WIDTH } from '../utils/constants';
 
 /**
@@ -62,7 +61,7 @@ export class OnlineLobbyScene extends Phaser.Scene {
       fontFamily: FONT_FAMILY, fontSize: '30px', color: '#F3E9D0', align: 'center', lineSpacing: 16,
     }).setOrigin(.5);
 
-    this.portrait = this.add.image(GAME_WIDTH / 2, 470, SpriteExtractor.textureKey(FIGHTERS[0]!.id, 'idle'))
+    this.portrait = this.add.image(GAME_WIDTH / 2, 470, thumbTextureKey(FIGHTERS[0]!))
       .setOrigin(.5, 1).setVisible(false);
 
     this.status = this.add.text(GAME_WIDTH / 2, 560, '', {
@@ -130,7 +129,7 @@ export class OnlineLobbyScene extends Phaser.Scene {
     this.leaving = true;
     this.client.stopPinging();
     AudioManager.play('menu');
-    this.scene.start('BattleScene');
+    this.scene.start('PrepareMatchScene', { next: 'BattleScene' });
   }
 
   /**
@@ -281,7 +280,7 @@ export class OnlineLobbyScene extends Phaser.Scene {
           `YOU: ${this.locked ? nameOf(you?.characterId) : fighter.name}${this.locked ? '  (READY)' : ''}\n` +
           `OPPONENT: ${opponent ? `${nameOf(opponent.characterId)}${opponent.ready ? '  (READY)' : ''}` : 'WAITING...'}`,
         );
-        this.portrait.setVisible(true).setTexture(SpriteExtractor.textureKey(fighter.id, 'idle'));
+        this.portrait.setVisible(true).setTexture(thumbTextureKey(fighter));
         normalisePortrait(this.portrait);
         this.hint.setText(
           this.locked

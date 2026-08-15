@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import { FIGHTERS } from '../fighters/fighterData';
+import { FIGHTERS, thumbTextureKey } from '../fighters/fighterData';
 import { gameState } from '../systems/GameState';
 import { AudioManager } from '../systems/AudioManager';
 import { COLORS, FONT_FAMILY } from '../utils/constants';
@@ -68,7 +68,7 @@ export class CharacterSelectScene extends Phaser.Scene {
       const y = startY + row * gapY;
 
       const frame = this.add.rectangle(x, y, 146, 190, 0x090909, 1).setStrokeStyle(2, 0x5f5226, 0.9);
-      const card = this.add.image(x, y, fighter.cardTexture).setDisplaySize(136, 170).setInteractive({ useHandCursor: true });
+      const card = this.add.image(x, y, thumbTextureKey(fighter)).setDisplaySize(136, 170).setInteractive({ useHandCursor: true });
 
       card.on('pointerover', () => {
         if (this.leaving) return;
@@ -114,7 +114,7 @@ export class CharacterSelectScene extends Phaser.Scene {
     this.p1Frame = this.add.rectangle(0, 0, 156, 200, 0x000000, 0).setStrokeStyle(5, COLORS.gold, 1).setDepth(10);
     this.p2Frame = this.add.rectangle(0, 0, 166, 210, 0x000000, 0).setStrokeStyle(4, COLORS.cyan, 1).setDepth(11).setAlpha(gameState.data.mode === 'pvp' ? 1 : 0);
 
-    this.detailCard = this.add.image(950, 275, FIGHTERS[0]!.cardTexture).setDisplaySize(238, 298);
+    this.detailCard = this.add.image(950, 275, thumbTextureKey(FIGHTERS[0]!)).setDisplaySize(238, 298);
     this.detailText = this.add.text(795, 445, '', {
       fontFamily: FONT_FAMILY,
       fontSize: '18px',
@@ -246,7 +246,7 @@ export class CharacterSelectScene extends Phaser.Scene {
     gameState.resetMatch();
     gameState.rollMatchSetup();
     this.cameras.main.flash(100, 255, 255, 255);
-    this.time.delayedCall(340, () => this.scene.start('VsScene'));
+    this.time.delayedCall(340, () => this.scene.start('PrepareMatchScene', { next: 'VsScene' }));
   }
 
   private moveCursor(cursor: CursorState, dx: number, dy: number): void {
@@ -273,7 +273,7 @@ export class CharacterSelectScene extends Phaser.Scene {
     this.cards.forEach((card, i) => card.setDisplaySize(i === focusIndex ? 143 : 136, i === focusIndex ? 179 : 170));
 
     const focused = FIGHTERS[this.focusOwner === 1 ? this.p1.index : this.p2.index]!;
-    this.detailCard.setTexture(focused.cardTexture);
+    this.detailCard.setTexture(thumbTextureKey(focused));
     const bars = (value: number) => '■'.repeat(value) + '□'.repeat(5 - value);
 
     const lockLabel = this.focusOwner === 1

@@ -290,6 +290,21 @@ function withinRateLimit(connection: Connection, nowMs: number, limit: number): 
   return connection.messagesInWindow <= limit;
 }
 
+/**
+ * Vite fingerprints everything under /assets with a content hash, so those files
+ * can be cached forever. The card art and thumbnails keep stable names, so they
+ * get a day — long enough that a returning player re-downloads nothing, short
+ * enough that replacing the art is not a support problem. index.html is never
+ * cached, or a deploy would not reach anyone.
+ */
+function cacheControlFor(requestPath: string, resolvedFile: string): string {
+  if (resolvedFile.endsWith('index.html')) return 'no-cache';
+  if (requestPath.startsWith('/assets/') && /-[A-Za-z0-9_]{8,}\./.test(requestPath)) {
+    return 'public, max-age=31536000, immutable';
+  }
+  return 'public, max-age=86400';
+}
+
 const CONTENT_TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
@@ -297,6 +312,7 @@ const CONTENT_TYPES: Record<string, string> = {
   '.png': 'image/png',
   '.json': 'application/json; charset=utf-8',
   '.svg': 'image/svg+xml',
+  '.webp': 'image/webp',
 };
 
 /**
@@ -323,6 +339,7 @@ function serveStatic(rootDir: string, request: IncomingMessage, response: Server
 
   response.writeHead(200, {
     'content-type': CONTENT_TYPES[extname(target)] ?? 'application/octet-stream',
+    'cache-control': cacheControlFor(requested, target),
   });
   createReadStream(target).pipe(response);
 }

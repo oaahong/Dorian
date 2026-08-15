@@ -44,7 +44,7 @@ export class ResultScene extends Phaser.Scene {
     else if(code==='Enter'||code==='KeyF'||code==='KeyJ'||code==='Space'){AudioManager.play('menu');
       gameState.resetMatch();
       if(this.online){endOnlineMatch();this.scene.start(this.index===2?'ModeSelectScene':'OnlineLobbyScene');return;}
-      if(this.index===0){gameState.rollMatchSetup();this.scene.start('VsScene');}
+      if(this.index===0){gameState.rollMatchSetup();this.scene.start('PrepareMatchScene', { next: 'VsScene' });}
       else if(this.index===1){this.scene.start('CharacterSelectScene');}
       else{this.scene.start('ModeSelectScene');}
     } else if(code==='KeyM') AudioManager.toggleMute();

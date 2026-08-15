@@ -5,6 +5,7 @@ import { TitleScene } from './scenes/TitleScene';
 import { OnlineLobbyScene } from './scenes/OnlineLobbyScene';
 import { ModeSelectScene } from './scenes/ModeSelectScene';
 import { CharacterSelectScene } from './scenes/CharacterSelectScene';
+import { PrepareMatchScene } from './scenes/PrepareMatchScene';
 import { VsScene } from './scenes/VsScene';
 import { BattleScene } from './scenes/BattleScene';
 import { ResultScene } from './scenes/ResultScene';
@@ -16,7 +17,7 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
   height: GAME_HEIGHT,
   backgroundColor: '#050505',
   scene: [BootScene, TitleScene, ModeSelectScene,
-    OnlineLobbyScene, CharacterSelectScene, VsScene, BattleScene, ResultScene],
+    OnlineLobbyScene, CharacterSelectScene, PrepareMatchScene, VsScene, BattleScene, ResultScene],
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,

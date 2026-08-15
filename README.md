@@ -156,6 +156,26 @@ src/
 3. Define its Special and Ultimate as data-driven `AttackSpec` entries.
 4. If the new move needs a completely new behavior category, add one reusable `AttackKind` and one handler in `CombatSystem`; do not duplicate the `Fighter` engine.
 
+## Card Art
+
+`public/assets/cards/` holds the eight source cards at full resolution. They are
+only ever *displayed* at 238x298 or smaller, so the menus load downscaled WebP
+thumbnails from `public/assets/thumbs/` instead — about 0.55 MB rather than
+26 MB. The full card is fetched only when a match needs it, because pose
+extraction reads its pixels.
+
+Regenerate the thumbnails after changing a card (requires `cwebp`):
+
+```bash
+npm run assets:thumbs
+```
+
+The source cards stay PNG deliberately. Lossy WebP shrinks them by 90%, but it
+moves about 1% of pixels across the `RGB < 25` threshold that pose extraction
+uses to cut the background away, which leaves a dark fringe around every fighter.
+Lossless WebP is pixel-identical and roughly 35% smaller, if the download matters
+more than keeping the originals in a universally-editable format.
+
 ## Runtime Pose Extraction
 
 `SpriteExtractor` maps the card panels to:

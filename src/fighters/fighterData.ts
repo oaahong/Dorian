@@ -59,6 +59,15 @@ export const FIGHTERS: FighterConfig[] = [
   },
 ];
 
+/**
+ * Texture key for the small card used in menus.
+ *
+ * The card art is only ever displayed at 238x298 or less, so the menus load a
+ * downscaled WebP instead of the 3 MB source PNG. The full-resolution card is
+ * fetched only when a match needs it, because pose extraction reads its pixels.
+ */
+export const thumbTextureKey = (fighter: FighterConfig): string => `thumb-${fighter.number}`;
+
 export const getFighterConfig = (id: string): FighterConfig => {
   const fighter = FIGHTERS.find((entry) => entry.id === id);
   if (!fighter) throw new Error(`Unknown fighter id: ${id}`);
