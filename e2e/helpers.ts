@@ -105,15 +105,49 @@ interface BattleSceneProbe {
  * The simulation ignores input during its ~1.12 s `intro` phase, so any test that
  * presses a gameplay key must wait for `fight` first or the press is swallowed.
  */
-export async function waitForFightPhase(page: Page): Promise<void> {
-  await page.waitForFunction(
-    () => {
-      const battle = window.__MEME_CAT_GAME__?.scene.getScene('BattleScene');
-      return (battle as unknown as BattleSceneProbe | null)?.world?.phase === 'fight';
-    },
-    undefined,
-    { timeout: 20_000 },
-  );
+export async function waitForFightPhase(page: Page, who = 'player'): Promise<void> {
+  try {
+    await page.waitForFunction(
+      () => {
+        const battle = window.__MEME_CAT_GAME__?.scene.getScene('BattleScene');
+        return (battle as unknown as BattleSceneProbe | null)?.world?.phase === 'fight';
+      },
+      undefined,
+      { timeout: 20_000 },
+    );
+  } catch (error) {
+    // Online, the intro cannot advance without the opponent's inputs, so this
+    // times out for reasons that live on the *other* machine. The session's own
+    // status says which: still loading, waiting on a frame, or diverged.
+    throw new Error(
+      `${who} never reached the fight phase. Battle state: ${JSON.stringify(await readSession(page))}`,
+      { cause: error },
+    );
+  }
+}
+
+/** What the battle and its network session are doing, for failure messages. */
+export async function readSession(page: Page): Promise<Record<string, unknown>> {
+  return page.evaluate(() => {
+    const game = window.__MEME_CAT_GAME__;
+    const battle = game?.scene.getScene('BattleScene') as unknown as
+      | {
+          online?: boolean;
+          world?: { tick: number; phase: string };
+          session?: { status?: string; stalledTicks?: number; inputDelay?: number; localPlayer?: number };
+        }
+      | null;
+    return {
+      scenes: game?.scene.getScenes(true).map((scene) => scene.scene.key) ?? [],
+      online: battle?.online ?? null,
+      tick: battle?.world?.tick ?? null,
+      phase: battle?.world?.phase ?? null,
+      status: battle?.session?.status ?? null,
+      stalledTicks: battle?.session?.stalledTicks ?? null,
+      inputDelay: battle?.session?.inputDelay ?? null,
+      seat: battle?.session?.localPlayer ?? null,
+    };
+  });
 }
 
 /** Read fighter positions and states out of the running simulation. */

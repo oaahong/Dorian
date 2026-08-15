@@ -107,14 +107,7 @@ export class OnlineLobbyScene extends Phaser.Scene {
         },
         onMatchStart: (start) => { this.pendingStart = start; this.tryBeginMatch(); },
         onSignal: (payload) => {
-          if (payload.kind === 'transport') {
-            // The host has decided. Its channel opening means the association is
-            // established, so this client's channel is open too.
-            this.transportKind = payload.data === 'p2p' ? 'p2p' : 'relay';
-            this.refresh();
-            this.tryBeginMatch();
-            return;
-          }
+          if (payload.kind === 'transport') return this.onTransportSignal(payload.data);
           this.peer?.accept(payload);
         },
         onOpponentLeft: () => { this.locked = false; this.message = 'OPPONENT LEFT'; this.refresh(); },
@@ -136,11 +129,6 @@ export class OnlineLobbyScene extends Phaser.Scene {
   /**
    * Start negotiating a direct connection as soon as the room has two people, so
    * it is usually settled before anybody presses ready.
-   *
-   * Only the host decides the outcome, and it announces the decision over the
-   * relay. That is what keeps the two clients in agreement: if the host's data
-   * channel is open then the peer association exists, so the guest's channel is
-   * open as well — whereas two independent timeouts could disagree.
    */
   private startPeerNegotiation(): void {
     if (this.peer || !this.client || !this.room) return;
@@ -156,14 +144,58 @@ export class OnlineLobbyScene extends Phaser.Scene {
     void this.peer.channel.then((channel) => {
       this.peerChannel = channel;
       if (!isHost) return;
-      this.transportKind = channel ? 'p2p' : 'relay';
-      client.sendSignal({ kind: 'transport', data: this.transportKind });
+      // The host proposes; it does not decide alone. See onTransportSignal.
+      client.sendSignal({ kind: 'transport', data: channel ? 'p2p' : 'relay' });
       this.refresh();
-      this.tryBeginMatch();
     });
   }
 
-  /** Both the server's go-ahead and the transport decision are needed to start. */
+  /**
+   * Agree on which connection the match will use.
+   *
+   * Both clients must pick the *same* one or they talk past each other — one
+   * sending over the data channel while the other listens on the socket, which
+   * looks exactly like a network outage and stalls the match on tick five.
+   *
+   * The host proposes as soon as its channel opens. The guest can only accept
+   * once its own channel handle exists: the host's proposal travels through the
+   * server and routinely arrives first, so "the host says direct" is not yet
+   * evidence that this client can send that way. The guest therefore waits for
+   * its own channel, then echoes back the value it actually committed to, and the
+   * host starts on that echo rather than on its own proposal.
+   *
+   * That costs one round trip in the lobby and removes the disagreement entirely.
+   */
+  private onTransportSignal(proposed: string): void {
+    const isHost = this.room?.seat === 0;
+
+    if (isHost) {
+      // Only the guest's echo reaches here; it is the settled answer.
+      this.transportKind = proposed === 'p2p' ? 'p2p' : 'relay';
+      this.refresh();
+      this.tryBeginMatch();
+      return;
+    }
+
+    if (proposed !== 'p2p') return this.commitTransport('relay');
+    if (this.peerChannel) return this.commitTransport('p2p');
+
+    void this.peer?.channel.then((channel) => {
+      this.peerChannel = channel;
+      this.commitTransport(channel ? 'p2p' : 'relay');
+    });
+  }
+
+  /** Record the agreed transport, tell the host, and start if the server is ready. */
+  private commitTransport(kind: TransportKind): void {
+    if (this.transportKind) return;
+    this.transportKind = kind;
+    this.client?.sendSignal({ kind: 'transport', data: kind });
+    this.refresh();
+    this.tryBeginMatch();
+  }
+
+  /** Both the server's go-ahead and the agreed transport are needed to start. */
   private tryBeginMatch(): void {
     if (this.pendingStart && this.transportKind) this.beginMatch(this.pendingStart);
   }
@@ -178,8 +210,8 @@ export class OnlineLobbyScene extends Phaser.Scene {
     gameState.data.p2Character = start.p2Character;
     gameState.resetMatch();
 
-    // Direct when the peer connection came up, otherwise the relay that is
-    // already connected. A direct link is roughly a third of the round trip, so
+    // Both sides agreed on this value, so `peerChannel` is guaranteed present
+    // when it says direct. A direct link is roughly a third of the round trip, so
     // it also earns a tighter input delay.
     const direct = this.transportKind === 'p2p' && this.peerChannel !== null;
     const transport: Transport = direct ? new WebRtcTransport(this.peerChannel!) : this.client;

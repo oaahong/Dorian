@@ -117,8 +117,8 @@ test('two players meet with a room code and fight', async ({ browser }) => {
 
     await waitForScene(host, 'BattleScene', 20_000);
     await waitForScene(guest, 'BattleScene', 20_000);
-    await waitForFightPhase(host);
-    await waitForFightPhase(guest);
+    await waitForFightPhase(host, 'host');
+    await waitForFightPhase(guest, 'guest');
 
     // Which connection carried the match. Two browsers on one machine can always
     // reach each other, so this should be direct; if it ever is not, the relay
