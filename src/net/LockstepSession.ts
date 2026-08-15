@@ -24,16 +24,26 @@ export interface LockstepOptions {
   transport: Transport;
   /** How many recent frames to repeat in each message, so a lost one self-heals. */
   redundancy?: number;
+  /** Injected so tests can drive the retransmission throttle deterministically. */
+  now?: () => number;
 }
 
 const DEFAULT_REDUNDANCY = 8;
 
 /**
- * How often an unchanged batch is resent while stalled. At 60 Hz this is about
- * eight times a second — enough to recover from a lost message quickly, quiet
- * enough not to trip a server's flood protection.
+ * Shortest gap between retransmissions while stalled, in milliseconds.
+ *
+ * Throttled by time rather than by call count. Counting calls ties the rate to
+ * the frame rate, and a stalled client only gets one call per rendered frame —
+ * on a client managing 17 fps that worked out at two retransmissions a second.
+ * The data channel is deliberately unreliable, so a dropped message then cost
+ * half a second of standing still, and a match spent almost all of its time
+ * waiting.
+ *
+ * At roughly sixty a second the cost is about half a kilobyte a second, and it is
+ * still under the server's flood protection.
  */
-const RESEND_EVERY = 8;
+const RESEND_INTERVAL_MS = 16;
 
 export class LockstepSession implements Session {
   readonly localPlayer: PlayerIndex;
@@ -41,6 +51,7 @@ export class LockstepSession implements Session {
 
   private readonly transport: Transport;
   private readonly redundancy: number;
+  private readonly now: () => number;
   private readonly local = new InputRing();
   private readonly remote = new InputRing();
   /** Frames recently sent, resent as redundancy. */
@@ -52,7 +63,7 @@ export class LockstepSession implements Session {
 
   private currentStatus: SessionStatus = 'ok';
   private stalled = 0;
-  private repeatedSubmits = 0;
+  private lastSendAtMs = 0;
   private divergedAt: number | null = null;
   /** Highest tick already handed to the simulation; frames for it are now history. */
   private consumedThrough = -1;
@@ -62,6 +73,7 @@ export class LockstepSession implements Session {
     this.inputDelay = Math.max(0, Math.floor(options.inputDelay));
     this.transport = options.transport;
     this.redundancy = options.redundancy ?? DEFAULT_REDUNDANCY;
+    this.now = options.now ?? (() => Date.now());
 
     // The opening ticks have no sampled input behind them; both seats are neutral
     // so the match can start rather than deadlock on frames that never existed.
@@ -108,7 +120,6 @@ export class LockstepSession implements Session {
 
     this.local.set(appliesAt, input & INPUT_FRAME_MASK);
     this.pushRecent(appliesAt, input & INPUT_FRAME_MASK);
-    this.repeatedSubmits = 0;
     this.transmit();
   }
 
@@ -123,12 +134,13 @@ export class LockstepSession implements Session {
    */
   resend(): void {
     if (this.currentStatus === 'disconnected') return;
-    if (++this.repeatedSubmits % RESEND_EVERY !== 0) return;
+    if (this.now() - this.lastSendAtMs < RESEND_INTERVAL_MS) return;
     this.transmit();
   }
 
   private transmit(): void {
     if (this.recent.length === 0) return;
+    this.lastSendAtMs = this.now();
     this.transport.sendInput({ startTick: this.recentStartTick, frames: [...this.recent] });
   }
 

@@ -34,10 +34,13 @@ const DELAY = 3;
 describe('LockstepSession', () => {
   let transport: RecordingTransport;
   let session: LockstepSession;
+  /** Retransmission is throttled by time, so the tests own the clock. */
+  let clock: number;
 
   beforeEach(() => {
     transport = new RecordingTransport();
-    session = new LockstepSession({ localPlayer: 0, inputDelay: DELAY, transport });
+    clock = 0;
+    session = new LockstepSession({ localPlayer: 0, inputDelay: DELAY, transport, now: () => clock });
   });
 
   describe('the delay window', () => {
@@ -277,8 +280,26 @@ describe('LockstepSession', () => {
       session.submitLocalInput(0, BUTTON.Right);
       const afterFirst = transport.sentInputs.length;
 
-      for (let i = 0; i < 40; i += 1) session.submitLocalInput(0, BUTTON.Right);
-      expect(transport.sentInputs.length).toBeGreaterThan(afterFirst);
+      for (let i = 0; i < 40; i += 1) {
+        clock += 20;
+        session.resend();
+      }
+      expect(transport.sentInputs.length).toBeGreaterThan(afterFirst + 30);
+    });
+
+    it('does not resend faster than the throttle allows', () => {
+      // The rate has to be bounded by time, not by how often the caller asks:
+      // a stalled client asks once per rendered frame, which ties the recovery
+      // rate to the frame rate and collapses on a struggling machine.
+      session.submitLocalInput(0, BUTTON.Right);
+      const afterFirst = transport.sentInputs.length;
+
+      for (let i = 0; i < 100; i += 1) session.resend();
+      expect(transport.sentInputs.length).toBe(afterFirst);
+
+      clock += 20;
+      session.resend();
+      expect(transport.sentInputs.length).toBe(afterFirst + 1);
     });
 
     it('treats a re-offer of a settled tick as a resend opportunity', () => {
@@ -287,7 +308,10 @@ describe('LockstepSession', () => {
       session.submitLocalInput(0, BUTTON.Right);
       const afterFirst = transport.sentInputs.length;
 
-      for (let i = 0; i < 40; i += 1) session.submitLocalInput(0, BUTTON.Left);
+      for (let i = 0; i < 40; i += 1) {
+        clock += 20;
+        session.submitLocalInput(0, BUTTON.Left);
+      }
       expect(transport.sentInputs.length).toBeGreaterThan(afterFirst);
     });
   });
