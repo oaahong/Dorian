@@ -259,25 +259,48 @@ describe('input delay suggestion', () => {
   it('sizes the delay for the relayed path, not a direct one', async () => {
     /**
      * Traffic goes `me -> server -> them`. With both players a similar distance
-     * from the server that costs about a full round trip, so a 50 ms RTT needs
-     * three ticks of cover (50 ms is three ticks) plus one for jitter. Sizing it
-     * as if the connection were direct would ask for two, and the frame would
-     * routinely arrive after the tick that needed it.
+     * from the server that costs about a full round trip, so a 50 ms link needs
+     * three ticks of cover for the network plus two for the two render frames,
+     * plus one for jitter.
      */
     const client = await openClient();
     (client as unknown as { roundTripMs: number }).roundTripMs = 50;
-    expect(client.suggestedInputDelay(1, 12)).toBe(4);
+    expect(client.suggestedInputDelay({ frameIntervalMs: 1000 / 60 })).toBe(6);
 
     (client as unknown as { roundTripMs: number }).roundTripMs = 100;
-    expect(client.suggestedInputDelay(1, 12)).toBe(7);
+    expect(client.suggestedInputDelay({ frameIntervalMs: 1000 / 60 })).toBe(9);
   });
 
-  it('stays within its bounds however bad the link is', async () => {
+  it('asks for less on a direct link than a relayed one', async () => {
+    const client = await openClient();
+    (client as unknown as { roundTripMs: number }).roundTripMs = 100;
+    const relayed = client.suggestedInputDelay({ direct: false });
+    const direct = client.suggestedInputDelay({ direct: true });
+    expect(direct).toBeLessThan(relayed);
+  });
+
+  it('grows when the client is rendering slowly', async () => {
+    /**
+     * The term that is easy to forget and can dominate: an arriving frame is not
+     * acted on until the next rendered frame, on both machines. At 18 fps that is
+     * 110 ms of the path — more than a transatlantic round trip — and leaving it
+     * out sized the delay at 50 ms for a link that actually needed 160.
+     */
+    const client = await openClient();
+    (client as unknown as { roundTripMs: number }).roundTripMs = 20;
+
+    const healthy = client.suggestedInputDelay({ frameIntervalMs: 1000 / 60 });
+    const struggling = client.suggestedInputDelay({ frameIntervalMs: 1000 / 18 });
+    expect(struggling).toBeGreaterThan(healthy);
+    expect(struggling).toBeGreaterThanOrEqual(8);
+  });
+
+  it('stays within its bounds however bad things get', async () => {
     const client = await openClient();
     (client as unknown as { roundTripMs: number }).roundTripMs = 5000;
-    expect(client.suggestedInputDelay(2, 6)).toBe(6);
+    expect(client.suggestedInputDelay({ max: 6 })).toBe(6);
 
     (client as unknown as { roundTripMs: number }).roundTripMs = 1;
-    expect(client.suggestedInputDelay(2, 6)).toBe(2);
+    expect(client.suggestedInputDelay({ min: 2, max: 12, frameIntervalMs: 1 })).toBeGreaterThanOrEqual(2);
   });
 });

@@ -210,12 +210,16 @@ export class OnlineLobbyScene extends Phaser.Scene {
     this.tryBeginMatch();
   }
 
-  /** What this client would ask for, before the two are reconciled. */
+  /**
+   * What this client would ask for, before the two are reconciled.
+   *
+   * The frame interval is included because a message is not acted on until the
+   * next rendered frame, on both machines — on a struggling client that term is
+   * larger than the network hop, and leaving it out is what made matches crawl.
+   */
   private localInputDelay(kind: TransportKind): number {
-    const suggested = this.client?.suggestedInputDelay() ?? 3;
-    // A direct link carries a frame one way rather than via the server, so it
-    // needs roughly half the cover.
-    return kind === 'p2p' ? Math.max(2, Math.ceil(suggested / 2)) : suggested;
+    const frameIntervalMs = 1000 / Math.max(1, this.game.loop.actualFps);
+    return this.client?.suggestedInputDelay({ direct: kind === 'p2p', frameIntervalMs }) ?? 4;
   }
 
   /** Both the server's go-ahead and the agreed transport are needed to start. */

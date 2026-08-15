@@ -122,23 +122,44 @@ export class OnlineClient implements Transport {
   }
 
   /**
-   * Input delay in ticks, derived from the measured round trip.
+   * Input delay in ticks, sized for the whole path a frame travels.
    *
-   * A frame has to reach the other player before the tick it applies to, and
-   * traffic is relayed rather than sent peer to peer — so the path is
-   * `me -> server -> them`, not `me -> them`. For two players with similar
-   * latency to the server that path costs about a full round trip to the server,
-   * which is what `roundTripMs` measures. Treating it as half a round trip, as if
-   * the connection were direct, undersizes the delay by roughly two and shows up
-   * as avoidable stalls.
+   * Lockstep advances at most `inputDelay` ticks per round trip, so the delay has
+   * to cover the *end-to-end* time between one client sampling a button and the
+   * other having that frame in hand. Three things contribute:
    *
-   * One extra tick covers jitter. Clamped so the delay never becomes unplayable
-   * or pointlessly tight.
+   * - the network hop, which for a relayed match is about a full round trip to
+   *   the server (`me -> server -> them`), and much less when the two are direct;
+   * - this client's frame interval, because an arriving message is not acted on
+   *   until the next rendered frame;
+   * - the opponent's frame interval, for the same reason.
+   *
+   * The frame-rate terms are easy to forget and can dominate. Measured with two
+   * browsers sharing one machine at 18 fps, they added 110 ms — more than a
+   * transatlantic round trip — while the delay was sized at 50 ms from the
+   * network alone. The result was three ticks of progress per second-long round
+   * trip, which reads as a frozen game rather than a laggy one.
+   *
+   * `frameIntervalMs` is the caller's measured frame time; the fallback assumes a
+   * healthy 60 Hz.
    */
-  suggestedInputDelay(min = 2, max = 6): number {
-    if (this.roundTripMs === null) return min + 1;
-    const relayTicks = Math.ceil(this.roundTripMs / (1000 / 60));
-    return Math.min(max, Math.max(min, relayTicks + 1));
+  suggestedInputDelay(options: {
+    direct?: boolean;
+    frameIntervalMs?: number;
+    min?: number;
+    max?: number;
+  } = {}): number {
+    const { direct = false, frameIntervalMs = 1000 / 60, min = 2, max = 12 } = options;
+
+    // A direct link is not the relayed path, but it is not free either; without a
+    // peer-to-peer measurement, a quarter of the server round trip is a
+    // conservative stand-in.
+    const networkMs = this.roundTripMs === null ? 50 : direct ? this.roundTripMs / 4 : this.roundTripMs;
+    // Both ends wait for their next frame before acting on what arrived.
+    const renderMs = 2 * Math.max(1000 / 60, frameIntervalMs);
+
+    const ticks = Math.ceil((networkMs + renderMs) / (1000 / 60));
+    return Math.min(max, Math.max(min, ticks + 1));
   }
 
   createRoom(): void { this.sendMessage({ t: 'createRoom' }); }
