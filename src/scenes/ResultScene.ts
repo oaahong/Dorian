@@ -37,7 +37,7 @@ export class ResultScene extends Phaser.Scene {
     if(code==='ArrowUp'||code==='KeyW'){this.index=(this.index+2)%3;AudioManager.play('menu');this.refresh();}
     else if(code==='ArrowDown'||code==='KeyS'){this.index=(this.index+1)%3;AudioManager.play('menu');this.refresh();}
     else if(code==='Enter'||code==='KeyF'||code==='KeyJ'||code==='Space'){AudioManager.play('menu');
-      if(this.index===0){gameState.resetMatch();gameState.randomizeStage();this.scene.start('VsScene');}
+      if(this.index===0){gameState.resetMatch();gameState.rollMatchSetup();this.scene.start('VsScene');}
       else if(this.index===1){gameState.resetMatch();this.scene.start('CharacterSelectScene');}
       else{gameState.resetMatch();this.scene.start('ModeSelectScene');}
     } else if(code==='KeyM') AudioManager.toggleMute();

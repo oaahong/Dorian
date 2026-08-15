@@ -110,6 +110,66 @@ test('both players can walk with their own keys in 2P mode', async ({ page }) =>
   expect(during.p2.x, 'P2 should have moved left').toBeLessThan(before.p2.x);
 });
 
+test('an attack that connects actually deals damage', async ({ page }) => {
+  /**
+   * The end-to-end proof that the whole pipeline is wired: keyboard sampling ->
+   * fixed-timestep stepWorld -> hit resolution -> state the view and HUD read.
+   * Every layer can look healthy in isolation while the seam between two of them
+   * is dead, and this is the test that would notice.
+   */
+  await page.goto('/');
+  await startVersusBattle(page);
+  await waitForFightPhase(page);
+
+  // Walk P1 into P2, then swing repeatedly.
+  await page.keyboard.down('d');
+  await page.waitForTimeout(1200);
+  await page.keyboard.up('d');
+
+  for (let i = 0; i < 8; i += 1) {
+    await page.keyboard.press('f');
+    await page.waitForTimeout(250);
+  }
+
+  const battle = await readBattle(page);
+  expect(battle.p2.hp).toBeLessThan(100);
+  expect(battle.tick).toBeGreaterThan(0);
+
+  // The HUD is a separate consumer of the same state, so it can go stale without
+  // any simulation test noticing. Compare what is actually drawn.
+  const hud = await page.evaluate(() => {
+    const scene = window.__MEME_CAT_GAME__!.scene.getScene('BattleScene') as unknown as {
+      world: { fighters: [{ energy: number }, { energy: number }] };
+      children: { list: { type: string; text?: string }[] };
+    };
+    return {
+      energies: [scene.world.fighters[0].energy, scene.world.fighters[1].energy],
+      meters: scene.children.list
+        .filter((o) => o.type === 'Text' && o.text?.startsWith('MEME'))
+        .map((o) => o.text!),
+    };
+  });
+
+  expect(hud.energies[0]).toBeGreaterThan(0);
+  expect(hud.meters).toEqual([`MEME ${hud.energies[0]}`, `MEME ${hud.energies[1]}`]);
+});
+
+test('the simulation advances at roughly 60 ticks per second', async ({ page }) => {
+  // A fixed timestep is the premise of the whole netcode plan; if the accumulator
+  // is wrong the game still looks fine but runs at the wrong speed.
+  await page.goto('/');
+  await startVersusBattle(page);
+  await waitForFightPhase(page);
+
+  const before = await readBattle(page);
+  await page.waitForTimeout(2000);
+  const after = await readBattle(page);
+
+  const ticksElapsed = after.tick - before.tick;
+  expect(ticksElapsed).toBeGreaterThan(100); // >= ~50 ticks/s
+  expect(ticksElapsed).toBeLessThan(140); // <= ~70 ticks/s
+});
+
 test('space works as a confirm key on the title screen', async ({ page }) => {
   // Space is in Phaser's capture list; captured keys must still reach the game.
   await page.goto('/');

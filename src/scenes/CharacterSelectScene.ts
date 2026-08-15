@@ -226,10 +226,9 @@ export class CharacterSelectScene extends Phaser.Scene {
     gameState.data.p1Character = FIGHTERS[this.p1.index]!.id;
 
     if (gameState.data.mode === 'cpu') {
-      const candidates = FIGHTERS.filter((_, i) => i !== this.p1.index);
-      const cpu = candidates[Math.floor(Math.random() * candidates.length)] ?? FIGHTERS[(this.p1.index + 1) % FIGHTERS.length]!;
-      gameState.data.p2Character = cpu.id;
-      this.p2.index = FIGHTERS.findIndex((fighter) => fighter.id === cpu.id);
+      const cpuId = gameState.pickCpuOpponent(this.p1.index);
+      gameState.data.p2Character = cpuId;
+      this.p2.index = FIGHTERS.findIndex((fighter) => fighter.id === cpuId);
       this.p2.locked = true;
     }
   }
@@ -245,7 +244,7 @@ export class CharacterSelectScene extends Phaser.Scene {
     this.leaving = true;
     this.inputLockedUntil = Number.POSITIVE_INFINITY;
     gameState.resetMatch();
-    gameState.randomizeStage();
+    gameState.rollMatchSetup();
     this.cameras.main.flash(100, 255, 255, 255);
     this.time.delayedCall(340, () => this.scene.start('VsScene'));
   }

@@ -1,218 +1,187 @@
 import * as Phaser from 'phaser';
-import { Fighter } from '../fighters/Fighter';
-import { getFighterConfig } from '../fighters/fighterData';
-import { PlayerController } from '../controllers/PlayerController';
-import { CPUController } from '../controllers/CPUController';
-import type { Controller } from '../controllers/Controller';
-import { EMPTY_INTENT } from '../controllers/Controller';
-import { CombatSystem } from '../combat/CombatSystem';
-import { VFXManager } from '../systems/VFXManager';
+import { BattleView } from '../render/BattleView';
+import { KeyboardSampler } from '../render/KeyboardSampler';
+import { CpuBrain } from '../sim/cpu';
+import { ENDING_TICKS, TICK_MS } from '../sim/constants';
+import { EMPTY_INPUT, type InputFrame } from '../sim/input';
+import { createRng } from '../sim/rng';
+import { createWorld, stepWorld } from '../sim/world';
+import type { SimEvent, SimWorld } from '../sim/types';
 import { AudioManager } from '../systems/AudioManager';
 import { gameState } from '../systems/GameState';
-import { StageRenderer } from '../stages/StageRenderer';
-import { BattleHUD } from '../ui/BattleHUD';
-import { ARENA_MAX_X, ARENA_MIN_X, COLORS, FONT_FAMILY, GAME_HEIGHT, GAME_WIDTH, ROUND_TIME_MS } from '../utils/constants';
+import { COLORS, FONT_FAMILY, GAME_HEIGHT, GAME_WIDTH } from '../utils/constants';
+
+/**
+ * Owns the simulation and drives it on a fixed timestep.
+ *
+ * The scene no longer contains any gameplay logic — it samples input, advances
+ * `stepWorld` a whole number of ticks, and hands the resulting state and events
+ * to the view. That separation is what makes lockstep possible: replacing the
+ * local input source with one fed from the network is the only change needed.
+ */
+
+/**
+ * Cap on how much time a single frame may contribute. Without it, returning to a
+ * backgrounded tab would try to catch up thousands of ticks in one frame and
+ * lock the page up.
+ */
+const MAX_CATCHUP_MS = 250;
 
 export class BattleScene extends Phaser.Scene {
-  private world!: Phaser.GameObjects.Container;
-  private p1!: Fighter;
-  private p2!: Fighter;
-  private p1Controller!: Controller;
-  private p2Controller!: Controller;
-  private combat!: CombatSystem;
-  private vfx!: VFXManager;
-  private hud!: BattleHUD;
-  private roundTimeMs = ROUND_TIME_MS;
-  private roundNumber = 1;
-  private phase: 'intro' | 'fight' | 'ending' = 'intro';
-  private hitStopMs = 0;
+  private world!: SimWorld;
+  private view!: BattleView;
+  private p1Input!: KeyboardSampler;
+  private p2Input: KeyboardSampler | null = null;
+  private cpu: CpuBrain | null = null;
+
+  private accumulator = 0;
+  private pendingEvents: SimEvent[] = [];
   private paused = false;
   private pausePanel!: Phaser.GameObjects.Container;
-  private debugEnabled = false;
-  private debugGraphics!: Phaser.GameObjects.Graphics;
-  private debugText!: Phaser.GameObjects.Text;
-  private roundToken = 0;
+  private leaving = false;
 
-  constructor() { super('BattleScene'); }
+  private debugEnabled = false;
+  private debugText!: Phaser.GameObjects.Text;
+
+  constructor() {
+    super('BattleScene');
+  }
 
   create(): void {
-    this.roundTimeMs = ROUND_TIME_MS;
-    this.roundNumber = 1;
-    this.phase = 'intro';
-    this.hitStopMs = 0;
+    this.accumulator = 0;
+    this.pendingEvents = [];
     this.paused = false;
+    this.leaving = false;
     this.debugEnabled = false;
-    this.roundToken = 0;
-    this.cameras.main.setBackgroundColor(COLORS.bg);
-    this.world = this.add.container(0, 0);
-    StageRenderer.render(this, this.world, gameState.data.stage);
 
-    const p1Config = getFighterConfig(gameState.data.p1Character);
-    const p2Config = getFighterConfig(gameState.data.p2Character);
-    this.p1 = new Fighter(this, p1Config, 1, 350, 1);
-    this.p2 = new Fighter(this, p2Config, 2, 930, -1);
-    this.world.add([this.p1.sprite, this.p2.sprite]);
+    const versusCpu = gameState.data.mode === 'cpu';
+    this.world = createWorld({
+      seed: gameState.data.seed,
+      p1Character: gameState.data.p1Character,
+      p2Character: gameState.data.p2Character,
+      stage: gameState.data.stage,
+    });
 
-    this.vfx = new VFXManager(this, this.world);
-    this.combat = new CombatSystem(this, this.vfx, this.world, (ms) => { this.hitStopMs = Math.max(this.hitStopMs, ms); });
-    this.p1Controller = new PlayerController(this, 1);
-    this.p2Controller = gameState.data.mode === 'cpu'
-      ? new CPUController(this.p2, this.p1, gameState.data.difficulty)
-      : new PlayerController(this, 2);
-    this.hud = new BattleHUD(this, this.p1, this.p2, gameState.data.mode === 'cpu' ? 'CPU' : 'P2');
+    this.view = new BattleView(this, this.world, versusCpu ? 'CPU' : 'P2');
+    this.p1Input = new KeyboardSampler(this, 1);
+    if (versusCpu) {
+      // Seeded from the match seed so a 1P match is reproducible too.
+      this.cpu = new CpuBrain(1, gameState.data.difficulty, createRng(gameState.data.seed ^ 0x5f5f));
+    } else {
+      this.p2Input = new KeyboardSampler(this, 2);
+    }
 
-    this.debugGraphics = this.add.graphics().setDepth(1400).setVisible(false);
-    this.debugText = this.add.text(16, 116, '', { fontFamily:'monospace', fontSize:'14px', color:'#7CFF00', backgroundColor:'#000000aa', padding:{x:6,y:5} }).setDepth(1401).setVisible(false);
+    this.debugText = this.add
+      .text(16, 116, '', {
+        fontFamily: 'monospace', fontSize: '14px', color: '#7CFF00',
+        backgroundColor: '#000000aa', padding: { x: 6, y: 5 },
+      })
+      .setDepth(1401)
+      .setVisible(false);
+
     this.createPausePanel();
     this.bindGlobalKeys();
-    this.beginRound();
   }
 
-  update(time: number, delta: number): void {
-    if (this.paused) return;
-    const dt = Math.min(delta, 34);
+  update(_time: number, delta: number): void {
+    if (this.paused || this.leaving) return;
 
-    if (this.hitStopMs > 0) {
-      this.hitStopMs -= dt;
-      this.hud.update(this.p1, this.p2, this.roundTimeMs, gameState.data.p1RoundWins, gameState.data.p2RoundWins);
-      this.drawDebug();
-      return;
+    this.accumulator += Math.min(delta, MAX_CATCHUP_MS);
+    while (this.accumulator >= TICK_MS) {
+      this.accumulator -= TICK_MS;
+      const inputs = this.sampleInputs();
+      const events = stepWorld(this.world, inputs);
+      for (const event of events) this.pendingEvents.push(event);
     }
 
-    if (this.phase === 'fight') {
-      const p1Intent = this.p1Controller.update(time);
-      const p2Intent = this.p2Controller.update(time);
-      this.p1.update(dt, p1Intent, this.p2, time, true);
-      this.p2.update(dt, p2Intent, this.p1, time, true);
-      this.resolvePushCollision();
-      this.combat.update(dt, time, this.p1, this.p2);
-      this.roundTimeMs = Math.max(0, this.roundTimeMs - dt);
-
-      if (this.p1.hp <= 0 || this.p2.hp <= 0) {
-        const winner: 0 | 1 | 2 = this.p1.hp <= 0 && this.p2.hp <= 0 ? 0 : this.p1.hp <= 0 ? 2 : 1;
-        this.endRound(winner, 'KO');
-      } else if (this.roundTimeMs <= 0) {
-        const diff = this.p1.hp - this.p2.hp;
-        this.endRound(Math.abs(diff) < .01 ? 0 : diff > 0 ? 1 : 2, 'TIME');
-      }
-    } else {
-      this.p1.update(dt, EMPTY_INTENT, this.p2, time, false);
-      this.p2.update(dt, EMPTY_INTENT, this.p1, time, false);
-      this.resolvePushCollision();
-    }
-
-    this.hud.update(this.p1, this.p2, this.roundTimeMs, gameState.data.p1RoundWins, gameState.data.p2RoundWins);
+    this.view.render(this.world, this.pendingEvents);
+    this.pendingEvents.length = 0;
     this.drawDebug();
+    this.checkMatchOver();
   }
 
-  private beginRound(): void {
-    this.roundToken += 1;
-    const token = this.roundToken;
-    this.phase = 'intro';
-    this.roundTimeMs = ROUND_TIME_MS;
-    this.hitStopMs = 0;
-    this.combat.clear();
-    this.p1Controller.reset(); this.p2Controller.reset();
-    this.p1.reset(350, 1); this.p2.reset(930, -1);
-    this.announce(`ROUND ${this.roundNumber}`, COLORS.cream, 58, 520);
-    this.time.delayedCall(620, () => {
-      if (token !== this.roundToken) return;
-      this.announce('CAT FIGHT!', COLORS.red, 72, 440);
-      AudioManager.play('heavy');
-      this.vfx.flash(COLORS.white, .2, 70);
-    });
-    this.time.delayedCall(1120, () => {
-      if (token !== this.roundToken) return;
-      this.phase = 'fight';
-    });
+  private sampleInputs(): [InputFrame, InputFrame] {
+    const p1 = this.p1Input.sample();
+    if (this.cpu) return [p1, this.cpu.decide(this.world)];
+    return [p1, this.p2Input?.sample() ?? EMPTY_INPUT];
   }
 
-  private endRound(winner: 0 | 1 | 2, reason: 'KO' | 'TIME'): void {
-    if (this.phase !== 'fight') return;
-    this.phase = 'ending';
-    this.roundToken += 1;
-    if (winner === 1) gameState.data.p1RoundWins += 1;
-    else if (winner === 2) gameState.data.p2RoundWins += 1;
+  /**
+   * The simulation reports the winner as soon as the deciding round ends, then
+   * keeps stepping through the wind-down so the K.O. animation plays out.
+   */
+  private checkMatchOver(): void {
+    if (this.leaving || this.world.matchWinner === null) return;
+    if (this.world.phase !== 'ending' || this.world.phaseTicks + 1 < ENDING_TICKS) return;
 
-    if (reason === 'KO') {
-      AudioManager.play('ko');
-      this.vfx.hitSpark(winner === 1 ? this.p2.x : this.p1.x, (winner === 1 ? this.p2.y : this.p1.y) - 115, true, COLORS.red);
-      this.vfx.flash(COLORS.white, .72, 110);
-      this.vfx.shake(.018, 380);
-      this.announce('K.O.', COLORS.red, 110, 900);
-    } else this.announce(winner === 0 ? 'DRAW' : 'TIME!', winner === 0 ? COLORS.cream : COLORS.gold, 76, 850);
-
-    if (winner === 1) {
-      this.p1.forceVictory();
-      if (reason === 'TIME') this.p2.forceKO();
-    } else if (winner === 2) {
-      this.p2.forceVictory();
-      if (reason === 'TIME') this.p1.forceKO();
-    }
-
-    const matchOver = gameState.data.p1RoundWins >= 2 || gameState.data.p2RoundWins >= 2;
-    this.time.delayedCall(2350, () => {
-      if (matchOver) {
-        gameState.data.matchWinner = gameState.data.p1RoundWins >= 2 ? 1 : 2;
-        this.scene.start('ResultScene');
-      } else {
-        this.roundNumber += 1;
-        this.beginRound();
-      }
-    });
-  }
-
-  private resolvePushCollision(): void {
-    if (this.p1.isAirborne || this.p2.isAirborne) return;
-    const dx = this.p2.x - this.p1.x;
-    const minDistance = 86;
-    if (Math.abs(dx) >= minDistance || Math.abs(dx) < .01) return;
-    const direction = dx >= 0 ? 1 : -1;
-    const overlap = minDistance - Math.abs(dx);
-    this.p1.x = Phaser.Math.Clamp(this.p1.x - direction * overlap * .5, ARENA_MIN_X, ARENA_MAX_X);
-    this.p2.x = Phaser.Math.Clamp(this.p2.x + direction * overlap * .5, ARENA_MIN_X, ARENA_MAX_X);
-  }
-
-  private announce(text: string, color: number, size: number, duration: number): void {
-    const label = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 30, text, {
-      fontFamily:FONT_FAMILY, fontSize:`${size}px`, color:`#${color.toString(16).padStart(6,'0')}`, stroke:'#050505', strokeThickness:12,
-    }).setOrigin(.5).setDepth(1300).setScale(.4).setAlpha(0);
-    this.tweens.add({ targets:label, alpha:1, scale:1, duration:110, ease:'Back.easeOut', hold:Math.max(80,duration-220), yoyo:true, onComplete:()=>label.destroy() });
+    this.leaving = true;
+    gameState.data.p1RoundWins = this.world.roundWins[0];
+    gameState.data.p2RoundWins = this.world.roundWins[1];
+    gameState.data.matchWinner = this.world.matchWinner === 0 ? 1 : 2;
+    this.scene.start('ResultScene');
   }
 
   private createPausePanel(): void {
-    const shade = this.add.rectangle(GAME_WIDTH/2,GAME_HEIGHT/2,GAME_WIDTH,GAME_HEIGHT,0x000000,.78);
-    const title = this.add.text(GAME_WIDTH/2,300,'PAUSED',{fontFamily:FONT_FAMILY,fontSize:'68px',color:'#E9B928',stroke:'#050505',strokeThickness:9}).setOrigin(.5);
-    const help = this.add.text(GAME_WIDTH/2,390,'ESC  RESUME\nQ  MAIN MENU',{fontFamily:FONT_FAMILY,fontSize:'24px',color:'#F3E9D0',align:'center',lineSpacing:12}).setOrigin(.5);
-    this.pausePanel=this.add.container(0,0,[shade,title,help]).setDepth(2000).setVisible(false);
+    const shade = this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x000000, .78);
+    const title = this.add.text(GAME_WIDTH / 2, 300, 'PAUSED', { fontFamily: FONT_FAMILY, fontSize: '68px', color: '#E9B928', stroke: '#050505', strokeThickness: 9 }).setOrigin(.5);
+    const help = this.add.text(GAME_WIDTH / 2, 390, 'ESC  RESUME\nQ  MAIN MENU', { fontFamily: FONT_FAMILY, fontSize: '24px', color: '#F3E9D0', align: 'center', lineSpacing: 12 }).setOrigin(.5);
+    this.pausePanel = this.add.container(0, 0, [shade, title, help]).setDepth(2000).setVisible(false);
   }
 
   private bindGlobalKeys(): void {
-    const kb=this.input.keyboard; if(!kb)return;
-    const handler=(event:KeyboardEvent)=>{
-      const code=event.code;
-      if(code==='Escape'){this.paused=!this.paused;this.pausePanel.setVisible(this.paused);AudioManager.play('menu');}
-      else if(code==='KeyQ'&&this.paused){gameState.resetMatch();this.scene.start('ModeSelectScene');}
-      else if(code==='F2'){event.preventDefault();this.debugEnabled=!this.debugEnabled;this.debugGraphics.setVisible(this.debugEnabled);this.debugText.setVisible(this.debugEnabled);}
-      else if(code==='KeyM'){const muted=AudioManager.toggleMute();this.vfx.popup(muted?'MUTED':'SOUND ON',GAME_WIDTH/2,120,COLORS.cream,20);}
+    const keyboard = this.input.keyboard;
+    if (!keyboard) return;
+
+    const handler = (event: KeyboardEvent) => {
+      switch (event.code) {
+        case 'Escape':
+          this.paused = !this.paused;
+          this.pausePanel.setVisible(this.paused);
+          // Drop the accumulator and any latched keys so resuming does not
+          // replay the pause keypress or fast-forward through the pause.
+          this.accumulator = 0;
+          this.p1Input.reset();
+          this.p2Input?.reset();
+          AudioManager.play('menu');
+          break;
+        case 'KeyQ':
+          if (!this.paused) break;
+          this.leaving = true;
+          gameState.resetMatch();
+          this.scene.start('ModeSelectScene');
+          break;
+        case 'F2':
+          event.preventDefault();
+          this.debugEnabled = !this.debugEnabled;
+          this.debugText.setVisible(this.debugEnabled);
+          break;
+        case 'KeyM': {
+          const muted = AudioManager.toggleMute();
+          this.add.text(GAME_WIDTH / 2, 120, muted ? 'MUTED' : 'SOUND ON', { fontFamily: FONT_FAMILY, fontSize: '20px', color: '#F3E9D0' })
+            .setOrigin(.5).setDepth(1300)
+            .setAlpha(1);
+          break;
+        }
+        default:
+          break;
+      }
     };
-    kb.on('keydown',handler);
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>kb.off('keydown',handler));
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>{this.combat.destroy();this.vfx.destroy();});
+
+    keyboard.on('keydown', handler);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      keyboard.off('keydown', handler);
+      this.view.destroy();
+    });
   }
 
   private drawDebug(): void {
-    if(!this.debugEnabled)return;
-    this.debugGraphics.clear();
-    this.debugGraphics.lineStyle(2,0x00ff66,.9);
-    [this.p1,this.p2].forEach((fighter)=>{
-      const h=fighter.getHurtbox(); this.debugGraphics.strokeRect(h.x,h.y,h.width,h.height);
-      if(fighter.currentAttack&&fighter.attackActive){const a=fighter.getMeleeHitbox(fighter.currentAttack.spec);this.debugGraphics.lineStyle(2,0xff3355,.9);this.debugGraphics.strokeRect(a.x,a.y,a.width,a.height);this.debugGraphics.lineStyle(2,0x00ff66,.9);}
-    });
+    if (!this.debugEnabled) return;
+    const [p1, p2] = this.world.fighters;
     this.debugText.setText([
-      `FPS ${this.game.loop.actualFps.toFixed(1)}  PHASE ${this.phase}  STAGE ${gameState.data.stage}`,
-      `P1 ${this.p1.state} HP=${this.p1.hp.toFixed(1)} E=${this.p1.memeEnergy.toFixed(0)} CD=${Math.max(0,this.p1.nextSpecialAt-this.time.now).toFixed(0)}ms`,
-      `P2 ${this.p2.state} HP=${this.p2.hp.toFixed(1)} E=${this.p2.memeEnergy.toFixed(0)} CD=${Math.max(0,this.p2.nextSpecialAt-this.time.now).toFixed(0)}ms`,
+      `FPS ${this.game.loop.actualFps.toFixed(1)}  TICK ${this.world.tick}  PHASE ${this.world.phase}  STAGE ${this.world.stage}`,
+      `HITSTOP ${this.world.hitStopTicks}  PROJ ${this.world.projectiles.length}  ZONES ${this.world.zones.length}`,
+      `P1 ${p1.state} HP=${p1.hp.toFixed(1)} E=${p1.energy.toFixed(0)} CD=${Math.max(0, p1.nextSpecialTick - this.world.tick).toFixed(0)}t`,
+      `P2 ${p2.state} HP=${p2.hp.toFixed(1)} E=${p2.energy.toFixed(0)} CD=${Math.max(0, p2.nextSpecialTick - this.world.tick).toFixed(0)}t`,
     ]);
   }
 }

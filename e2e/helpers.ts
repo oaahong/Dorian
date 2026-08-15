@@ -78,34 +78,61 @@ export async function startVersusBattle(page: Page): Promise<void> {
 /** A read-only view of the live battle, for assertions. */
 export interface BattleProbe {
   phase: string;
+  tick: number;
   p1: { x: number; hp: number; state: string };
   p2: { x: number; hp: number; state: string };
 }
 
 /**
- * BattleScene ignores input during its ~1.12 s `intro` phase, so any test that
+ * Shape of the simulation state BattleScene owns. Declared here rather than
+ * imported so the e2e specs stay decoupled from the simulation's own types —
+ * these run against the built bundle, where nothing is importable anyway.
+ */
+interface BattleSceneProbe {
+  world?: {
+    phase: string;
+    tick: number;
+    fighters: [
+      { x: number; hp: number; state: string },
+      { x: number; hp: number; state: string },
+    ];
+  };
+}
+
+/**
+ * The simulation ignores input during its ~1.12 s `intro` phase, so any test that
  * presses a gameplay key must wait for `fight` first or the press is swallowed.
  */
 export async function waitForFightPhase(page: Page): Promise<void> {
   await page.waitForFunction(
     () => {
       const battle = window.__MEME_CAT_GAME__?.scene.getScene('BattleScene');
-      return (battle as unknown as { phase?: string } | null)?.phase === 'fight';
+      return (battle as unknown as BattleSceneProbe | null)?.world?.phase === 'fight';
     },
     undefined,
     { timeout: 20_000 },
   );
 }
 
-/** Read fighter positions and states out of the running BattleScene. */
+/** Read fighter positions and states out of the running simulation. */
 export async function readBattle(page: Page): Promise<BattleProbe> {
   return page.evaluate(() => {
     const battle = window.__MEME_CAT_GAME__!.scene.getScene('BattleScene') as unknown as {
-      phase: string;
-      p1: { x: number; hp: number; state: string };
-      p2: { x: number; hp: number; state: string };
+      world: {
+        phase: string;
+        tick: number;
+        fighters: [
+          { x: number; hp: number; state: string },
+          { x: number; hp: number; state: string },
+        ];
+      };
     };
     const snapshot = (f: { x: number; hp: number; state: string }) => ({ x: f.x, hp: f.hp, state: f.state });
-    return { phase: battle.phase, p1: snapshot(battle.p1), p2: snapshot(battle.p2) };
+    return {
+      phase: battle.world.phase,
+      tick: battle.world.tick,
+      p1: snapshot(battle.world.fighters[0]),
+      p2: snapshot(battle.world.fighters[1]),
+    };
   });
 }
