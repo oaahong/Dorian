@@ -64,7 +64,9 @@ export async function startVersusBattle(page: Page): Promise<void> {
   await page.keyboard.press('Space');
   await waitForScene(page, 'ModeSelectScene');
 
-  await pressAfterInputUnlock(page, 'w');          // toggle from 1P VS CPU to 2P VS P2
+  // 'w' moves up the list, which now wraps to ONLINE VS; 's' steps down to the
+  // second entry.
+  await pressAfterInputUnlock(page, 's');          // 1P VS CPU -> 2P VS P2
   await page.waitForTimeout(120);
   await page.keyboard.press('f');
   await waitForScene(page, 'CharacterSelectScene');

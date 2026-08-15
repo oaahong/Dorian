@@ -2,6 +2,7 @@ import * as Phaser from 'phaser';
 import { GAME_HEIGHT, GAME_WIDTH } from './utils/constants';
 import { BootScene } from './scenes/BootScene';
 import { TitleScene } from './scenes/TitleScene';
+import { OnlineLobbyScene } from './scenes/OnlineLobbyScene';
 import { ModeSelectScene } from './scenes/ModeSelectScene';
 import { CharacterSelectScene } from './scenes/CharacterSelectScene';
 import { VsScene } from './scenes/VsScene';
@@ -14,7 +15,8 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
   width: GAME_WIDTH,
   height: GAME_HEIGHT,
   backgroundColor: '#050505',
-  scene: [BootScene, TitleScene, ModeSelectScene, CharacterSelectScene, VsScene, BattleScene, ResultScene],
+  scene: [BootScene, TitleScene, ModeSelectScene,
+    OnlineLobbyScene, CharacterSelectScene, VsScene, BattleScene, ResultScene],
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,

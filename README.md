@@ -71,10 +71,29 @@ npm run preview
 - While paused, `Q`: main menu
 - `M`: mute / unmute
 
+## Online Play
+
+```bash
+npm run build          # client bundle
+npm run build:server   # server
+npm run dev:server     # serves both on http://localhost:8080
+```
+
+One process serves the client and the WebSocket on the same origin, so the page
+connects to `/ws` with no configuration. Pick `ONLINE VS`, create a room, and read
+the six-character code to a friend; they choose `ONLINE VS`, press `J`, and type
+it. Both players use the P1 controls on their own keyboard.
+
+Matches run input-delay lockstep: only button state crosses the wire, and both
+clients run the same deterministic simulation. They exchange a checksum every
+second, so a divergence is reported rather than left to show up as two screens
+quietly disagreeing.
+
 ## Game Modes
 
 - `1P VS CPU`: Easy / Normal / Hard finite-state CPU AI
 - `2P VS P2`: two players on one keyboard
+- `ONLINE VS`: two players on different machines, matched by room code
 - Best of 3, 60 seconds per round
 - All fighters always display 100 HP; card HP stat influences identity/balance indirectly rather than changing the visible health maximum
 

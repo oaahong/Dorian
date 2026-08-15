@@ -1,7 +1,7 @@
 import { FIGHTERS } from '../fighters/fighterData';
 import type { CpuDifficulty } from '../sim/cpu';
 
-export type GameMode = 'cpu' | 'pvp';
+export type GameMode = 'cpu' | 'pvp' | 'online';
 export type StageId = 'freezer' | 'magicForest' | 'diningTable';
 export type { CpuDifficulty };
 

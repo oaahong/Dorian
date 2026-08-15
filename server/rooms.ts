@@ -1,5 +1,6 @@
 import { createRng, nextInt, type Rng } from '../src/sim/rng';
 import type { ErrorCode } from '../src/net/protocol';
+import { ROOM_CODE_ALPHABET, ROOM_CODE_LENGTH } from '../src/net/roomCode';
 
 /**
  * Room bookkeeping, as pure functions over an explicit registry.
@@ -14,9 +15,7 @@ import type { ErrorCode } from '../src/net/protocol';
  * auto-stopped: see fly.toml.
  */
 
-/** No 0/O or 1/I/L — codes get read out over voice chat. */
-export const ROOM_CODE_ALPHABET = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
-export const ROOM_CODE_LENGTH = 6;
+export { ROOM_CODE_ALPHABET, ROOM_CODE_LENGTH } from '../src/net/roomCode';
 export const ROOM_TTL_MS = 30 * 60 * 1000;
 
 const STAGES = ['freezer', 'magicForest', 'diningTable'];

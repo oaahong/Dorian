@@ -1,0 +1,32 @@
+app = "meme-cat-fighter"
+primary_region = "nrt"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+
+  # Rooms live in this process's memory. An autoscaled second machine would put
+  # the two players of a room on different boxes, and a stopped machine would
+  # drop every room it was holding — so exactly one machine, always running.
+  auto_stop_machines = false
+  auto_start_machines = false
+  min_machines_running = 1
+
+  [http_service.concurrency]
+    type = "connections"
+    soft_limit = 200
+    hard_limit = 400
+
+[[http_service.checks]]
+  grace_period = "10s"
+  interval = "30s"
+  method = "GET"
+  path = "/healthz"
+  timeout = "5s"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"

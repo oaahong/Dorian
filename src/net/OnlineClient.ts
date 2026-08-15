@@ -42,13 +42,21 @@ export interface OnlineClientEvents {
   onClose?(): void;
 }
 
-/** Minimal shape of a WebSocket, so tests can pass Node's or a fake. */
+/**
+ * Minimal shape of a WebSocket, so this works against the browser's, Node's and a
+ * fake in tests.
+ *
+ * `addEventListener` is typed loosely on purpose: the DOM declaration is a set of
+ * overloads keyed by event name, and no single narrower signature is assignable
+ * from all three implementations.
+ */
 export interface SocketLike {
   readyState: number;
   binaryType: string;
   send(data: string | ArrayBufferView | ArrayBuffer): void;
   close(): void;
-  addEventListener(type: string, handler: (event: never) => void): void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  addEventListener(type: string, handler: (event: any) => void): void;
 }
 
 const OPEN = 1;
@@ -73,11 +81,11 @@ export class OnlineClient implements Transport {
     private readonly now: () => number = () => Date.now(),
   ) {
     this.socket.binaryType = 'arraybuffer';
-    this.socket.addEventListener('message', ((event: MessageEvent) => this.receive(event.data)) as never);
-    this.socket.addEventListener('close', (() => {
+    this.socket.addEventListener('message', (event: { data: unknown }) => this.receive(event.data));
+    this.socket.addEventListener('close', () => {
       this.stopPinging();
       this.events.onClose?.();
-    }) as never);
+    });
   }
 
   /** Open a connection to the server this page was served from. */

@@ -22,8 +22,11 @@ export default defineConfig({
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
   ],
   webServer: {
-    // Test the production bundle — that is what gets deployed.
-    command: 'npm run build && npm run preview',
+    // The real deployment artifact: one Node process serving the built client and
+    // the WebSocket on the same origin. Using `vite preview` here would test a
+    // server that does not exist in production and has no socket at all, so the
+    // online tests could not run.
+    command: `npm run build && npm run build:server && echo '{"type":"commonjs"}' > build/package.json && PORT=${PORT} node build/server/main.js`,
     url: `http://127.0.0.1:${PORT}`,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,

@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "build",
+    // CommonJS output, so Node resolves the extensionless relative imports the
+    // client code uses. Emitting ESM would mean rewriting every import in
+    // src/sim and src/net to carry a .js suffix — churn in the shared code to
+    // suit one of its two consumers.
+    "module": "CommonJS",
+    "moduleResolution": "Node10",
+    "lib": ["ES2022"],
+    "types": ["node"]
+  },
+  "include": ["server/**/*.ts", "src/net/**/*.ts", "src/sim/**/*.ts", "src/fighters/**/*.ts", "src/combat/**/*.ts"],
+  // OnlineClient is browser-only: it reads `location` to derive the socket URL.
+  // The server never loads it, and including it would drag the DOM lib into a
+  // Node build.
+  "exclude": ["**/__tests__/**", "src/net/OnlineClient.ts", "src/net/onlineMatch.ts"]
+}

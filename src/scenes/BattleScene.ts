@@ -2,12 +2,13 @@ import * as Phaser from 'phaser';
 import { BattleView } from '../render/BattleView';
 import { KeyboardSampler } from '../render/KeyboardSampler';
 import { LocalSession } from '../net/LocalSession';
+import { endOnlineMatch, onlineMatch } from '../net/onlineMatch';
 import type { Session } from '../net/Session';
 import { CpuBrain } from '../sim/cpu';
-import { ENDING_TICKS, TICK_MS } from '../sim/constants';
+import { ENDING_TICKS, TICK_HZ, TICK_MS } from '../sim/constants';
 import { EMPTY_INPUT } from '../sim/input';
 import { createRng } from '../sim/rng';
-import { createWorld, stepWorld } from '../sim/world';
+import { checksum, createWorld, stepWorld } from '../sim/world';
 import type { SimEvent, SimWorld } from '../sim/types';
 import { AudioManager } from '../systems/AudioManager';
 import { gameState } from '../systems/GameState';
@@ -29,6 +30,11 @@ import { COLORS, FONT_FAMILY, GAME_HEIGHT, GAME_WIDTH } from '../utils/constants
  */
 const MAX_CATCHUP_MS = 250;
 
+/** Ticks of waiting before the player is told the game is waiting. */
+const STALL_NOTICE_TICKS = 30;
+/** Ticks of waiting before the match is abandoned. */
+const STALL_GIVE_UP_TICKS = 15 * TICK_HZ;
+
 export class BattleScene extends Phaser.Scene {
   private world!: SimWorld;
   private view!: BattleView;
@@ -42,6 +48,9 @@ export class BattleScene extends Phaser.Scene {
   private paused = false;
   private pausePanel!: Phaser.GameObjects.Container;
   private leaving = false;
+
+  private online = false;
+  private statusText!: Phaser.GameObjects.Text;
 
   private debugEnabled = false;
   private debugText!: Phaser.GameObjects.Text;
@@ -58,6 +67,7 @@ export class BattleScene extends Phaser.Scene {
     this.debugEnabled = false;
 
     const versusCpu = gameState.data.mode === 'cpu';
+    this.online = gameState.data.mode === 'online' && onlineMatch.current !== null;
     this.world = createWorld({
       seed: gameState.data.seed,
       p1Character: gameState.data.p1Character,
@@ -65,7 +75,9 @@ export class BattleScene extends Phaser.Scene {
       stage: gameState.data.stage,
     });
 
-    this.view = new BattleView(this, this.world, versusCpu ? 'CPU' : 'P2');
+    this.view = new BattleView(this, this.world, versusCpu ? 'CPU' : this.online ? 'RIVAL' : 'P2');
+    // Online, each player uses the P1 controls on their own keyboard; which
+    // fighter those drive is decided by the seat the server handed out.
     this.p1Input = new KeyboardSampler(this, 1);
     if (versusCpu) {
       // Seeded from the match seed so a 1P match is reproducible too.
@@ -74,11 +86,21 @@ export class BattleScene extends Phaser.Scene {
       this.p2Input = new KeyboardSampler(this, 2);
     }
 
-    // Going online replaces this one object with a LockstepSession fed by a
-    // socket. Nothing else in the scene changes.
-    this.session = new LocalSession(() =>
-      this.cpu ? this.cpu.decide(this.world) : this.p2Input?.sample() ?? EMPTY_INPUT,
-    );
+    // The one seam between local and online play.
+    this.session = this.online
+      ? onlineMatch.current!.session
+      : new LocalSession(() =>
+          this.cpu ? this.cpu.decide(this.world) : this.p2Input?.sample() ?? EMPTY_INPUT,
+        );
+
+    this.statusText = this.add
+      .text(GAME_WIDTH / 2, 300, '', {
+        fontFamily: FONT_FAMILY, fontSize: '34px', color: '#F3E9D0',
+        backgroundColor: '#050505cc', padding: { x: 20, y: 12 }, align: 'center',
+      })
+      .setOrigin(.5)
+      .setDepth(1500)
+      .setVisible(false);
 
     this.debugText = this.add
       .text(16, 116, '', {
@@ -108,12 +130,52 @@ export class BattleScene extends Phaser.Scene {
       this.accumulator -= TICK_MS;
       const events = stepWorld(this.world, inputs);
       for (const event of events) this.pendingEvents.push(event);
+
+      // Exchanged once a second. Cheap, and the only way a divergence gets
+      // reported before the two screens visibly disagree.
+      if (this.online && this.world.tick % TICK_HZ === 0) {
+        onlineMatch.current!.session.recordChecksum(this.world.tick, checksum(this.world));
+      }
     }
 
     this.view.render(this.world, this.pendingEvents);
     this.pendingEvents.length = 0;
     this.drawDebug();
+    this.updateConnectionStatus();
     this.checkMatchOver();
+  }
+
+  /**
+   * Surface what the session is doing, since online the simulation can legitimately
+   * stop for reasons the player cannot see.
+   */
+  private updateConnectionStatus(): void {
+    if (!this.online) return;
+    const session = onlineMatch.current!.session;
+
+    let text = '';
+    if (session.status === 'desync') {
+      text = 'DESYNC\nTHE TWO GAMES DISAGREED';
+    } else if (session.status === 'disconnected') {
+      text = 'DISCONNECTED';
+    } else if (session.stalledTicks > STALL_NOTICE_TICKS) {
+      text = 'WAITING FOR OPPONENT...';
+    }
+
+    this.statusText.setVisible(text !== '').setText(text);
+
+    // Give up rather than hanging on a connection that is not coming back.
+    if (session.stalledTicks > STALL_GIVE_UP_TICKS || session.status === 'desync') {
+      this.leaveOnline();
+    }
+  }
+
+  private leaveOnline(): void {
+    if (this.leaving) return;
+    this.leaving = true;
+    endOnlineMatch();
+    gameState.resetMatch();
+    this.scene.start('ModeSelectScene');
   }
 
   /**
@@ -125,6 +187,7 @@ export class BattleScene extends Phaser.Scene {
     if (this.world.phase !== 'ending' || this.world.phaseTicks + 1 < ENDING_TICKS) return;
 
     this.leaving = true;
+    if (this.online) endOnlineMatch();
     gameState.data.p1RoundWins = this.world.roundWins[0];
     gameState.data.p2RoundWins = this.world.roundWins[1];
     gameState.data.matchWinner = this.world.matchWinner === 0 ? 1 : 2;
@@ -145,6 +208,9 @@ export class BattleScene extends Phaser.Scene {
     const handler = (event: KeyboardEvent) => {
       switch (event.code) {
         case 'Escape':
+          // Pausing online would stall the opponent indefinitely, so it leaves
+          // the match instead.
+          if (this.online) { this.leaveOnline(); break; }
           this.paused = !this.paused;
           this.pausePanel.setVisible(this.paused);
           // Drop the accumulator and any latched keys so resuming does not

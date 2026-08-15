@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import { getFighterConfig } from '../fighters/fighterData';
 import { gameState } from '../systems/GameState';
+import { endOnlineMatch } from '../net/onlineMatch';
 import { SpriteExtractor } from '../systems/SpriteExtractor';
 import { COLORS, FONT_FAMILY, GAME_WIDTH } from '../utils/constants';
 import { AudioManager } from '../systems/AudioManager';
@@ -9,6 +10,7 @@ export class ResultScene extends Phaser.Scene {
   private index = 0;
   private options: Phaser.GameObjects.Text[] = [];
   private inputLockedUntil = 0;
+  private online = false;
   constructor() { super('ResultScene'); }
   create(): void {
     this.index = 0;
@@ -18,6 +20,9 @@ export class ResultScene extends Phaser.Scene {
     const winner = getFighterConfig(winnerIndex === 1 ? gameState.data.p1Character : gameState.data.p2Character);
     const loser = getFighterConfig(winnerIndex === 1 ? gameState.data.p2Character : gameState.data.p1Character);
     const headline = winnerIndex === 1 ? 'PLAYER 1 WINS' : gameState.data.mode === 'cpu' ? 'CPU WINS' : 'PLAYER 2 WINS';
+    // An online match cannot be replayed locally: both options that would keep
+    // the current setup send the player back to the lobby to agree a new one.
+    this.online = gameState.data.mode === 'online';
     this.add.text(GAME_WIDTH/2, 76, headline, { fontFamily:FONT_FAMILY, fontSize:'58px', color:winnerIndex===1?'#E9B928':'#00C8FF', stroke:'#050505', strokeThickness:9 }).setOrigin(.5);
     this.add.text(GAME_WIDTH/2, 138, winner.ultimate.name + ' ENERGY', { fontFamily:FONT_FAMILY, fontSize:'18px', color:'#F3E9D0' }).setOrigin(.5);
     const winImg = this.add.image(350, 530, SpriteExtractor.textureKey(winner.id,'victory')).setOrigin(.5,1);
@@ -37,9 +42,11 @@ export class ResultScene extends Phaser.Scene {
     if(code==='ArrowUp'||code==='KeyW'){this.index=(this.index+2)%3;AudioManager.play('menu');this.refresh();}
     else if(code==='ArrowDown'||code==='KeyS'){this.index=(this.index+1)%3;AudioManager.play('menu');this.refresh();}
     else if(code==='Enter'||code==='KeyF'||code==='KeyJ'||code==='Space'){AudioManager.play('menu');
-      if(this.index===0){gameState.resetMatch();gameState.rollMatchSetup();this.scene.start('VsScene');}
-      else if(this.index===1){gameState.resetMatch();this.scene.start('CharacterSelectScene');}
-      else{gameState.resetMatch();this.scene.start('ModeSelectScene');}
+      gameState.resetMatch();
+      if(this.online){endOnlineMatch();this.scene.start(this.index===2?'ModeSelectScene':'OnlineLobbyScene');return;}
+      if(this.index===0){gameState.rollMatchSetup();this.scene.start('VsScene');}
+      else if(this.index===1){this.scene.start('CharacterSelectScene');}
+      else{this.scene.start('ModeSelectScene');}
     } else if(code==='KeyM') AudioManager.toggleMute();
   }
   private refresh():void{this.options.forEach((o,i)=>o.setColor(i===this.index?'#E9B928':'#F3E9D0').setScale(i===this.index?1.08:1).setText(`${i===this.index?'▶ ':''}${['REMATCH','CHARACTER SELECT','MAIN MENU'][i]}${i===this.index?' ◀':''}`));}

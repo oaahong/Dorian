@@ -1,3 +1,29 @@
+# v1.3 Online Lobby Input
+
+Two bugs found by the two-browser end-to-end test, both in room-code entry.
+
+**Room codes containing G threw the player out of the lobby.**
+- `G` and `M` were the global "back" and "mute" shortcuts, and both are in the
+  room-code alphabet. Typing a code like `CGHUEN` triggered the shortcut instead
+  of entering the character.
+- While a code is being typed, letters are now text and nothing else. `Escape`
+  still leaves, since it is not a character anyone can need.
+
+**Typed characters were duplicated and reordered.**
+- Phaser's keyboard event stream was observed replaying its queue in this scene:
+  one press arrived as several events, including ones already handled. Pressing
+  `RW96UD` produced `RRWRW9`.
+- Harmless in a menu, where a repeat just re-selects the same entry, and invisible
+  to the battle input sampler, which is idempotent by design. Fatal for typing.
+- The lobby now listens to the DOM directly, which delivers exactly one keydown
+  per press. It deliberately does not call `preventDefault` — that is the v1.2
+  bug — and ignores `event.repeat` so a resting finger cannot add characters.
+
+Regression cover: `e2e/online-match.spec.ts` types a real, server-issued room code
+in a second browser and plays a match through it.
+
+---
+
 # v1.2 Player 2 Arrow Keys Restored
 
 Found on 2026-08-15 while building the end-to-end smoke suite.

@@ -12,7 +12,10 @@
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "verify": "npm run typecheck && npm run test && npm run test:e2e"
+    "verify": "npm run typecheck && npm run test && npm run test:e2e",
+    "build:server": "tsc --project tsconfig.server.json",
+    "dev:server": "npm run build:server && echo '{\"type\":\"commonjs\"}' > build/package.json && node build/server/main.js",
+    "start": "node build/server/main.js"
   },
   "dependencies": {
     "phaser": "^4.2.1",
