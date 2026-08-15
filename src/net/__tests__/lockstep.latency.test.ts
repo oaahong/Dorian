@@ -268,6 +268,26 @@ describe('lockstep over a simulated link', () => {
   });
 });
 
+describe('recovering a lost message', () => {
+  it('survives a drop even when a client is a full delay behind', () => {
+    /**
+     * The window of repeated frames has to be wider than the input delay. A
+     * client may legitimately sit `inputDelay` ticks behind, so a window only
+     * that wide is already sliding past the frames it still needs — and on an
+     * unreliable channel one dropped message then deadlocks the match for good.
+     *
+     * Run with a delay of 8 and 15% loss, which is the shape of the failure seen
+     * on a real deployment: both clients waiting on frames the other had long
+     * since stopped repeating.
+     */
+    const { a, b } = runMatch({ latencyTicks: 3, jitterTicks: 2, lossRate: 0.15, seed: 31 }, 600, 8);
+
+    expect(a.world.tick).toBeGreaterThanOrEqual(600);
+    expect(b.world.tick).toBeGreaterThanOrEqual(600);
+    expectAgreement(a, b);
+  });
+});
+
 describe('a player pressing keys during a stall', () => {
   it('cannot make the two simulations diverge', () => {
     /**

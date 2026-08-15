@@ -145,7 +145,12 @@ export function decodeServerMessage(raw: string): ServerMessage | null {
 const KIND_INPUT = 1;
 const KIND_CHECKSUM = 2;
 
-/** A run of input frames longer than this is nonsense and is rejected. */
+/**
+ * A run of input frames longer than this is nonsense and is rejected.
+ *
+ * The redundancy window scales with the input delay, so this has to stay
+ * comfortably above three times the largest delay the client will ever ask for.
+ */
 export const MAX_INPUT_BATCH = 64;
 
 export interface InputPacket {

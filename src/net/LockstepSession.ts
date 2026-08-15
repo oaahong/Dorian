@@ -22,13 +22,32 @@ export interface LockstepOptions {
   localPlayer: PlayerIndex;
   inputDelay: number;
   transport: Transport;
-  /** How many recent frames to repeat in each message, so a lost one self-heals. */
+  /**
+   * How many recent frames each message repeats. Defaults to three times the
+   * input delay, which is what makes a lost message recoverable — see the note
+   * on the field.
+   */
   redundancy?: number;
   /** Injected so tests can drive the retransmission throttle deterministically. */
   now?: () => number;
 }
 
-const DEFAULT_REDUNDANCY = 8;
+/**
+ * Frames repeated per message, as a multiple of the input delay.
+ *
+ * This has to exceed the delay with room to spare. A client may legitimately be
+ * `inputDelay` ticks behind its opponent, so if the window is only that wide, the
+ * frames it still needs are already sliding out of the opponent's window — and
+ * the channel is deliberately unreliable, so a single dropped message becomes
+ * unrecoverable and the match deadlocks with each side waiting for frames the
+ * other will never send again.
+ *
+ * Setting the window equal to the delay is exactly the trap: it looks like
+ * "enough to cover the delay" and leaves zero margin. Three times costs a few
+ * dozen bytes a message.
+ */
+const REDUNDANCY_PER_DELAY_TICK = 3;
+const MIN_REDUNDANCY = 12;
 
 /**
  * Shortest gap between retransmissions while stalled, in milliseconds.
@@ -72,7 +91,8 @@ export class LockstepSession implements Session {
     this.localPlayer = options.localPlayer;
     this.inputDelay = Math.max(0, Math.floor(options.inputDelay));
     this.transport = options.transport;
-    this.redundancy = options.redundancy ?? DEFAULT_REDUNDANCY;
+    this.redundancy =
+      options.redundancy ?? Math.max(MIN_REDUNDANCY, this.inputDelay * REDUNDANCY_PER_DELAY_TICK);
     this.now = options.now ?? (() => Date.now());
 
     // The opening ticks have no sampled input behind them; both seats are neutral
