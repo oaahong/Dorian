@@ -1,9 +1,11 @@
 import * as Phaser from 'phaser';
 import { BattleView } from '../render/BattleView';
 import { KeyboardSampler } from '../render/KeyboardSampler';
+import { LocalSession } from '../net/LocalSession';
+import type { Session } from '../net/Session';
 import { CpuBrain } from '../sim/cpu';
 import { ENDING_TICKS, TICK_MS } from '../sim/constants';
-import { EMPTY_INPUT, type InputFrame } from '../sim/input';
+import { EMPTY_INPUT } from '../sim/input';
 import { createRng } from '../sim/rng';
 import { createWorld, stepWorld } from '../sim/world';
 import type { SimEvent, SimWorld } from '../sim/types';
@@ -33,6 +35,7 @@ export class BattleScene extends Phaser.Scene {
   private p1Input!: KeyboardSampler;
   private p2Input: KeyboardSampler | null = null;
   private cpu: CpuBrain | null = null;
+  private session!: Session;
 
   private accumulator = 0;
   private pendingEvents: SimEvent[] = [];
@@ -71,6 +74,12 @@ export class BattleScene extends Phaser.Scene {
       this.p2Input = new KeyboardSampler(this, 2);
     }
 
+    // Going online replaces this one object with a LockstepSession fed by a
+    // socket. Nothing else in the scene changes.
+    this.session = new LocalSession(() =>
+      this.cpu ? this.cpu.decide(this.world) : this.p2Input?.sample() ?? EMPTY_INPUT,
+    );
+
     this.debugText = this.add
       .text(16, 116, '', {
         fontFamily: 'monospace', fontSize: '14px', color: '#7CFF00',
@@ -88,8 +97,15 @@ export class BattleScene extends Phaser.Scene {
 
     this.accumulator += Math.min(delta, MAX_CATCHUP_MS);
     while (this.accumulator >= TICK_MS) {
+      const tick = this.world.tick;
+      this.session.submitLocalInput(tick, this.p1Input.sample());
+
+      // Online this returns null while the opponent's frame is in flight; the
+      // simulation must hold rather than guess. Locally it never does.
+      const inputs = this.session.inputsForTick(tick);
+      if (!inputs) break;
+
       this.accumulator -= TICK_MS;
-      const inputs = this.sampleInputs();
       const events = stepWorld(this.world, inputs);
       for (const event of events) this.pendingEvents.push(event);
     }
@@ -98,12 +114,6 @@ export class BattleScene extends Phaser.Scene {
     this.pendingEvents.length = 0;
     this.drawDebug();
     this.checkMatchOver();
-  }
-
-  private sampleInputs(): [InputFrame, InputFrame] {
-    const p1 = this.p1Input.sample();
-    if (this.cpu) return [p1, this.cpu.decide(this.world)];
-    return [p1, this.p2Input?.sample() ?? EMPTY_INPUT];
   }
 
   /**
