@@ -109,6 +109,10 @@ configure — `render.yaml` and `Dockerfile` describe the whole deployment.
 ```bash
 git push                      # then point Render at the repo as a Blueprint
 curl https://<app>/healthz    # should answer "ok"
+
+# The suite can be pointed at a deployed instance, which is the only way to
+# exercise TLS, the wss:// upgrade and NAT traversal across a real network.
+E2E_BASE_URL=https://<app> npm run test:e2e
 ```
 
 `fly.toml` is kept as an alternative. Note that it pins exactly one always-running
