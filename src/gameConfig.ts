@@ -27,7 +27,27 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
     powerPreference: 'high-performance',
   },
   input: {
-    keyboard: true,
+    keyboard: {
+      /**
+       * Stops arrow keys and space from scrolling the page.
+       *
+       * This must go through Phaser's capture list rather than a hand-rolled
+       * `window.addEventListener('keydown', e => e.preventDefault())`. A manual
+       * listener registered before `new Phaser.Game()` runs first, and Phaser's
+       * KeyboardManager drops any event whose `defaultPrevented` is already true
+       * — which silently killed every arrow key and space press in the game,
+       * leaving Player 2 unable to move, jump or crouch. Phaser's own capture
+       * calls `preventDefault` *after* queueing the event, so scrolling is
+       * blocked and the game still receives the key.
+       */
+      capture: [
+        Phaser.Input.Keyboard.KeyCodes.UP,
+        Phaser.Input.Keyboard.KeyCodes.DOWN,
+        Phaser.Input.Keyboard.KeyCodes.LEFT,
+        Phaser.Input.Keyboard.KeyCodes.RIGHT,
+        Phaser.Input.Keyboard.KeyCodes.SPACE,
+      ],
+    },
   },
   autoFocus: true,
 };
