@@ -1,14 +1,30 @@
-export const GAME_WIDTH = 1280;
-export const GAME_HEIGHT = 720;
-export const GROUND_Y = 610;
-export const ARENA_MIN_X = 95;
-export const ARENA_MAX_X = 1185;
-export const ROUND_TIME_MS = 60_000;
-export const GRAVITY = 1750;
-export const JUMP_VELOCITY = -690;
-export const INPUT_BUFFER_MS = 140;
-export const FIGHTER_HURTBOX_WIDTH = 104;
-export const FIGHTER_HURTBOX_HEIGHT = 194;
+/**
+ * Presentation constants, plus a re-export of the gameplay constants.
+ *
+ * Gameplay values now live in `src/sim/constants.ts` so that the simulation has
+ * no dependency on anything under `src/utils`. They are re-exported here so the
+ * Phaser code that has not been migrated yet keeps compiling against its original
+ * import path; new code in `src/sim` and `src/render` should import from
+ * `src/sim/constants` directly.
+ */
+
+export {
+  ARENA_MAX_X,
+  ARENA_MIN_X,
+  ATTACK_MULTIPLIER,
+  CONTROL_RECOVERY_MULTIPLIER,
+  FIGHTER_HURTBOX_HEIGHT,
+  FIGHTER_HURTBOX_WIDTH,
+  GAME_HEIGHT,
+  GAME_WIDTH,
+  GRAVITY,
+  GROUND_Y,
+  INPUT_BUFFER_MS,
+  JUMP_VELOCITY,
+  RANGE_MULTIPLIER,
+  ROUND_TIME_MS,
+  SPEED_BY_STAT,
+} from '../sim/constants';
 
 export const COLORS = {
   bg: 0x050505,
@@ -25,15 +41,3 @@ export const COLORS = {
 };
 
 export const FONT_FAMILY = '"Arial Black", "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif';
-
-export const SPEED_BY_STAT: Record<number, number> = {
-  1: 235,
-  2: 255,
-  3: 280,
-  4: 310,
-  5: 340,
-};
-
-export const ATTACK_MULTIPLIER = (stat: number) => 0.85 + stat * 0.07;
-export const RANGE_MULTIPLIER = (stat: number) => 0.88 + stat * 0.055;
-export const CONTROL_RECOVERY_MULTIPLIER = (stat: number) => 1.05 - stat * 0.025;
