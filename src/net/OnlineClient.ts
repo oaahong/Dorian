@@ -110,16 +110,23 @@ export class OnlineClient implements Transport {
   }
 
   /**
-   * Input delay in ticks derived from the measured round trip.
+   * Input delay in ticks, derived from the measured round trip.
    *
-   * A frame has to reach the other machine before the tick it applies to, so the
-   * delay must cover one-way latency; half the round trip plus a margin for
-   * jitter, clamped so it never becomes unplayable or pointlessly tight.
+   * A frame has to reach the other player before the tick it applies to, and
+   * traffic is relayed rather than sent peer to peer — so the path is
+   * `me -> server -> them`, not `me -> them`. For two players with similar
+   * latency to the server that path costs about a full round trip to the server,
+   * which is what `roundTripMs` measures. Treating it as half a round trip, as if
+   * the connection were direct, undersizes the delay by roughly two and shows up
+   * as avoidable stalls.
+   *
+   * One extra tick covers jitter. Clamped so the delay never becomes unplayable
+   * or pointlessly tight.
    */
   suggestedInputDelay(min = 2, max = 6): number {
     if (this.roundTripMs === null) return min + 1;
-    const oneWayTicks = Math.ceil(this.roundTripMs / 2 / (1000 / 60));
-    return Math.min(max, Math.max(min, oneWayTicks + 1));
+    const relayTicks = Math.ceil(this.roundTripMs / (1000 / 60));
+    return Math.min(max, Math.max(min, relayTicks + 1));
   }
 
   createRoom(): void { this.sendMessage({ t: 'createRoom' }); }

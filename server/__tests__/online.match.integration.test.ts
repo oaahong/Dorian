@@ -256,6 +256,22 @@ describe('input delay suggestion', () => {
     expect(client.suggestedInputDelay()).toBeGreaterThan(withoutSample);
   });
 
+  it('sizes the delay for the relayed path, not a direct one', async () => {
+    /**
+     * Traffic goes `me -> server -> them`. With both players a similar distance
+     * from the server that costs about a full round trip, so a 50 ms RTT needs
+     * three ticks of cover (50 ms is three ticks) plus one for jitter. Sizing it
+     * as if the connection were direct would ask for two, and the frame would
+     * routinely arrive after the tick that needed it.
+     */
+    const client = await openClient();
+    (client as unknown as { roundTripMs: number }).roundTripMs = 50;
+    expect(client.suggestedInputDelay(1, 12)).toBe(4);
+
+    (client as unknown as { roundTripMs: number }).roundTripMs = 100;
+    expect(client.suggestedInputDelay(1, 12)).toBe(7);
+  });
+
   it('stays within its bounds however bad the link is', async () => {
     const client = await openClient();
     (client as unknown as { roundTripMs: number }).roundTripMs = 5000;
