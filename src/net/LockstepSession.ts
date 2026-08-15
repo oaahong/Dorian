@@ -85,24 +85,50 @@ export class LockstepSession implements Session {
     return this.divergedAt;
   }
 
+  /**
+   * Offer the frame sampled locally on `tick`. The first offer for a tick wins.
+   *
+   * Once a frame has been transmitted it is final. The opponent keeps the first
+   * value it receives for a tick and ignores any later one, so changing our mind
+   * afterwards means the two clients simulate that tick from different inputs —
+   * a desync, and one reachable from ordinary play: a stalled client keeps being
+   * asked for its current buttons, and a player pressing keys during the stall
+   * gives a different answer each time.
+   */
   submitLocalInput(tick: number, input: InputFrame): void {
     if (this.currentStatus === 'disconnected') return;
     const appliesAt = tick + this.inputDelay;
-    const frame = input & INPUT_FRAME_MASK;
 
-    // A stalled client re-offers the same tick every frame while it waits. There
-    // is nothing new to say, so the batch is not resent every time — but it is
-    // resent periodically, because if the message carrying that frame was the one
-    // that got lost, going silent would leave both clients waiting forever.
-    const changed = this.local.get(appliesAt) !== frame;
-    this.local.set(appliesAt, frame);
-    this.pushRecent(appliesAt, frame);
-
-    if (changed) {
-      this.repeatedSubmits = 0;
-    } else if (++this.repeatedSubmits % RESEND_EVERY !== 0) {
+    if (this.local.get(appliesAt) !== null) {
+      // Already settled. The repeat still signals that the caller is stalled, so
+      // it is taken as a cue to retransmit in case the original was lost.
+      this.resend();
       return;
     }
+
+    this.local.set(appliesAt, input & INPUT_FRAME_MASK);
+    this.pushRecent(appliesAt, input & INPUT_FRAME_MASK);
+    this.repeatedSubmits = 0;
+    this.transmit();
+  }
+
+  /**
+   * Retransmit the recent window.
+   *
+   * Throttled, because a stalled client has nothing new to say and would
+   * otherwise repeat itself sixty times a second — enough to trip a server's
+   * flood protection. Going fully silent is not an option either: if the message
+   * carrying the frame the opponent needs was the one that got lost, both would
+   * wait forever.
+   */
+  resend(): void {
+    if (this.currentStatus === 'disconnected') return;
+    if (++this.repeatedSubmits % RESEND_EVERY !== 0) return;
+    this.transmit();
+  }
+
+  private transmit(): void {
+    if (this.recent.length === 0) return;
     this.transport.sendInput({ startTick: this.recentStartTick, frames: [...this.recent] });
   }
 

@@ -213,6 +213,45 @@ describe('LockstepSession', () => {
     });
   });
 
+  describe('a frame that has been sent is final', () => {
+    /**
+     * The opponent keeps the first value it receives for a tick and ignores any
+     * later one, so changing our mind after transmitting means the two clients
+     * simulate that tick from different inputs. That is a desync, and it is
+     * reachable from ordinary play: a stalled client keeps being asked for its
+     * current buttons, and a player mashing during the stall produces a different
+     * answer each time.
+     */
+    it('keeps the first frame offered for a tick', () => {
+      session.submitLocalInput(0, BUTTON.Light);
+      session.submitLocalInput(0, BUTTON.Heavy);
+
+      session.acceptRemoteInput({ startTick: DELAY, frames: [EMPTY_INPUT] });
+      expect(session.inputsForTick(DELAY)).toEqual([BUTTON.Light, EMPTY_INPUT]);
+    });
+
+    it('never transmits a second, different value for the same tick', () => {
+      session.submitLocalInput(0, BUTTON.Light);
+      session.submitLocalInput(0, BUTTON.Heavy);
+      session.submitLocalInput(0, BUTTON.Right);
+
+      const framesSent = transport.sentInputs.flatMap((message) =>
+        message.frames.map((frame, i) => ({ tick: message.startTick + i, frame })),
+      );
+      const forDelayTick = new Set(framesSent.filter((f) => f.tick === DELAY).map((f) => f.frame));
+      expect([...forDelayTick]).toEqual([BUTTON.Light]);
+    });
+
+    it('still lets a later tick carry a new value', () => {
+      session.submitLocalInput(0, BUTTON.Light);
+      session.submitLocalInput(1, BUTTON.Heavy);
+
+      session.acceptRemoteInput({ startTick: DELAY, frames: [EMPTY_INPUT, EMPTY_INPUT] });
+      expect(session.inputsForTick(DELAY)?.[0]).toBe(BUTTON.Light);
+      expect(session.inputsForTick(DELAY + 1)?.[0]).toBe(BUTTON.Heavy);
+    });
+  });
+
   describe('send throttling', () => {
     it('sends once per newly sampled tick', () => {
       for (let tick = 0; tick < 5; tick += 1) session.submitLocalInput(tick, BUTTON.Right);
@@ -242,11 +281,14 @@ describe('LockstepSession', () => {
       expect(transport.sentInputs.length).toBeGreaterThan(afterFirst);
     });
 
-    it('sends immediately when the frame for a tick changes', () => {
+    it('treats a re-offer of a settled tick as a resend opportunity', () => {
+      // The value cannot change, but the caller repeating itself is still the
+      // signal that it is stalled and the opponent may be missing something.
       session.submitLocalInput(0, BUTTON.Right);
       const afterFirst = transport.sentInputs.length;
-      session.submitLocalInput(0, BUTTON.Left);
-      expect(transport.sentInputs.length).toBe(afterFirst + 1);
+
+      for (let i = 0; i < 40; i += 1) session.submitLocalInput(0, BUTTON.Left);
+      expect(transport.sentInputs.length).toBeGreaterThan(afterFirst);
     });
   });
 

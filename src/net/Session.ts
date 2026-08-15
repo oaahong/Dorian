@@ -28,6 +28,13 @@ export interface Session {
 
   /** Both players' frames for `tick`, or null if the simulation must wait. */
   inputsForTick(tick: number): [InputFrame, InputFrame] | null;
+
+  /**
+   * Called instead of `submitLocalInput` while the simulation is stuck on a tick
+   * it has already sampled. A networked session uses it to retransmit; a local
+   * one has nothing to do.
+   */
+  resend?(): void;
 }
 
 /**

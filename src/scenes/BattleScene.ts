@@ -44,6 +44,8 @@ export class BattleScene extends Phaser.Scene {
   private session!: Session;
 
   private accumulator = 0;
+  /** The tick whose input has already been sampled and submitted. */
+  private lastSampledTick = -1;
   private pendingEvents: SimEvent[] = [];
   private paused = false;
   private pausePanel!: Phaser.GameObjects.Container;
@@ -61,6 +63,7 @@ export class BattleScene extends Phaser.Scene {
 
   create(): void {
     this.accumulator = 0;
+    this.lastSampledTick = -1;
     this.pendingEvents = [];
     this.paused = false;
     this.leaving = false;
@@ -120,7 +123,20 @@ export class BattleScene extends Phaser.Scene {
     this.accumulator += Math.min(delta, MAX_CATCHUP_MS);
     while (this.accumulator >= TICK_MS) {
       const tick = this.world.tick;
-      this.session.submitLocalInput(tick, this.p1Input.sample());
+
+      /**
+       * Sampled exactly once per tick. Re-sampling while stalled would both
+       * discard the keys latched since the last read and offer the session a
+       * different answer for a tick it has already transmitted — which the
+       * opponent ignores, leaving the two simulations running that tick from
+       * different inputs.
+       */
+      if (tick !== this.lastSampledTick) {
+        this.lastSampledTick = tick;
+        this.session.submitLocalInput(tick, this.p1Input.sample());
+      } else {
+        this.session.resend?.();
+      }
 
       // Online this returns null while the opponent's frame is in flight; the
       // simulation must hold rather than guess. Locally it never does.

@@ -268,6 +268,49 @@ describe('lockstep over a simulated link', () => {
   });
 });
 
+describe('a player pressing keys during a stall', () => {
+  it('cannot make the two simulations diverge', () => {
+    /**
+     * Reproduces the bug that made online matches drop as soon as anyone touched
+     * the keyboard. A stalled client is asked for its buttons on every rendered
+     * frame, not every tick, so a player mid-press gives a different answer each
+     * time — and the session used to overwrite the frame it had already sent. The
+     * opponent keeps the first value it receives, so the two ran that tick from
+     * different inputs and the checksum exchange reported a desync, which the
+     * battle scene treats as a lost connection.
+     *
+     * The offer is now final once transmitted, so the mashing is simply ignored.
+     */
+    const link = new FakeLink({ latencyTicks: 5, jitterTicks: 3, seed: 29 });
+    const a = new Client(0, link.transports[0], 3, p1Script);
+    const b = new Client(1, link.transports[1], 3, p2Script);
+
+    let mashCounter = 0;
+    for (let i = 0; i < 4000; i += 1) {
+      link.tick();
+
+      // Client A behaves as the scene used to: it offers a fresh, different frame
+      // for its current tick on every iteration, stalled or not.
+      mashCounter += 1;
+      a.session.submitLocalInput(a.world.tick, mashCounter % 2 === 0 ? BUTTON.Light : BUTTON.Heavy);
+
+      // Stopped at the same tick on both sides: comparing whole-world checksums
+      // taken at different ticks would compare two different moments and fail for
+      // a reason that has nothing to do with agreement.
+      if (a.world.tick < 400) a.step();
+      if (b.world.tick < 400) b.step();
+      if (a.world.tick >= 400 && b.world.tick >= 400) break;
+    }
+
+    expect(a.world.tick).toBe(400);
+    expect(b.world.tick).toBe(400);
+    expect(a.session.status).not.toBe('desync');
+    expect(b.session.status).not.toBe('desync');
+    expectAgreement(a, b);
+    expect(checksum(a.world)).toBe(checksum(b.world));
+  });
+});
+
 describe('the input delay must be identical on both clients', () => {
   it('deadlocks when the two disagree', () => {
     /**
