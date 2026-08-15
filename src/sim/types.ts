@@ -26,7 +26,29 @@ export type PlayerIndex = 0 | 1;
  */
 export type SimEvent =
   | { t: 'jump'; player: PlayerIndex }
-  | { t: 'attackStart'; player: PlayerIndex; specId: string; state: FighterState };
+  | { t: 'attackStart'; player: PlayerIndex; specId: string; state: FighterState }
+  | {
+      t: 'hit';
+      /** The attacker. */
+      player: PlayerIndex;
+      specId: string;
+      impact: ImpactWeight;
+      blocked: boolean;
+      /** Where the original drew its spark. */
+      x: number;
+      y: number;
+    };
+
+/** How heavy a connected hit felt — drives spark size, sound and hit-stop. */
+export type ImpactWeight = 'light' | 'heavy' | 'special' | 'ultimate';
+
+/** Axis-aligned box in logical 1280x720 space. */
+export interface Rect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
 
 export interface SimAttack {
   /** Identifies the AttackSpec this instance came from. */
