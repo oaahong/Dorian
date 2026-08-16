@@ -1,3 +1,68 @@
+# v1.4 Online Matches Dropping On Keypress
+
+Reported as "the connection drops the moment you press a key", reproducing even
+with both players on one machine. None of it was a connection problem. Five
+separate defects, each of which alone was enough to make a match unplayable, and
+none of which appears with one browser open.
+
+**Desync on keypress.** The battle scene sampled the keyboard on every rendered
+frame, including frames where the simulation could not advance because it was
+waiting for the opponent. Each of those offered the session a fresh value for a
+tick it had already transmitted, and the session overwrote it — but the opponent
+keeps the first value it receives and ignores later ones, so the two clients ran
+that tick from different inputs. The scene treats a reported desync as a lost
+connection and leaves the match, which is what the player saw. Holding still gave
+the same sample every time and looked fine.
+*Fix: a transmitted frame is final, and the scene samples once per tick.*
+
+**The two clients disagreed about the transport.** Whether to use the direct
+connection was decided as `transportKind === 'p2p' && peerChannel !== null`, and
+those two facts arrive from different places — the verdict from the host through
+the server, the channel handle from this client's own negotiation. Over loopback
+they land together; over a real network the verdict arrives first, so the guest
+saw "direct" with no channel yet and fell back to the relay while the host used
+the data channel. Neither heard the other.
+*Fix: the host proposes, the guest confirms what it can actually use, the host
+starts on that confirmation.*
+
+**The two clients disagreed about the input delay.** Each computed its own from
+its own measured round trip — the deployment showed host 3, guest 2. The delay
+decides how many opening ticks run on primed neutral input, so different values
+leave each side waiting for a frame the other was never going to send. Every
+client on one machine measures the same round trip and agrees by accident, which
+is why this survived until a deployment.
+*Fix: agreed in the same handshake as the transport, taking the larger of the two.*
+
+**A stall became a permanent backlog.** The fixed-timestep accumulator grew
+without bound: a stalled tick broke out of the loop without consuming time while
+the next frame added more. Lockstep can never work that debt off, because both
+clients are gated on the same inputs. Measured at 4.6 seconds behind after a
+single exchange, at which point every keypress lands seconds late.
+*Fix: the accumulator is bounded, and a stall keeps only a few ticks of backlog.*
+
+**Retransmission was throttled by frame rate.** The data channel is deliberately
+unreliable, so recovery from a dropped message depends on how often the batch is
+repeated — and that was throttled by call count, while a stalled client makes one
+call per rendered frame. At 17 fps that was two retransmissions a second.
+Compounding it, the redundancy window was a flat 8 frames, which stopped being
+wider than the input delay once the delay was raised to 8; a client sitting a full
+delay behind then needed frames that had already left the window for good.
+*Fix: throttled by elapsed time, and the window scales with the delay.*
+
+Regression cover: unit tests that a transmitted frame cannot change and that
+mismatched delays deadlock; an integration test running a client that offers a
+different frame every iteration while stalled; another running a delay of 8
+through 15% loss. `F2` now reports ticks per second and the session state, which
+is what identified three of these in one run each.
+
+Still open: in a rig running two headless browsers, an online match drops from 60
+ticks per second to near zero while synthetic keys are being dispatched, and
+recovers instantly when they stop. Local play under identical mashing is
+unaffected, which points at the harness rather than the game — but it is not
+proven.
+
+---
+
 # v1.3 Online Lobby Input
 
 Two bugs found by the two-browser end-to-end test, both in room-code entry.
