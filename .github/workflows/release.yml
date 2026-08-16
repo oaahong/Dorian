@@ -1,0 +1,46 @@
+name: Release
+
+# `npm run release:*` pushes the commit and its tag together, so this fires once
+# per release. The tag is the trigger rather than the push to main: main gets
+# ordinary commits all day, and Render deploys every one of them.
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    # The only write this job needs. Without it `gh release create` fails.
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # The release body is the FIX_NOTES section for this version, verbatim.
+      # `npm version` refuses to cut a release whose section does not exist, so by
+      # the time a tag reaches here the text is guaranteed to be there — this step
+      # failing means the tag was made by hand.
+      - name: Read the release notes
+        id: notes
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          {
+            echo 'body<<RELEASE_NOTES_EOF'
+            node scripts/release-notes.mjs "$version"
+            echo 'RELEASE_NOTES_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      # The title is the FIX_NOTES heading with its `# v1.2.3 ` prefix removed, so
+      # a release is named the way it is written about rather than by its number.
+      - name: Publish the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOTES: ${{ steps.notes.outputs.body }}
+        run: |
+          title=$(sed -n "s/^# ${GITHUB_REF_NAME} //p" FIX_NOTES.md | head -1)
+          printf '%s\n' "$NOTES" > release-notes.md
+          gh release create "$GITHUB_REF_NAME" \
+            --title "${GITHUB_REF_NAME} ${title}" \
+            --notes-file release-notes.md

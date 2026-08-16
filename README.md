@@ -176,6 +176,38 @@ a reasonable trade here, and why its region barely affects how the game feels.
 `VITE_WS_URL` points the client at a signalling server on another origin, if you
 would rather serve the client from a CDN close to the players.
 
+## Releasing
+
+Deployment and release are separate here. Render deploys every commit on `main`,
+so players always have the newest build; a release is the record of what that
+build is — a version, a tag, and notes someone can read.
+
+```bash
+npm run release:patch   # bug fixes only
+npm run release:minor   # new behaviour, nothing broken
+npm run release:major   # something a player or a save has to adapt to
+```
+
+Write the FIX_NOTES section for the new version *first*. The release refuses to
+start without it, on the grounds that notes written after the tag never get
+written at all.
+
+One command does the rest: full `verify`, bump `package.json` and the lockfile,
+commit as `Release x.y.z`, annotated tag `vx.y.z`, push both. The tag triggers
+`.github/workflows/release.yml`, which publishes a GitHub Release whose body is
+that FIX_NOTES section verbatim — the notes live in the repo, not in a second
+changelog generated from commit subjects.
+
+It stops before touching anything if the tree is dirty, if you are not on `main`,
+if `origin/main` is ahead, or if the version has no notes. Preview what would be
+published with `npm run release:notes -- 1.4.2`.
+
+Versions are [semver](https://semver.org), which is a promise to whoever depends
+on your API — and nothing depends on this one, so in practice the number is a
+label for humans. That is also why there is no release-please or
+semantic-release: their main service is generating a changelog from commit
+subjects, and FIX_NOTES is already better than what that produces.
+
 ## Characters
 
 1. 崩潰喵喵貓 — 崩潰音波 / JPEG震爆
