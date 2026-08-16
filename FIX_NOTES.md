@@ -1,4 +1,8 @@
-# v1.5 The Letter F, And A Cat With No Eyes
+# v1.4.1 The Letter F, And A Cat With No Eyes
+
+Numbered as a patch, and from here on the headings follow semver: nothing below
+is a new feature, so the minor version does not move. The earlier headings keep
+the numbers they were written with.
 
 Two bugs reported from playing the game, both of a kind automated tests were
 never going to notice on their own: one hides behind a random code, the other is
