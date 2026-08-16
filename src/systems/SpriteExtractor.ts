@@ -32,6 +32,69 @@ const RECTS: Record<PoseName, Rect> = {
   ko:          { x: 838, y: 932, w: 253, h: 180 },
 };
 
+/** Just enough of `ImageData` to run the backdrop pass without a canvas. */
+type PixelBuffer = { readonly width: number; readonly height: number; readonly data: Uint8ClampedArray };
+
+/** Anything at or above this is subject, not backdrop. */
+const BACKDROP_MAX = 42;
+/** Below this the backdrop is flat black; between the two it fades out. */
+const BACKDROP_OPAQUE = 25;
+
+/**
+ * Punch out the card's black backdrop — and only the backdrop.
+ *
+ * Testing each pixel's colour on its own was enough to clear the background, but
+ * a cat's pupils are as black as the card behind it, so they were cleared too:
+ * 崩潰喵喵貓 fought with holes where its eyes should be, and every open mouth on
+ * every card was a hole as well.
+ *
+ * Backdrop is the dark region that reaches the edge of the crop, so this floods
+ * inward from the border rather than sweeping the whole image. Dark areas
+ * enclosed by the cat — eyes, mouths, the inside of a pot — are never reached and
+ * stay opaque. The soft ramp is unchanged and still applies only where the flood
+ * arrives, which keeps the anti-aliased silhouette edge while leaving the equally
+ * soft edge around a pupil alone.
+ *
+ * Exported for its own sake: this is pure pixel arithmetic, so it is worth
+ * testing directly rather than through a scene that needs a browser.
+ */
+export function clearBackdrop(pixels: PixelBuffer): void {
+  const { width, height, data } = pixels;
+  const darkness = (index: number): number =>
+    Math.max(data[index * 4]!, data[index * 4 + 1]!, data[index * 4 + 2]!);
+
+  const queued = new Uint8Array(width * height);
+  const stack: number[] = [];
+  const visit = (index: number): void => {
+    if (queued[index] || darkness(index) >= BACKDROP_MAX) return;
+    queued[index] = 1;
+    stack.push(index);
+  };
+
+  for (let x = 0; x < width; x += 1) {
+    visit(x);
+    visit((height - 1) * width + x);
+  }
+  for (let y = 0; y < height; y += 1) {
+    visit(y * width);
+    visit(y * width + width - 1);
+  }
+
+  while (stack.length > 0) {
+    const index = stack.pop()!;
+    const value = darkness(index);
+    data[index * 4 + 3] = value < BACKDROP_OPAQUE
+      ? 0
+      : Math.round(((value - BACKDROP_OPAQUE) / (BACKDROP_MAX - BACKDROP_OPAQUE)) * data[index * 4 + 3]!);
+
+    const x = index % width;
+    if (x > 0) visit(index - 1);
+    if (x < width - 1) visit(index + 1);
+    if (index >= width) visit(index - width);
+    if (index < (height - 1) * width) visit(index + width);
+  }
+}
+
 export class SpriteExtractor {
   constructor(private readonly scene: Phaser.Scene) {}
 
@@ -80,18 +143,7 @@ export class SpriteExtractor {
     ctx.drawImage(source, sx, sy, sw, sh, 0, 0, sw, sh);
 
     const pixels = ctx.getImageData(0, 0, sw, sh);
-    const data = pixels.data;
-    for (let i = 0; i < data.length; i += 4) {
-      const r = data[i]!;
-      const g = data[i + 1]!;
-      const b = data[i + 2]!;
-      const max = Math.max(r, g, b);
-      if (r < 25 && g < 25 && b < 25) {
-        data[i + 3] = 0;
-      } else if (max < 42) {
-        data[i + 3] = Math.round(((max - 25) / 17) * data[i + 3]!);
-      }
-    }
+    clearBackdrop(pixels);
     this.removePanelBorderAndLabels(pixels);
     ctx.putImageData(pixels, 0, 0);
 
@@ -111,7 +163,6 @@ export class SpriteExtractor {
     output.drawImage(scratch, x, y, width, height, 0, 0, width, height);
     texture.refresh();
   }
-
 
   private removePanelBorderAndLabels(imageData: ImageData): void {
     const { width, height, data } = imageData;

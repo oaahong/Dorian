@@ -1,3 +1,44 @@
+# v1.5 The Letter F, And A Cat With No Eyes
+
+Two bugs reported from playing the game, both of a kind automated tests were
+never going to notice on their own: one hides behind a random code, the other is
+only visible if something looks at the picture.
+
+**Any room code containing F was impossible to type.** F is the confirm key on
+every other screen, and code entry kept that habit — so typing the F of `2F7KHN`
+submitted the two characters entered so far, and the player got "no such room"
+for a code they had read out correctly. The hint under the field already said
+`ENTER : JOIN`; the F was an undocumented extra that cost the alphabet a letter.
+This is the same class of bug as the G and M shortcuts in v1.3, missed then
+because G and M throw the player out of the lobby loudly, while F fails as a
+plausible-looking rejected join.
+*Fix: while a code is being typed, F is a character. Enter submits, as the hint
+says. The end-to-end suite now types the whole 31-character alphabet, rather than
+whatever code the server happened to issue — the old test passed or failed by
+luck of the draw, and F appears in roughly one code in five.*
+
+**崩潰喵喵貓 fought with holes where its eyes should be.** Poses are cut out of
+the character cards at boot by keying out the black backdrop, and the test was
+per-pixel: dark enough, therefore background. The cats are photographs, so their
+pupils are that same black — and so are open mouths, the dark leaves on 沙拉貓's
+plate, and the inside of 魔法胖橘's cauldron. All of it was punched through to
+the stage behind.
+Every fighter was affected; the collapse cat is simply the one whose eyes are
+large, dark and dead centre.
+*Fix: backdrop is now defined by position as well as colour — the dark region
+that reaches the edge of the crop. The pass floods inward from the border instead
+of sweeping the image, so dark areas the cat encloses are never reached. The
+anti-aliased fringe still fades exactly as before, because only pixels the flood
+arrives at are touched.*
+
+Regression cover: `e2e/online-match.spec.ts` types every character of the room
+code alphabet and reports which one did nothing; `src/systems/__tests__` covers
+the backdrop pass directly, over hand-drawn pixel maps with pupils in them. The
+cutout logic was pulled out of the class to make that possible — it is pure
+arithmetic over a pixel buffer and needs neither Phaser nor a canvas.
+
+---
+
 # v1.4 Online Matches Dropping On Keypress
 
 Reported as "the connection drops the moment you press a key", reproducing even

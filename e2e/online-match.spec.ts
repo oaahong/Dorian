@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { BOOT_TIMEOUT_MS, readBattle, waitForFightPhase, waitForScene } from './helpers';
+import { ROOM_CODE_ALPHABET } from '../src/net/roomCode';
 
 /**
  * Two browsers, one server, one match.
@@ -128,6 +129,43 @@ async function roomCode(page: Page, who = 'player'): Promise<string> {
     return lobby.room.code;
   });
 }
+
+/**
+ * A code the player cannot type is a code they cannot join, and the alphabet is
+ * full of letters that mean something else elsewhere in the game: F confirms, G
+ * goes back, M mutes. Each one has to be a character while a code is being typed.
+ *
+ * The match test above cannot cover this — it types whatever code the server
+ * happens to issue, so which letters it exercises is luck. F was broken for every
+ * code containing one and the suite stayed green.
+ */
+test('every character of the room-code alphabet can be typed', async ({ page }) => {
+  await openLobby(page);
+  await page.keyboard.press('j');
+  await page.waitForTimeout(150);
+
+  const typed = (expected: string) =>
+    page.waitForFunction(
+      (wanted) => {
+        const lobby = window.__MEME_CAT_GAME__?.scene.getScene('OnlineLobbyScene');
+        return (lobby as unknown as { typedCode?: string } | null)?.typedCode === wanted;
+      },
+      expected,
+      { timeout: 2000 },
+    );
+
+  for (const character of ROOM_CODE_ALPHABET) {
+    await page.keyboard.press(character);
+    await typed(character).catch(() => {
+      throw new Error(`'${character}' is in the room-code alphabet but typing it did nothing`);
+    });
+    await page.keyboard.press('Backspace');
+    await typed('');
+  }
+
+  // Still on the same screen: none of those keys quietly submitted or left.
+  expect(await lobbyState(page)).toMatchObject({ phase: 'entering-code' });
+});
 
 test('two players meet with a room code and fight', async ({ browser }) => {
   const hostContext = await browser.newContext();

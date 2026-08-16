@@ -324,10 +324,18 @@ export class OnlineLobbyScene extends Phaser.Scene {
     this.refresh();
   }
 
+  /**
+   * F is a character here, not the confirm key.
+   *
+   * Every other screen confirms with F, and keeping that habit on this one cost
+   * the alphabet its F: a code like 2F7KHN could not be typed at all, because the
+   * first F submitted the two characters already entered. Enter alone submits, as
+   * the on-screen hint says.
+   */
   private onCodeKey(code: string): void {
     if (code === 'Backspace') {
       this.typedCode = this.typedCode.slice(0, -1);
-    } else if (code === 'Enter' || code === 'KeyF') {
+    } else if (code === 'Enter') {
       if (this.typedCode.length > 0) {
         this.client?.joinRoom(this.typedCode);
         AudioManager.play('menu');
