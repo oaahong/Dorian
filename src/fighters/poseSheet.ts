@@ -22,12 +22,14 @@
 /** The poses the renderer knows how to ask for. */
 export type PoseName =
   | 'idle' | 'walkForward' | 'walkBack' | 'jump' | 'crouch'
-  | 'light' | 'heavy' | 'block' | 'hit' | 'special' | 'ultimate'
+  | 'light' | 'heavy' | 'crouchLight' | 'crouchHeavy' | 'jumpLight' | 'jumpHeavy'
+  | 'block' | 'hit' | 'special' | 'ultimate'
   | 'throw' | 'victory' | 'ko';
 
 export const POSE_NAMES: readonly PoseName[] = [
   'idle', 'walkForward', 'walkBack', 'jump', 'crouch',
-  'light', 'heavy', 'block', 'hit', 'special', 'ultimate',
+  'light', 'heavy', 'crouchLight', 'crouchHeavy', 'jumpLight', 'jumpHeavy',
+  'block', 'hit', 'special', 'ultimate',
   'throw', 'victory', 'ko',
 ];
 
@@ -42,6 +44,10 @@ const STANDARD_LAYOUT: PoseNumbers = {
   jump: 5,
   light: 8,
   heavy: 9,
+  crouchLight: 10,
+  crouchHeavy: 11,
+  jumpLight: 12,
+  jumpHeavy: 13,
   block: 14,
   hit: 16,
   special: 24,
@@ -63,6 +69,10 @@ const ALIEN_LAYOUT: PoseNumbers = {
   crouch: 7,
   light: 10,
   heavy: 11,
+  crouchLight: 12,
+  crouchHeavy: 13,
+  jumpLight: 14,
+  jumpHeavy: 15,
   block: 8,
   hit: 16,
   special: 24,

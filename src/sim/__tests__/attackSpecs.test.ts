@@ -3,7 +3,7 @@ import { allChargeLevels } from '../../fighters/chargeSpecials';
 import { allSpecials } from '../../fighters/FighterConfig';
 import { FIGHTERS } from '../../fighters/fighterData';
 import { HEAVY_ATTACK, LIGHT_ATTACK } from '../../combat/AttackSpec';
-import { HEAVY_SPEC, LIGHT_SPEC, THROW_SPEC, allSpecs, getSpec, toTickSpec } from '../attackSpecs';
+import { HEAVY_SPEC, LIGHT_SPEC, NORMALS, THROW_SPEC, allSpecs, getSpec, toTickSpec } from '../attackSpecs';
 import { DEFAULT_SPECIAL_COOLDOWN_TICKS, DEFAULT_STUN_LOCKOUT_TICKS } from '../constants';
 
 /**
@@ -15,15 +15,46 @@ import { DEFAULT_SPECIAL_COOLDOWN_TICKS, DEFAULT_STUN_LOCKOUT_TICKS } from '../c
 
 describe('toTickSpec', () => {
   it('leaves the shared normals timings exactly as authored', () => {
-    // These are the same numbers the millisecond authoring used to round to, which
-    // is why the golden replays did not move when the unit changed.
-    expect(LIGHT_SPEC.startupTicks).toBe(5);
-    expect(LIGHT_SPEC.activeTicks).toBe(5);
-    expect(LIGHT_SPEC.recoveryTicks).toBe(10);
+    // The upgraded build's numbers, which is what the six normals are now
+    // authored from. Asserted literally rather than compared against the source
+    // so that a change to the frame data has to be made twice, on purpose.
+    expect(LIGHT_SPEC.startupTicks).toBe(4);
+    expect(LIGHT_SPEC.activeTicks).toBe(2);
+    expect(LIGHT_SPEC.recoveryTicks).toBe(8);
 
-    expect(HEAVY_SPEC.startupTicks).toBe(11);
-    expect(HEAVY_SPEC.activeTicks).toBe(7);
+    expect(HEAVY_SPEC.startupTicks).toBe(9);
+    expect(HEAVY_SPEC.activeTicks).toBe(3);
     expect(HEAVY_SPEC.recoveryTicks).toBe(18);
+  });
+
+  it('gives every stance its own pair of normals', () => {
+    const ids = Object.values(NORMALS).flatMap((pair) => [pair.light.id, pair.heavy.id]);
+    expect(new Set(ids).size).toBe(6);
+  });
+
+  /**
+   * The high/low game is only a game if the two guards answer different things.
+   * A crouching normal that came out `mid` would be a low the opponent never has
+   * to duck for, and the whole reason to crouch-block would quietly vanish.
+   */
+  it('makes the crouching normals low and the standing ones mid', () => {
+    expect(NORMALS.crouch.light.attackType).toBe('low');
+    expect(NORMALS.crouch.heavy.attackType).toBe('low');
+    expect(NORMALS.stand.light.attackType).toBe('mid');
+    expect(NORMALS.stand.heavy.attackType).toBe('mid');
+    expect(NORMALS.air.light.attackType).toBe('air');
+    expect(NORMALS.air.heavy.attackType).toBe('air');
+  });
+
+  /** An unmarked move is a mid — the safe default, never an accidental overhead. */
+  it('resolves an unmarked attack to mid', () => {
+    for (const fighter of FIGHTERS) {
+      for (const source of allSpecials(fighter)) {
+        if (source.attackType === undefined) {
+          expect(toTickSpec(source).attackType, source.id).toBe('mid');
+        }
+      }
+    }
   });
 
   it('carries the non-timing fields across unchanged', () => {
@@ -82,9 +113,9 @@ describe('spec registry', () => {
       (total, fighter) => total + allSpecials(fighter).length + 1,
       0,
     );
-    // Light, heavy and the universal throw are shared by everybody; the charge
-    // levels are three more per fighter.
-    expect(allSpecs()).toHaveLength(3 + rosterSpecs + allChargeLevels().length);
+    // Six normals — a light and a heavy per stance — plus the universal throw are
+    // shared by everybody; the charge levels are three more per fighter.
+    expect(allSpecs()).toHaveLength(7 + rosterSpecs + allChargeLevels().length);
   });
 
   it('resolves every id the roster references', () => {

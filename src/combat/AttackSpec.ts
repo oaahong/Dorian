@@ -54,6 +54,21 @@ export type AttackKind =
  */
 export type HitCategory = 'strike' | 'projectile' | 'throw' | 'airAttack';
 
+/**
+ * Which guard answers an attack — the high/low game.
+ *
+ * This is authored, not derived, because it is a *claim about the animation*
+ * rather than about the mechanics: a sweep and a jab are the same box with the
+ * same propulsion, and nothing the simulation can measure tells them apart. It is
+ * the one place where what the art shows has to be written down.
+ *
+ * `low` must be crouch-blocked, `overhead` must be stand-blocked, and `mid` is
+ * answered by either. `air`, `throw` and `projectile` are the categories that
+ * never had a guard height to begin with; they are listed so that every move
+ * names its own answer instead of falling into `mid` by omission.
+ */
+export type AttackType = 'mid' | 'low' | 'overhead' | 'air' | 'throw' | 'projectile';
+
 /** `'all'` covers every category, including throws. */
 export type HitCategoryFilter = HitCategory | 'all';
 
@@ -105,6 +120,15 @@ export interface AttackSpec {
   id: string;
   name: string;
   kind: AttackKind;
+  /**
+   * Which guard answers this, defaulting to `mid` — blockable either way.
+   *
+   * `mid` is the default because it is the *safe* one to get wrong: a move that
+   * should have been an overhead but is left unmarked is merely less rewarding,
+   * whereas one silently promoted to unblockable-while-standing would be a hole
+   * in the defence of every fighter, put there by omission.
+   */
+  attackType?: AttackType;
   startup: number;
   active: number;
   recovery: number;
@@ -181,22 +205,123 @@ export interface AttackSpec {
   meterOnComplete?: number;
 }
 
+/**
+ * The six normals every fighter has, one per stance and strength.
+ *
+ * There used to be two — one light and one heavy, swung identically whether the
+ * fighter was standing, crouching or in the air, with only the hurtbox changing.
+ * That collapsed the high/low game into nothing: crouching altered how you were
+ * *hit*, never what you *threw*, so there was no low to block low against.
+ *
+ * The timings, damage and reach are the upgraded build's, which authored all six.
+ * The knockback figures are not — those are velocities in this simulation's units
+ * and have no counterpart there, so they are set here to keep each new normal in
+ * proportion to the standing one it is a variant of.
+ */
 export const LIGHT_ATTACK: AttackSpec = {
   id: 'light',
   name: 'LIGHT',
   kind: 'melee',
-  startup: 5,
-  active: 5,
-  recovery: 10,
-  damage: 5,
+  attackType: 'mid',
+  startup: 4,
+  active: 2,
+  recovery: 8,
+  damage: 4,
   hitstun: 11,
-  blockstun: 5,
+  blockstun: 7,
   knockbackX: 150,
   knockbackY: -40,
-  reach: 78,
+  reach: 92,
   chipRatio: 0,
-  energyOnHit: 5,
-  energyOnReceive: 3,
+  energyOnHit: 4,
+  energyOnReceive: 2,
+};
+
+/**
+ * The low. Slower and shorter-ranged than the standing light, and it has to be
+ * crouch-blocked — which is the whole reason to give up the standing guard for it.
+ */
+export const CROUCH_LIGHT_ATTACK: AttackSpec = {
+  id: 'crouch-light',
+  name: 'CROUCH LIGHT',
+  kind: 'melee',
+  attackType: 'low',
+  startup: 5,
+  active: 2,
+  recovery: 9,
+  damage: 4,
+  hitstun: 10,
+  blockstun: 6,
+  knockbackX: 120,
+  knockbackY: 0,
+  reach: 96,
+  chipRatio: 0,
+  energyOnHit: 4,
+  energyOnReceive: 2,
+};
+
+/** The sweep: the longest normal in the game, and the slowest to recover from. */
+export const CROUCH_HEAVY_ATTACK: AttackSpec = {
+  id: 'crouch-heavy',
+  name: 'CROUCH HEAVY',
+  kind: 'melee',
+  attackType: 'low',
+  startup: 10,
+  active: 4,
+  recovery: 21,
+  damage: 10,
+  hitstun: 18,
+  blockstun: 9,
+  knockbackX: 230,
+  knockbackY: -150,
+  reach: 128,
+  chipRatio: 0,
+  energyOnHit: 7,
+  energyOnReceive: 4,
+};
+
+/**
+ * The air normals, which cannot be crouch-blocked *or* stand-blocked wrongly —
+ * `air` is answered by either guard. What makes them worth the jump is the six
+ * and seven active frames: an air-to-ground swing has to stay out long enough to
+ * survive the arc it is thrown from.
+ */
+export const JUMP_LIGHT_ATTACK: AttackSpec = {
+  id: 'jump-light',
+  name: 'JUMP LIGHT',
+  kind: 'melee',
+  attackType: 'air',
+  startup: 4,
+  active: 6,
+  recovery: 8,
+  damage: 4,
+  hitstun: 11,
+  blockstun: 7,
+  knockbackX: 150,
+  knockbackY: -40,
+  reach: 96,
+  chipRatio: 0,
+  energyOnHit: 4,
+  energyOnReceive: 2,
+};
+
+export const JUMP_HEAVY_ATTACK: AttackSpec = {
+  id: 'jump-heavy',
+  name: 'JUMP HEAVY',
+  kind: 'melee',
+  attackType: 'air',
+  startup: 7,
+  active: 7,
+  recovery: 14,
+  damage: 8,
+  hitstun: 16,
+  blockstun: 9,
+  knockbackX: 240,
+  knockbackY: -100,
+  reach: 118,
+  chipRatio: 0,
+  energyOnHit: 7,
+  energyOnReceive: 4,
 };
 
 /**
@@ -215,6 +340,7 @@ export const THROW_ATTACK: AttackSpec = {
   id: 'throw',
   name: 'THROW',
   kind: 'commandThrow',
+  attackType: 'throw',
   startup: 5,
   active: 3,
   recovery: 20,
@@ -236,16 +362,17 @@ export const HEAVY_ATTACK: AttackSpec = {
   id: 'heavy',
   name: 'HEAVY',
   kind: 'melee',
-  startup: 11,
-  active: 7,
+  attackType: 'mid',
+  startup: 9,
+  active: 3,
   recovery: 18,
   damage: 9,
-  hitstun: 18,
-  blockstun: 9,
+  hitstun: 17,
+  blockstun: 10,
   knockbackX: 255,
   knockbackY: -110,
-  reach: 104,
+  reach: 118,
   chipRatio: 0,
-  energyOnHit: 8,
-  energyOnReceive: 5,
+  energyOnHit: 7,
+  energyOnReceive: 4,
 };

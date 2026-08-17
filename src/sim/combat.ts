@@ -1,7 +1,7 @@
 import type { HitCategory, HitCategoryFilter } from '../combat/AttackSpec';
 import { FighterState } from '../fighters/FighterState';
 import type { TickSpec } from './attackSpecs';
-import { getSpec, HEAVY_SPEC, LIGHT_SPEC } from './attackSpecs';
+import { getSpec, NORMALS } from './attackSpecs';
 import {
   ATTACK_MULTIPLIER,
   CROUCH_HURTBOX_SCALE,
@@ -42,7 +42,9 @@ const MELEE_BOX_HEIGHT_CROUCHING = 70;
 
 export function getHurtbox(fighter: SimFighter): Rect {
   const crouching =
-    fighter.state === FighterState.CROUCH || (fighter.attack?.crouching ?? false);
+    fighter.state === FighterState.CROUCH ||
+    fighter.guardCrouching ||
+    (fighter.attack?.crouching ?? false);
   const height = crouching
     ? FIGHTER_HURTBOX_HEIGHT * CROUCH_HURTBOX_SCALE
     : FIGHTER_HURTBOX_HEIGHT;
@@ -76,7 +78,12 @@ export function getMeleeHitbox(fighter: SimFighter, spec: TickSpec): Rect {
  * does. A fighter walking away from a distant opponent therefore still blocks an
  * incoming projectile. Preserved from the original; see docs/sim-spec.md §5.
  */
-export function canBlockImpact(fighter: SimFighter): boolean {
+export function canBlockImpact(fighter: SimFighter, spec: TickSpec): boolean {
+  return isGuarding(fighter) && guardAnswers(fighter, spec.attackType);
+}
+
+/** Whether the fighter is in a position to guard at all, height aside. */
+function isGuarding(fighter: SimFighter): boolean {
   if (fighter.state === FighterState.BLOCK || fighter.state === FighterState.BLOCKSTUN) {
     return true;
   }
@@ -88,6 +95,20 @@ export function canBlockImpact(fighter: SimFighter): boolean {
     fighter.state !== FighterState.KO &&
     fighter.state !== FighterState.VICTORY
   );
+}
+
+/**
+ * Whether the guard the fighter is *currently* holding is the right height.
+ *
+ * Read from the live stick position rather than from whatever it was when the
+ * guard started, so a defender can switch between the two mid-blockstring — which
+ * is the entire game the high/low system exists to create. Blocking the first hit
+ * of a string earns you nothing toward the second.
+ */
+function guardAnswers(fighter: SimFighter, type: TickSpec['attackType']): boolean {
+  if (type === 'low') return fighter.guardCrouching;
+  if (type === 'overhead') return !fighter.guardCrouching;
+  return true;
 }
 
 // --- Categories, invulnerability and armour ---------------------------------
@@ -252,13 +273,20 @@ const HIT_STOP_TICKS: Record<ImpactWeight | 'blocked', number> = {
 const BLOCKED_ENERGY_SHARE = 0.35;
 
 /**
+ * Built from `NORMALS` rather than listed by hand, so that adding a stance cannot
+ * leave one of its two normals silently landing with a special's weight.
+ */
+const LIGHT_NORMAL_IDS = new Set(Object.values(NORMALS).map((pair) => pair.light.id));
+const HEAVY_NORMAL_IDS = new Set(Object.values(NORMALS).map((pair) => pair.heavy.id));
+
+/**
  * The original passed the impact weight in at each call site; deriving it from
  * the spec keeps the two in step and removes an argument that could disagree
  * with the attack it describes.
  */
 export function impactWeight(spec: TickSpec): ImpactWeight {
-  if (spec.id === LIGHT_SPEC.id) return 'light';
-  if (spec.id === HEAVY_SPEC.id) return 'heavy';
+  if (LIGHT_NORMAL_IDS.has(spec.id)) return 'light';
+  if (HEAVY_NORMAL_IDS.has(spec.id)) return 'heavy';
   return spec.kind.startsWith('ultimate-') ? 'ultimate' : 'special';
 }
 
@@ -288,7 +316,7 @@ export function resolveHit(
   if (category === 'throw' && isAirborne(defender)) return null;
 
   // Throws are the answer to blocking, so they ignore it.
-  const blocked = !spec.unblockable && canBlockImpact(defender);
+  const blocked = !spec.unblockable && canBlockImpact(defender, spec);
   const armored = !blocked && hasArmorAgainst(defender, category);
   if (armored) consumeArmor(defender);
 

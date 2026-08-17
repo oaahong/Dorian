@@ -264,9 +264,30 @@ describe('blocking', () => {
     expect(h.self.guardHeld).toBe(true);
   });
 
-  it('does not guard while crouching', () => {
+  /**
+   * Crouching used to switch the guard off entirely. It now switches it *down*,
+   * which is the change that gives `low` and `overhead` anything to mean: with no
+   * low guard in the game, a low attack would have been unblockable by everyone
+   * rather than blockable by anyone ducking.
+   */
+  it('guards low while holding away and down', () => {
     const h = harness({ x: 600 }, 700);
     h.run(BUTTON.Left | BUTTON.Down);
+    expect(h.self.guardHeld).toBe(true);
+    expect(h.self.guardCrouching).toBe(true);
+    expect(h.self.state).toBe(FighterState.BLOCK);
+  });
+
+  it('guards high while holding away alone', () => {
+    const h = harness({ x: 600 }, 700);
+    h.run(BUTTON.Left);
+    expect(h.self.guardHeld).toBe(true);
+    expect(h.self.guardCrouching).toBe(false);
+  });
+
+  it('crouches without guarding when down is held toward the opponent', () => {
+    const h = harness({ x: 600 }, 700);
+    h.run(BUTTON.Right | BUTTON.Down);
     expect(h.self.guardHeld).toBe(false);
     expect(h.self.state).toBe(FighterState.CROUCH);
   });

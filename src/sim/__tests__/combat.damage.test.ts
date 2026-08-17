@@ -31,8 +31,11 @@ describe('damage formula', () => {
     const a = attacker();
     const d = defender();
     hit(a, d);
-    // 5 damage * 1.13 (attackStat 4) * 0.96 (hpStat 4) * 0.97 (scalar)
-    expect(MAX_HP - d.hp).toBeCloseTo(5 * (0.85 + 4 * 0.07) * (1.08 - 4 * 0.03) * 0.97, 10);
+    // 4 damage * 1.13 (attackStat 4) * 0.96 (hpStat 4) * 0.97 (scalar)
+    expect(MAX_HP - d.hp).toBeCloseTo(
+      LIGHT_SPEC.damage * (0.85 + 4 * 0.07) * (1.08 - 4 * 0.03) * 0.97,
+      10,
+    );
   });
 
   it('hits harder from a higher attack stat', () => {
@@ -110,33 +113,33 @@ describe('blocking', () => {
 
 describe('canBlockImpact', () => {
   it('accepts an explicit block stance', () => {
-    expect(canBlockImpact(defender({ state: FighterState.BLOCK }))).toBe(true);
-    expect(canBlockImpact(defender({ state: FighterState.BLOCKSTUN }))).toBe(true);
+    expect(canBlockImpact(defender({ state: FighterState.BLOCK }), LIGHT_SPEC)).toBe(true);
+    expect(canBlockImpact(defender({ state: FighterState.BLOCKSTUN }), LIGHT_SPEC)).toBe(true);
   });
 
   it('accepts a grounded fighter merely holding away', () => {
     // guardHeld has no range condition — see docs/sim-spec.md §5.
-    expect(canBlockImpact(defender({ guardHeld: true, state: FighterState.WALK }))).toBe(true);
+    expect(canBlockImpact(defender({ guardHeld: true, state: FighterState.WALK }), LIGHT_SPEC)).toBe(true);
   });
 
   it('rejects a fighter that is not guarding', () => {
-    expect(canBlockImpact(defender({ guardHeld: false }))).toBe(false);
+    expect(canBlockImpact(defender({ guardHeld: false }), LIGHT_SPEC)).toBe(false);
   });
 
   it('rejects guarding in the air', () => {
-    expect(canBlockImpact(defender({ guardHeld: true, y: 400 }))).toBe(false);
+    expect(canBlockImpact(defender({ guardHeld: true, y: 400 }), LIGHT_SPEC)).toBe(false);
   });
 
   it('rejects guarding while attacking', () => {
     expect(
-      canBlockImpact(defender({ guardHeld: true, state: FighterState.HEAVY_ATTACK })),
+      canBlockImpact(defender({ guardHeld: true, state: FighterState.HEAVY_ATTACK }), LIGHT_SPEC),
     ).toBe(false);
   });
 
   it.each([FighterState.HITSTUN, FighterState.KO, FighterState.VICTORY])(
     'rejects guarding in %s',
     (state) => {
-      expect(canBlockImpact(defender({ guardHeld: true, state }))).toBe(false);
+      expect(canBlockImpact(defender({ guardHeld: true, state }), LIGHT_SPEC)).toBe(false);
     },
   );
 });

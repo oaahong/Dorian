@@ -85,6 +85,35 @@ describe('artFor', () => {
   });
 });
 
+describe('the six normals', () => {
+  /**
+   * Six moves that all leave the fighter in LIGHT_ATTACK or HEAVY_ATTACK, so the
+   * state alone cannot tell them apart — the stance frozen on the attack is what
+   * separates them, and drawing the standing swing for all six would hide the low
+   * the opponent is supposed to be reading.
+   */
+  const cases: [FighterState, { crouching?: boolean; airborne?: boolean }, string][] = [
+    [FighterState.LIGHT_ATTACK, {}, 'light'],
+    [FighterState.HEAVY_ATTACK, {}, 'heavy'],
+    [FighterState.LIGHT_ATTACK, { crouching: true }, 'crouchLight'],
+    [FighterState.HEAVY_ATTACK, { crouching: true }, 'crouchHeavy'],
+    [FighterState.LIGHT_ATTACK, { airborne: true }, 'jumpLight'],
+    [FighterState.HEAVY_ATTACK, { airborne: true }, 'jumpHeavy'],
+  ];
+
+  it.each(cases)('draws %s %o as %s', (state, stance, expected) => {
+    const f = fighter({ state, attack: attackRuntime({ specId: 'light', ...stance }) });
+    expect(poseFor(f)).toBe(expected);
+  });
+
+  it('gives all six a distinct frame', () => {
+    const poses = cases.map(([state, stance]) =>
+      poseFor(fighter({ state, attack: attackRuntime({ specId: 'light', ...stance }) })),
+    );
+    expect(new Set(poses).size).toBe(6);
+  });
+});
+
 describe('poseFor', () => {
   it('tells a forward walk from a backward one by which way it is moving', () => {
     expect(poseFor(fighter({ state: FighterState.WALK, vx: 100, facing: 1 }))).toBe('walkForward');

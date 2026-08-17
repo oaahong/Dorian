@@ -6,12 +6,12 @@ exports[`match played to a decision > reaches a winner and matches the recorded 
   "p1": {
     "hp": 0,
     "state": "KO",
-    "x": 528.7381,
+    "x": 307.9139,
   },
   "p2": {
-    "hp": 35.1507,
+    "hp": 52.1603,
     "state": "VICTORY",
-    "x": 701.7463,
+    "x": 520.618,
   },
   "phase": "ending",
   "round": 2,
@@ -19,18 +19,18 @@ exports[`match played to a decision > reaches a winner and matches the recorded 
     0,
     2,
   ],
-  "tick": 2724,
+  "tick": 2917,
 }
 `;
 
 exports[`one-player match against the CPU > replays identically, including every CPU decision 1`] = `
 [
-  "t150:cdaf0a9d",
-  "t300:5bf883ef",
-  "t450:56de59b6",
-  "t600:2d34265",
-  "t750:9d1dd436",
-  "t900:83719738",
+  "t150:e08a0e60",
+  "t300:69d332ae",
+  "t450:947c0faa",
+  "t600:cefbaf39",
+  "t750:3ca5721c",
+  "t900:c94aba72",
 ]
 `;
 
@@ -38,14 +38,14 @@ exports[`one-player match against the CPU > replays identically, including every
 {
   "matchWinner": null,
   "p1": {
-    "hp": 66.4192,
+    "hp": 64.3204,
     "state": "HEAVY_ATTACK",
-    "x": 529.0595,
+    "x": 385.9203,
   },
   "p2": {
     "hp": 100,
-    "state": "BLOCKSTUN",
-    "x": 722.77,
+    "state": "JUMP",
+    "x": 699.4375,
   },
   "phase": "fight",
   "round": 1,
@@ -59,28 +59,28 @@ exports[`one-player match against the CPU > replays identically, including every
 
 exports[`projectile and zone characters > matches the recorded checksum trail 1`] = `
 [
-  "t120:c6e52280",
-  "t240:fcaa4e8d",
-  "t360:2d7776b3",
-  "t480:ff4d84a5",
-  "t600:63b390de",
-  "t720:fd667599",
-  "t840:7240c49e",
+  "t120:6d656cda",
+  "t240:fba0ccf3",
+  "t360:f6329552",
+  "t480:b898bdfa",
+  "t600:b4e31e56",
+  "t720:3fbec2b3",
+  "t840:d1c5be46",
 ]
 `;
 
 exports[`two-player scripted match > matches the recorded checksum trail 1`] = `
 [
-  "t120:9088b6ce",
-  "t240:c77ccaf1",
-  "t360:c88362bd",
-  "t480:ded758cb",
-  "t600:5cc749ab",
-  "t720:f35fcbcb",
-  "t840:a1eddeef",
-  "t960:104559da",
-  "t1080:8ec50d6a",
-  "t1200:5de49fdd",
+  "t120:efe5b355",
+  "t240:116bfa88",
+  "t360:631525c4",
+  "t480:92f8a036",
+  "t600:761ee9da",
+  "t720:5bcfec88",
+  "t840:b1159ddb",
+  "t960:918d3396",
+  "t1080:1f0d392f",
+  "t1200:cd2d8989",
 ]
 `;
 
@@ -89,13 +89,13 @@ exports[`two-player scripted match > matches the recorded final state 1`] = `
   "matchWinner": null,
   "p1": {
     "hp": 14.9986,
-    "state": "LIGHT_ATTACK",
-    "x": 160.9074,
+    "state": "IDLE",
+    "x": 172.5741,
   },
   "p2": {
-    "hp": 100,
-    "state": "ULTIMATE",
-    "x": 765.0625,
+    "hp": 91.4952,
+    "state": "SPECIAL",
+    "x": 805.2981,
   },
   "phase": "fight",
   "round": 1,

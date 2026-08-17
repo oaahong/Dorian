@@ -2,9 +2,18 @@ import type {
   ArmorWindow,
   AttackKind,
   AttackSpec,
+  AttackType,
   InvulnerabilityWindow,
 } from '../combat/AttackSpec';
-import { HEAVY_ATTACK, LIGHT_ATTACK, THROW_ATTACK } from '../combat/AttackSpec';
+import {
+  CROUCH_HEAVY_ATTACK,
+  CROUCH_LIGHT_ATTACK,
+  HEAVY_ATTACK,
+  JUMP_HEAVY_ATTACK,
+  JUMP_LIGHT_ATTACK,
+  LIGHT_ATTACK,
+  THROW_ATTACK,
+} from '../combat/AttackSpec';
 import { allChargeLevels } from '../fighters/chargeSpecials';
 import { allSpecials } from '../fighters/FighterConfig';
 import { FIGHTERS } from '../fighters/fighterData';
@@ -29,6 +38,8 @@ export interface TickSpec {
   id: string;
   name: string;
   kind: AttackKind;
+  /** Always resolved; an unmarked move is a `mid`. */
+  attackType: AttackType;
 
   startupTicks: number;
   activeTicks: number;
@@ -87,6 +98,7 @@ export function toTickSpec(spec: AttackSpec): TickSpec {
     id: spec.id,
     name: spec.name,
     kind: spec.kind,
+    attackType: spec.attackType ?? 'mid',
 
     startupTicks: spec.startup,
     activeTicks: spec.active,
@@ -129,7 +141,25 @@ const EMPTY_WINDOWS: readonly InvulnerabilityWindow[] = Object.freeze([]);
 
 export const LIGHT_SPEC: TickSpec = toTickSpec(LIGHT_ATTACK);
 export const HEAVY_SPEC: TickSpec = toTickSpec(HEAVY_ATTACK);
+export const CROUCH_LIGHT_SPEC: TickSpec = toTickSpec(CROUCH_LIGHT_ATTACK);
+export const CROUCH_HEAVY_SPEC: TickSpec = toTickSpec(CROUCH_HEAVY_ATTACK);
+export const JUMP_LIGHT_SPEC: TickSpec = toTickSpec(JUMP_LIGHT_ATTACK);
+export const JUMP_HEAVY_SPEC: TickSpec = toTickSpec(JUMP_HEAVY_ATTACK);
 export const THROW_SPEC: TickSpec = toTickSpec(THROW_ATTACK);
+
+/**
+ * The six normals, indexed the way the state machine asks for them: by the stance
+ * the fighter is in and the button they pressed.
+ *
+ * A table rather than a chain of ifs because every stance must resolve to *some*
+ * normal — leaving one out would be a button that silently does nothing in one
+ * stance, which is the kind of gap that is only ever found by a player.
+ */
+export const NORMALS: Record<'stand' | 'crouch' | 'air', Record<'light' | 'heavy', TickSpec>> = {
+  stand: { light: LIGHT_SPEC, heavy: HEAVY_SPEC },
+  crouch: { light: CROUCH_LIGHT_SPEC, heavy: CROUCH_HEAVY_SPEC },
+  air: { light: JUMP_LIGHT_SPEC, heavy: JUMP_HEAVY_SPEC },
+};
 
 const REGISTRY = new Map<string, TickSpec>();
 
@@ -151,7 +181,17 @@ export function registerSpec(spec: AttackSpec): TickSpec {
   return resolved;
 }
 
-for (const spec of [LIGHT_SPEC, HEAVY_SPEC, THROW_SPEC]) REGISTRY.set(spec.id, spec);
+for (const spec of [
+  LIGHT_SPEC,
+  HEAVY_SPEC,
+  CROUCH_LIGHT_SPEC,
+  CROUCH_HEAVY_SPEC,
+  JUMP_LIGHT_SPEC,
+  JUMP_HEAVY_SPEC,
+  THROW_SPEC,
+]) {
+  REGISTRY.set(spec.id, spec);
+}
 for (const fighter of FIGHTERS) {
   for (const source of [...allSpecials(fighter), fighter.ultimate]) registerSpec(source);
 }

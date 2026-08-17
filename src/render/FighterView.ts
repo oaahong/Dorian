@@ -229,16 +229,28 @@ export function artFor(fighter: SimFighter): FighterArt {
  * and 'ko' directly. Every one of those coincides with a state the simulation
  * already records, so deriving is equivalent and keeps the view stateless.
  */
+/** Which of the three variants of a normal is on screen. */
+function normalPose(fighter: SimFighter, strength: 'light' | 'heavy'): PoseName {
+  const attack = fighter.attack;
+  if (attack?.airborne) return strength === 'light' ? 'jumpLight' : 'jumpHeavy';
+  if (attack?.crouching) return strength === 'light' ? 'crouchLight' : 'crouchHeavy';
+  return strength;
+}
+
 export function poseFor(fighter: SimFighter): PoseName {
   switch (fighter.state) {
     case FighterState.KO:
       return 'ko';
     case FighterState.VICTORY:
       return 'victory';
+    // Six normals, six poses. The stance is read off the attack rather than off
+    // the fighter's state, because a crouching normal leaves the state as
+    // LIGHT_ATTACK — the stance was decided when the move started and is frozen
+    // on it, which is also what the hitbox is built from.
     case FighterState.LIGHT_ATTACK:
-      return 'light';
+      return normalPose(fighter, 'light');
     case FighterState.HEAVY_ATTACK:
-      return 'heavy';
+      return normalPose(fighter, 'heavy');
     case FighterState.SPECIAL:
       return 'special';
     case FighterState.ULTIMATE:

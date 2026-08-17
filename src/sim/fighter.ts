@@ -1,7 +1,7 @@
 import { getFighterConfig } from '../fighters/fighterData';
 import type { FighterConfig } from '../fighters/FighterConfig';
 import { FighterState } from '../fighters/FighterState';
-import { getSpec, HEAVY_SPEC, LIGHT_SPEC, THROW_SPEC, type TickSpec } from './attackSpecs';
+import { getSpec, HEAVY_SPEC, NORMALS, THROW_SPEC, type TickSpec } from './attackSpecs';
 import {
   AIR_CONTROL_SCALE,
   ARENA_MAX_X,
@@ -62,6 +62,7 @@ export function createFighter(configId: string, x: number, facing: 1 | -1): SimF
     nextSpecialTick: 0,
     stunLockoutUntilTick: 0,
     guardHeld: false,
+    guardCrouching: false,
     prevButtons: 0,
     commandHistory: createCommandHistory(),
     /**
@@ -93,6 +94,7 @@ export function resetFighter(fighter: SimFighter, x: number, facing: 1 | -1): vo
   fighter.nextSpecialTick = 0;
   fighter.stunLockoutUntilTick = 0;
   fighter.guardHeld = false;
+  fighter.guardCrouching = false;
   fighter.prevButtons = 0;
   resetCommandHistory(fighter.commandHistory);
   fighter.downBufferedUntilTick = -1;
@@ -231,10 +233,18 @@ export function stepFighter(
   const away = opponent.x > fighter.x ? -1 : 1;
   const move = inputEnabled ? moveAxis(input) : 0;
   const crouch = inputEnabled && isDown(input, BUTTON.Down);
-  // A charge cannot be guarded out of — that is the risk that pays for its
-  // damage, and it is why any hit that arrives mid-charge simply lands.
+  /**
+   * A charge cannot be guarded out of — that is the risk that pays for its
+   * damage, and it is why any hit that arrives mid-charge simply lands.
+   *
+   * Holding down no longer cancels the guard. It used to, which meant crouching
+   * was purely a way to make yourself shorter and there was no low guard at all
+   * — so a `low` attack would have been unblockable by anyone rather than
+   * blockable by anyone crouching, which is the opposite of what it should mean.
+   */
   fighter.guardHeld =
-    inputEnabled && move === away && !crouch && fighter.state !== FighterState.H_CHARGING;
+    inputEnabled && move === away && fighter.state !== FighterState.H_CHARGING;
+  fighter.guardCrouching = fighter.guardHeld && crouch;
 
   // The crouch buffer lets a down press count toward the ultimate motion for a
   // few ticks after release. Tracked here rather than in the controller so that a
@@ -407,8 +417,8 @@ function processIntent(
   }
 
   if (isAirborne(fighter)) {
-    if (lightPressed) startAttack(fighter, LIGHT_SPEC, FighterState.LIGHT_ATTACK, false, true, player, events);
-    else if (heavyPressed) startAttack(fighter, HEAVY_SPEC, FighterState.HEAVY_ATTACK, false, true, player, events);
+    if (lightPressed) startAttack(fighter, NORMALS.air.light, FighterState.LIGHT_ATTACK, false, true, player, events);
+    else if (heavyPressed) startAttack(fighter, NORMALS.air.heavy, FighterState.HEAVY_ATTACK, false, true, player, events);
     if (!fighter.attack) {
       fighter.vx = move * speed * AIR_CONTROL_SCALE;
       fighter.state = FighterState.JUMP;
@@ -417,7 +427,9 @@ function processIntent(
   }
 
   const away = opponent.x > fighter.x ? -1 : 1;
-  if (move === away && !crouch && Math.abs(opponent.x - fighter.x) < BLOCK_STANCE_RANGE) {
+  if (move === away && Math.abs(opponent.x - fighter.x) < BLOCK_STANCE_RANGE) {
+    // Crouch-blocking is still BLOCK, not CROUCH: `guardCrouching` carries the
+    // height, so the guard reads the same to the hit resolver either way.
     fighter.state = FighterState.BLOCK;
     fighter.vx = 0;
     return;
@@ -468,12 +480,16 @@ function processIntent(
     startAttack(fighter, THROW_SPEC, FighterState.THROW, false, false, player, events);
     return;
   }
+  // Crouching no longer just shrinks the box the same normal comes out of: it
+  // selects a different move, which is what makes ducking an offensive choice
+  // rather than only a defensive one.
+  const stance = crouch ? 'crouch' : 'stand';
   if (lightPressed) {
-    startAttack(fighter, LIGHT_SPEC, FighterState.LIGHT_ATTACK, crouch, false, player, events);
+    startAttack(fighter, NORMALS[stance].light, FighterState.LIGHT_ATTACK, crouch, false, player, events);
     return;
   }
   if (heavyPressed) {
-    startAttack(fighter, HEAVY_SPEC, FighterState.HEAVY_ATTACK, crouch, false, player, events);
+    startAttack(fighter, NORMALS[stance].heavy, FighterState.HEAVY_ATTACK, crouch, false, player, events);
     return;
   }
   if (jumpPressed) {

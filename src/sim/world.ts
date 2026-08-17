@@ -662,6 +662,7 @@ export function checksum(world: SimWorld): number {
     h = hashFloat(h, fighter.nextSpecialTick);
     h = hashFloat(h, fighter.stunLockoutUntilTick);
     h = hashBool(h, fighter.guardHeld);
+    h = hashBool(h, fighter.guardCrouching);
     h = hashInt(h, fighter.prevButtons);
     h = hashInt(h, fighter.downBufferedUntilTick);
     h = hashInt(h, fighter.chargeTicks);

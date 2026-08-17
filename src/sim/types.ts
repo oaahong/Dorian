@@ -174,6 +174,15 @@ export interface SimFighter {
   stunLockoutUntilTick: number;
   /** Holding away from the opponent — recomputed every tick from the input. */
   guardHeld: boolean;
+  /**
+   * Guarding while also holding down — the low guard.
+   *
+   * Separate from `guardHeld` rather than inferred from `FighterState.CROUCH`,
+   * because a crouch-blocking fighter is in `BLOCK`, not `CROUCH`, and because it
+   * has to stay readable through `BLOCKSTUN` — that is exactly when a defender is
+   * deciding whether the next hit of the string is high or low.
+   */
+  guardCrouching: boolean;
   /** Previous tick's raw button mask, for rising-edge detection. */
   prevButtons: number;
   /**

@@ -66,6 +66,58 @@ describe('hitCategory', () => {
   });
 });
 
+describe('the high/low game', () => {
+  /**
+   * A guard is a *height*, not a switch. These four cases are the whole system:
+   * each guard answers one of the two heights and is beaten by the other, and
+   * everything else is answered by both.
+   */
+  const guarding = (crouching: boolean): SimFighter =>
+    defender({
+      state: FighterState.BLOCK,
+      guardHeld: true,
+      guardCrouching: crouching,
+    });
+
+  it('lets a crouching guard block a low and a standing guard not', () => {
+    const low = spec({ id: 'test-low', attackType: 'low' });
+    expect(hit(attacker(), guarding(true), low).result?.blocked).toBe(true);
+    expect(hit(attacker(), guarding(false), low).result?.blocked).toBe(false);
+  });
+
+  it('lets a standing guard block an overhead and a crouching guard not', () => {
+    const overhead = spec({ id: 'test-overhead', attackType: 'overhead' });
+    expect(hit(attacker(), guarding(false), overhead).result?.blocked).toBe(true);
+    expect(hit(attacker(), guarding(true), overhead).result?.blocked).toBe(false);
+  });
+
+  it('lets either guard block a mid', () => {
+    const mid = spec({ id: 'test-mid', attackType: 'mid' });
+    expect(hit(attacker(), guarding(false), mid).result?.blocked).toBe(true);
+    expect(hit(attacker(), guarding(true), mid).result?.blocked).toBe(true);
+  });
+
+  /**
+   * Guarding at the wrong height is not a partial block — it is no block. The
+   * defender eats the full hit and the hitstun, which is what makes guessing the
+   * mix-up wrong actually cost something.
+   */
+  it('applies a full clean hit when the guard is the wrong height', () => {
+    const low = spec({ id: 'test-low-damage', attackType: 'low' });
+    const wrong = guarding(false);
+    hit(attacker(), wrong, low);
+    expect(wrong.state).toBe(FighterState.HITSTUN);
+    expect(wrong.hp).toBeLessThan(MAX_HP);
+  });
+
+  /** A throw was never blockable at any height; the guard rule must not revive it. */
+  it('leaves throws unblockable by either guard', () => {
+    const grab = spec({ id: 'test-grab', unblockable: true, attackType: 'throw' });
+    expect(hit(attacker(), guarding(false), grab).result?.blocked).toBe(false);
+    expect(hit(attacker(), guarding(true), grab).result?.blocked).toBe(false);
+  });
+});
+
 describe('invulnerability windows', () => {
   // Registered for its side effect; the tests below reference it by id, the way
   // the simulation does.
