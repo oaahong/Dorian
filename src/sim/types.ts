@@ -152,7 +152,19 @@ export interface SimAttack {
   rehitReadyTick: number;
   /** How many hits this instance's armour window has already absorbed. */
   armorUsed: number;
+  /**
+   * Whether this attack has connected, and how.
+   *
+   * On the attack rather than on the fighter, so it is cleared by the act of
+   * starting the next move and cannot outlive the one it describes. Cancels read
+   * it: a cancel is permitted only by a move that actually touched someone, which
+   * is what stops mashing into thin air from being free.
+   */
+  result: MoveResult;
 }
+
+/** Whether an attack has connected yet, and how. */
+export type MoveResult = 'none' | 'hit' | 'block';
 
 export interface SimFighter {
   /** Looks up the immutable FighterConfig; never holds the config object itself. */
@@ -195,6 +207,16 @@ export interface SimFighter {
   commandHistory: CommandHistory;
   /** Absolute tick until which a crouch press still counts toward the ultimate. */
   downBufferedUntilTick: number;
+  /**
+   * Ticks left in a dash. Zero means the fighter is not dashing.
+   *
+   * A dash is committed movement, not an attack: it holds no `SimAttack`, so this
+   * counter is the only thing keeping it alive. Being hit ends it because hitstun
+   * replaces the state, which is the behaviour a dash should have anyway.
+   */
+  dashTicks: number;
+  /** Absolute tick at which the parry comes off its cooldown. */
+  nextParryTick: number;
   /**
    * Ticks the bare special button has been held while winding up.
    *

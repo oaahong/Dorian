@@ -172,8 +172,10 @@ describe('the movement slow', () => {
     stepFighter(self, opponent, BUTTON.Right, 0, true, 0, []);
     expect(self.vx).toBeCloseTo(full * SLOW_MOVE_MULTIPLIER, 10);
 
-    for (let i = 1; i < 4; i += 1) stepFighter(self, opponent, EMPTY_INPUT, i, true, 0, []);
-    stepFighter(self, opponent, BUTTON.Right, 5, true, 0, []);
+    // Long enough that the second press is not a double tap — two forward taps
+    // inside the leniency window are a dash, and a dash sets its own speed.
+    for (let i = 1; i < 12; i += 1) stepFighter(self, opponent, EMPTY_INPUT, i, true, 0, []);
+    stepFighter(self, opponent, BUTTON.Right, 12, true, 0, []);
     expect(self.vx).toBeCloseTo(full, 10);
   });
 

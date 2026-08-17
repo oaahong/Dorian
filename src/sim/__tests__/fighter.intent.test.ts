@@ -176,14 +176,40 @@ describe('intent priority', () => {
 
   it('prefers the ultimate over a normal attack', () => {
     const h = harness({ energy: MAX_ENERGY });
-    h.run(BUTTON.Down | BUTTON.Special | BUTTON.Light | BUTTON.Heavy);
+    h.run(BUTTON.Ultimate | BUTTON.Light | BUTTON.Down);
     expect(h.self.state).toBe(FighterState.ULTIMATE);
   });
 
-  it('prefers light over heavy when both are pressed', () => {
-    const h = harness();
+  /**
+   * The chords outrank everything, including the ultimate.
+   *
+   * They have to: Heavy+Special is also a Special, and Light+Special is also a
+   * Light. Read the single buttons first and the pairs become unreachable — the
+   * player asks for a parry and gets a jab, then eats the punish for it.
+   */
+  it('reads a button pair as its chord rather than as its halves', () => {
+    const impact = harness({ energy: MAX_ENERGY });
+    impact.run(BUTTON.Heavy | BUTTON.Special);
+    expect(impact.self.state).toBe(FighterState.MEME_IMPACT);
+
+    const parry = harness({ energy: MAX_ENERGY });
+    parry.run(BUTTON.Light | BUTTON.Special);
+    expect(parry.self.state).toBe(FighterState.MEME_PARRY);
+
+    const rush = harness({ energy: MAX_ENERGY });
+    rush.run(BUTTON.Light | BUTTON.Heavy);
+    expect(rush.self.state).toBe(FighterState.MEME_RUSH);
+  });
+
+  /**
+   * An unaffordable chord comes out as nothing rather than as a light. Falling
+   * through to the individual button would hand the player a move they did not
+   * ask for, at the exact moment they learn they are out of meter.
+   */
+  it('swallows a chord it cannot pay for', () => {
+    const h = harness({ energy: 0 });
     h.run(BUTTON.Light | BUTTON.Heavy);
-    expect(h.self.state).toBe(FighterState.LIGHT_ATTACK);
+    expect(h.self.state).toBe(FighterState.IDLE);
   });
 
   it('prefers an attack over a jump', () => {

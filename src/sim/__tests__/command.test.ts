@@ -6,6 +6,7 @@ import {
   QUARTER_CIRCLE_FORWARD,
   createCommandHistory,
   directionOf,
+  matchesChord,
   matchesDoubleTap,
   matchesMotion,
   recentFrames,
@@ -202,5 +203,59 @@ describe('matchesDoubleTap', () => {
     recordInput(h, NEUTRAL);
     recordInput(h, NEUTRAL);
     expect(matchesDoubleTap(h, 6, 1, 3)).toBe(false);
+  });
+});
+
+describe('matchesChord', () => {
+  const history = (...frames: number[]) => {
+    const h = createCommandHistory();
+    for (const frame of frames) recordInput(h, frame);
+    return h;
+  };
+  const LH = BUTTON.Light | BUTTON.Heavy;
+
+  it('matches two buttons pressed on the same tick', () => {
+    expect(matchesChord(history(EMPTY_INPUT, LH), BUTTON.Light, BUTTON.Heavy)).toBe(true);
+  });
+
+  it('matches two buttons pressed a couple of ticks apart', () => {
+    const h = history(BUTTON.Light, BUTTON.Light, LH);
+    expect(matchesChord(h, BUTTON.Light, BUTTON.Heavy)).toBe(true);
+  });
+
+  /**
+   * The window asks how recently *either* button arrived, not how long the first
+   * has been down. So holding one and adding the other later still chords — which
+   * is deliberate, and is what makes the pair reachable by a hand that rolls onto
+   * the second key rather than striking both at once.
+   */
+  it('chords a long-held button with a freshly pressed one', () => {
+    const h = history(BUTTON.Light, BUTTON.Light, BUTTON.Light, BUTTON.Light, BUTTON.Light, LH);
+    expect(matchesChord(h, BUTTON.Light, BUTTON.Heavy, 2)).toBe(true);
+  });
+
+  /** What the window does rule out: a press older than it, with nothing since. */
+  it('rejects a press that has aged out with no newer edge behind it', () => {
+    const h = history(EMPTY_INPUT, LH, LH, LH, LH, LH);
+    expect(matchesChord(h, BUTTON.Light, BUTTON.Heavy, 2)).toBe(false);
+  });
+
+  it('rejects one button alone', () => {
+    expect(matchesChord(history(BUTTON.Light), BUTTON.Light, BUTTON.Heavy)).toBe(false);
+  });
+
+  /**
+   * The rising edge is what makes a chord a single request. Holding both buttons
+   * would otherwise ask for the move on every tick of its own recovery, and the
+   * fighter would be locked in it until the player let go.
+   */
+  it('fires once rather than on every tick of a hold', () => {
+    const held = history(LH, LH, LH, LH, LH, LH);
+    expect(matchesChord(held, BUTTON.Light, BUTTON.Heavy)).toBe(false);
+  });
+
+  it('fires again after a release and a fresh press', () => {
+    const h = history(LH, LH, EMPTY_INPUT, LH);
+    expect(matchesChord(h, BUTTON.Light, BUTTON.Heavy)).toBe(true);
   });
 });

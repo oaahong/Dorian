@@ -56,20 +56,26 @@ describe('two-player scripted match', () => {
   // ultimate motion for both seats. The special is pressed for a single tick with
   // no motion behind it, which now winds up the chargeable special and releases it
   // at level 1 — the shortest, most common thing a real player does with it.
+  //
+  // The directions are *held* across a span of ticks rather than tapped on a
+  // modulus. Once dashes existed, a one-tick tap every third tick was a double tap
+  // by definition, so both fighters dashed for the entire match and never threw a
+  // punch — which is a fine thing for the simulation to do and a useless thing for
+  // a regression net to record.
   const script = (tick: number): [InputFrame, InputFrame] => {
     const p1 =
       tick % 53 === 0 ? BUTTON.Down | BUTTON.Special
       : tick % 31 === 0 ? BUTTON.Special
       : tick % 19 === 0 ? BUTTON.Heavy
       : tick % 7 === 0 ? BUTTON.Light
-      : tick % 3 === 0 ? BUTTON.Right
+      : tick % 12 < 6 ? BUTTON.Right
       : EMPTY_INPUT;
     const p2 =
       tick % 61 === 0 ? BUTTON.Down | BUTTON.Special
       : tick % 37 === 0 ? BUTTON.Special
       : tick % 23 === 0 ? BUTTON.Up
       : tick % 11 === 0 ? BUTTON.Heavy
-      : tick % 5 === 0 ? BUTTON.Left
+      : tick % 16 < 7 ? BUTTON.Left
       : EMPTY_INPUT;
     return [p1, p2];
   };

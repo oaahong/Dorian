@@ -367,6 +367,10 @@ function tryHit(
   attack.hitMask |= bit;
   attack.hitsUsed += 1;
   attack.rehitReadyTick = world.tick + spec.rehitTicks;
+  // Recorded on the attack so the cancel window knows the move earned its way in.
+  // An armoured hit still counts as a hit: the attacker connected, the defender
+  // merely refused to be interrupted by it.
+  attack.result = result.blocked ? 'block' : 'hit';
   applyHitStop(world, result.hitStopTicks);
 }
 
@@ -663,6 +667,8 @@ export function checksum(world: SimWorld): number {
     h = hashFloat(h, fighter.stunLockoutUntilTick);
     h = hashBool(h, fighter.guardHeld);
     h = hashBool(h, fighter.guardCrouching);
+    h = hashInt(h, fighter.dashTicks);
+    h = hashInt(h, fighter.nextParryTick);
     h = hashInt(h, fighter.prevButtons);
     h = hashInt(h, fighter.downBufferedUntilTick);
     h = hashInt(h, fighter.chargeTicks);
@@ -687,6 +693,16 @@ export function checksum(world: SimWorld): number {
       h = hashBool(h, attack.airborne);
       h = hashInt(h, attack.hitMask);
       h = hashBool(h, attack.presented);
+      /**
+       * The four fields below all decide what happens next — how much damage the
+       * next connect deals, when it may land, whether armour is spent, and whether
+       * a cancel is allowed — so two clients disagreeing about any of them diverge.
+       * They were missing, which made that divergence one nothing would report.
+       */
+      h = hashInt(h, attack.hitsUsed);
+      h = hashInt(h, attack.rehitReadyTick);
+      h = hashInt(h, attack.armorUsed);
+      h = hashString(h, attack.result);
     }
   }
 

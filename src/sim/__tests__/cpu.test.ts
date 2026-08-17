@@ -137,3 +137,42 @@ describe('behaviour', () => {
     expect(count('easy')).toBeGreaterThan(0);
   });
 });
+
+describe('guarding at a height', () => {
+  /**
+   * A stand-only CPU would make every crouching normal unblockable against it,
+   * which quietly deletes the high/low game from single player. It has to guess
+   * both ways — and it has to *only* guess, or the mix-up is unwinnable instead.
+   */
+  const guardHeights = (difficulty: Parameters<typeof play>[0], ticks = 4000) => {
+    const world = createWorld(setup);
+    const brain = new CpuBrain(1, difficulty, createRng(5));
+    let high = 0;
+    let low = 0;
+    for (let i = 0; i < ticks; i += 1) {
+      const cpu = brain.decide(world);
+      // Attack constantly, so the CPU has something to block.
+      stepWorld(world, [i % 24 < 2 ? BUTTON.Light : EMPTY_INPUT, cpu]);
+      const self = world.fighters[1];
+      if (self.guardHeld) {
+        if (self.guardCrouching) low += 1;
+        else high += 1;
+      }
+    }
+    return { high, low };
+  };
+
+  it('blocks both high and low rather than only standing', () => {
+    const { high, low } = guardHeights('normal');
+    expect(high).toBeGreaterThan(0);
+    expect(low).toBeGreaterThan(0);
+  });
+
+  it('splits its guard more evenly on hard than on easy', () => {
+    const share = (d: Parameters<typeof play>[0]) => {
+      const { high, low } = guardHeights(d);
+      return low / (high + low);
+    };
+    expect(share('hard')).toBeGreaterThan(share('easy'));
+  });
+});

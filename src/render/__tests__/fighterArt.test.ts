@@ -114,6 +114,42 @@ describe('the six normals', () => {
   });
 });
 
+describe('the meme moves and dashes', () => {
+  /**
+   * Five states that were added with the combo layer, each of which has to reach
+   * a frame that the match actually loads. A missing texture draws as a box
+   * rather than throwing, so nothing but an assertion catches it.
+   */
+  const cases: [FighterState, string][] = [
+    [FighterState.MEME_IMPACT, 'heavy'],
+    [FighterState.MEME_PARRY, 'block'],
+    [FighterState.MEME_RUSH, 'dashForward'],
+    [FighterState.DASH_FORWARD, 'dashForward'],
+    [FighterState.DASH_BACK, 'dashBack'],
+  ];
+
+  it.each(cases)('draws %s as %s', (state, expected) => {
+    expect(poseFor(fighter({ state }))).toBe(expected);
+  });
+
+  it('resolves each to a texture the match loads, for every fighter', () => {
+    for (const config of FIGHTERS) {
+      for (const [state] of cases) {
+        const key = artFor({ ...fighter({ state }), configId: config.id }).key;
+        const loaded = POSE_NAMES.map((pose) => poseTextureKey(config.id, pose));
+        expect(loaded, `${config.id} ${state}`).toContain(key);
+      }
+    }
+  });
+
+  /** A dash is movement; drawing it as a walk would hide that it is committed. */
+  it('tells the two dashes apart', () => {
+    expect(poseFor(fighter({ state: FighterState.DASH_FORWARD }))).not.toBe(
+      poseFor(fighter({ state: FighterState.DASH_BACK })),
+    );
+  });
+});
+
 describe('poseFor', () => {
   it('tells a forward walk from a backward one by which way it is moving', () => {
     expect(poseFor(fighter({ state: FighterState.WALK, vx: 100, facing: 1 }))).toBe('walkForward');

@@ -107,7 +107,10 @@ function isGuarding(fighter: SimFighter): boolean {
  */
 function guardAnswers(fighter: SimFighter, type: TickSpec['attackType']): boolean {
   if (type === 'low') return fighter.guardCrouching;
-  if (type === 'overhead') return !fighter.guardCrouching;
+  // Overheads and air attacks both come from above, and neither is answered by a
+  // low guard. Grouping them matches the upgraded build's table, where a crouching
+  // guard covers only Low, Mid and Projectile.
+  if (type === 'overhead' || type === 'air') return !fighter.guardCrouching;
   return true;
 }
 

@@ -103,6 +103,25 @@ export const SPEED_BY_STAT: Record<number, number> = {
   5: 340,
 };
 
+/**
+ * Dashes.
+ *
+ * Ten ticks, matching the upgraded build. The speeds are its per-frame figures
+ * (9.2 and 8.2 pixels a frame) expressed in this simulation's pixels-per-second,
+ * so a dash covers the same ground here as it does there. A dash is roughly twice
+ * a walk, which is what makes it worth the commitment.
+ *
+ * The speed stat scales dashes far more gently than it scales walking — a fast
+ * fighter walks 45% quicker than a slow one, but dashes only 12% quicker.
+ * Movement stats belong on the movement you can react to; a dash that also
+ * out-ranged everyone else's would make the stat decide the neutral game on its
+ * own.
+ */
+export const DASH_TICKS = 10;
+export const DASH_SPEED = 552;
+export const BACK_DASH_SPEED = 492;
+export const DASH_SPEED_BY_STAT = (stat: number): number => 0.94 + stat * 0.03;
+
 export const ATTACK_MULTIPLIER = (stat: number): number => 0.85 + stat * 0.07;
 export const RANGE_MULTIPLIER = (stat: number): number => 0.88 + stat * 0.055;
 export const CONTROL_RECOVERY_MULTIPLIER = (stat: number): number => 1.05 - stat * 0.025;

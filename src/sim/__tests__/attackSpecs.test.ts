@@ -113,9 +113,10 @@ describe('spec registry', () => {
       (total, fighter) => total + allSpecials(fighter).length + 1,
       0,
     );
-    // Six normals — a light and a heavy per stance — plus the universal throw are
-    // shared by everybody; the charge levels are three more per fighter.
-    expect(allSpecs()).toHaveLength(7 + rosterSpecs + allChargeLevels().length);
+    // Ten shared by everybody: six normals (a light and a heavy per stance), the
+    // universal throw, and the three meme moves. The charge levels are three more
+    // per fighter.
+    expect(allSpecs()).toHaveLength(10 + rosterSpecs + allChargeLevels().length);
   });
 
   it('resolves every id the roster references', () => {

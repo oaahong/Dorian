@@ -257,6 +257,15 @@ export function poseFor(fighter: SimFighter): PoseName {
       return 'ultimate';
     case FighterState.THROW:
       return 'throw';
+    case FighterState.MEME_IMPACT:
+      return 'heavy';
+    case FighterState.MEME_PARRY:
+      return 'block';
+    case FighterState.MEME_RUSH:
+    case FighterState.DASH_FORWARD:
+      return 'dashForward';
+    case FighterState.DASH_BACK:
+      return 'dashBack';
     case FighterState.BLOCK:
     case FighterState.BLOCKSTUN:
       return 'block';

@@ -45,6 +45,16 @@ interface DifficultyTuning {
   chargeCommitChance: number;
   minChargeTicks: number;
   maxChargeTicks: number;
+  /**
+   * How often a block is a *low* block.
+   *
+   * A guess, never a read. Reading the incoming attack's height would make the
+   * CPU unbeatable by the mix-up, which is the opposite of a difficulty knob —
+   * it removes an interaction rather than tightening one. What difficulty buys
+   * here is a guess closer to even: an easy CPU stands almost always and so eats
+   * every sweep, a hard one splits its guard and has to be genuinely mixed up.
+   */
+  crouchBlockChance: number;
 }
 
 const TUNING: Record<CpuDifficulty, DifficultyTuning> = {
@@ -52,16 +62,19 @@ const TUNING: Record<CpuDifficulty, DifficultyTuning> = {
     minDecisionTicks: msToTicks(430), maxDecisionTicks: msToTicks(560),
     blockChance: 0.2, specialChance: 0.15, heavyChance: 0.18, jumpChance: 0.08,
     chargeCommitChance: 0, minChargeTicks: 20, maxChargeTicks: 30,
+    crouchBlockChance: 0.15,
   },
   normal: {
     minDecisionTicks: msToTicks(280), maxDecisionTicks: msToTicks(360),
     blockChance: 0.4, specialChance: 0.32, heavyChance: 0.3, jumpChance: 0.13,
     chargeCommitChance: 0.3, minChargeTicks: 26, maxChargeTicks: 44,
+    crouchBlockChance: 0.3,
   },
   hard: {
     minDecisionTicks: msToTicks(165), maxDecisionTicks: msToTicks(225),
     blockChance: 0.6, specialChance: 0.45, heavyChance: 0.38, jumpChance: 0.18,
     chargeCommitChance: 0.5, minChargeTicks: 30, maxChargeTicks: 62,
+    crouchBlockChance: 0.45,
   },
 };
 
@@ -130,7 +143,19 @@ export class CpuBrain {
     let frame: InputFrame = EMPTY_INPUT;
 
     if (opponentAttacking && distance < 270 && nextFloat(this.rng) < tuning.blockChance) {
+      /**
+       * Guess a height rather than always standing.
+       *
+       * Not a read of the incoming move — that would be a CPU that never loses
+       * the mix-up, which is not an opponent, it is a wall. But it cannot be a
+       * pure stand either: once crouching normals existed, a CPU that only ever
+       * stand-blocked made every low in the game unblockable against it, and the
+       * whole high/low layer became a free hit in single player.
+       *
+       * So it guesses, and `crouchBlockChance` is how often it guesses low.
+       */
       frame = away;
+      if (nextFloat(this.rng) < tuning.crouchBlockChance) frame |= BUTTON.Down;
       this.holdUntilTick = tick + this.randomTicks(msToTicks(160), msToTicks(310));
     } else if (self.energy >= MAX_ENERGY && distance < 560 && nextFloat(this.rng) < 0.7) {
       // Down + Special is the ultimate motion.

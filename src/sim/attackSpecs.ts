@@ -3,10 +3,14 @@ import type {
   AttackKind,
   AttackSpec,
   AttackType,
+  CancelRule,
   InvulnerabilityWindow,
 } from '../combat/AttackSpec';
 import {
   CROUCH_HEAVY_ATTACK,
+  MEME_IMPACT,
+  MEME_PARRY,
+  MEME_RUSH,
   CROUCH_LIGHT_ATTACK,
   HEAVY_ATTACK,
   JUMP_HEAVY_ATTACK,
@@ -86,6 +90,10 @@ export interface TickSpec {
   hitStatus: { kind: 'slow'; ticks: number } | null;
   /** Cosmetic: the render layer trails fading copies while this attack runs. */
   afterimage: boolean;
+  /** Meter spent to start the move. Zero for everything that is free. */
+  meterCost: number;
+  /** Always resolved; an empty list means the move cannot be cancelled. */
+  cancels: readonly CancelRule[];
 }
 
 /** Matches the inline fallbacks in the original CombatSystem, in ticks. */
@@ -133,11 +141,14 @@ export function toTickSpec(spec: AttackSpec): TickSpec {
     selfStatus: spec.selfStatus ?? null,
     hitStatus: spec.hitStatus ?? null,
     afterimage: spec.afterimage ?? false,
+    meterCost: spec.meterCost ?? 0,
+    cancels: spec.cancels ?? EMPTY_CANCELS,
   };
 }
 
 /** Shared so every single-hit spec points at the same empty list rather than its own. */
 const EMPTY_WINDOWS: readonly InvulnerabilityWindow[] = Object.freeze([]);
+const EMPTY_CANCELS: readonly CancelRule[] = Object.freeze([]);
 
 export const LIGHT_SPEC: TickSpec = toTickSpec(LIGHT_ATTACK);
 export const HEAVY_SPEC: TickSpec = toTickSpec(HEAVY_ATTACK);
@@ -146,6 +157,14 @@ export const CROUCH_HEAVY_SPEC: TickSpec = toTickSpec(CROUCH_HEAVY_ATTACK);
 export const JUMP_LIGHT_SPEC: TickSpec = toTickSpec(JUMP_LIGHT_ATTACK);
 export const JUMP_HEAVY_SPEC: TickSpec = toTickSpec(JUMP_HEAVY_ATTACK);
 export const THROW_SPEC: TickSpec = toTickSpec(THROW_ATTACK);
+
+/**
+ * The three universal meme moves. Shared by the whole roster, like the normals,
+ * and named individually because the state machine reaches for each by hand.
+ */
+export const RUSH_SPEC: TickSpec = toTickSpec(MEME_RUSH);
+export const PARRY_SPEC: TickSpec = toTickSpec(MEME_PARRY);
+export const IMPACT_SPEC: TickSpec = toTickSpec(MEME_IMPACT);
 
 /**
  * The six normals, indexed the way the state machine asks for them: by the stance
@@ -189,6 +208,9 @@ for (const spec of [
   JUMP_LIGHT_SPEC,
   JUMP_HEAVY_SPEC,
   THROW_SPEC,
+  RUSH_SPEC,
+  PARRY_SPEC,
+  IMPACT_SPEC,
 ]) {
   REGISTRY.set(spec.id, spec);
 }

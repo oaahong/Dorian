@@ -246,7 +246,16 @@ exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`
 
 **Not yet ported**, in the order it makes sense to do it:
 
-1. **Ultimate voice audio.** The cut-in shows the line; there is no clip behind it,
+1. **Multi-phase ultimate timelines.** Each ultimate here is one burst plus a
+   staged cut-in. The upgraded build scripts them: alien sweeps low, then
+   vertically, then bombards, then covers the screen — four hitboxes with
+   different heights and timings — and salad, wizard, penguin, husky and ok have
+   their own shapes, including summons that outlive the move and a capture that
+   holds the opponent for forty frames. Porting them means splitting its
+   `UltimateAttack` in two, because there the hitboxes and the Phaser tweens that
+   draw them live in the same function; only the first half can cross into `sim`.
+
+2. **Ultimate voice audio.** The cut-in shows the line; there is no clip behind it,
    and there cannot be yet — the upgraded build referenced keys like
    `ult_alien_voice`, but no audio was ever delivered with it and there is none in
    `source-assets` or the pipeline archives. `AudioManager` synthesises everything
