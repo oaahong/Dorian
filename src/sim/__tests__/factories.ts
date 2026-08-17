@@ -19,6 +19,9 @@ export function attackRuntime(overrides: Partial<SimAttack> = {}): SimAttack {
     airborne: false,
     hitMask: 0,
     presented: false,
+    hitsUsed: 0,
+    rehitReadyTick: 0,
+    armorUsed: 0,
     ...overrides,
   };
 }

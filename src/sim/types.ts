@@ -143,6 +143,15 @@ export interface SimAttack {
   hitMask: number;
   /** Whether the ultimate's one-off presentation has already fired. */
   presented: boolean;
+  /**
+   * How many of the spec's `hits` have landed. Indexes the damage list, and once
+   * it reaches the end the attack can no longer connect.
+   */
+  hitsUsed: number;
+  /** Absolute tick from which a multi-hit attack may connect again. */
+  rehitReadyTick: number;
+  /** How many hits this instance's armour window has already absorbed. */
+  armorUsed: number;
 }
 
 export interface SimFighter {

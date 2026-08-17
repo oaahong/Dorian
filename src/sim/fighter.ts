@@ -410,6 +410,9 @@ function startAttack(
     airborne,
     hitMask: 0,
     presented: false,
+    hitsUsed: 0,
+    rehitReadyTick: 0,
+    armorUsed: 0,
   };
   events.push({ t: 'attackStart', player, specId: spec.id, state });
 }

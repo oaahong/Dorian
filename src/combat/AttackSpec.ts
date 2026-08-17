@@ -39,6 +39,43 @@ export type AttackKind =
   | 'ultimate-alien'
   | 'ultimate-magic';
 
+/**
+ * What a hit counts as, for the windows below.
+ *
+ * Derived from the attack rather than authored on it, so a move cannot claim to
+ * be a category it does not behave like — see `hitCategory` in the simulation.
+ */
+export type HitCategory = 'strike' | 'projectile' | 'throw' | 'airAttack';
+
+/** `'all'` covers every category, including throws. */
+export type HitCategoryFilter = HitCategory | 'all';
+
+/**
+ * A window during which the attacker cannot be hit at all by the listed
+ * category. Ticks are inclusive and measured from the first tick of the attack,
+ * so `from: 1` is the first startup frame.
+ */
+export interface InvulnerabilityWindow {
+  against: HitCategoryFilter;
+  from: number;
+  to: number;
+}
+
+/**
+ * A window that absorbs hits instead of being interrupted by them.
+ *
+ * Armour is not invulnerability: the damage still lands and the meter is still
+ * awarded, but the attack continues rather than being cancelled into hitstun.
+ * That is what makes an armoured approach a read rather than a free pass.
+ */
+export interface ArmorWindow {
+  against: HitCategoryFilter;
+  /** How many hits it eats before it is spent. */
+  hits: number;
+  from: number;
+  to: number;
+}
+
 export interface AttackSpec {
   id: string;
   name: string;
@@ -46,6 +83,7 @@ export interface AttackSpec {
   startup: number;
   active: number;
   recovery: number;
+  /** Total damage. For a multi-hit attack this is the sum of `hits`. */
   damage: number;
   hitstun: number;
   blockstun: number;
@@ -60,6 +98,21 @@ export interface AttackSpec {
   lifetime?: number;
   telegraph?: number;
   stunLockout?: number;
+
+  /**
+   * Damage of each hit of a multi-hit attack, in order. One connect applies one
+   * entry; the attack can then reconnect once `rehitTicks` have passed, until the
+   * list is used up.
+   */
+  hits?: number[];
+  /** Ticks between the hits of a multi-hit attack. */
+  rehitTicks?: number;
+  invulnerable?: InvulnerabilityWindow[];
+  armor?: ArmorWindow;
+  /** Throws: cannot be blocked, and cannot catch an airborne defender. */
+  unblockable?: boolean;
+  /** A knockdown the defender cannot recover from early. */
+  hardKnockdown?: boolean;
 }
 
 export const LIGHT_ATTACK: AttackSpec = {

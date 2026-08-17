@@ -1,4 +1,9 @@
-import type { AttackKind, AttackSpec } from '../combat/AttackSpec';
+import type {
+  ArmorWindow,
+  AttackKind,
+  AttackSpec,
+  InvulnerabilityWindow,
+} from '../combat/AttackSpec';
 import { HEAVY_ATTACK, LIGHT_ATTACK } from '../combat/AttackSpec';
 import { FIGHTERS } from '../fighters/fighterData';
 import {
@@ -46,6 +51,18 @@ export interface TickSpec {
   telegraphTicks: number;
   /** Only meaningful for `aura`; resolved to DEFAULT_STUN_LOCKOUT_TICKS. */
   stunLockoutTicks: number;
+
+  /**
+   * Damage of each hit, always at least one entry — a single-hit attack resolves
+   * to `[damage]`. Having one shape for both means the hit path never branches on
+   * whether an attack happens to be multi-hit.
+   */
+  hits: number[];
+  rehitTicks: number;
+  invulnerable: readonly InvulnerabilityWindow[];
+  armor: ArmorWindow | null;
+  unblockable: boolean;
+  hardKnockdown: boolean;
 }
 
 /** Matches the inline fallbacks in the original CombatSystem, in ticks. */
@@ -79,18 +96,45 @@ export function toTickSpec(spec: AttackSpec): TickSpec {
     lifetimeTicks: spec.lifetime ?? DEFAULT_PROJECTILE_LIFETIME_TICKS,
     telegraphTicks: spec.telegraph ?? DEFAULT_ZONE_TELEGRAPH_TICKS,
     stunLockoutTicks: spec.stunLockout ?? DEFAULT_STUN_LOCKOUT_TICKS,
+
+    hits: spec.hits ?? [spec.damage],
+    rehitTicks: spec.rehitTicks ?? 0,
+    invulnerable: spec.invulnerable ?? EMPTY_WINDOWS,
+    armor: spec.armor ?? null,
+    unblockable: spec.unblockable ?? false,
+    hardKnockdown: spec.hardKnockdown ?? false,
   };
 }
+
+/** Shared so every single-hit spec points at the same empty list rather than its own. */
+const EMPTY_WINDOWS: readonly InvulnerabilityWindow[] = Object.freeze([]);
 
 export const LIGHT_SPEC: TickSpec = toTickSpec(LIGHT_ATTACK);
 export const HEAVY_SPEC: TickSpec = toTickSpec(HEAVY_ATTACK);
 
 const REGISTRY = new Map<string, TickSpec>();
+
+/**
+ * Add a spec to the registry, resolving it on the way in.
+ *
+ * The registry is how the simulation turns the `specId` on a running attack back
+ * into frame data, and it has to answer for the *defender's* attack as well as
+ * the attacker's — invulnerability and armour are windows on the move the
+ * defender is in the middle of. That is why registration is a named operation
+ * rather than a module-load side effect: a spec that exists but was never
+ * registered resolves to a throw at the worst possible moment.
+ *
+ * Returns the resolved spec so a caller can register and keep it in one step.
+ */
+export function registerSpec(spec: AttackSpec): TickSpec {
+  const resolved = toTickSpec(spec);
+  REGISTRY.set(resolved.id, resolved);
+  return resolved;
+}
+
 for (const spec of [LIGHT_SPEC, HEAVY_SPEC]) REGISTRY.set(spec.id, spec);
 for (const fighter of FIGHTERS) {
-  for (const source of [fighter.special, fighter.ultimate]) {
-    REGISTRY.set(source.id, toTickSpec(source));
-  }
+  for (const source of [fighter.special, fighter.ultimate]) registerSpec(source);
 }
 
 /**

@@ -324,12 +324,25 @@ function tryHit(
   if (!attack) return;
 
   const bit = hitBit(defenderIndex);
-  if ((attack.hitMask & bit) !== 0) return;
+  if ((attack.hitMask & bit) !== 0) {
+    // Already connected. A multi-hit attack gets its mask cleared once the rehit
+    // gap has passed and it still has hits left to give.
+    const exhausted = attack.hitsUsed >= spec.hits.length;
+    if (exhausted || world.tick < attack.rehitReadyTick) return;
+    attack.hitMask &= ~bit;
+  }
   if (!rectsIntersect(box(), getHurtbox(defender))) return;
 
-  attack.hitMask |= bit;
   const result = resolveHit(attacker, defender, spec, world.tick, attackerIndex, events);
-  if (result) applyHitStop(world, result.hitStopTicks);
+  // A refused hit — invulnerable, or a throw against an airborne defender —
+  // leaves the mask alone, so the attack can still land later in its active
+  // window rather than being spent on a target it never touched.
+  if (!result) return;
+
+  attack.hitMask |= bit;
+  attack.hitsUsed += 1;
+  attack.rehitReadyTick = world.tick + spec.rehitTicks;
+  applyHitStop(world, result.hitStopTicks);
 }
 
 function wideUltimateBox(attacker: SimFighter, spec: TickSpec) {
