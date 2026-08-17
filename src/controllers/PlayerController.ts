@@ -1,70 +1,13 @@
-import * as Phaser from 'phaser';
-import type { Controller, FighterIntent } from './Controller';
-import { INPUT_BUFFER_MS } from '../utils/constants';
-
-interface PlayerKeyMap {
-  left: Phaser.Input.Keyboard.Key;
-  right: Phaser.Input.Keyboard.Key;
-  up: Phaser.Input.Keyboard.Key;
-  down: Phaser.Input.Keyboard.Key;
-  light: Phaser.Input.Keyboard.Key;
-  heavy: Phaser.Input.Keyboard.Key;
-  special: Phaser.Input.Keyboard.Key;
-}
-
+import Phaser from 'phaser';
+import type {Controller,FighterIntent,CombatAction} from './Controller';
+import {InputBuffer} from '../input/InputBuffer';
+import {CommandParser} from '../input/CommandParser';
+import type {InputSnapshot} from '../input/InputSnapshot';
 export class PlayerController implements Controller {
-  private readonly keys: PlayerKeyMap;
-  private lastDownPressedAt = -Infinity;
-
-  constructor(scene: Phaser.Scene, player: 1 | 2) {
-    const keyboard = scene.input.keyboard;
-    if (!keyboard) throw new Error('Keyboard input unavailable');
-
-    keyboard.enabled = true;
-
-    if (player === 1) {
-      this.keys = {
-        left: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
-        right: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
-        up: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
-        down: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
-        light: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F),
-        heavy: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G),
-        special: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H),
-      };
-    } else {
-      this.keys = {
-        left: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
-        right: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
-        up: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
-        down: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN),
-        light: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.J),
-        heavy: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K),
-        special: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.L),
-      };
-    }
-  }
-
-  update(nowMs: number): FighterIntent {
-    if (Phaser.Input.Keyboard.JustDown(this.keys.down)) this.lastDownPressedAt = nowMs;
-
-    const specialPressed = Phaser.Input.Keyboard.JustDown(this.keys.special);
-    const downBuffered = this.keys.down.isDown || nowMs - this.lastDownPressedAt <= INPUT_BUFFER_MS;
-    const left = this.keys.left.isDown;
-    const right = this.keys.right.isDown;
-
-    return {
-      move: left === right ? 0 : left ? -1 : 1,
-      crouch: this.keys.down.isDown,
-      jumpPressed: Phaser.Input.Keyboard.JustDown(this.keys.up),
-      lightPressed: Phaser.Input.Keyboard.JustDown(this.keys.light),
-      heavyPressed: Phaser.Input.Keyboard.JustDown(this.keys.heavy),
-      specialPressed: specialPressed && !downBuffered,
-      ultimatePressed: specialPressed && downBuffered,
-    };
-  }
-
-  reset(): void {
-    this.lastDownPressedAt = -Infinity;
-  }
+ readonly buffer=new InputBuffer();private prev:Record<string,boolean>={};private keys:Record<string,Phaser.Input.Keyboard.Key>;
+ constructor(scene:Phaser.Scene,player:1|2){const kb=scene.input.keyboard!;const codes=player===1?{up:'W',down:'S',left:'A',right:'D',light:'F',heavy:'G',special:'H',throwBtn:'R',ultimate:'T'}:{up:'UP',down:'DOWN',left:'LEFT',right:'RIGHT',light:'J',heavy:'K',special:'L',throwBtn:'U',ultimate:'I'};this.keys=Object.fromEntries(Object.entries(codes).map(([k,v])=>[k,kb.addKey(v)]));}
+ private snapshot(frame:number):InputSnapshot{const held=(k:string)=>this.keys[k].isDown;const values={up:held('up'),down:held('down'),left:held('left'),right:held('right'),light:held('light'),heavy:held('heavy'),special:held('special'),throwBtn:held('throwBtn'),ultimate:held('ultimate')};const pressed=new Set<string>(),released=new Set<string>();for(const [k,v] of Object.entries(values)){if(v&&!this.prev[k])pressed.add(k);if(!v&&this.prev[k])released.add(k);this.prev[k]=v;}return{frame,...values,pressed,released};}
+ tick(frame:number,facing:1|-1,airborne:boolean):FighterIntent{const s=this.snapshot(frame);this.buffer.push(s);let action:CombatAction=null;const chord=(a:'light'|'heavy'|'special',b:'light'|'heavy'|'special')=>s[a]&&s[b]&&(s.pressed.has(a)||s.pressed.has(b)||this.buffer.recent(3).some(x=>x.pressed.has(a)||x.pressed.has(b)));
+  if(chord('heavy','special'))action='impact';else if(chord('light','special'))action='parry';else if(chord('light','heavy'))action='rush';else if(s.pressed.has('throwBtn'))action=CommandParser.command(this.buffer,[2,3,6],facing,8)?'commandThrow':'throw';else if(s.pressed.has('special')){if(CommandParser.command(this.buffer,[6,2,3],facing,8))action='special3';else if(CommandParser.command(this.buffer,[2,1,4],facing,8))action='special2';else if(CommandParser.command(this.buffer,[2,2],facing,6))action='function';else if(CommandParser.command(this.buffer,[2,3,6],facing,8))action='special1';else action='specialH';}else if(s.pressed.has('light'))action='light';else if(s.pressed.has('heavy'))action='heavy';else if(CommandParser.doubleTap(this.buffer,6,facing))action='dashForward';else if(CommandParser.doubleTap(this.buffer,4,facing))action='dashBack';const back=facing===1?s.left:s.right;return{moveX:s.left&&!s.right?-1:s.right&&!s.left?1:0,crouch:s.down,jump:s.pressed.has('up')&&!airborne,guard:back,action,specialHeld:s.special,specialPressed:s.pressed.has('special'),specialReleased:s.released.has('special'),ultimateHeld:s.ultimate,ultimatePressed:s.pressed.has('ultimate'),ultimateReleased:s.released.has('ultimate')};}
+ debugHistory(){return this.buffer.recent(12).map(s=>{const d=s.up?'8':s.down?(s.left?'1':s.right?'3':'2'):s.left?'4':s.right?'6':'5';const b=[s.light?'L':'',s.heavy?'H':'',s.special?'S':'',s.throwBtn?'T':'',s.ultimate?'U':''].join('');return`${d}${b}`;}).join(' ');}reset(){this.buffer.clear();this.prev={};}
 }

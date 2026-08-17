@@ -1,0 +1,2 @@
+export interface InputSnapshot { frame:number; up:boolean;down:boolean;left:boolean;right:boolean;light:boolean;heavy:boolean;special:boolean;throwBtn:boolean;ultimate:boolean; pressed:Set<string>; released:Set<string>; }
+export const neutralSnapshot=(frame:number):InputSnapshot=>({frame,up:false,down:false,left:false,right:false,light:false,heavy:false,special:false,throwBtn:false,ultimate:false,pressed:new Set(),released:new Set()});

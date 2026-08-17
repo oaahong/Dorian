@@ -1,0 +1,2042 @@
+{
+  "alien": {
+    "A": {
+      "rect": [
+        15,
+        14,
+        301,
+        261
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "B": {
+      "rect": [
+        326,
+        14,
+        614,
+        261
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "C": {
+      "rect": [
+        638,
+        14,
+        926,
+        261
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "D": {
+      "rect": [
+        950,
+        14,
+        1238,
+        261
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "E": {
+      "rect": [
+        15,
+        325,
+        302,
+        572
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "F": {
+      "rect": [
+        326,
+        325,
+        614,
+        572
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "G": {
+      "rect": [
+        638,
+        325,
+        926,
+        572
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "H": {
+      "rect": [
+        950,
+        325,
+        1238,
+        572
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "I": {
+      "rect": [
+        15,
+        638,
+        301,
+        884
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "J": {
+      "rect": [
+        326,
+        638,
+        614,
+        884
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "K": {
+      "rect": [
+        638,
+        638,
+        926,
+        884
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "L": {
+      "rect": [
+        950,
+        638,
+        1238,
+        884
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "M": {
+      "rect": [
+        15,
+        949,
+        302,
+        1194
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "N": {
+      "rect": [
+        326,
+        949,
+        614,
+        1194
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "O": {
+      "rect": [
+        638,
+        949,
+        926,
+        1194
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "P": {
+      "rect": [
+        950,
+        949,
+        1238,
+        1194
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    }
+  },
+  "doge": {
+    "A": {
+      "rect": [
+        16,
+        14,
+        250,
+        271
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "B": {
+      "rect": [
+        254,
+        14,
+        487,
+        271
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "C": {
+      "rect": [
+        490,
+        14,
+        741,
+        271
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "D": {
+      "rect": [
+        745,
+        14,
+        1012,
+        271
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "E": {
+      "rect": [
+        1016,
+        14,
+        1237,
+        271
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "F": {
+      "rect": [
+        1241,
+        14,
+        1518,
+        271
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "G": {
+      "rect": [
+        16,
+        329,
+        250,
+        572
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "H": {
+      "rect": [
+        254,
+        329,
+        487,
+        572
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "I": {
+      "rect": [
+        490,
+        329,
+        741,
+        572
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "J": {
+      "rect": [
+        745,
+        329,
+        1012,
+        572
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "K": {
+      "rect": [
+        1016,
+        329,
+        1237,
+        572
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "L": {
+      "rect": [
+        1241,
+        329,
+        1518,
+        572
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "M": {
+      "rect": [
+        16,
+        630,
+        250,
+        890
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "N": {
+      "rect": [
+        254,
+        630,
+        487,
+        890
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "O": {
+      "rect": [
+        490,
+        630,
+        741,
+        890
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "P": {
+      "rect": [
+        745,
+        630,
+        1012,
+        890
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "Q": {
+      "rect": [
+        1016,
+        630,
+        1237,
+        890
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "R": {
+      "rect": [
+        1241,
+        630,
+        1518,
+        890
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    }
+  },
+  "ya": {
+    "A": {
+      "rect": [
+        18,
+        16,
+        298,
+        275
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "B": {
+      "rect": [
+        314,
+        16,
+        593,
+        275
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "C": {
+      "rect": [
+        610,
+        16,
+        888,
+        275
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "D": {
+      "rect": [
+        904,
+        16,
+        1216,
+        275
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "E": {
+      "rect": [
+        1233,
+        16,
+        1518,
+        275
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "F": {
+      "rect": [
+        18,
+        344,
+        298,
+        597
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "G": {
+      "rect": [
+        314,
+        344,
+        593,
+        597
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "H": {
+      "rect": [
+        610,
+        344,
+        888,
+        597
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "I": {
+      "rect": [
+        904,
+        344,
+        1181,
+        597
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "J": {
+      "rect": [
+        1198,
+        344,
+        1518,
+        597
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "K": {
+      "rect": [
+        18,
+        665,
+        347,
+        933
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "L": {
+      "rect": [
+        364,
+        665,
+        664,
+        933
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "M": {
+      "rect": [
+        681,
+        665,
+        1053,
+        933
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "N": {
+      "rect": [
+        1070,
+        665,
+        1518,
+        933
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    }
+  },
+  "tempura": {
+    "A": {
+      "rect": [
+        16,
+        15,
+        301,
+        250
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "B": {
+      "rect": [
+        327,
+        15,
+        613,
+        250
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "C": {
+      "rect": [
+        639,
+        15,
+        925,
+        250
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "D": {
+      "rect": [
+        951,
+        15,
+        1237,
+        250
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "E": {
+      "rect": [
+        16,
+        326,
+        301,
+        562
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "F": {
+      "rect": [
+        327,
+        326,
+        613,
+        562
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "G": {
+      "rect": [
+        639,
+        326,
+        925,
+        562
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "H": {
+      "rect": [
+        951,
+        326,
+        1237,
+        562
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "I": {
+      "rect": [
+        16,
+        639,
+        301,
+        851
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "J": {
+      "rect": [
+        327,
+        639,
+        613,
+        851
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "K": {
+      "rect": [
+        639,
+        639,
+        925,
+        851
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "L": {
+      "rect": [
+        951,
+        639,
+        1237,
+        851
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "M": {
+      "rect": [
+        16,
+        927,
+        301,
+        1161
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "N": {
+      "rect": [
+        327,
+        927,
+        613,
+        1161
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "O": {
+      "rect": [
+        639,
+        927,
+        925,
+        1161
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "P": {
+      "rect": [
+        951,
+        927,
+        1237,
+        1161
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    }
+  },
+  "goblin": {
+    "A": {
+      "rect": [
+        17,
+        14,
+        242,
+        196
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "B": {
+      "rect": [
+        266,
+        14,
+        484,
+        196
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "C": {
+      "rect": [
+        509,
+        14,
+        743,
+        196
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "D": {
+      "rect": [
+        768,
+        14,
+        991,
+        196
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "E": {
+      "rect": [
+        1015,
+        14,
+        1237,
+        196
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "F": {
+      "rect": [
+        17,
+        255,
+        241,
+        445
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "G": {
+      "rect": [
+        265,
+        255,
+        484,
+        445
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "H": {
+      "rect": [
+        508,
+        255,
+        744,
+        445
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "I": {
+      "rect": [
+        768,
+        255,
+        990,
+        445
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "J": {
+      "rect": [
+        1015,
+        255,
+        1237,
+        445
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "K": {
+      "rect": [
+        17,
+        506,
+        241,
+        696
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "L": {
+      "rect": [
+        265,
+        506,
+        484,
+        696
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "M": {
+      "rect": [
+        508,
+        506,
+        743,
+        696
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "N": {
+      "rect": [
+        768,
+        506,
+        990,
+        696
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "O": {
+      "rect": [
+        1015,
+        506,
+        1237,
+        696
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "P": {
+      "rect": [
+        17,
+        756,
+        241,
+        932
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "Q": {
+      "rect": [
+        265,
+        756,
+        484,
+        932
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "R": {
+      "rect": [
+        508,
+        756,
+        743,
+        932
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "S": {
+      "rect": [
+        768,
+        756,
+        990,
+        932
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "T": {
+      "rect": [
+        1015,
+        756,
+        1238,
+        932
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "U": {
+      "rect": [
+        111,
+        994,
+        405,
+        1186
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "V": {
+      "rect": [
+        430,
+        994,
+        761,
+        1186
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "W": {
+      "rect": [
+        785,
+        994,
+        1139,
+        1186
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    }
+  },
+  "salad": {
+    "A": {
+      "rect": [
+        16,
+        15,
+        206,
+        286
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "B": {
+      "rect": [
+        232,
+        15,
+        429,
+        286
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "C": {
+      "rect": [
+        455,
+        15,
+        642,
+        286
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "D": {
+      "rect": [
+        668,
+        15,
+        869,
+        286
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "E": {
+      "rect": [
+        896,
+        15,
+        1091,
+        286
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "F": {
+      "rect": [
+        16,
+        363,
+        206,
+        638
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "G": {
+      "rect": [
+        232,
+        363,
+        429,
+        638
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "H": {
+      "rect": [
+        455,
+        363,
+        642,
+        638
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "I": {
+      "rect": [
+        668,
+        363,
+        869,
+        638
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "J": {
+      "rect": [
+        896,
+        363,
+        1091,
+        638
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "K": {
+      "rect": [
+        16,
+        711,
+        206,
+        1008
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "L": {
+      "rect": [
+        232,
+        711,
+        429,
+        1008
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "M": {
+      "rect": [
+        455,
+        711,
+        642,
+        1008
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "N": {
+      "rect": [
+        668,
+        711,
+        869,
+        1008
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "O": {
+      "rect": [
+        896,
+        711,
+        1091,
+        1008
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "L2": {
+      "rect": [
+        16,
+        1088,
+        206,
+        1274
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "M2": {
+      "rect": [
+        232,
+        1088,
+        429,
+        1274
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "N2": {
+      "rect": [
+        455,
+        1088,
+        642,
+        1274
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "O2": {
+      "rect": [
+        668,
+        1088,
+        869,
+        1274
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "P": {
+      "rect": [
+        896,
+        1088,
+        1091,
+        1274
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    }
+  },
+  "wizard": {
+    "A": {
+      "rect": [
+        13,
+        12,
+        288,
+        237
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "B": {
+      "rect": [
+        304,
+        12,
+        583,
+        237
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "C": {
+      "rect": [
+        599,
+        12,
+        879,
+        237
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "D": {
+      "rect": [
+        894,
+        12,
+        1118,
+        237
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "E": {
+      "rect": [
+        1132,
+        12,
+        1378,
+        237
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "F": {
+      "rect": [
+        1393,
+        12,
+        1760,
+        237
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "G": {
+      "rect": [
+        13,
+        294,
+        288,
+        514
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "H": {
+      "rect": [
+        304,
+        294,
+        571,
+        514
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "I": {
+      "rect": [
+        586,
+        294,
+        879,
+        514
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "J": {
+      "rect": [
+        893,
+        294,
+        1169,
+        514
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "K": {
+      "rect": [
+        1184,
+        294,
+        1412,
+        514
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "L": {
+      "rect": [
+        1427,
+        294,
+        1760,
+        514
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "M": {
+      "rect": [
+        13,
+        571,
+        288,
+        823
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "N": {
+      "rect": [
+        304,
+        571,
+        571,
+        823
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "O": {
+      "rect": [
+        586,
+        571,
+        879,
+        823
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "P": {
+      "rect": [
+        893,
+        571,
+        1135,
+        823
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "Q": {
+      "rect": [
+        1150,
+        571,
+        1432,
+        823
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "R": {
+      "rect": [
+        1447,
+        571,
+        1760,
+        823
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    }
+  },
+  "blade": {
+    "A": {
+      "rect": [
+        14,
+        13,
+        291,
+        239
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "B": {
+      "rect": [
+        307,
+        13,
+        584,
+        239
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "C": {
+      "rect": [
+        600,
+        13,
+        878,
+        239
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "D": {
+      "rect": [
+        893,
+        13,
+        1171,
+        239
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "E": {
+      "rect": [
+        1187,
+        13,
+        1465,
+        239
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "F": {
+      "rect": [
+        1481,
+        13,
+        1758,
+        239
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "G": {
+      "rect": [
+        14,
+        297,
+        291,
+        523
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "H": {
+      "rect": [
+        307,
+        297,
+        584,
+        523
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "I": {
+      "rect": [
+        600,
+        297,
+        878,
+        523
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "J": {
+      "rect": [
+        893,
+        297,
+        1171,
+        523
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "K": {
+      "rect": [
+        1187,
+        297,
+        1465,
+        523
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "L": {
+      "rect": [
+        1481,
+        297,
+        1758,
+        523
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "M": {
+      "rect": [
+        14,
+        580,
+        291,
+        806
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "N": {
+      "rect": [
+        307,
+        580,
+        584,
+        806
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "O": {
+      "rect": [
+        600,
+        580,
+        878,
+        806
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "P": {
+      "rect": [
+        893,
+        580,
+        1171,
+        806
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "Q": {
+      "rect": [
+        1187,
+        580,
+        1465,
+        806
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "R": {
+      "rect": [
+        1480,
+        580,
+        1758,
+        806
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    }
+  },
+  "pink": {
+    "A": {
+      "rect": [
+        14,
+        34,
+        180,
+        265
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "B": {
+      "rect": [
+        196,
+        34,
+        372,
+        265
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "C": {
+      "rect": [
+        388,
+        34,
+        570,
+        265
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "D": {
+      "rect": [
+        586,
+        34,
+        794,
+        265
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "E": {
+      "rect": [
+        810,
+        34,
+        1040,
+        265
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "F": {
+      "rect": [
+        13,
+        332,
+        203,
+        560
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "G": {
+      "rect": [
+        219,
+        332,
+        399,
+        560
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "H": {
+      "rect": [
+        415,
+        332,
+        645,
+        560
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "I": {
+      "rect": [
+        661,
+        332,
+        838,
+        560
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "J": {
+      "rect": [
+        853,
+        332,
+        1040,
+        560
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "K": {
+      "rect": [
+        13,
+        630,
+        206,
+        854
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "L": {
+      "rect": [
+        220,
+        630,
+        410,
+        854
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "M": {
+      "rect": [
+        424,
+        630,
+        637,
+        854
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "N": {
+      "rect": [
+        652,
+        630,
+        847,
+        854
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "O": {
+      "rect": [
+        862,
+        630,
+        1040,
+        854
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "P": {
+      "rect": [
+        13,
+        928,
+        183,
+        1148
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "Q": {
+      "rect": [
+        199,
+        928,
+        387,
+        1148
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "R": {
+      "rect": [
+        403,
+        928,
+        627,
+        1148
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "S": {
+      "rect": [
+        643,
+        928,
+        825,
+        1148
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "T": {
+      "rect": [
+        841,
+        928,
+        1040,
+        1148
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "U": {
+      "rect": [
+        14,
+        1226,
+        353,
+        1478
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "V": {
+      "rect": [
+        369,
+        1226,
+        679,
+        1478
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "W": {
+      "rect": [
+        694,
+        1226,
+        1040,
+        1478
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    }
+  },
+  "sauce": {
+    "A": {
+      "rect": [
+        15,
+        15,
+        321,
+        269
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "B": {
+      "rect": [
+        338,
+        15,
+        641,
+        269
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "C": {
+      "rect": [
+        658,
+        15,
+        957,
+        269
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "D": {
+      "rect": [
+        974,
+        15,
+        1338,
+        269
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "E": {
+      "rect": [
+        1354,
+        15,
+        1603,
+        269
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "F": {
+      "rect": [
+        15,
+        325,
+        321,
+        556
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "G": {
+      "rect": [
+        338,
+        325,
+        641,
+        556
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "H": {
+      "rect": [
+        658,
+        325,
+        957,
+        556
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "I": {
+      "rect": [
+        974,
+        325,
+        1338,
+        556
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "J": {
+      "rect": [
+        1354,
+        325,
+        1603,
+        556
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "K": {
+      "rect": [
+        15,
+        614,
+        321,
+        888
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "L": {
+      "rect": [
+        338,
+        614,
+        641,
+        888
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "M": {
+      "rect": [
+        658,
+        614,
+        957,
+        888
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "N": {
+      "rect": [
+        974,
+        614,
+        1338,
+        888
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "O": {
+      "rect": [
+        1354,
+        614,
+        1603,
+        888
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    }
+  },
+  "scared": {
+    "A": {
+      "rect": [
+        17,
+        13,
+        236,
+        219
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "B": {
+      "rect": [
+        260,
+        13,
+        477,
+        219
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "C": {
+      "rect": [
+        501,
+        13,
+        714,
+        219
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "D": {
+      "rect": [
+        738,
+        13,
+        952,
+        219
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "E": {
+      "rect": [
+        975,
+        13,
+        1186,
+        219
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "F": {
+      "rect": [
+        1210,
+        13,
+        1429,
+        219
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "G": {
+      "rect": [
+        17,
+        283,
+        236,
+        490
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "H": {
+      "rect": [
+        260,
+        283,
+        477,
+        490
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "I": {
+      "rect": [
+        501,
+        283,
+        714,
+        490
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "J": {
+      "rect": [
+        738,
+        283,
+        952,
+        490
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "K": {
+      "rect": [
+        975,
+        283,
+        1186,
+        490
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "L": {
+      "rect": [
+        1210,
+        283,
+        1429,
+        490
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "M": {
+      "rect": [
+        17,
+        555,
+        236,
+        750
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "N": {
+      "rect": [
+        260,
+        555,
+        477,
+        750
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "O": {
+      "rect": [
+        501,
+        555,
+        714,
+        750
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "P": {
+      "rect": [
+        738,
+        555,
+        952,
+        750
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "Q": {
+      "rect": [
+        975,
+        555,
+        1186,
+        750
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "R": {
+      "rect": [
+        1210,
+        555,
+        1429,
+        750
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "S": {
+      "rect": [
+        162,
+        814,
+        417,
+        1023
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "T": {
+      "rect": [
+        442,
+        814,
+        693,
+        1023
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "U": {
+      "rect": [
+        717,
+        814,
+        976,
+        1023
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "V": {
+      "rect": [
+        1001,
+        814,
+        1244,
+        1023
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    }
+  },
+  "ok": {
+    "A": {
+      "rect": [
+        13,
+        15,
+        269,
+        221
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "B": {
+      "rect": [
+        286,
+        15,
+        541,
+        221
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "C": {
+      "rect": [
+        557,
+        15,
+        813,
+        221
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "D": {
+      "rect": [
+        829,
+        15,
+        1084,
+        221
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "E": {
+      "rect": [
+        1101,
+        15,
+        1356,
+        221
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "F": {
+      "rect": [
+        1373,
+        15,
+        1628,
+        221
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "G": {
+      "rect": [
+        1645,
+        15,
+        1900,
+        221
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "H": {
+      "rect": [
+        13,
+        282,
+        269,
+        488
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "I": {
+      "rect": [
+        286,
+        282,
+        541,
+        488
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "J": {
+      "rect": [
+        557,
+        282,
+        813,
+        488
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "K": {
+      "rect": [
+        829,
+        282,
+        1084,
+        488
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "L": {
+      "rect": [
+        1101,
+        282,
+        1356,
+        488
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "M": {
+      "rect": [
+        1373,
+        282,
+        1628,
+        488
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "N": {
+      "rect": [
+        1645,
+        282,
+        1900,
+        488
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "O": {
+      "rect": [
+        13,
+        549,
+        269,
+        756
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "P": {
+      "rect": [
+        286,
+        549,
+        541,
+        756
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "Q": {
+      "rect": [
+        557,
+        549,
+        813,
+        756
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "R": {
+      "rect": [
+        829,
+        549,
+        1084,
+        756
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "S": {
+      "rect": [
+        1101,
+        549,
+        1356,
+        756
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "T": {
+      "rect": [
+        1373,
+        549,
+        1628,
+        756
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    },
+    "U": {
+      "rect": [
+        1645,
+        549,
+        1900,
+        756
+      ],
+      "note": "measured source cell; caption/grid excluded"
+    }
+  }
+}

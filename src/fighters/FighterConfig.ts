@@ -1,25 +1,6 @@
-import type { AttackSpec } from '../combat/AttackSpec';
-
-export interface FighterPalette {
-  primary: number;
-  secondary: number;
-  accent: number;
-}
-
-export interface FighterConfig {
-  id: string;
-  number: string;
-  name: string;
-  shortName: string;
-  archetype: string;
-  tagline: string;
-  hpStat: number;
-  attackStat: number;
-  speedStat: number;
-  rangeStat: number;
-  controlStat: number;
-  cardTexture: string;
-  special: AttackSpec;
-  ultimate: AttackSpec;
-  palette: FighterPalette;
-}
+import type {MoveData,UltimateMoveData} from '../combat/MoveData';
+export interface Ratings { hp:number;attack:number;speed:number;range:number;control:number; }
+export interface FighterDesignProfile { archetype:string; neutralPlan:string;pressurePlan:string;defensePlan:string;antiAirPlan:string;punishPlan:string;resourcePlan:string;preferredRange:'close'|'mid'|'far'|'dynamic';primaryStrengths:string[];weaknesses:string[];cpuRules:CpuCharacterRules; }
+export interface CpuCharacterRules { desiredRange:number;aggression:number;retreat:number;projectileBias:number;throwBias:number;parryBias:number;armorBias:number;ultimateBias:number; }
+export interface RuntimeCharacterSheetProfile { fighterId:string;sourceTexture:string;poses:Record<string,{path:string}>;captionTrim?:number;backgroundRemoval?:{threshold:number;edgeConnected:boolean;feather:number}; }
+export interface FighterConfig { id:string;name:string;shortName:string;ratings:Ratings;archetype:string;designProfile:FighterDesignProfile;cardTexture:string;sheetProfile:RuntimeCharacterSheetProfile;movement:{walk:number;backWalk:number;dash:number;backDash:number;jumpX:number;jumpY:number};special1:MoveData;special2:MoveData;special3?:MoveData;functionMove:MoveData;ultimate:UltimateMoveData;palette:{primary:number;accent:number};damageTakenScalar:number; }

@@ -1,218 +1,98 @@
-import * as Phaser from 'phaser';
-import { Fighter } from '../fighters/Fighter';
-import { getFighterConfig } from '../fighters/fighterData';
-import { PlayerController } from '../controllers/PlayerController';
-import { CPUController } from '../controllers/CPUController';
-import type { Controller } from '../controllers/Controller';
-import { EMPTY_INTENT } from '../controllers/Controller';
-import { CombatSystem } from '../combat/CombatSystem';
-import { VFXManager } from '../systems/VFXManager';
-import { AudioManager } from '../systems/AudioManager';
-import { gameState } from '../systems/GameState';
-import { StageRenderer } from '../stages/StageRenderer';
-import { BattleHUD } from '../ui/BattleHUD';
-import { ARENA_MAX_X, ARENA_MIN_X, COLORS, FONT_FAMILY, GAME_HEIGHT, GAME_WIDTH, ROUND_TIME_MS } from '../utils/constants';
+import Phaser from 'phaser';
+import {CombatClock} from '../combat/CombatClock';
+import {CombatSystem,MEME_PARRY_MOVE,MEME_RUSH_MOVE} from '../combat/CombatSystem';
+import {COMMON_MOVES} from '../data/commonMoves';
+import {FIGHTER_BY_ID} from '../data/fighterData';
+import {FighterRuntime} from '../fighters/Fighter';
+import {FighterState} from '../fighters/FighterState';
+import type {MoveData,UltimateMoveData} from '../combat/MoveData';
+import type {Controller,FighterIntent,CombatAction} from '../controllers/Controller';
+import {neutralIntent} from '../controllers/Controller';
+import {PlayerController} from '../controllers/PlayerController';
+import {CPUController,type Difficulty} from '../controllers/CPUController';
+import type {MatchSetup} from '../systems/GameState';
+import {StageRenderer,type StageId} from '../stages/StageRenderer';
+import {VFXManager} from '../systems/VFXManager';
+import {BattleHUD} from '../ui/BattleHUD';
+import {DebugOverlay} from '../ui/DebugOverlay';
+import {audio} from '../systems/AudioManager';
+import {ChargeableSpecialH} from '../combat/ChargeableSpecialH';
+import {UltimateInputState} from '../combat/UltimateInputState';
+import {UltimateCutInManager} from '../combat/UltimateCutInManager';
+import {ULTIMATE_DEFINITIONS} from '../data/ultimateDefinitions';
+
+interface Pending {action:CombatAction;ttl:number;intent:FighterIntent;}
+const ACTION_BUFFER_FRAMES=4;
 
 export class BattleScene extends Phaser.Scene {
-  private world!: Phaser.GameObjects.Container;
-  private p1!: Fighter;
-  private p2!: Fighter;
-  private p1Controller!: Controller;
-  private p2Controller!: Controller;
-  private combat!: CombatSystem;
-  private vfx!: VFXManager;
-  private hud!: BattleHUD;
-  private roundTimeMs = ROUND_TIME_MS;
-  private roundNumber = 1;
-  private phase: 'intro' | 'fight' | 'ending' = 'intro';
-  private hitStopMs = 0;
-  private paused = false;
-  private pausePanel!: Phaser.GameObjects.Container;
-  private debugEnabled = false;
-  private debugGraphics!: Phaser.GameObjects.Graphics;
-  private debugText!: Phaser.GameObjects.Text;
-  private roundToken = 0;
-
-  constructor() { super('BattleScene'); }
-
-  create(): void {
-    this.roundTimeMs = ROUND_TIME_MS;
-    this.roundNumber = 1;
-    this.phase = 'intro';
-    this.hitStopMs = 0;
-    this.paused = false;
-    this.debugEnabled = false;
-    this.roundToken = 0;
-    this.cameras.main.setBackgroundColor(COLORS.bg);
-    this.world = this.add.container(0, 0);
-    StageRenderer.render(this, this.world, gameState.data.stage);
-
-    const p1Config = getFighterConfig(gameState.data.p1Character);
-    const p2Config = getFighterConfig(gameState.data.p2Character);
-    this.p1 = new Fighter(this, p1Config, 1, 350, 1);
-    this.p2 = new Fighter(this, p2Config, 2, 930, -1);
-    this.world.add([this.p1.sprite, this.p2.sprite]);
-
-    this.vfx = new VFXManager(this, this.world);
-    this.combat = new CombatSystem(this, this.vfx, this.world, (ms) => { this.hitStopMs = Math.max(this.hitStopMs, ms); });
-    this.p1Controller = new PlayerController(this, 1);
-    this.p2Controller = gameState.data.mode === 'cpu'
-      ? new CPUController(this.p2, this.p1, gameState.data.difficulty)
-      : new PlayerController(this, 2);
-    this.hud = new BattleHUD(this, this.p1, this.p2, gameState.data.mode === 'cpu' ? 'CPU' : 'P2');
-
-    this.debugGraphics = this.add.graphics().setDepth(1400).setVisible(false);
-    this.debugText = this.add.text(16, 116, '', { fontFamily:'monospace', fontSize:'14px', color:'#7CFF00', backgroundColor:'#000000aa', padding:{x:6,y:5} }).setDepth(1401).setVisible(false);
-    this.createPausePanel();
-    this.bindGlobalKeys();
-    this.beginRound();
-  }
-
-  update(time: number, delta: number): void {
-    if (this.paused) return;
-    const dt = Math.min(delta, 34);
-
-    if (this.hitStopMs > 0) {
-      this.hitStopMs -= dt;
-      this.hud.update(this.p1, this.p2, this.roundTimeMs, gameState.data.p1RoundWins, gameState.data.p2RoundWins);
-      this.drawDebug();
-      return;
-    }
-
-    if (this.phase === 'fight') {
-      const p1Intent = this.p1Controller.update(time);
-      const p2Intent = this.p2Controller.update(time);
-      this.p1.update(dt, p1Intent, this.p2, time, true);
-      this.p2.update(dt, p2Intent, this.p1, time, true);
-      this.resolvePushCollision();
-      this.combat.update(dt, time, this.p1, this.p2);
-      this.roundTimeMs = Math.max(0, this.roundTimeMs - dt);
-
-      if (this.p1.hp <= 0 || this.p2.hp <= 0) {
-        const winner: 0 | 1 | 2 = this.p1.hp <= 0 && this.p2.hp <= 0 ? 0 : this.p1.hp <= 0 ? 2 : 1;
-        this.endRound(winner, 'KO');
-      } else if (this.roundTimeMs <= 0) {
-        const diff = this.p1.hp - this.p2.hp;
-        this.endRound(Math.abs(diff) < .01 ? 0 : diff > 0 ? 1 : 2, 'TIME');
-      }
-    } else {
-      this.p1.update(dt, EMPTY_INTENT, this.p2, time, false);
-      this.p2.update(dt, EMPTY_INTENT, this.p1, time, false);
-      this.resolvePushCollision();
-    }
-
-    this.hud.update(this.p1, this.p2, this.roundTimeMs, gameState.data.p1RoundWins, gameState.data.p2RoundWins);
-    this.drawDebug();
-  }
-
-  private beginRound(): void {
-    this.roundToken += 1;
-    const token = this.roundToken;
-    this.phase = 'intro';
-    this.roundTimeMs = ROUND_TIME_MS;
-    this.hitStopMs = 0;
-    this.combat.clear();
-    this.p1Controller.reset(); this.p2Controller.reset();
-    this.p1.reset(350, 1); this.p2.reset(930, -1);
-    this.announce(`ROUND ${this.roundNumber}`, COLORS.cream, 58, 520);
-    this.time.delayedCall(620, () => {
-      if (token !== this.roundToken) return;
-      this.announce('CAT FIGHT!', COLORS.red, 72, 440);
-      AudioManager.play('heavy');
-      this.vfx.flash(COLORS.white, .2, 70);
-    });
-    this.time.delayedCall(1120, () => {
-      if (token !== this.roundToken) return;
-      this.phase = 'fight';
-    });
-  }
-
-  private endRound(winner: 0 | 1 | 2, reason: 'KO' | 'TIME'): void {
-    if (this.phase !== 'fight') return;
-    this.phase = 'ending';
-    this.roundToken += 1;
-    if (winner === 1) gameState.data.p1RoundWins += 1;
-    else if (winner === 2) gameState.data.p2RoundWins += 1;
-
-    if (reason === 'KO') {
-      AudioManager.play('ko');
-      this.vfx.hitSpark(winner === 1 ? this.p2.x : this.p1.x, (winner === 1 ? this.p2.y : this.p1.y) - 115, true, COLORS.red);
-      this.vfx.flash(COLORS.white, .72, 110);
-      this.vfx.shake(.018, 380);
-      this.announce('K.O.', COLORS.red, 110, 900);
-    } else this.announce(winner === 0 ? 'DRAW' : 'TIME!', winner === 0 ? COLORS.cream : COLORS.gold, 76, 850);
-
-    if (winner === 1) {
-      this.p1.forceVictory();
-      if (reason === 'TIME') this.p2.forceKO();
-    } else if (winner === 2) {
-      this.p2.forceVictory();
-      if (reason === 'TIME') this.p1.forceKO();
-    }
-
-    const matchOver = gameState.data.p1RoundWins >= 2 || gameState.data.p2RoundWins >= 2;
-    this.time.delayedCall(2350, () => {
-      if (matchOver) {
-        gameState.data.matchWinner = gameState.data.p1RoundWins >= 2 ? 1 : 2;
-        this.scene.start('ResultScene');
-      } else {
-        this.roundNumber += 1;
-        this.beginRound();
-      }
-    });
-  }
-
-  private resolvePushCollision(): void {
-    if (this.p1.isAirborne || this.p2.isAirborne) return;
-    const dx = this.p2.x - this.p1.x;
-    const minDistance = 86;
-    if (Math.abs(dx) >= minDistance || Math.abs(dx) < .01) return;
-    const direction = dx >= 0 ? 1 : -1;
-    const overlap = minDistance - Math.abs(dx);
-    this.p1.x = Phaser.Math.Clamp(this.p1.x - direction * overlap * .5, ARENA_MIN_X, ARENA_MAX_X);
-    this.p2.x = Phaser.Math.Clamp(this.p2.x + direction * overlap * .5, ARENA_MIN_X, ARENA_MAX_X);
-  }
-
-  private announce(text: string, color: number, size: number, duration: number): void {
-    const label = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 30, text, {
-      fontFamily:FONT_FAMILY, fontSize:`${size}px`, color:`#${color.toString(16).padStart(6,'0')}`, stroke:'#050505', strokeThickness:12,
-    }).setOrigin(.5).setDepth(1300).setScale(.4).setAlpha(0);
-    this.tweens.add({ targets:label, alpha:1, scale:1, duration:110, ease:'Back.easeOut', hold:Math.max(80,duration-220), yoyo:true, onComplete:()=>label.destroy() });
-  }
-
-  private createPausePanel(): void {
-    const shade = this.add.rectangle(GAME_WIDTH/2,GAME_HEIGHT/2,GAME_WIDTH,GAME_HEIGHT,0x000000,.78);
-    const title = this.add.text(GAME_WIDTH/2,300,'PAUSED',{fontFamily:FONT_FAMILY,fontSize:'68px',color:'#E9B928',stroke:'#050505',strokeThickness:9}).setOrigin(.5);
-    const help = this.add.text(GAME_WIDTH/2,390,'ESC  RESUME\nQ  MAIN MENU',{fontFamily:FONT_FAMILY,fontSize:'24px',color:'#F3E9D0',align:'center',lineSpacing:12}).setOrigin(.5);
-    this.pausePanel=this.add.container(0,0,[shade,title,help]).setDepth(2000).setVisible(false);
-  }
-
-  private bindGlobalKeys(): void {
-    const kb=this.input.keyboard; if(!kb)return;
-    const handler=(event:KeyboardEvent)=>{
-      const code=event.code;
-      if(code==='Escape'){this.paused=!this.paused;this.pausePanel.setVisible(this.paused);AudioManager.play('menu');}
-      else if(code==='KeyQ'&&this.paused){gameState.resetMatch();this.scene.start('ModeSelectScene');}
-      else if(code==='F2'){event.preventDefault();this.debugEnabled=!this.debugEnabled;this.debugGraphics.setVisible(this.debugEnabled);this.debugText.setVisible(this.debugEnabled);}
-      else if(code==='KeyM'){const muted=AudioManager.toggleMute();this.vfx.popup(muted?'MUTED':'SOUND ON',GAME_WIDTH/2,120,COLORS.cream,20);}
-    };
-    kb.on('keydown',handler);
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>kb.off('keydown',handler));
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>{this.combat.destroy();this.vfx.destroy();});
-  }
-
-  private drawDebug(): void {
-    if(!this.debugEnabled)return;
-    this.debugGraphics.clear();
-    this.debugGraphics.lineStyle(2,0x00ff66,.9);
-    [this.p1,this.p2].forEach((fighter)=>{
-      const h=fighter.getHurtbox(); this.debugGraphics.strokeRect(h.x,h.y,h.width,h.height);
-      if(fighter.currentAttack&&fighter.attackActive){const a=fighter.getMeleeHitbox(fighter.currentAttack.spec);this.debugGraphics.lineStyle(2,0xff3355,.9);this.debugGraphics.strokeRect(a.x,a.y,a.width,a.height);this.debugGraphics.lineStyle(2,0x00ff66,.9);}
-    });
-    this.debugText.setText([
-      `FPS ${this.game.loop.actualFps.toFixed(1)}  PHASE ${this.phase}  STAGE ${gameState.data.stage}`,
-      `P1 ${this.p1.state} HP=${this.p1.hp.toFixed(1)} E=${this.p1.memeEnergy.toFixed(0)} CD=${Math.max(0,this.p1.nextSpecialAt-this.time.now).toFixed(0)}ms`,
-      `P2 ${this.p2.state} HP=${this.p2.hp.toFixed(1)} E=${this.p2.memeEnergy.toFixed(0)} CD=${Math.max(0,this.p2.nextSpecialAt-this.time.now).toFixed(0)}ms`,
-    ]);
-  }
+ protected forceTraining=false;
+ private setup!:MatchSetup; private p1!:FighterRuntime; private p2!:FighterRuntime; private c1!:Controller; private c2!:Controller;
+ private clock=new CombatClock(); private combat!:CombatSystem; private vfx!:VFXManager; private hud!:BattleHUD; private debug!:DebugOverlay; private cutIn!:UltimateCutInManager;
+ private hCharge=new ChargeableSpecialH(); private ult1=new UltimateInputState(); private ult2=new UltimateInputState();
+ private pending1:Pending|null=null;private pending2:Pending|null=null;private roundWins:[number,number]=[0,0];private roundNo=1;private timerFrames=3600;private openingFrames=66;private phase:'opening'|'fight'|'roundEnd'='opening';private roundEndFrames=0;private roundWinner:0|1|2=0;private banner!:Phaser.GameObjects.Text;private dummyGuard:0|1|2=0;private instanceCounter=0;
+ constructor(key='BattleScene',forceTraining=false){super(key);this.forceTraining=forceTraining;}
+ init(data:{setup?:MatchSetup}){this.setup=data.setup??this.registry.get('matchSetup');if(this.forceTraining)this.setup={...this.setup,mode:'training'};}
+ create(){
+  const stages:StageId[]=['freezer','magicForest','diningTable'];StageRenderer.draw(this,this.setup.stage??stages[Phaser.Math.Between(0,2)]);
+  this.vfx=new VFXManager(this);this.p1=new FighterRuntime(this,FIGHTER_BY_ID[this.setup.p1],1,350);this.p2=new FighterRuntime(this,FIGHTER_BY_ID[this.setup.p2],2,930);this.p1.facing=1;this.p2.facing=-1;
+  this.combat=new CombatSystem(this,this.vfx);this.cutIn=new UltimateCutInManager(this);this.hud=new BattleHUD(this,this.p1,this.p2);this.debug=new DebugOverlay(this);this.banner=this.add.text(640,280,'',{fontFamily:'Impact, sans-serif',fontSize:'78px',color:'#ffffff',stroke:'#000000',strokeThickness:10}).setOrigin(.5).setDepth(110);
+  this.c1=new PlayerController(this,1);if(this.setup.mode==='local')this.c2=new PlayerController(this,2);else if(this.setup.mode==='cpu')this.c2=new CPUController(this.p2.config,()=>this.p2,()=>this.p1,this.setup.difficulty as Difficulty);else this.c2={reset:()=>{},tick:()=>({...neutralIntent(),moveX:0,crouch:this.dummyGuard===2,guard:this.dummyGuard>0})};
+  this.installHotkeys();this.resetRound(false);this.events.once('shutdown',()=>this.cleanup());
+ }
+ update(_time:number,delta:number){if(!this.cutIn?.isActive)this.clock.advance(delta,(frame)=>this.combatStep(frame));this.p1.syncVisual();this.p2.syncVisual();this.hud.update(this.timerFrames,this.roundWins[0],this.roundWins[1]);const dbgExtra=this.forceTraining?[`TRAINING ${this.clock.frozen?'FROZEN':'RUN'} | F3 freeze | F4 +1F | F5 reset | F6 guard: ${['OFF','STAND','CROUCH'][this.dummyGuard]}`,`P1 H ${this.hCharge.debug(this.p1)} | ULT ${this.ult1.state}`,`P2 H ${this.hCharge.debug(this.p2)} | ULT ${this.ult2.state}`,`P1 INPUT ${(this.c1 instanceof PlayerController)?this.c1.debugHistory():'-'}`,`P2 INPUT ${(this.c2 instanceof PlayerController)?this.c2.debugHistory():'-'}`]:[];this.debug.update(this.clock.frame,this.p1,this.p2,dbgExtra);}
+ private installHotkeys(){const kb=this.input.keyboard!;kb.on('keydown-F2',()=>{const on=this.debug.toggle();this.combat.debug=on});kb.on('keydown-ESC',()=>{this.clock.paused=!this.clock.paused;this.banner.setText(this.clock.paused?'PAUSED':'').setVisible(this.clock.paused)});kb.on('keydown-M',()=>{audio.toggle();this.vfx.callout(audio.muted?'MUTED':'SOUND ON',640,180,'#ffffff')});if(this.forceTraining){kb.on('keydown-F3',()=>{this.clock.frozen=!this.clock.frozen});kb.on('keydown-F4',()=>this.clock.stepOnce());kb.on('keydown-F5',()=>this.resetRound(true));kb.on('keydown-F6',()=>{this.dummyGuard=((this.dummyGuard+1)%3) as 0|1|2});}this.events.once('shutdown',()=>kb.removeAllListeners());}
+ private combatStep(frame:number){
+  if(this.phase==='roundEnd'){this.roundEndFrames++;if(this.roundEndFrames===30)this.clock.timeScale=1;if(this.roundEndFrames===28&&this.roundWinner){const w=this.roundWinner===1?this.p1:this.p2;if(w.hp>0)w.enterState(FighterState.VICTORY);}if(this.roundEndFrames>=92){if(this.forceTraining){this.resetRound(true);return;}if(this.roundWins[0]>=2||this.roundWins[1]>=2||(this.roundNo>=3&&this.roundWinner===0)){this.finishMatch();return;}this.roundNo++;this.resetRound(false);}this.p1.syncVisual();this.p2.syncVisual();return;}
+  this.p1.tickExisting();this.p2.tickExisting();this.updateFacing();
+  const i1=this.c1.tick(frame,this.p1.facing,this.p1.airborne);const i2=this.c2.tick(frame,this.p2.facing,this.p2.airborne);this.p1.guardHeld=i1.guard;this.p1.crouchHeld=i1.crouch;this.p2.guardHeld=i2.guard;this.p2.crouchHeld=i2.crouch;
+  if(this.c1 instanceof PlayerController&&this.ult1.tick(this.p1,i1))i1.action='ultimate';
+  if(this.c2 instanceof PlayerController&&this.ult2.tick(this.p2,i2))i2.action='ultimate';
+  this.hCharge.tick(this.p1,i1,(move)=>this.start(this.p1,move,FighterState.H_SPECIAL,this.newInstance()));
+  this.hCharge.tick(this.p2,i2,(move)=>this.start(this.p2,move,FighterState.H_SPECIAL,this.newInstance()));
+  if(this.hCharge.isCharging(this.p1))i1.action=null;if(this.hCharge.isCharging(this.p2))i2.action=null;
+  if(i1.action==='throw'||i1.action==='commandThrow')this.p1.lastThrowInputFrame=frame;if(i2.action==='throw'||i2.action==='commandThrow')this.p2.lastThrowInputFrame=frame;
+  this.pending1=this.refreshPending(this.pending1,i1);this.pending2=this.refreshPending(this.pending2,i2);
+  if(this.phase==='opening'){this.openingFrames--;this.banner.setVisible(true).setText(this.openingFrames>30?`ROUND ${this.roundNo}`:'MEME FIGHT!');this.processPending(this.p1,this.pending1,true);this.processPending(this.p2,this.pending2,true);if(this.openingFrames<=0){this.phase='fight';this.banner.setVisible(false);}this.syncUltimateMeters(i1,i2);return;}
+  if(!this.forceTraining)this.timerFrames=Math.max(0,this.timerFrames-1);
+  this.pending1=this.processPending(this.p1,this.pending1,false);this.pending2=this.processPending(this.p2,this.pending2,false);
+  this.p1.applyIntent(i1,()=>this.newInstance(),false);this.p2.applyIntent(i2,()=>this.newInstance(),false);
+  this.combat.tick(this.p1,this.p2,frame);
+  if(this.forceTraining){this.p1.hp=100;this.p2.hp=100;this.p1.meter=100;this.p2.meter=100;}
+  this.syncUltimateMeters(i1,i2);
+  if(this.ult1.state==='ULTIMATE_GAMEPLAY'&&!this.combat.hasUltimate(this.p1))this.ult1.reset();
+  if(this.ult2.state==='ULTIMATE_GAMEPLAY'&&!this.combat.hasUltimate(this.p2))this.ult2.reset();
+  if(!this.forceTraining&&(this.p1.hp<=0||this.p2.hp<=0||this.timerFrames<=0))this.beginRoundEnd();
+ }
+ private syncUltimateMeters(i1:FighterIntent,i2:FighterIntent){if(this.c1 instanceof PlayerController)this.ult1.syncAfterExternalMeterChange(this.p1,i1.ultimateHeld);if(this.c2 instanceof PlayerController)this.ult2.syncAfterExternalMeterChange(this.p2,i2.ultimateHeld);}
+ private refreshPending(old:Pending|null,intent:FighterIntent){if(intent.action)return {action:intent.action,ttl:intent.action==='specialH'?1:ACTION_BUFFER_FRAMES+1,intent:{...intent}};if(!old)return null;if(old.action==='specialH')return null;old.ttl--;return old.ttl>0?old:null;}
+ private processPending(f:FighterRuntime,p:Pending|null,locked:boolean):Pending|null{if(!p)return null;if(locked)return p;if(this.tryCancel(f,p.action,p.intent))return null;const can=f.canAct()||(f.airborne&&!f.currentMove&&f.state===FighterState.JUMP);if(!can)return p;if(this.executeAction(f,p.action,p.intent))return null;return null;}
+ private tryCancel(f:FighterRuntime,action:CombatAction,intent:FighterIntent){if(!f.currentMove)return false;const m=f.currentMove;
+  if(action==='rush'&&['hit','block'].includes(f.moveResult)){const normal=['standingLight','standingHeavy','crouchingLight','crouchingHeavy'].includes(m.id);if(normal&&f.spendMeter(20)){f.currentMove=null;return this.start(f,{...MEME_RUSH_MOVE,pose:f.config.id==='alien'?5:6},FighterState.MEME_RUSH,this.newInstance());}}
+  if(action&&['special1','special2','special3','function'].includes(action)){const rule=m.cancelRules?.find(r=>r.into==='special'&&(r.condition==='always'||r.condition==='onHitOrBlock'&&['hit','block'].includes(f.moveResult)||r.condition==='onHit'&&f.moveResult==='hit'||r.condition==='onBlock'&&f.moveResult==='block'));if(rule){f.currentMove=null;return this.executeAction(f,action,intent);}}
+  if(action==='ultimate'&&f.moveResult==='hit'&&!['standingLight','standingHeavy','crouchingLight','crouchingHeavy','jumpLight','jumpHeavy'].includes(m.id)&&f.meter>=100){f.currentMove=null;return this.executeAction(f,'ultimate',intent);}return false;
+ }
+ private start(f:FighterRuntime,m:MoveData,state:FighterState,id:string){const reversal=f.wakeupReversalFrames>0;const ok=f.startMove(m,state,id);if(ok&&reversal){f.wakeupReversalFrames=0;this.vfx.callout('REVERSAL',f.x,f.y-235,'#ff9f5a');}return ok;}
+ private normal(f:FighterRuntime,key:keyof typeof COMMON_MOVES,pose:number){const base=COMMON_MOVES[key];return {...base,pose:f.config.id==='alien'?pose+2:pose};}
+ private executeAction(f:FighterRuntime,action:CombatAction,intent:FighterIntent){if(!action)return false;const id=this.newInstance();
+  if(action==='dashForward')return f.startDash(true);if(action==='dashBack')return f.startDash(false);
+  if(action==='light'){let m=f.airborne?this.normal(f,'jumpLight',12):intent.crouch?this.normal(f,'crouchingLight',10):this.normal(f,'standingLight',8);if(!f.airborne&&!intent.crouch&&f.installType==='DUAL_HEAVY')m={...m,id:'blade-install-f',name:'Install Wide Horizontal Slash',startup:7,active:4,recovery:18,damage:11,hitstun:18,blockstun:14,pushbackX:72,range:185,hitstopAttacker:5,hitstopVictim:8};else if(!f.airborne&&!intent.crouch&&f.installType==='REAL_FACE')m={...m,id:'pink-real-slap',name:'Fast Real-Face Slap',startup:3,active:3,recovery:10,damage:7,hitstun:13,blockstun:8,pushbackX:30,range:122};const st=f.airborne?FighterState.JUMP_LIGHT:intent.crouch?FighterState.CROUCHING_LIGHT:FighterState.STANDING_LIGHT;return this.start(f,m,st,id);}
+  if(action==='heavy'){let m=f.airborne?this.normal(f,'jumpHeavy',13):intent.crouch?this.normal(f,'crouchingHeavy',11):this.normal(f,'standingHeavy',9);if(!f.airborne&&!intent.crouch&&f.installType==='DUAL_HEAVY')m={...m,id:'blade-install-g',name:'Install Heavy Downward Slash',startup:13,active:5,recovery:28,damage:15,hitstun:22,blockstun:18,pushbackX:112,range:198,hitstopAttacker:7,hitstopVictim:10,hardKnockdown:true};else if(!f.airborne&&!intent.crouch&&f.installType==='REAL_FACE')m={...m,id:'pink-real-belly',name:'Heavy Belly Bump',startup:8,active:4,recovery:19,damage:10,hitstun:18,blockstun:11,pushbackX:82,range:158,hitstopVictim:8};const st=f.airborne?FighterState.JUMP_HEAVY:intent.crouch?FighterState.CROUCHING_HEAVY:FighterState.STANDING_HEAVY;return this.start(f,m,st,id);}
+  if(action==='throw'){if(f.airborne)return false;return this.start(f,{...COMMON_MOVES.throw,pose:f.config.id==='alien'?22:18},FighterState.THROW,id);}
+  if(action==='commandThrow'){if(f.airborne)return false;if(f.config.special1.kind==='commandThrow')return this.start(f,f.config.special1,FighterState.SPECIAL_1,id);return this.start(f,{...COMMON_MOVES.throw,pose:f.config.id==='alien'?22:18},FighterState.THROW,id);}
+  if(action==='specialH')return intent.specialHeld?this.hCharge.begin(f):false;
+  if(action==='special1')return this.start(f,f.config.special1,FighterState.SPECIAL_1,id);if(action==='special2')return this.start(f,f.config.special2,FighterState.SPECIAL_2,id);if(action==='special3'){if(!f.config.special3)return false;return this.start(f,f.config.special3,FighterState.SPECIAL_3,id);}if(action==='function')return this.start(f,f.config.functionMove,FighterState.FUNCTION_MOVE,id);
+  if(action==='impact'){if(!f.spendMeter(25)){this.vfx.callout('NOT ENOUGH MEME',f.x,f.y-230,'#ff7a7a');return false;}return this.start(f,{...COMMON_MOVES.memeImpact,pose:f.config.id==='alien'?11:9},FighterState.MEME_IMPACT,id);}if(action==='parry'){if(f.cooldowns.has('meme-parry'))return false;return this.start(f,{...MEME_PARRY_MOVE,pose:f.config.id==='alien'?8:14},FighterState.MEME_PARRY,id);}if(action==='rush')return this.start(f,{...MEME_RUSH_MOVE,pose:f.config.id==='alien'?5:6},FighterState.MEME_RUSH,id);
+  if(action==='ultimate')return this.startUltimate(f,intent,id);return false;
+ }
+ private startUltimate(f:FighterRuntime,_intent:FighterIntent,id:string){if(f.meter<100){this.vfx.callout('NOT ENOUGH MEME',f.x,f.y-230,'#ff7a7a');return false;}if(this.cutIn.isActive||this.combat.hasUltimate(f))return false;const m=f.config.ultimate as UltimateMoveData;const foe=f===this.p1?this.p2:this.p1;if(!this.start(f,m,FighterState.ULTIMATE,id))return false;if(!f.spendMeter(100)){f.currentMove=null;f.enterState(FighterState.IDLE);return false;}const def=ULTIMATE_DEFINITIONS[f.config.id];const gate=f===this.p1?this.ult1:this.ult2;if((f===this.p1&&this.c1 instanceof PlayerController)||(f===this.p2&&this.c2 instanceof PlayerController))gate.setRuntime('ULTIMATE_CUTIN');f.statuses.set('ultimateCutIn',999);
+  const started=this.cutIn.start(f,def,()=>{f.statuses.delete('ultimateCutIn');if(this.phase==='roundEnd'||f.hp<=0){f.currentMove=null;f.enterState(FighterState.IDLE);if((f===this.p1&&this.c1 instanceof PlayerController)||(f===this.p2&&this.c2 instanceof PlayerController))gate.reset();return;}if((f===this.p1&&this.c1 instanceof PlayerController)||(f===this.p2&&this.c2 instanceof PlayerController))gate.setRuntime('ULTIMATE_GAMEPLAY');this.combat.startUltimate(f,m,foe);});
+  if(!started){f.statuses.delete('ultimateCutIn');f.gainMeter(100);f.currentMove=null;f.enterState(FighterState.IDLE);gate.reset();return false;}return true;
+ }
+ private updateFacing(){if(this.p1.x<this.p2.x){this.p1.facing=1;this.p2.facing=-1}else{this.p1.facing=-1;this.p2.facing=1}}
+ private abortTemporaryCombat(){this.cutIn?.abort();this.combat?.clear();this.hCharge.reset();this.ult1.reset();this.ult2.reset();this.p1?.statuses.delete('ultimateCutIn');this.p2?.statuses.delete('ultimateCutIn');this.p1?.exitInstall();this.p2?.exitInstall();}
+ private beginRoundEnd(){if(this.phase==='roundEnd')return;this.phase='roundEnd';this.abortTemporaryCombat();this.roundEndFrames=0;let winner:0|1|2=0;if(this.p1.hp<=0&&this.p2.hp<=0)winner=0;else if(this.p1.hp<=0)winner=2;else if(this.p2.hp<=0)winner=1;else if(this.p1.hp>this.p2.hp)winner=1;else if(this.p2.hp>this.p1.hp)winner=2;this.roundWinner=winner;if(winner===1)this.roundWins[0]++;if(winner===2)this.roundWins[1]++;this.banner.setVisible(true).setText(this.p1.hp<=0||this.p2.hp<=0?'K.O.':winner?'TIME OVER':'DRAW');this.p1.hitstop=Math.max(this.p1.hitstop,8);this.p2.hitstop=Math.max(this.p2.hitstop,8);if(this.p1.hp<=0||this.p2.hp<=0)this.clock.timeScale=.35;audio.beep('ko');}
+ private resetRound(training:boolean){this.clock.timeScale=1;this.abortTemporaryCombat();this.p1.reset(350);this.p2.reset(930);this.c1.reset();this.c2.reset();this.pending1=this.pending2=null;this.timerFrames=3600;this.openingFrames=training?0:66;this.phase=training?'fight':'opening';this.banner.setVisible(!training);if(training){this.p1.meter=this.p2.meter=100;this.ult1.syncAfterExternalMeterChange(this.p1,false);this.ult2.syncAfterExternalMeterChange(this.p2,false);this.banner.setText('')}else this.banner.setText(`ROUND ${this.roundNo}`);}
+ private finishMatch(){this.abortTemporaryCombat();const winner:0|1|2=this.roundWins[0]===this.roundWins[1]?0:this.roundWins[0]>this.roundWins[1]?1:2;this.registry.set('matchResult',{winner,setup:this.setup,wins:[...this.roundWins]});this.scene.start('ResultScene');}
+ private newInstance(){return `a${++this.instanceCounter}-${this.clock.frame}`;}
+ private cleanup(){this.abortTemporaryCombat();this.hud?.destroy();this.debug?.destroy();this.p1?.destroy();this.p2?.destroy();this.combat?.destroy();}
 }

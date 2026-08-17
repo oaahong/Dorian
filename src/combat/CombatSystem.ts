@@ -1,304 +1,114 @@
-import * as Phaser from 'phaser';
-import type { Fighter } from '../fighters/Fighter';
-import { FighterState } from '../fighters/FighterState';
-import type { AttackSpec } from './AttackSpec';
-import { ATTACK_MULTIPLIER, COLORS, GAME_HEIGHT, GAME_WIDTH, GROUND_Y } from '../utils/constants';
-import { VFXManager } from '../systems/VFXManager';
-import { AudioManager } from '../systems/AudioManager';
+import Phaser from 'phaser';
+import type {MoveData,UltimateMoveData} from './MoveData';
+import type {AttackType} from './FrameData';
+import {FighterRuntime} from '../fighters/Fighter';
+import {FighterState} from '../fighters/FighterState';
+import {COMMON_MOVES} from '../data/commonMoves';
+import {UltimateAttack,type UltimateThreat} from './UltimateAttack';
+import {ARENA_MAX_X,ARENA_MIN_X,GROUND_Y,clamp} from '../utils/constants';
+import {VFXManager} from '../systems/VFXManager';
+import {audio} from '../systems/AudioManager';
 
-interface ProjectileRuntime {
-  id: number;
-  owner: Fighter;
-  spec: AttackSpec;
-  x: number;
-  y: number;
-  vx: number;
-  width: number;
-  height: number;
-  lifeMs: number;
-  display: Phaser.GameObjects.GameObject & { x: number; y: number; destroy: () => void };
-  hitTargets: Set<Fighter>;
-}
-
-interface ZoneRuntime {
-  id: number;
-  owner: Fighter;
-  spec: AttackSpec;
-  x: number;
-  timerMs: number;
-  activeMs: number;
-  display: Phaser.GameObjects.Arc;
-  triggered: boolean;
-  hitTargets: Set<Fighter>;
-}
+type SourceKind='fighter'|'projectile'|'zone'|'ultimate';
+interface Candidate {attacker:FighterRuntime;victim:FighterRuntime;move:MoveData;instance:string;seq:number;source:SourceKind;attackType:AttackType;damage:number;push:number;knockdown:boolean;hard:boolean;launchY?:number;contactX:number;contactY:number;}
+interface ProjectileRuntime {owner:FighterRuntime;move:MoveData;instance:string;seq:number;x:number;y:number;vx:number;vy:number;life:number;delay:number;go:Phaser.GameObjects.Arc|Phaser.GameObjects.Image;already:boolean;}
+interface ZoneRuntime {owner:FighterRuntime;move:MoveData;instance:string;seq:number;x:number;y:number;w:number;h:number;delay:number;life:number;go:Phaser.GameObjects.Rectangle|Phaser.GameObjects.Image;already:boolean;hitCooldown:number;}
+interface Resolution extends Candidate {outcome:'hit'|'block'|'armor'|'parry'|'counter'|'invul'|'tech';counterType?:'COUNTER'|'PUNISH';damageFinal:number;}
+const intersects=(a:{x:number;y:number;w:number;h:number},b:{x:number;y:number;w:number;h:number})=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+const scaleForHits=(h:number)=>h<=1?1:h===2?.9:h===3?.8:h===4?.7:h===5?.6:.5;
+const contactPoint=(a:{x:number;y:number;w:number;h:number},b:{x:number;y:number;w:number;h:number})=>({x:(Math.max(a.x,b.x)+Math.min(a.x+a.w,b.x+b.w))/2,y:(Math.max(a.y,b.y)+Math.min(a.y+a.h,b.y+b.h))/2});
 
 export class CombatSystem {
-  private projectiles: ProjectileRuntime[] = [];
-  private zones: ZoneRuntime[] = [];
-  private nextFxId = 1;
-  private ultimatePresented = new Set<number>();
-  private readonly combatLayer: Phaser.GameObjects.Container;
-
-  constructor(
-    private readonly scene: Phaser.Scene,
-    private readonly vfx: VFXManager,
-    world: Phaser.GameObjects.Container,
-    private readonly onHitStop: (ms: number) => void,
-  ) {
-    this.combatLayer = scene.add.container(0, 0).setDepth(50);
-    world.add(this.combatLayer);
-  }
-
-  update(deltaMs: number, nowMs: number, a: Fighter, b: Fighter): void {
-    this.processFighterAttack(a, b, nowMs);
-    this.processFighterAttack(b, a, nowMs);
-    this.updateProjectiles(deltaMs, nowMs, a, b);
-    this.updateZones(deltaMs, nowMs, a, b);
-  }
-
-  clear(): void {
-    this.projectiles.forEach((p) => p.display.destroy());
-    this.zones.forEach((z) => z.display.destroy());
-    this.projectiles = [];
-    this.zones = [];
-    this.ultimatePresented.clear();
-    this.combatLayer.removeAll(true);
-  }
-
-  destroy(): void {
-    this.clear();
-    this.combatLayer.destroy(true);
-  }
-
-  private processFighterAttack(attacker: Fighter, defender: Fighter, nowMs: number): void {
-    const runtime = attacker.currentAttack;
-    if (!runtime || attacker.isKO) return;
-
-    if (attacker.state === FighterState.ULTIMATE && !this.ultimatePresented.has(runtime.instanceId)) {
-      this.ultimatePresented.add(runtime.instanceId);
-      this.presentUltimate(attacker, runtime.spec);
-    }
-
-    const spec = runtime.spec;
-    if (attacker.attackActive && ['melee', 'dash', 'slide', 'aura'].includes(spec.kind)) {
-      if (runtime.activeJustStarted && (spec.kind === 'dash' || spec.kind === 'slide')) {
-        this.vfx.afterimage(attacker.sprite, attacker.config.palette.accent);
-        this.vfx.speedLines(attacker.x, attacker.y - 110, attacker.facing, attacker.config.palette.secondary);
-      }
-      this.meleeHit(attacker, defender, spec, runtime.hitTargets, nowMs);
-    }
-    if (!runtime.activeJustStarted) return;
-    if (['melee', 'dash', 'slide', 'aura'].includes(spec.kind)) return;
-
-    switch (spec.kind) {
-      case 'sonic': case 'water': case 'salad':
-        this.spawnProjectile(attacker, spec);
-        runtime.spawnedEffect = true;
-        break;
-      case 'zone':
-        this.spawnZone(attacker, defender, spec);
-        runtime.spawnedEffect = true;
-        break;
-      case 'beam':
-        this.beamHit(attacker, defender, spec, runtime.hitTargets, nowMs);
-        runtime.spawnedEffect = true;
-        break;
-      case 'ultimate-salad':
-        this.spawnUltimateSaladZone(attacker, defender, spec);
-        runtime.spawnedEffect = true;
-        break;
-      case 'ultimate-water': case 'ultimate-social': case 'ultimate-freeze': case 'ultimate-alien': case 'ultimate-magic':
-        this.fullscreenUltimateHit(attacker, defender, spec, runtime.hitTargets, nowMs);
-        runtime.spawnedEffect = true;
-        break;
-      case 'ultimate-ok': case 'ultimate-sonic':
-        this.wideUltimateHit(attacker, defender, spec, runtime.hitTargets, nowMs);
-        runtime.spawnedEffect = true;
-        break;
-      default:
-        this.meleeHit(attacker, defender, spec, runtime.hitTargets, nowMs);
-        runtime.spawnedEffect = true;
-    }
-  }
-
-  private meleeHit(attacker: Fighter, defender: Fighter, spec: AttackSpec, hitTargets: Set<Fighter>, nowMs: number): void {
-    if (hitTargets.has(defender)) return;
-    const hitbox = attacker.getMeleeHitbox(spec);
-    if (Phaser.Geom.Intersects.RectangleToRectangle(hitbox, defender.getHurtbox())) {
-      hitTargets.add(defender);
-      const impact = spec.id === 'heavy' ? 'heavy' : spec.id === 'light' ? 'light' : 'special';
-      this.resolveHit(attacker, defender, spec, nowMs, impact);
-    }
-  }
-
-  private spawnProjectile(owner: Fighter, spec: AttackSpec): void {
-    const color = spec.kind === 'water' ? COLORS.cyan : spec.kind === 'salad' ? COLORS.green : COLORS.cyan;
-    const width = spec.kind === 'water' ? 118 : spec.kind === 'salad' ? 76 : 90;
-    const height = spec.kind === 'water' ? 34 : spec.kind === 'salad' ? 54 : 46;
-    const x = owner.x + owner.facing * 70;
-    const y = owner.y - 118;
-    const shape = spec.kind === 'salad'
-      ? this.scene.add.ellipse(x, y, width, height, 0xe8e2c4, .95).setStrokeStyle(5, color, 1)
-      : this.scene.add.rectangle(x, y, width, height, color, .62).setStrokeStyle(3, 0xffffff, .8);
-    this.combatLayer.add(shape);
-    this.projectiles.push({ id: this.nextFxId++, owner, spec, x, y, vx: owner.facing * (spec.projectileSpeed ?? 600), width, height, lifeMs: spec.lifetimeMs ?? 900, display: shape, hitTargets: new Set() });
-    this.vfx.speedLines(x, y, owner.facing, color);
-    if (spec.kind === 'salad') this.vfx.pixelBlocks(COLORS.green, 10);
-  }
-
-  private updateProjectiles(deltaMs: number, nowMs: number, a: Fighter, b: Fighter): void {
-    const dt = deltaMs / 1000;
-    const survivors: ProjectileRuntime[] = [];
-    for (const projectile of this.projectiles) {
-      projectile.lifeMs -= deltaMs;
-      projectile.x += projectile.vx * dt;
-      projectile.display.x = projectile.x;
-      projectile.display.y = projectile.y;
-      const target = projectile.owner === a ? b : a;
-      const rect = new Phaser.Geom.Rectangle(projectile.x - projectile.width / 2, projectile.y - projectile.height / 2, projectile.width, projectile.height);
-      if (!projectile.hitTargets.has(target) && !target.isKO && Phaser.Geom.Intersects.RectangleToRectangle(rect, target.getHurtbox())) {
-        projectile.hitTargets.add(target);
-        this.resolveHit(projectile.owner, target, projectile.spec, nowMs, 'special');
-        projectile.display.destroy();
-        continue;
-      }
-      if (projectile.lifeMs <= 0 || projectile.x < -100 || projectile.x > GAME_WIDTH + 100) projectile.display.destroy();
-      else survivors.push(projectile);
-    }
-    this.projectiles = survivors;
-  }
-
-  private spawnZone(owner: Fighter, defender: Fighter, spec: AttackSpec): void {
-    const x = Phaser.Math.Clamp(defender.x + defender.vx * .15, 120, GAME_WIDTH - 120);
-    const circle = this.scene.add.circle(x, GROUND_Y - 8, 72, COLORS.purple, .12).setStrokeStyle(5, COLORS.purple, .9).setScale(1, .35);
-    this.combatLayer.add(circle);
-    this.zones.push({ id:this.nextFxId++, owner, spec, x, timerMs:spec.telegraphMs ?? 450, activeMs:spec.activeMs, display:circle, triggered:false, hitTargets:new Set() });
-    this.scene.tweens.add({ targets: circle, alpha: .7, scaleX: 1.15, duration: 180, yoyo: true, repeat: 1 });
-  }
-
-  private spawnUltimateSaladZone(owner: Fighter, defender: Fighter, spec: AttackSpec): void {
-    const x = Phaser.Math.Clamp(defender.x, 130, GAME_WIDTH - 130);
-    const circle = this.scene.add.circle(x, GROUND_Y - 8, 100, COLORS.green, .18).setStrokeStyle(6, COLORS.gold, 1).setScale(1, .32);
-    this.combatLayer.add(circle);
-    this.zones.push({ id:this.nextFxId++, owner, spec, x, timerMs:spec.telegraphMs ?? 500, activeMs:220, display:circle, triggered:false, hitTargets:new Set() });
-    this.vfx.popup('HEALTHY IMPACT INCOMING', x, GROUND_Y - 110, COLORS.green, 20);
-  }
-
-  private updateZones(deltaMs: number, nowMs: number, a: Fighter, b: Fighter): void {
-    const survivors: ZoneRuntime[] = [];
-    for (const zone of this.zones) {
-      const target = zone.owner === a ? b : a;
-      if (!zone.triggered) {
-        zone.timerMs -= deltaMs;
-        if (zone.timerMs <= 0) {
-          zone.triggered = true;
-          zone.display.setFillStyle(zone.spec.kind === 'ultimate-salad' ? COLORS.green : COLORS.purple, .55).setScale(1.05, 1.5);
-          this.vfx.shockwave(zone.x, GROUND_Y - 80, zone.spec.kind === 'ultimate-salad' ? COLORS.green : COLORS.purple, 150);
-          this.vfx.pixelBlocks(zone.spec.kind === 'ultimate-salad' ? COLORS.green : COLORS.purple, 18);
-        }
-      } else {
-        zone.activeMs -= deltaMs;
-        const hurt = target.getHurtbox();
-        const inZone = Math.abs(target.x - zone.x) < (zone.spec.kind === 'ultimate-salad' ? 150 : 100) && hurt.bottom > GROUND_Y - 250;
-        if (inZone && !zone.hitTargets.has(target)) {
-          zone.hitTargets.add(target);
-          this.resolveHit(zone.owner, target, zone.spec, nowMs, zone.spec.kind === 'ultimate-salad' ? 'ultimate' : 'special');
-        }
-        if (zone.activeMs <= 0) {
-          zone.display.destroy();
-          continue;
-        }
-      }
-      survivors.push(zone);
-    }
-    this.zones = survivors;
-  }
-
-  private beamHit(attacker: Fighter, defender: Fighter, spec: AttackSpec, hitTargets: Set<Fighter>, nowMs: number): void {
-    const width = spec.reach;
-    const x = attacker.facing > 0 ? attacker.x + width / 2 + 45 : attacker.x - width / 2 - 45;
-    const y = attacker.y - 122;
-    const beam = this.scene.add.rectangle(x, y, width, 46, COLORS.green, .58).setStrokeStyle(4, 0xcffff0, .9);
-    this.combatLayer.add(beam);
-    this.scene.tweens.add({ targets: beam, alpha: 0, scaleY: 1.7, duration: 220, onComplete: () => beam.destroy() });
-    this.vfx.speedLines(attacker.x, y, attacker.facing, COLORS.green);
-    const rect = new Phaser.Geom.Rectangle(x - width / 2, y - 30, width, 60);
-    if (!hitTargets.has(defender) && Phaser.Geom.Intersects.RectangleToRectangle(rect, defender.getHurtbox())) {
-      hitTargets.add(defender);
-      this.resolveHit(attacker, defender, spec, nowMs, 'special');
-    }
-  }
-
-  private wideUltimateHit(attacker: Fighter, defender: Fighter, spec: AttackSpec, hitTargets: Set<Fighter>, nowMs: number): void {
-    const reach = spec.reach;
-    const x = attacker.facing > 0 ? attacker.x + reach / 2 : attacker.x - reach / 2;
-    const rect = new Phaser.Geom.Rectangle(x - reach / 2, 120, reach, GROUND_Y - 70);
-    this.vfx.shockwave(attacker.x + attacker.facing * 150, attacker.y - 130, COLORS.purple, 260);
-    this.vfx.pixelBlocks(COLORS.purple, 34);
-    if (!hitTargets.has(defender) && Phaser.Geom.Intersects.RectangleToRectangle(rect, defender.getHurtbox())) {
-      hitTargets.add(defender);
-      this.resolveHit(attacker, defender, spec, nowMs, 'ultimate');
-    }
-  }
-
-  private fullscreenUltimateHit(attacker: Fighter, defender: Fighter, spec: AttackSpec, hitTargets: Set<Fighter>, nowMs: number): void {
-    if (hitTargets.has(defender)) return;
-    hitTargets.add(defender);
-    const color = spec.kind === 'ultimate-alien' ? COLORS.green : spec.kind === 'ultimate-freeze' || spec.kind === 'ultimate-water' ? COLORS.cyan : COLORS.purple;
-    this.vfx.shockwave(defender.x, defender.y - 110, color, 310);
-    this.vfx.pixelBlocks(color, 42);
-    this.resolveHit(attacker, defender, spec, nowMs, 'ultimate');
-  }
-
-  private presentUltimate(attacker: Fighter, spec: AttackSpec): void {
-    const color = attacker.config.palette.accent;
-    const overlay = this.vfx.ultimateBackdrop(color, 1250);
-    this.vfx.popup(spec.name, GAME_WIDTH / 2, 155, COLORS.white, 48);
-    this.vfx.flash(COLORS.white, .32, 85);
-    this.vfx.shake(.012, 360);
-    this.vfx.pixelBlocks(color, 30);
-    this.onHitStop(120);
-    attacker.sprite.setScale(attacker.sprite.scaleX * 1.45, attacker.sprite.scaleY * 1.45);
-    this.scene.tweens.add({ targets: attacker.sprite, scaleX: attacker.sprite.scaleX / 1.45, scaleY: attacker.sprite.scaleY / 1.45, duration: 680, ease: 'Expo.easeOut' });
-    this.scene.time.delayedCall(1250, () => overlay.destroy());
-  }
-
-  private resolveHit(attacker: Fighter, defender: Fighter, spec: AttackSpec, nowMs: number, impact: 'light' | 'heavy' | 'special' | 'ultimate'): void {
-    if (defender.isKO) return;
-    const blocked = defender.canBlockImpact;
-    const multiplier = ATTACK_MULTIPLIER(attacker.config.attackStat);
-    const hpStatMitigation = 1.08 - defender.config.hpStat * 0.03;
-    const fullDamage = spec.damage * multiplier * hpStatMitigation;
-    const damage = blocked ? fullDamage * (spec.chipRatio ?? 0) : fullDamage;
-    defender.receiveImpact(damage, spec, attacker.facing, blocked, nowMs);
-
-    if (!blocked) {
-      attacker.addEnergy(spec.energyOnHit);
-      defender.addEnergy(spec.energyOnReceive);
-    } else if ((spec.chipRatio ?? 0) > 0) {
-      attacker.addEnergy(Math.ceil(spec.energyOnHit * .35));
-      defender.addEnergy(Math.ceil(spec.energyOnReceive * .35));
-    }
-
-    const x = defender.x - attacker.facing * 18;
-    const y = defender.y - 120;
-    if (blocked) {
-      this.vfx.blockSpark(x, y);
-      AudioManager.play('block');
-      this.onHitStop(35);
-      return;
-    }
-
-    const heavy = impact !== 'light';
-    const color = impact === 'ultimate' ? attacker.config.palette.accent : impact === 'special' ? attacker.config.palette.secondary : COLORS.gold;
-    this.vfx.hitSpark(x, y, heavy, color);
-    this.vfx.memePopup(x, y);
-    defender.sprite.setAlpha(.32);
-    this.scene.time.delayedCall(55, () => { if (defender.sprite.active) defender.sprite.setAlpha(1); });
-
-    if (impact === 'light') { AudioManager.play('light'); this.onHitStop(45); }
-    else if (impact === 'heavy') { AudioManager.play('heavy'); this.vfx.shake(.005, 100); this.onHitStop(80); }
-    else if (impact === 'special') { AudioManager.play('special'); this.vfx.shake(.007, 130); this.onHitStop(95); }
-    else { AudioManager.play('ultimate'); this.vfx.flash(COLORS.white, .46, 90); this.vfx.shake(.012, 220); this.onHitStop(150); }
-  }
+ private projectiles:ProjectileRuntime[]=[];private zones:ZoneRuntime[]=[];private spawned=new Set<string>();private alreadyHit=new Map<string,Set<number>>();private projectileContacts=new Map<string,number>();private ultimates:UltimateAttack[]=[];private fearTriggered=new Set<string>();
+ debug=false;debugGraphics:Phaser.GameObjects.Graphics;
+ constructor(private scene:Phaser.Scene,private vfx:VFXManager){this.debugGraphics=scene.add.graphics().setDepth(95);}
+ clear(){for(const p of this.projectiles)p.go.destroy();for(const z of this.zones)z.go.destroy();for(const u of this.ultimates)u.destroy();this.projectiles=[];this.zones=[];this.ultimates=[];this.spawned.clear();this.alreadyHit.clear();this.projectileContacts.clear();this.fearTriggered.clear();this.debugGraphics.clear();}
+ destroy(){this.clear();this.debugGraphics.destroy();}
+ hasUltimate(owner:FighterRuntime){return this.ultimates.some(u=>u.owner===owner&&!u.finished);}
+ startUltimate(owner:FighterRuntime,move:UltimateMoveData,foe:FighterRuntime){owner.statuses.set('ultimateRunning',999);owner.ultimatePhase='STARTUP';const u=new UltimateAttack(this.scene,owner,move,foe);this.ultimates.push(u);audio.beep('ultimate');this.vfx.flash(owner.config.palette.accent,.35,130);}
+ tick(a:FighterRuntime,b:FighterRuntime,frame:number){
+   this.debugGraphics.clear();this.spawnFromMove(a,b);this.spawnFromMove(b,a);this.tickProjectiles();this.tickZones();
+   const candidates:Candidate[]=[];this.collectFighterAttack(a,b,candidates);this.collectFighterAttack(b,a,candidates);this.collectProjectiles(a,b,candidates);this.collectProjectiles(b,a,candidates);this.collectZones(a,b,candidates);this.collectZones(b,a,candidates);this.collectUltimates(a,b,candidates);
+   const resolutions=candidates.map(c=>this.evaluate(c,frame)).filter(Boolean) as Resolution[];
+   // Resolve all decisions after collection, preserving same-frame trades.
+   for(const r of resolutions)this.applyResolution(r,frame);
+   this.takeSummonHits(a);this.takeSummonHits(b);this.tickUltimates();this.resolvePush(a,b);if(this.debug)this.drawDebug(a,b);
+ }
+ private activeSeq(f:FighterRuntime){const m=f.currentMove;if(!m)return -1;const rel=f.stateFrame-m.startup-1;if(rel<0)return -1;if(!Array.isArray(m.active))return rel<m.active?0:-1;let cursor=0;for(let i=0;i<m.active.length;i++){const d=m.active[i];if(rel>=cursor&&rel<cursor+d)return i;cursor+=d+3;}return -1;}
+ private spawnFromMove(f:FighterRuntime,foe:FighterRuntime){const m=f.currentMove;if(!m)return;const spawnKey=f.moveInstanceId;if(m.id==='scared-nine'&&f.stateFrame>=3&&f.stateFrame<=18&&f.stateFrame%3===0)this.vfx.afterimage(f.sprite);
+   if(m.kind==='meterCharge'&&f.stateFrame===m.startup+Math.max(1,f.activeDuration())){if(!this.spawned.has(spawnKey)){this.spawned.add(spawnKey);f.gainMeter(m.meterGainOnComplete??0);this.vfx.callout('+MEME',f.x,f.y-220,'#ffe35a');}}
+   if(m.kind==='install'&&f.stateFrame===m.startup+1&&!this.spawned.has(spawnKey)){this.spawned.add(spawnKey);f.statuses.set(m.status??'install',m.statusDuration??180);this.vfx.callout('INSTALL',f.x,f.y-220,'#ffdf67');}
+   if(m.kind==='fear'&&f.stateFrame>=9&&f.stateFrame<=17){if(this.debug)this.debugBox({x:f.facing===1?f.x:f.x-m.range,y:f.y-190,w:m.range,h:190},0x00ffff,.12);if(!this.fearTriggered.has(spawnKey)){const dist=Math.abs(foe.x-f.x);const approaching=(foe.state===FighterState.WALK_FORWARD||foe.state===FighterState.FORWARD_DASH);const startup=!!foe.currentMove&&foe.stateFrame<=foe.currentMove.startup;if(dist<=m.range&&(approaching||startup)&&foe.currentMove?.attackType!=='Projectile'&&foe.currentMove?.attackType!=='Throw'){this.fearTriggered.add(spawnKey);foe.currentMove=null;foe.stunFrames=16;foe.state=FighterState.DIZZY;foe.stateFrame=1;f.gainMeter(10);this.vfx.callout('FEAR',foe.x,foe.y-210,'#b87bff');}}}
+   this.spawnSpecialHActiveFx(f,m);this.spawnInstallMoveFx(f,m);if(f.stateFrame!==m.startup+1||this.spawned.has(spawnKey))return;
+   if(m.kind==='projectile'){this.spawned.add(spawnKey);const count=m.projectileCount??(Array.isArray(m.damage)?m.damage.length:1);for(let i=0;i<count;i++){const spread=count===3?.18:count>3?.12:0;const angle=(i-(count-1)/2)*spread;this.addProjectile(f,m,spawnKey,i,Math.cos(angle)*(m.projectileSpeed??10)*f.facing,Math.sin(angle)*(m.projectileSpeed??10),0);}}
+   else if(m.kind==='beam'){this.spawned.add(spawnKey);const x=f.x+f.facing*m.range/2;const beam=m.visualTexture&&this.scene.textures.exists(m.visualTexture)?this.scene.add.image(x,f.y-130,m.visualTexture).setDepth(17).setFlipX(f.facing<0).setDisplaySize(m.range,Math.max(64,90*(m.visualScale??1))):this.scene.add.rectangle(x,f.y-130,m.range,72,f.config.palette.accent,.34).setDepth(17);this.scene.tweens.add({targets:beam,alpha:0,duration:180,onComplete:()=>beam.destroy()});}
+   else if(m.kind==='summon'){this.spawned.add(spawnKey);for(let i=0;i<3;i++)this.addProjectile(f,m,spawnKey,i,(m.projectileSpeed??7)*f.facing,0,i*10);}
+   else if(m.kind==='zone'){this.spawned.add(spawnKey);let x=clamp(f.x+f.facing*190,ARENA_MIN_X+90,ARENA_MAX_X-90),w=180,h=90,y=GROUND_Y-85;const delay=m.status==='telegraph'?24:12;if(m.sourceSkill==='SPECIAL_H'&&f.config.id==='ya'){w=h=m.range*2;x=f.x;y=GROUND_Y-h/2;}else if(m.sourceSkill==='SPECIAL_H'&&f.config.id==='wizard'){w=m.range*2;h=Math.max(90,m.range*.8);x=clamp(f.x+f.facing*Math.min(150,m.range*.75),ARENA_MIN_X+w/2,ARENA_MAX_X-w/2);y=GROUND_Y-h/2;}if(m.id==='alien-cola'){const arc=this.scene.add.circle(f.x+f.facing*55,f.y-135,13,f.config.palette.accent,.88).setDepth(18);this.scene.tweens.add({targets:arc,x,y:GROUND_Y-120,duration:260,onComplete:()=>arc.destroy()});}this.addZone(f,m,spawnKey,0,x,y,w,h,delay,m.zoneDuration??48);}
+ }
+ private showSkillModule(key:string,x:number,y:number,scale=.6,duration=260,flip=false,rotation=0){if(!this.scene.textures.exists(key))return;const im=this.scene.add.image(x,y,key).setDepth(20).setScale(scale).setFlipX(flip).setRotation(rotation);this.scene.tweens.add({targets:im,alpha:0,scale:scale*1.08,duration,onComplete:()=>im.destroy()});}
+ private spawnInstallMoveFx(f:FighterRuntime,m:MoveData){if(f.stateFrame!==m.startup+1)return;const k=`installfx:${f.moveInstanceId}`;if(this.spawned.has(k))return;this.spawned.add(k);if(m.id==='blade-install-f')this.showSkillModule('skill-blade-r',f.x+f.facing*115,f.y-115,.72,300,f.facing<0,0);else if(m.id==='blade-install-g')this.showSkillModule('skill-blade-r',f.x+f.facing*70,f.y-145,.78,340,f.facing<0,f.facing*.92);}
+ private spawnSpecialHActiveFx(f:FighterRuntime,m:MoveData){if(m.sourceSkill!=='SPECIAL_H'||f.stateFrame!==m.startup+1)return;const k=`hfx:${f.moveInstanceId}`;if(this.spawned.has(k))return;this.spawned.add(k);const flip=f.facing<0;switch(f.config.id){case'doge':this.showSkillModule('skill-doge-e',f.x-f.facing*55,f.y-105,.68,260,flip);break;case'tempura':{this.showSkillModule('skill-tempura-e',f.x-f.facing*70,f.y-100,.62,300,flip);const n=m.chargeLevel===3?3:m.chargeLevel===2?1:0;for(let i=0;i<n;i++)this.showSkillModule('skill-tempura-f',f.x-f.facing*(90+i*55),f.y-95+i*3,.5,330+i*40,flip);break;}case'goblin':this.showSkillModule('skill-goblin-e',f.x+f.facing*m.range*.45,f.y-105,.72,320,flip);break;case'salad':this.showSkillModule('skill-salad-e',f.x+f.facing*75,f.y-105,.72,260,flip);break;case'blade':this.showSkillModule('skill-blade-h',f.x+f.facing*95,f.y-105,.72,280,flip);break;case'scared':this.showSkillModule('skill-scared-f',f.x-f.facing*58,f.y-105,.62,280,flip);break;}}
+ private addProjectile(owner:FighterRuntime,move:MoveData,instance:string,seq:number,vx:number,vy:number,delay:number){const color=owner.config.palette.accent;const go=move.visualTexture&&this.scene.textures.exists(move.visualTexture)?this.scene.add.image(owner.x+owner.facing*75,owner.y-120,move.visualTexture).setDepth(18).setScale(move.visualScale??.55).setFlipX(owner.facing<0):this.scene.add.circle(owner.x+owner.facing*75,owner.y-120,14,color,.9).setDepth(18);this.projectiles.push({owner,move,instance,seq,x:go.x,y:go.y,vx,vy,life:move.projectileLife??60,delay,go,already:false});}
+ private addZone(owner:FighterRuntime,move:MoveData,instance:string,seq:number,x:number,y:number,w:number,h:number,delay:number,life:number){const go=move.visualTexture&&this.scene.textures.exists(move.visualTexture)?this.scene.add.image(x,y+h/2,move.visualTexture).setOrigin(.5,1).setDisplaySize(w,h).setDepth(6):this.scene.add.rectangle(x,y,w,h,owner.config.palette.accent,.18).setStrokeStyle(3,owner.config.palette.accent,.7).setDepth(6);this.zones.push({owner,move,instance,seq,x:x-w/2,y:y-h/2,w,h,delay,life,go,already:false,hitCooldown:0});}
+ private tickProjectiles(){for(const p of [...this.projectiles]){if(p.delay>0){p.delay--;p.go.setAlpha(.25);continue;}p.x+=p.vx;p.y+=p.vy;p.vy+=.04;p.life--;p.go.x=p.x;p.go.y=p.y;if(p.owner.config.id==='sauce'&&p.move.sourceSkill==='SPECIAL_H'&&p.life%5===0)this.showSkillModule('skill-sauce-f',p.x,p.y,.36,160,p.vx<0);if(p.life<=0||p.x<30||p.x>1250||p.y>690){if(p.move.id==='h-sauce-3'&&!p.already)this.spawnSauceGroundZone(p.owner,p.move,`${p.instance}:ground`,p.x);p.go.destroy();this.projectiles.splice(this.projectiles.indexOf(p),1);}}}
+ private tickZones(){for(const z of [...this.zones]){if(z.delay>0){z.delay--;z.go.setAlpha(.09);continue;}if(z.hitCooldown>0)z.hitCooldown--;z.go.setAlpha(.22);z.life--;if(z.life<=0){z.go.destroy();this.zones.splice(this.zones.indexOf(z),1);}}}
+ private spawnSauceGroundZone(owner:FighterRuntime,move:MoveData,instance:string,x:number){const active=this.zones.filter(z=>z.move.id==='h-sauce-ground'&&z.owner===owner);while(active.length>=3){const old=active.shift()!;old.go.destroy();this.zones.splice(this.zones.indexOf(old),1);}const zoneMove:MoveData={...move,id:'h-sauce-ground',name:'黏醬地面減速',kind:'zone',damage:0,attackType:'Low',visualTexture:'skill-sauce-h',status:'slow',statusDuration:120,moveSpeedMod:-.22,zoneDuration:120,pushbackX:0};this.addZone(owner,zoneMove,instance,0,clamp(x,ARENA_MIN_X+90,ARENA_MAX_X-90),GROUND_Y-45,180,90,0,120);}
+ private fighterBox(f:FighterRuntime,m:MoveData){let h=m.attackType==='Low'?70:m.attackType==='Air'?125:120;let y=m.attackType==='Low'?f.y-70:f.y-175;let w=m.range;if(m.kind==='beam'){h=82;y=f.y-175;}if(f.config.id==='scared'&&m.id==='crouchingHeavy'){h=155;y=f.y-155;}if(m.kind==='commandThrow'&&f.installType==='HANDSOME_GOBLIN')w*=1.30;return {x:f.facing===1?f.x+28:f.x-28-w,y,w,h};}
+ private collectFighterAttack(att:FighterRuntime,vic:FighterRuntime,out:Candidate[]){const m=att.currentMove;if(!m||['projectile','zone','summon','meterCharge','parry','counter','armor','install','fear','hide'].includes(m.kind))return;const seq=this.activeSeq(att);if(seq<0)return;const box=this.fighterBox(att,m);if(this.debug)this.debugBox(box,m.attackType==='Throw'?0xffe45c:m.kind==='beam'?0xa84cff:0xff3131,.22);if(intersects(box,vic.hurtbox())){const dmg=Array.isArray(m.damage)?m.damage[Math.min(seq,m.damage.length-1)]:m.damage;const cp=contactPoint(box,vic.hurtbox());out.push({attacker:att,victim:vic,move:m,instance:att.moveInstanceId,seq,source:m.kind==='beam'?'projectile':'fighter',attackType:m.attackType,damage:dmg,push:m.pushbackX,knockdown:!!m.knockdown,hard:!!m.hardKnockdown,launchY:m.launchY,contactX:cp.x,contactY:cp.y});}}
+ private collectProjectiles(att:FighterRuntime,vic:FighterRuntime,out:Candidate[]){for(const p of this.projectiles){if(p.owner!==att||p.delay>0)continue;const contacts=this.projectileContacts.get(p.instance)??0;if(p.move.maxHits!==undefined&&contacts>=p.move.maxHits){p.life=0;continue;}const box={x:p.x-22,y:p.y-22,w:44,h:44};if(this.debug)this.debugBox(box,0xa84cff,.2);if(intersects(box,vic.hurtbox())){const d=Array.isArray(p.move.damage)?p.move.damage[Math.min(p.seq,p.move.damage.length-1)]:p.move.damage;const cp=contactPoint(box,vic.hurtbox());out.push({attacker:att,victim:vic,move:p.move,instance:p.instance,seq:p.seq,source:'projectile',attackType:'Projectile',damage:d,push:p.move.pushbackX,knockdown:!!p.move.knockdown,hard:!!p.move.hardKnockdown,contactX:cp.x,contactY:cp.y});this.projectileContacts.set(p.instance,contacts+1);p.life=0;p.already=true;}}}
+ private collectZones(att:FighterRuntime,vic:FighterRuntime,out:Candidate[]){for(const z of this.zones){const ticking=z.move.id.startsWith('h-wizard-');if(z.owner!==att||z.delay>0||(!ticking&&z.already)||(ticking&&z.hitCooldown>0))continue;const box={x:z.x,y:z.y,w:z.w,h:z.h};if(this.debug)this.debugBox(box,0x00ffff,.16);if(intersects(box,vic.hurtbox())){const d=Array.isArray(z.move.damage)?z.move.damage[0]:z.move.damage;const cp=contactPoint(box,vic.hurtbox());out.push({attacker:att,victim:vic,move:z.move,instance:z.instance,seq:ticking?Math.floor((z.life)/18):z.seq,source:'zone',attackType:z.move.attackType,damage:d,push:z.move.pushbackX,knockdown:false,hard:false,contactX:cp.x,contactY:cp.y});if(ticking)z.hitCooldown=18;else z.already=true;}}}
+ private collectUltimates(a:FighterRuntime,b:FighterRuntime,out:Candidate[]){for(const u of this.ultimates){const victim=u.owner===a?b:a;const p=u.elapsed;u.owner.ultimatePhase=u.phaseLabel(p);const threats=u.threats(p);u.owner.ultimateThreat=threats.map(t=>t.label).join(', ');for(const t of threats){const box={x:t.x,y:t.y,w:t.w,h:t.h};if(this.debug)this.debugBox(box,0xff00ff,.18);if(intersects(box,victim.hurtbox())){const cp=contactPoint(box,victim.hurtbox());out.push({attacker:u.owner,victim,move:u.move,instance:u.id,seq:t.seq,source:'ultimate',attackType:t.attackType,damage:t.damage,push:54,knockdown:t.label.includes('FINAL')||t.label.includes('SUPER'),hard:u.move.hardKnockdown??false,contactX:cp.x,contactY:cp.y});}}}
+ }
+ private isAlready(instance:string,seq:number,target:number){const key=`${instance}:${seq}`;return this.alreadyHit.get(key)?.has(target)??false;}
+ private markHit(instance:string,seq:number,target:number){const key=`${instance}:${seq}`;let s=this.alreadyHit.get(key);if(!s){s=new Set();this.alreadyHit.set(key,s);}s.add(target);}
+ private evaluate(c:Candidate,frame:number):Resolution|null{if(this.isAlready(c.instance,c.seq,c.victim.side)||c.victim.hp<=0)return null;const v=c.victim,a=c.attacker;
+   const invKind=c.attackType==='Throw'?'Throw':c.attackType==='Projectile'?'Projectile':c.attackType==='Air'?'AirAttack':c.attackType==='Low'?'Low':'Strike';
+   if(v.isInvulnerable(invKind as any))return {...c,outcome:'invul',damageFinal:0};
+   const parryMove=v.currentMove?.kind==='parry'||v.state===FighterState.MEME_PARRY;
+   const yaParry=v.currentMove?.id==='ya-glasses';const parryStart=yaParry?3:1;const parryEnd=yaParry?8:6;
+   const parryWindow=parryMove&&v.stateFrame>=parryStart&&v.stateFrame<=parryEnd;if(parryWindow&&c.attackType!=='Throw')return {...c,outcome:'parry',damageFinal:0};
+   if(v.currentMove?.kind==='counter'&&v.stateFrame>=4&&v.stateFrame<=10&&c.attackType!=='Throw'&&c.attackType!=='Projectile')return {...c,outcome:'counter',damageFinal:0};
+   if(c.attackType==='Throw'){if(v.airborne||v.throwProtection>0||v.isInvulnerable('Throw'))return {...c,outcome:'invul',damageFinal:0};if(c.move.id==='throw'&&frame-v.lastThrowInputFrame<=5)return {...c,outcome:'tech',damageFinal:0};}
+   const armorKind=c.attackType==='Projectile'?'Projectile':'Strike';if(c.attackType!=='Throw'&&v.hasArmor(armorKind))return {...c,outcome:'armor',damageFinal:0};
+   const crouch=v.crouchHeld;const standCan=['High','Mid','Overhead','Air','Projectile'].includes(c.attackType);const crouchCan=['Low','Mid','Projectile'].includes(c.attackType);if(c.attackType!=='Throw'&&v.guardHeld&&(crouch?crouchCan:standCan))return {...c,outcome:'block',damageFinal:c.source==='ultimate'?c.damage*.1:0};
+   let counterType:Resolution['counterType'];let dmg=c.damage*a.damageScalar();let stun=c.move.hitstun;
+   if(v.currentMove){if(v.stateFrame<=v.currentMove.startup){counterType='COUNTER';stun+=2;}else if(v.stateFrame>v.currentMove.startup+v.activeDuration()){counterType='PUNISH';stun+=3;dmg*=1.1;}}
+   const continuation=[FighterState.HITSTUN,FighterState.AIR_HITSTUN].includes(v.state);a.comboHits=continuation?a.comboHits+1:1;a.comboTimer=50;let scaling=scaleForHits(a.comboHits);if(c.source==='ultimate')scaling=Math.max(.5,scaling);dmg*=scaling;
+   return {...c,outcome:'hit',counterType,damageFinal:dmg,move:{...c.move,hitstun:stun}};
+ }
+ private applyResolution(r:Resolution,frame:number){const a=r.attacker,v=r.victim,m=r.move;this.markHit(r.instance,r.seq,v.side);
+   if(r.outcome==='invul'){
+     // Scared Cat gains MEME for successfully letting a projectile pass through its dedicated evasive tools.
+     if(r.source==='projectile'&&v.currentMove?.id==='scared-box'){v.gainMeter(8);this.vfx.callout('+8 MEME',v.x,v.y-220,'#74c8ff');}
+     else if(r.source==='projectile'&&v.currentMove?.id==='scared-nine'){v.gainMeter(5);this.vfx.callout('+5 MEME',v.x,v.y-220,'#74c8ff');}
+     return;
+   }
+   if(r.outcome==='tech'){a.currentMove=null;v.currentMove=null;a.enterState(FighterState.THROW_TECH);v.enterState(FighterState.THROW_TECH);this.vfx.callout('THROW TECH',(a.x+v.x)/2,430,'#ffe45c');this.vfx.spark((a.x+v.x)/2,470,'parry');audio.beep('throw');return;}
+   if(r.outcome==='parry'){const perfect=v.currentMove?.id==='ya-glasses'?(v.stateFrame>=3&&v.stateFrame<=4):v.stateFrame<=2;v.gainMeter(perfect?12:7);a.hitstop=Math.max(a.hitstop,5);v.currentMove=null;v.enterState(FighterState.IDLE);this.vfx.callout(perfect?'PERFECT':'PARRY',v.x,v.y-220,perfect?'#ff70ff':'#7fffff');this.vfx.spark(v.x,v.y-120,perfect?'perfect':'parry');audio.beep('parry');return;}
+   if(r.outcome==='counter'){v.currentMove=null;a.takeHit(9,20,30,undefined,false,false);v.gainMeter(10);this.vfx.callout('COUNTER',a.x,a.y-220,'#ff9c43');this.vfx.spark(a.x,a.y-120,'heavy');return;}
+   if(r.outcome==='armor'){v.armorHits=Math.max(0,v.armorHits-1);v.gainMeter(v.currentMove?.meterGainOnComplete??m.meterGainReceive??2);this.vfx.callout('ARMOR',v.x,v.y-220,'#ffef67');this.vfx.spark(v.x,v.y-120,'armor');audio.beep('armor');return;}
+   if(r.outcome==='block'){a.frameAdvantage=m.blockstun-Math.max(0,(m.startup+a.activeDuration()+m.recovery)-a.stateFrame);v.takeBlock(m.blockstun,r.push);if(r.damageFinal>0)v.hp=clamp(v.hp-r.damageFinal,0,100);a.gainMeter(m.meterGainBlock||1);this.vfx.spark(v.x,v.y-125,'block');this.vfx.callout('BLOCK',v.x,v.y-205,'#79c8ff');audio.beep('block');a.moveResult='block';return;}
+   if(r.outcome==='hit'){
+     if(m.id==='h-sauce-ground'){a.moveResult='hit';v.statuses.set('slow',m.statusDuration??120);v.statusMoveMultipliers.set('slow',1+(m.moveSpeedMod??-.22));this.showSkillModule('skill-sauce-h',v.x,GROUND_Y,.52,260,false);return;}
+     a.frameAdvantage=m.hitstun-Math.max(0,(m.startup+a.activeDuration()+m.recovery)-a.stateFrame);a.moveResult='hit';a.gainMeter((m.meterGainHit||4)*(r.counterType==='COUNTER'?1.1:1));v.gainMeter(m.meterGainReceive||2);
+     if(r.attackType==='Throw')v.takeThrown(r.damageFinal,r.push,r.hard);else v.takeHit(r.damageFinal,m.hitstun,r.push,r.launchY,r.knockdown,r.hard,r.attackType==='Low'?'low':'high');a.hitstop=Math.max(a.hitstop,m.hitstopAttacker);v.hitstop=Math.max(v.hitstop,m.hitstopVictim+(r.counterType==='PUNISH'?2:r.counterType==='COUNTER'?1:0));
+     if(r.counterType)this.vfx.callout(r.counterType,v.x,v.y-225,r.counterType==='COUNTER'?'#ff9c43':'#ff4d4d');
+     if(['sticky','slow','awkward'].includes(m.status??'')){const key=m.status!;v.statuses.set(key,m.statusDuration??60);if(m.moveSpeedMod!==undefined)v.statusMoveMultipliers.set(key,1+m.moveSpeedMod);if(m.attackRecoveryMod!==undefined)v.statusRecoveryMultipliers.set(key,1+m.attackRecoveryMod);}if(m.id==='h-sauce-3')this.spawnSauceGroundZone(a,m,`${r.instance}:impact-zone`,r.contactX);if(m.sourceSkill==='SPECIAL_H'&&a.config.id==='goblin'&&a.installType==='HANDSOME_GOBLIN')this.showSkillModule('skill-goblin-t',r.contactX,r.contactY,.6,300,a.facing<0);
+     if(m.id==='pink-real-slap')this.showSkillModule('skill-pink-s',r.contactX,r.contactY,.55,240,a.facing<0);if(m.id==='pink-real-belly')this.showSkillModule('skill-pink-t',r.contactX,r.contactY,.68,300,a.facing<0);
+     if(m.status==='loveStun'&&v.loveLockout<=0){v.loveGauge+=35;if(v.loveGauge>=100){v.loveGauge=0;v.loveLockout=180;v.stunFrames=35;v.state=FighterState.DIZZY;v.stateFrame=1;this.vfx.callout('DIZZY',v.x,v.y-240,'#ff76b4');}}
+     if(m.status==='ok')this.vfx.callout('OK!',v.x,v.y-220,'#d9a3ff');
+     if(r.source==='ultimate'&&m.id==='ok-ult'&&r.seq>=6)this.vfx.callout('SUPER OK!',v.x,v.y-260,'#c780ff');
+     this.vfx.spark(r.contactX,r.contactY,r.damageFinal>=10?'heavy':'hit');if(m.sourceSkill==='SPECIAL_H')this.spawnSpecialHitFx(a.config.id,r.contactX,r.contactY);this.scene.cameras.main.shake(r.damageFinal>=10?90:45,r.damageFinal>=10?.008:.003);audio.beep(r.source==='ultimate'?'ultimate':r.damageFinal>=8?'heavy':'light');
+   }
+ }
+ private tickUltimates(){for(const u of [...this.ultimates]){u.tick();if(u.finished){u.owner.statuses.delete('ultimateRunning');if(u.owner.currentMove?.id===u.move.id){u.owner.currentMove=null;if(u.owner.hp>0&&u.owner.state===FighterState.ULTIMATE)u.owner.enterState(FighterState.IDLE);}this.ultimates.splice(this.ultimates.indexOf(u),1);}}}
+ private spawnSpecialHitFx(fid:string,x:number,y:number){const lab:Record<string,string>={alien:'G',doge:'F',ya:'F',goblin:'F',salad:'F',wizard:'E',pink:'F',ok:'F',scared:'I'};const l=lab[fid];if(!l)return;const key=`skill-${fid}-${l.toLowerCase()}`;if(!this.scene.textures.exists(key))return;const im=this.scene.add.image(x,y,key).setDepth(24).setScale(.45);this.scene.tweens.add({targets:im,alpha:0,scale:.7,duration:220,onComplete:()=>im.destroy()});}
+ private takeSummonHits(att:FighterRuntime){const m=att.currentMove;if(!m||this.activeSeq(att)<0)return;const box=this.fighterBox(att,m);for(const u of this.ultimates){if(u.owner===att)continue;for(const s of u.summons){if(!s.active||!intersects(box,s.hurtbox()))continue;const key=`summon:${att.moveInstanceId}:${s.id}`;if(this.spawned.has(key))continue;this.spawned.add(key);s.damage(1);this.vfx.spark(s.sprite.x,s.sprite.y-70,'hit');}}}
+ private resolvePush(a:FighterRuntime,b:FighterRuntime){if(a.airborne||b.airborne)return;const pa=a.pushbox(),pb=b.pushbox();if(!intersects(pa,pb))return;const overlap=Math.min(pa.x+pa.w-pb.x,pb.x+pb.w-pa.x);if(overlap>0){const dir=a.x<b.x?-1:1;a.x=clamp(a.x+dir*overlap/2,ARENA_MIN_X,ARENA_MAX_X);b.x=clamp(b.x-dir*overlap/2,ARENA_MIN_X,ARENA_MAX_X);}}
+ private debugBox(b:{x:number;y:number;w:number;h:number},color:number,alpha=.15){this.debugGraphics.fillStyle(color,alpha).fillRect(b.x,b.y,b.w,b.h).lineStyle(2,color,.9).strokeRect(b.x,b.y,b.w,b.h);}
+ private drawDebug(a:FighterRuntime,b:FighterRuntime){for(const f of [a,b]){this.debugBox(f.hurtbox(),0x32ff6a,.12);this.debugBox(f.pushbox(),0x378bff,.1);}}
 }
+
+export const MEME_PARRY_MOVE:MoveData={id:'meme-parry',name:'Meme Parry',pose:14,kind:'parry',startup:1,active:6,recovery:20,damage:0,hitstun:0,blockstun:0,hitstopAttacker:0,hitstopVictim:0,pushbackX:0,attackType:'Mid',range:0,meterGainHit:0,meterGainBlock:0,meterGainReceive:0,cooldown:60,cancelRules:[]};
+export const MEME_RUSH_MOVE:MoveData={id:'meme-rush',name:'Meme Rush',pose:6,kind:'dashStrike',startup:1,active:1,recovery:8,damage:0,hitstun:0,blockstun:0,hitstopAttacker:0,hitstopVictim:0,pushbackX:0,attackType:'Mid',range:0,meterGainHit:0,meterGainBlock:0,meterGainReceive:0,cancelRules:[]};
+export {COMMON_MOVES};

@@ -1,0 +1,208 @@
+{
+  "project": "MEME FIGHT／迷因大亂鬥 project-working upgrade",
+  "verificationDate": "2026-08-17",
+  "stack": {
+    "engine": "Phaser ^3.90.0",
+    "language": "TypeScript ^5.9.2",
+    "bundler": "Vite ^7.1.2",
+    "canvas": "1280x720",
+    "combatClock": "fixed 60Hz"
+  },
+  "assetPipeline": {
+    "basePosePipelinePreserved": true,
+    "basePoses": 360,
+    "skillSourceCells": 224,
+    "derivedModules": 2,
+    "generatedRgbaSkillAssets": 226,
+    "ultimateBackgrounds": 12,
+    "backgroundSize": "1672x941 RGB",
+    "validationWarnings": 0,
+    "basePoseShaRegression": 0,
+    "idempotent": true,
+    "generatedImageHashDiffOnSecondRun": 0
+  },
+  "tests": {
+    "npmRunTypecheck": "PASS",
+    "npmTest": "PASS",
+    "staticQA": "PASS",
+    "logicQA": "PASS",
+    "assetValidation": "PASS",
+    "generatorIdempotency": "PASS",
+    "npmRunBuild": {
+      "status": "ENVIRONMENT_BLOCKED",
+      "reason": "Bundled node_modules lacks @rollup/rollup-linux-x64-gnu; npm ci clean dependency rebuild was attempted but did not complete in sandbox network/time window. Source TypeScript passes."
+    },
+    "browserRuntimeSmoke": {
+      "status": "ENVIRONMENT_BLOCKED",
+      "reason": "Chromium/Playwright navigation to local QA server returned ERR_BLOCKED_BY_ADMINISTRATOR; direct headless file attempt also failed to complete in this container."
+    },
+    "lint": {
+      "status": "NOT_CONFIGURED",
+      "reason": "package.json contains no lint script."
+    }
+  },
+  "input": {
+    "P1": "WASD / F / G / H / T",
+    "P2": "Arrows / J / K / L / I",
+    "specialPrecedence": [
+      "G+Special",
+      "F+Special",
+      "623+Special",
+      "214+Special",
+      "22+Special",
+      "236+Special",
+      "bare Special -> specialH"
+    ],
+    "memeProtocol": "hold -> READY_WAIT_RELEASE -> release -> READY_WAIT_PRESS -> new press"
+  },
+  "perCharacter": [
+    {
+      "fighterId": "alien",
+      "character": "Alien Meow／訊號壞掉喵",
+      "specialH": "斷訊掃描波",
+      "hLevels": "PASS_LOGIC_AND_STATIC",
+      "hNoCooldown": "PASS_LOGIC_AND_STATIC",
+      "ultimateName": "逼逼逼動感光波",
+      "cutIn": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "gameplayRuntime": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "installScale2x": "N/A",
+      "cleanup": "PASS_STATIC"
+    },
+    {
+      "fighterId": "doge",
+      "character": "Doge",
+      "specialH": "肌肉衝撞",
+      "hLevels": "PASS_LOGIC_AND_STATIC",
+      "hNoCooldown": "PASS_LOGIC_AND_STATIC",
+      "ultimateName": "超級賽狗",
+      "cutIn": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "gameplayRuntime": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "installScale2x": "PASS_STATIC",
+      "cleanup": "PASS_STATIC"
+    },
+    {
+      "fighterId": "ya",
+      "character": "YA鼠",
+      "specialH": "尷尬招呼波",
+      "hLevels": "PASS_LOGIC_AND_STATIC",
+      "hNoCooldown": "PASS_LOGIC_AND_STATIC",
+      "ultimateName": "哈ㄗ咖西",
+      "cutIn": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "gameplayRuntime": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "installScale2x": "N/A",
+      "cleanup": "PASS_STATIC"
+    },
+    {
+      "fighterId": "tempura",
+      "character": "oh fucking 天婦羅尬哩涼",
+      "specialH": "企鵝衝隊",
+      "hLevels": "PASS_LOGIC_AND_STATIC",
+      "hNoCooldown": "PASS_LOGIC_AND_STATIC",
+      "ultimateName": "oh fucking 天婦羅尬哩涼！",
+      "cutIn": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "gameplayRuntime": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "installScale2x": "N/A",
+      "cleanup": "PASS_STATIC"
+    },
+    {
+      "fighterId": "goblin",
+      "character": "哥布林也想談戀愛",
+      "specialH": "愛的擁抱",
+      "hLevels": "PASS_LOGIC_AND_STATIC",
+      "hNoCooldown": "PASS_LOGIC_AND_STATIC",
+      "ultimateName": "長老您保重",
+      "cutIn": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "gameplayRuntime": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "installScale2x": "PASS_STATIC",
+      "cleanup": "PASS_STATIC"
+    },
+    {
+      "fighterId": "salad",
+      "character": "沙拉貓貓",
+      "specialH": "拒吃震波",
+      "hLevels": "PASS_LOGIC_AND_STATIC",
+      "hNoCooldown": "PASS_LOGIC_AND_STATIC",
+      "ultimateName": "菜就多練",
+      "cutIn": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "gameplayRuntime": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "installScale2x": "N/A",
+      "cleanup": "PASS_STATIC"
+    },
+    {
+      "fighterId": "wizard",
+      "character": "魔法胖橘貓",
+      "specialH": "JPEG 魔法陣",
+      "hLevels": "PASS_LOGIC_AND_STATIC",
+      "hNoCooldown": "PASS_LOGIC_AND_STATIC",
+      "ultimateName": "喵蘇魯的召喚！",
+      "cutIn": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "gameplayRuntime": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "installScale2x": "N/A",
+      "cleanup": "PASS_STATIC"
+    },
+    {
+      "fighterId": "blade",
+      "character": "我的刀盾",
+      "specialH": "鈍刀蓄斬",
+      "hLevels": "PASS_LOGIC_AND_STATIC",
+      "hNoCooldown": "PASS_LOGIC_AND_STATIC",
+      "ultimateName": "汪爆氣流斬",
+      "cutIn": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "gameplayRuntime": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "installScale2x": "PASS_STATIC",
+      "cleanup": "PASS_STATIC"
+    },
+    {
+      "fighterId": "pink",
+      "character": "粉紅星星",
+      "specialH": "尖叫爆震",
+      "hLevels": "PASS_LOGIC_AND_STATIC",
+      "hNoCooldown": "PASS_LOGIC_AND_STATIC",
+      "ultimateName": "派甜心假面...露出",
+      "cutIn": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "gameplayRuntime": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "installScale2x": "PASS_STATIC",
+      "cleanup": "PASS_STATIC"
+    },
+    {
+      "fighterId": "sauce",
+      "character": "蘸醬胡渣狗",
+      "specialH": "黏醬飛射",
+      "hLevels": "PASS_LOGIC_AND_STATIC",
+      "hNoCooldown": "PASS_LOGIC_AND_STATIC",
+      "ultimateName": "胡渣男！",
+      "cutIn": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "gameplayRuntime": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "installScale2x": "N/A",
+      "cleanup": "PASS_STATIC"
+    },
+    {
+      "fighterId": "scared",
+      "character": "驚嚇小貓",
+      "specialH": "驚嚇衝撞",
+      "hLevels": "PASS_LOGIC_AND_STATIC",
+      "hNoCooldown": "PASS_LOGIC_AND_STATIC",
+      "ultimateName": "嗷嗷嗷嗷嗷！！",
+      "cutIn": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "gameplayRuntime": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "installScale2x": "N/A",
+      "cleanup": "PASS_STATIC"
+    },
+    {
+      "fighterId": "ok",
+      "character": "OK喵老大",
+      "specialH": "OK 判決波",
+      "hLevels": "PASS_LOGIC_AND_STATIC",
+      "hNoCooldown": "PASS_LOGIC_AND_STATIC",
+      "ultimateName": "大哥你是了解我的",
+      "cutIn": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "gameplayRuntime": "IMPLEMENTED_STATIC_QA_PASS_BROWSER_SMOKE_ENVIRONMENT_BLOCKED",
+      "installScale2x": "N/A",
+      "cleanup": "PASS_STATIC"
+    }
+  ],
+  "missingSourceAssets": {
+    "voiceAudioCount": 12,
+    "note": "No voice audio files were present in project or supplied ZIPs. All 12 exact audio hook IDs are configured; text-only cut-ins remain functional."
+  }
+}

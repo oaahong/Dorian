@@ -1,0 +1,12 @@
+MEME FIGHT FINAL SOURCE CHECK — 2026-08-17
+
+PASS  npm run typecheck (tsc --noEmit).
+PASS  npm test (migrated static QA + real H/Meme/input logic QA).
+PASS  Skill asset validation: 226/226 RGBA with real transparency; 12/12 RGB Ultimate backgrounds.
+PASS  Base Fighter Pose regression: 360 existing poses unchanged by SHA-256.
+PASS  Generator idempotency: 238 delivered skill/background images, 0 hash changes on second generation.
+PASS  Contact sheets visually reviewed after iterative crop fixes.
+BLOCK Production Vite build by environment: bundled dependencies lack @rollup/rollup-linux-x64-gnu. Clean npm ci was attempted and did not complete within sandbox network/time window. No gameplay source was changed to work around Rollup.
+BLOCK Browser runtime smoke by environment: Playwright/Chromium local navigation returned ERR_BLOCKED_BY_ADMINISTRATOR.
+N/A   Lint: no lint script exists in package.json.
+MISSING SOURCE 12 voice audio files; exact audio hook IDs are configured and text-only Cut-ins remain functional.

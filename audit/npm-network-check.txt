@@ -1,0 +1,1 @@
+Clean npm ci was attempted after isolating the bundled platform-specific node_modules. It did not complete inside this sandbox network/time window, so the original bundled dependencies were restored unchanged. Production Vite remains environment-blocked by missing @rollup/rollup-linux-x64-gnu; see audit/skill-assets/logs/npm-build.log and npm-ci.log.

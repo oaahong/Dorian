@@ -1,17 +1,28 @@
 {
-  "name": "meme-cat-fighter",
-  "private": true,
+  "name": "meme-fight",
   "version": "1.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview --host 0.0.0.0",
+    "test:runtime": "node scripts/runtime-test.mjs",
+    "assets:extract": "python3 scripts/extract_poses.py",
+    "test:static": "node scripts/static-qa.mjs",
+    "test": "npm run test:static && npm run test:logic",
+    "typecheck": "tsc --noEmit",
+    "assets:skills": "python3 scripts/extract_skill_assets.py",
+    "assets:skills:validate": "python3 scripts/validate_skill_assets.py",
+    "assets:skills:contacts": "python3 scripts/generate_skill_contact_sheets.py",
+    "test:logic": "node scripts/logic-test.mjs"
   },
   "dependencies": {
-    "phaser": "^4.2.1"
+    "phaser": "^3.90.0"
   },
   "devDependencies": {
+    "@types/node": "^22.15.0",
+    "playwright-core": "^1.55.0",
     "typescript": "^5.9.2",
     "vite": "^7.1.2"
   }

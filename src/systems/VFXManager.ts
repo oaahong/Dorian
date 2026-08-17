@@ -1,97 +1,27 @@
-import * as Phaser from 'phaser';
-import { COLORS, FONT_FAMILY, GAME_HEIGHT, GAME_WIDTH } from '../utils/constants';
-
+import Phaser from 'phaser';
 export class VFXManager {
-  private readonly layer: Phaser.GameObjects.Container;
-  private readonly world: Phaser.GameObjects.Container;
-
-  constructor(private readonly scene: Phaser.Scene, world: Phaser.GameObjects.Container) {
-    this.world = world;
-    this.layer = scene.add.container(0, 0).setDepth(900);
-  }
-
-  hitSpark(x: number, y: number, heavy = false, color = COLORS.gold): void {
-    try {
-      const count = heavy ? 14 : 8;
-      for (let i = 0; i < count; i += 1) {
-        const angle = (Math.PI * 2 * i) / count + Math.random() * .2;
-        const len = (heavy ? 85 : 48) * (.65 + Math.random() * .5);
-        const line = this.scene.add.rectangle(x, y, len, heavy ? 7 : 4, color).setOrigin(0, .5).setRotation(angle).setAlpha(.95);
-        this.layer.add(line);
-        this.scene.tweens.add({ targets: line, alpha: 0, scaleX: .2, duration: heavy ? 170 : 110, ease: 'Quad.easeOut', onComplete: () => line.destroy() });
-      }
-    } catch (error) { console.warn('[VFX] hitSpark failed', error); }
-  }
-
-  blockSpark(x: number, y: number): void {
-    const ring = this.scene.add.circle(x, y, 34, COLORS.cyan, .12).setStrokeStyle(5, COLORS.cyan, .95);
-    this.layer.add(ring);
-    this.scene.tweens.add({ targets: ring, scale: 1.8, alpha: 0, duration: 180, onComplete: () => ring.destroy() });
-    this.popup('BLOCK', x, y - 70, COLORS.cyan, 26);
-  }
-
-  shockwave(x: number, y: number, color: number, size = 100): void {
-    const ring = this.scene.add.circle(x, y, 20, color, .06).setStrokeStyle(7, color, .8);
-    this.layer.add(ring);
-    this.scene.tweens.add({ targets: ring, displayWidth: size * 2, displayHeight: size * 2, alpha: 0, duration: 280, ease: 'Cubic.easeOut', onComplete: () => ring.destroy() });
-  }
-
-  speedLines(x: number, y: number, facing: number, color: number): void {
-    for (let i = 0; i < 8; i += 1) {
-      const yy = y - 90 + i * 24 + Math.random() * 12;
-      const line = this.scene.add.rectangle(x - facing * 65, yy, 120 + Math.random() * 100, 3, color, .6).setOrigin(facing > 0 ? 1 : 0, .5);
-      this.layer.add(line);
-      this.scene.tweens.add({ targets: line, x: line.x - facing * 140, alpha: 0, duration: 180, onComplete: () => line.destroy() });
-    }
-  }
-
-  afterimage(sprite: Phaser.GameObjects.Image, color: number): void {
-    const ghost = this.scene.add.image(sprite.x, sprite.y, sprite.texture.key).setOrigin(sprite.originX, sprite.originY)
-      .setScale(sprite.scaleX, sprite.scaleY).setFlipX(sprite.flipX).setTint(color).setAlpha(.28);
-    this.layer.add(ghost);
-    this.scene.tweens.add({ targets: ghost, alpha: 0, scaleX: ghost.scaleX * 1.05, scaleY: ghost.scaleY * .95, duration: 150, onComplete: () => ghost.destroy() });
-  }
-
-  pixelBlocks(color: number, count = 24): void {
-    for (let i = 0; i < count; i += 1) {
-      const s = Phaser.Math.Between(8, 32);
-      const block = this.scene.add.rectangle(Phaser.Math.Between(0, GAME_WIDTH), Phaser.Math.Between(70, GAME_HEIGHT - 80), s, s, color, Phaser.Math.FloatBetween(.2, .65));
-      this.layer.add(block);
-      this.scene.tweens.add({ targets: block, y: block.y + Phaser.Math.Between(-80, 80), x: block.x + Phaser.Math.Between(-80, 80), alpha: 0, duration: Phaser.Math.Between(220, 520), onComplete: () => block.destroy() });
-    }
-  }
-
-  popup(text: string, x: number, y: number, color = COLORS.cream, size = 28): void {
-    const label = this.scene.add.text(x, y, text, { fontFamily: FONT_FAMILY, fontSize: `${size}px`, color: `#${color.toString(16).padStart(6, '0')}`, stroke: '#050505', strokeThickness: 7 }).setOrigin(.5).setAngle(Phaser.Math.Between(-6, 6));
-    this.layer.add(label);
-    this.scene.tweens.add({ targets: label, y: y - 45, scale: 1.25, alpha: 0, duration: 520, ease: 'Back.easeOut', onComplete: () => label.destroy() });
-  }
-
-  memePopup(x: number, y: number): void {
-    if (Math.random() > .13) return;
-    const words = ['BONK!', 'WHAT!?', 'OK!', 'BRUH', 'MEOW', 'CRITICAL MEME'];
-    this.popup(words[Math.floor(Math.random() * words.length)]!, x, y - 110, COLORS.white, 24);
-  }
-
-  flash(color = COLORS.white, alpha = .45, duration = 90): void {
-    const rect = this.scene.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, color, alpha).setDepth(990);
-    this.scene.tweens.add({ targets: rect, alpha: 0, duration, onComplete: () => rect.destroy() });
-  }
-
-  shake(intensity = .005, duration = 120): void {
-    const amount = Math.max(2, intensity * 1000);
-    const originalX = this.world.x; const originalY = this.world.y;
-    this.scene.tweens.addCounter({ from: 0, to: 1, duration, onUpdate: () => {
-      this.world.x = originalX + Phaser.Math.FloatBetween(-amount, amount);
-      this.world.y = originalY + Phaser.Math.FloatBetween(-amount, amount);
-    }, onComplete: () => { this.world.x = originalX; this.world.y = originalY; } });
-  }
-
-  ultimateBackdrop(color: number, duration = 1200): Phaser.GameObjects.Rectangle {
-    const overlay = this.scene.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, color, .62).setDepth(850);
-    this.scene.tweens.add({ targets: overlay, alpha: .38, duration: duration * .65, yoyo: true, ease: 'Sine.easeInOut' });
-    return overlay;
-  }
-
-  destroy(): void { this.layer.destroy(true); }
+ constructor(private scene:Phaser.Scene){}
+ spark(x:number,y:number,kind:'hit'|'heavy'|'block'|'armor'|'parry'|'perfect'='hit'){
+  const colors={hit:0xffffff,heavy:0xffb21a,block:0x57b8ff,armor:0xffef67,parry:0x9affff,perfect:0xff64ff};
+  const g=this.scene.add.graphics().setDepth(50);g.lineStyle(kind==='heavy'?7:4,colors[kind],1);
+  for(let i=0;i<9;i++){const a=Math.PI*2*i/9,r=Phaser.Math.Between(18,44);g.lineBetween(x,y,x+Math.cos(a)*r,y+Math.sin(a)*r);}this.scene.tweens.add({targets:g,alpha:0,scale:1.8,duration:150,onComplete:()=>g.destroy()});
+ }
+ callout(text:string,x:number,y:number,color='#ffffff'){
+  const t=this.scene.add.text(x,y,text,{fontFamily:'Impact, sans-serif',fontSize:'32px',color,stroke:'#000',strokeThickness:7}).setOrigin(.5).setDepth(80);
+  this.scene.tweens.add({targets:t,y:y-36,scale:1.25,alpha:0,duration:600,ease:'Cubic.easeOut',onComplete:()=>t.destroy()});
+ }
+ flash(color=0xffffff,alpha=.45,duration=90){const r=this.scene.add.rectangle(640,360,1280,720,color,alpha).setDepth(90);this.scene.tweens.add({targets:r,alpha:0,duration,onComplete:()=>r.destroy()});}
+ shockwave(x:number,y:number,color=0xffffff){const c=this.scene.add.circle(x,y,12).setStrokeStyle(5,color).setDepth(55);this.scene.tweens.add({targets:c,scale:9,alpha:0,duration:250,onComplete:()=>c.destroy()});}
+ afterimage(sprite:Phaser.GameObjects.Image){const im=this.scene.add.image(sprite.x,sprite.y,sprite.texture.key).setOrigin(sprite.originX,sprite.originY).setFlipX(sprite.flipX).setDisplaySize(sprite.displayWidth,sprite.displayHeight).setAlpha(.3).setTint(0x7ddcff).setDepth(sprite.depth-1);this.scene.tweens.add({targets:im,alpha:0,duration:180,onComplete:()=>im.destroy()});}
+ speedLines(x:number,y:number,facing:1|-1){const g=this.scene.add.graphics().setDepth(45).lineStyle(3,0xffffff,.55);for(let i=0;i<8;i++){const yy=y-90+i*22;g.lineBetween(x-facing*30,yy,x-facing*(80+i*8),yy);}this.scene.tweens.add({targets:g,alpha:0,duration:160,onComplete:()=>g.destroy()});}
+ jpegBlocks(count=14){const g=this.scene.add.graphics().setDepth(58);for(let i=0;i<count;i++){g.fillStyle(i%2?0xffffff:0x777777,.12+.03*(i%3));g.fillRect(Phaser.Math.Between(20,1180),Phaser.Math.Between(90,620),Phaser.Math.Between(30,130),Phaser.Math.Between(18,75));}this.scene.tweens.add({targets:g,alpha:0,duration:280,onComplete:()=>g.destroy()});}
+ sonicRings(x:number,y:number,color=0xffffff){for(let i=0;i<3;i++){const c=this.scene.add.circle(x,y,18+i*16).setStrokeStyle(4,color,.8).setDepth(54);this.scene.tweens.add({targets:c,scale:4+i*.45,alpha:0,duration:220+i*55,onComplete:()=>c.destroy()});}}
+ magicZone(x:number,y:number,color=0xb158ff){const c=this.scene.add.circle(x,y,70,color,.09).setStrokeStyle(5,color,.7).setDepth(7);this.scene.tweens.add({targets:c,scale:1.25,alpha:0,duration:520,onComplete:()=>c.destroy()});}
+ crtTear(y:number){const r=this.scene.add.rectangle(640,y,1280,Phaser.Math.Between(5,18),0xffffff,.22).setDepth(88);this.scene.tweens.add({targets:r,x:Phaser.Math.Between(590,690),alpha:0,duration:120,onComplete:()=>r.destroy()});}
+ panicLines(x:number,y:number,color=0xffffff){const g=this.scene.add.graphics().setDepth(57).lineStyle(3,color,.7);for(let i=0;i<16;i++){const a=Math.PI*2*i/16;g.lineBetween(x+Math.cos(a)*55,y+Math.sin(a)*55,x+Math.cos(a)*180,y+Math.sin(a)*180);}this.scene.tweens.add({targets:g,alpha:0,duration:260,onComplete:()=>g.destroy()});}
+ judgementGrid(color=0xc780ff){const g=this.scene.add.graphics().setDepth(62).lineStyle(3,color,.45);for(let x=80;x<=1200;x+=140)g.lineBetween(x,120,x,620);for(let y=160;y<=600;y+=110)g.lineBetween(80,y,1200,y);this.scene.tweens.add({targets:g,alpha:0,duration:520,onComplete:()=>g.destroy()});}
+ projectileTrail(x:number,y:number,color:number){const c=this.scene.add.circle(x,y,5,color,.35).setDepth(16);this.scene.tweens.add({targets:c,scale:2,alpha:0,duration:140,onComplete:()=>c.destroy()});}
+ throwTechBurst(x:number,y:number){this.shockwave(x,y,0xffe45c);this.callout('THROW TECH',x,y-70,'#ffe45c');}
+ memeText(text:string,x:number,y:number,color='#ffffff'){this.callout(text,x,y,color);}
+ cameraShake(ms=90,intensity=.006){this.scene.cameras.main.shake(ms,intensity);}
 }

@@ -1,62 +1,12 @@
-export type SfxName = 'menu' | 'light' | 'heavy' | 'block' | 'jump' | 'special' | 'ultimate' | 'ko' | 'victory';
-
-class AudioManagerImpl {
-  private context: AudioContext | null = null;
-  private muted = false;
-
-  async unlock(): Promise<void> {
-    try {
-      if (!this.context) this.context = new AudioContext();
-      if (this.context.state === 'suspended') await this.context.resume();
-    } catch (error) {
-      console.warn('[Audio] Web Audio unavailable. Game will continue silently.', error);
-      this.context = null;
-    }
+export class AudioManager {
+  private ctx?:AudioContext; muted=false;
+  ensure(){if(!this.ctx)this.ctx=new AudioContext();if(this.ctx.state==='suspended')void this.ctx.resume();}
+  toggle(){this.muted=!this.muted;}
+  beep(type:'menu'|'light'|'heavy'|'block'|'armor'|'parry'|'jump'|'throw'|'special'|'ultimate'|'ko'|'victory'){
+    if(this.muted)return;this.ensure();const c=this.ctx!;const o=c.createOscillator(),g=c.createGain();
+    const map:Record<string,[number,number,string]>={menu:[520,.05,'square'],light:[180,.05,'square'],heavy:[90,.09,'sawtooth'],block:[260,.05,'triangle'],armor:[120,.08,'square'],parry:[760,.06,'sine'],jump:[360,.08,'triangle'],throw:[110,.11,'sawtooth'],special:[430,.11,'square'],ultimate:[65,.22,'sawtooth'],ko:[55,.35,'sawtooth'],victory:[660,.18,'triangle']};
+    const [f,d,t]=map[type];o.type=t as OscillatorType;o.frequency.value=f;g.gain.setValueAtTime(.06,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);o.connect(g).connect(c.destination);o.start();o.stop(c.currentTime+d);
   }
-
-  toggleMute(): boolean {
-    this.muted = !this.muted;
-    return this.muted;
-  }
-
-  isMuted(): boolean { return this.muted; }
-
-  play(name: SfxName): void {
-    if (!this.context || this.muted) return;
-    const now = this.context.currentTime;
-    const profiles: Record<SfxName, [number, number, OscillatorType, number]> = {
-      menu: [520, 760, 'square', .045], light: [190, 80, 'square', .055], heavy: [110, 44, 'sawtooth', .09],
-      block: [740, 360, 'triangle', .06], jump: [260, 520, 'sine', .055], special: [330, 980, 'sawtooth', .09],
-      ultimate: [90, 880, 'sawtooth', .16], ko: [150, 35, 'square', .22], victory: [440, 880, 'triangle', .18],
-    };
-    const [from, to, type, duration] = profiles[name];
-    const osc = this.context.createOscillator();
-    const gain = this.context.createGain();
-    osc.type = type;
-    osc.frequency.setValueAtTime(from, now);
-    osc.frequency.exponentialRampToValueAtTime(Math.max(20, to), now + duration);
-    gain.gain.setValueAtTime(name === 'ultimate' || name === 'ko' ? .16 : .09, now);
-    gain.gain.exponentialRampToValueAtTime(.001, now + duration);
-    osc.connect(gain).connect(this.context.destination);
-    osc.start(now); osc.stop(now + duration + .02);
-
-    if (name === 'heavy' || name === 'ko' || name === 'ultimate') this.noise(duration * .8, name === 'ko' ? .11 : .06);
-  }
-
-  private noise(duration: number, volume: number): void {
-    if (!this.context || this.muted) return;
-    const frames = Math.max(1, Math.floor(this.context.sampleRate * duration));
-    const buffer = this.context.createBuffer(1, frames, this.context.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < frames; i += 1) data[i] = Math.random() * 2 - 1;
-    const source = this.context.createBufferSource();
-    source.buffer = buffer;
-    const gain = this.context.createGain();
-    gain.gain.setValueAtTime(volume, this.context.currentTime);
-    gain.gain.exponentialRampToValueAtTime(.001, this.context.currentTime + duration);
-    source.connect(gain).connect(this.context.destination);
-    source.start();
-  }
+  shutdown(){/* shared context intentionally retained; no dangling nodes are kept */}
 }
-
-export const AudioManager = new AudioManagerImpl();
+export const audio=new AudioManager();
