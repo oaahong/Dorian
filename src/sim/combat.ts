@@ -293,10 +293,12 @@ export function resolveHit(
 
   const hitIndex = attacker.attack ? attacker.attack.hitsUsed : 0;
   const perHitDamage = spec.hits[Math.min(hitIndex, spec.hits.length - 1)]!;
+  const defenderConfig = config(defender);
   const fullDamage =
     perHitDamage *
     ATTACK_MULTIPLIER(config(attacker).attackStat) *
-    HP_STAT_MITIGATION(config(defender).hpStat);
+    HP_STAT_MITIGATION(defenderConfig.hpStat) *
+    defenderConfig.damageTakenScalar;
   const damage = blocked ? fullDamage * spec.chipRatio : fullDamage;
 
   receiveImpact(defender, damage, spec, attacker.facing, blocked, tick, armored);

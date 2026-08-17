@@ -4,9 +4,9 @@ A 2D browser fighting game built with Phaser 4, TypeScript and Vite, with
 intentionally absurd low-resolution meme-cat character cards. Two players can
 fight on one keyboard or across the internet.
 
-The eight supplied character sheets are cut apart at runtime by `SpriteExtractor`,
-which crops the 13 action panels, removes near-black pixels, trims transparent
-margins and registers each pose as a Phaser CanvasTexture.
+Twelve fighters, each with thirty poses cut from a source character sheet ahead of
+time by the Python pipeline in `scripts/`, so the client loads finished PNGs
+instead of cropping card art on the main thread at boot.
 
 ## Requirements
 
@@ -78,9 +78,9 @@ E2E_BASE_URL=https://<app> npm run test:e2e
 - Crouch: `S`
 - Light: `F`
 - Heavy: `G`
-- Special: `H`
-- Throw: `R`
-- Ultimate: `T`, or `S + H` when MEME = 100
+- Special: `H` — with `236` / `214` / `623` / `SS` in front of it for the
+  fighter's other specials; bare `H` throws the 236
+- Ultimate: `T`, or `S + H`, when MEME = 100
 - Block: hold away from the opponent
 
 ### Player 2 Battle
@@ -90,9 +90,8 @@ E2E_BASE_URL=https://<app> npm run test:e2e
 - Crouch: `↓`
 - Light: `J`
 - Heavy: `K`
-- Special: `L`
-- Throw: `U`
-- Ultimate: `I`, or `↓ + L` when MEME = 100
+- Special: `L` — same motions as P1
+- Ultimate: `I`, or `↓ + L`, when MEME = 100
 - Block: hold away from the opponent
 
 Online, both players use the Player 1 controls on their own keyboard; the seat the
@@ -246,14 +245,21 @@ upgraded twelve listed in [docs/upgraded-build.md](docs/upgraded-build.md).
 
 ## Characters
 
-1. 崩潰喵喵貓 — 崩潰音波 / JPEG震爆
-2. 哭哭預警貓 — 哭哭水柱 / 情緒海嘯
-3. OK老大貓 — OK衝刺 / 超級OK判定
-4. 尷尬微笑貓 — 尷尬僵直 / 社死領域
-5. 厭世沙拉貓 — 沙拉掀桌 / 健康餐大爆扣
-6. 震驚口水貓 — 冰櫃滑步 / 冷凍驚嚇
-7. 外星電波貓 — 電波光束 / 地球人退散
-8. 魔法胖橘貓 — JPEG魔法陣 / 爆裂喵法會
+Each has a 236, a 214 and a double-tap-down function move; `scared` is the only
+one with a 623 as well. Listed as **236 / ultimate**.
+
+1. Alien Meow／訊號壞掉喵 — 斷訊掃描波 / **逼逼逼動感光波**
+2. Doge — 側眼施壓 / **超級賽狗**
+3. YA鼠 — 尷尬打招呼 / **哈ㄗ咖西**
+4. oh fucking 天婦羅尬哩涼 — 企鵝縱隊 / **oh fucking 天婦羅尬哩涼！**
+5. 哥布林也想談戀愛 — 鎖喉告白 / **長老您保重**
+6. 沙拉貓貓 — 我不想吃這個 / **菜就多練**
+7. 魔法胖橘貓 — JPEG魔法陣 / **喵蘇魯的召喚！**
+8. 我的刀盾 — 鈍刀亂磨 / **汪爆氣流斬**
+9. 粉紅星星 — 尖叫嘴震 / **派甜心假面...露出**
+10. 蘸醬胡渣狗 — 蘸醬討飯 / **胡渣男！**
+11. 驚嚇小貓 — 尖叫震波 / **嗷嗷嗷嗷嗷！！**
+12. OK喵老大 — OK衝刺 / **大哥你是了解我的**
 
 ## Architecture
 
@@ -349,13 +355,19 @@ no configuration, not because the halves are entangled.
 
 ## Adding New Fighters
 
-1. Add the new card under `public/assets/cards/` using the same 1122×1402
-   action-sheet layout, then run `npm run assets:thumbs`.
+1. Put the source character sheet in `source-assets/`, add its crop profile to
+   `audit/sheet-profiles.json`, then run `npm run assets:poses` to cut the thirty
+   poses and `npm run assets:thumbs` for the menu card.
 2. Add one `FighterConfig` entry in `src/fighters/fighterData.ts`.
-3. Define its Special and Ultimate as data-driven `AttackSpec` entries.
-4. If the move needs a genuinely new behaviour, add one reusable `AttackKind` and
-   one handler in `src/sim/world.ts`; do not duplicate the fighter engine.
-5. Run `npm test`. The roster tests check the shape of the new entry, and the
+3. Define its specials and ultimate as data-driven `AttackSpec` entries — a 236, a
+   214, a function move, and optionally a 623.
+4. If the sheet does not follow the standard pose order, add a layout to
+   `src/fighters/poseSheet.ts` as `alien` does.
+5. If a move needs a genuinely new behaviour, add one reusable `AttackKind` and one
+   handler in `src/sim/world.ts`; do not duplicate the fighter engine.
+6. Widen the select grid in `src/scenes/CharacterSelectScene.ts` — `GRID` is one
+   definition and the layout, cursor wrap and highlight all follow from it.
+7. Run `npm test`. The roster tests check the shape of the new entry, and the
    golden replays will flag any change to existing behaviour.
 
 Anything added to the simulation has to obey the determinism rules — see
@@ -382,16 +394,33 @@ the extractor no longer removes. Lossless WebP is pixel-identical (0 pixels
 changed, measured the same way) and roughly 35% smaller, if the download matters
 more than keeping the originals in a universally-editable format.
 
-## Runtime Pose Extraction
+## Pose Extraction
 
-`SpriteExtractor` maps the card panels to:
+Poses are cut from the source character sheets ahead of time by
+`scripts/extract_poses.py`, which writes `public/assets/poses/<fighter>/01..30.png`
+with the background already removed.
 
-`idle`, `walkForward`, `walkBack`, `jump`, `crouch`, `light`, `heavy`, `block`,
-`hit`, `special`, `ultimate`, `victory`, `ko`.
+```bash
+npm run assets:poses
+npm run assets:poses:validate
+```
 
-It intentionally uses a conservative near-black threshold (`RGB < 25`) so dark
-character details such as the wizard cat's hat survive. Rough JPEG edges are part
-of the intended presentation.
+This used to happen in the browser: `SpriteExtractor` fetched a multi-megabyte card
+per fighter and cropped thirteen panels out of it with synchronous canvas passes
+before the match could start. Doing it offline is better on every axis — the crop
+rectangles and the alpha threshold live next to the art they were tuned against, a
+bad crop shows up in a contact sheet instead of on a moving fighter, and the client
+spends its first frames rendering rather than cutting.
 
-Extraction runs in `PrepareMatchScene`, for the two fighters in the match only —
-26 canvas passes rather than the 104 it used to do at boot.
+It also settles the argument the runtime extractor kept having with itself. A plain
+near-black test cleared the backdrop but also cleared a cat's pupils, because they
+are just as black; the fix was a flood fill inward from the crop edge, so enclosed
+dark areas are never reached. The pipeline does the same thing, once, offline.
+
+[poseSheet.ts](src/fighters/poseSheet.ts) maps the thirteen poses the renderer asks
+for — `idle`, `walkForward`, `walkBack`, `jump`, `crouch`, `light`, `heavy`,
+`block`, `hit`, `special`, `ultimate`, `victory`, `ko` — onto sheet numbers. Eleven
+of the twelve sheets share a layout; `alien` was shot in a different order and has
+its own.
+
+`PrepareMatchScene` loads only the poses the two chosen fighters need.

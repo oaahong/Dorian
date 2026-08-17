@@ -1,20 +1,20 @@
 import * as Phaser from 'phaser';
 import { getFighterConfig } from '../fighters/fighterData';
 import type { FighterConfig } from '../fighters/FighterConfig';
-import { SpriteExtractor } from '../systems/SpriteExtractor';
+import { POSE_NAMES, posePath, poseTextureKey } from '../fighters/poseSheet';
 import { gameState } from '../systems/GameState';
 import { COLORS, FONT_FAMILY, GAME_HEIGHT, GAME_WIDTH } from '../utils/constants';
 
 /**
- * Loads the two chosen fighters' full-resolution cards and cuts their poses.
+ * Loads the two chosen fighters' poses.
  *
- * This used to happen at boot for all eight fighters: 26 MB of PNG and 104
- * synchronous canvas passes before the title screen appeared. The cards are only
- * ever *displayed* at 238x298 or smaller, so the menus now use small thumbnails
- * and the full art is fetched only once the match is known — about 6 MB and 26
- * passes instead.
+ * This used to load a multi-megabyte card per fighter and cut thirteen panels out
+ * of it with synchronous canvas passes. The poses are now extracted ahead of time
+ * by `scripts/extract_poses.py`, so the scene just fetches the thirteen small PNGs
+ * it needs per fighter and there is no cutting left to do.
  *
- * It matters most online, where both players wait for whichever of them is
+ * It still happens here rather than at boot, and for the chosen fighters only,
+ * for the original reason: online, both players wait for whichever of them is
  * slower to be ready.
  */
 export class PrepareMatchScene extends Phaser.Scene {
@@ -42,20 +42,22 @@ export class PrepareMatchScene extends Phaser.Scene {
     this.load.on('loaderror', (file: { key?: string }) =>
       console.warn(`[Prepare] Asset failed: ${file.key ?? 'unknown'}`));
     this.load.once('complete', () => {
-      label.setText('CUTTING JPEG FIGHTERS...');
+      label.setText('FIGHTERS READY');
       barBg.setStrokeStyle(2, COLORS.cyan);
     });
 
     for (const fighter of this.matchFighters()) {
-      if (this.textures.exists(fighter.cardTexture)) continue;
-      this.load.image(fighter.cardTexture, `assets/cards/card-${fighter.number}.png`);
+      for (const pose of POSE_NAMES) {
+        const key = poseTextureKey(fighter.id, pose);
+        if (this.textures.exists(key)) continue;
+        this.load.image(key, posePath(fighter.id, pose));
+      }
     }
   }
 
   create(): void {
-    new SpriteExtractor(this).extractAll(this.matchFighters());
-    // A frame's delay so the "cutting" label is actually seen when extraction is
-    // fast, and so the loading screen is not swapped out mid-layout.
+    // A frame's delay so the loading screen is not swapped out mid-layout, and so
+    // the "ready" label is actually seen when the poses were already cached.
     this.time.delayedCall(60, () => this.scene.start(this.nextScene));
   }
 

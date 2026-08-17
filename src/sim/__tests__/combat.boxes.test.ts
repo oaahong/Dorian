@@ -10,7 +10,7 @@ import { attackRuntime } from './factories';
 /** Box geometry, ported from Fighter.getHurtbox / getMeleeHitbox. See docs/sim-spec.md §6. */
 
 const at = (x: number, overrides: Partial<SimFighter> = {}): SimFighter => ({
-  ...createFighter('collapse', x, 1),
+  ...createFighter('pink', x, 1),
   ...overrides,
 });
 
@@ -87,8 +87,11 @@ describe('getMeleeHitbox', () => {
   });
 
   it('scales reach by the range stat', () => {
-    // 'collapse' has rangeStat 2 -> 0.99x, 'alien' has 5 -> 1.155x.
-    const short = getMeleeHitbox(attacking(500, 1), LIGHT_SPEC);
+    // 'goblin' has rangeStat 2 -> 0.99x, 'alien' has 5 -> 1.155x.
+    const short = getMeleeHitbox(
+      { ...attacking(500, 1), configId: 'goblin' },
+      LIGHT_SPEC,
+    );
     const long = getMeleeHitbox(
       { ...attacking(500, 1), configId: 'alien' },
       LIGHT_SPEC,

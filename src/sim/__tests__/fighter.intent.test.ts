@@ -15,8 +15,8 @@ import type { SimEvent, SimFighter } from '../types';
  */
 
 function harness(overrides: Partial<SimFighter> = {}, opponentX = 700) {
-  const self = { ...createFighter('collapse', P1_SPAWN_X, 1), ...overrides };
-  const opponent = createFighter('okboss', opponentX, -1);
+  const self = { ...createFighter('pink', P1_SPAWN_X, 1), ...overrides };
+  const opponent = createFighter('ok', opponentX, -1);
   let tick = 0;
   return {
     self,
@@ -129,16 +129,15 @@ describe('special cooldown', () => {
   it('scales the cooldown by the control stat, using the 1.08 curve', () => {
     /**
      * Asserted as an exact value rather than by comparing two fighters: the base
-     * cooldowns differ per character (awkward 1800 ms, collapse 1500 ms) and
-     * dominate the control-stat term, so a cross-fighter comparison would say
-     * nothing about the scaling.
+     * cooldowns differ per character and dominate the control-stat term, so a
+     * cross-fighter comparison would say nothing about the scaling.
      *
      * Special cooldowns use `1.08 - stat * 0.025`, distinct from the `1.05`
      * curve that scales attack recovery. See docs/sim-spec.md §1.
      */
-    const h = harness({ configId: 'awkward' }); // controlStat 5, cooldown 1800 ms
+    const h = harness({ configId: 'ok' }); // controlStat 5, 90-tick cooldown
     h.run(BUTTON.Special);
-    const cooldownTicks = msToTicks(1800);
+    const cooldownTicks = 90;
     expect(h.self.nextSpecialTick).toBeCloseTo(cooldownTicks * (1.08 - 5 * 0.025), 10);
   });
 
@@ -275,5 +274,98 @@ describe('blocking', () => {
     h.run(EMPTY_INPUT);
     expect(h.self.guardHeld).toBe(false);
     expect(h.self.state).toBe(FighterState.IDLE);
+  });
+});
+
+describe('motion-selected specials', () => {
+  /**
+   * The roster gives each fighter three or four specials, told apart by the
+   * motion in front of the button. `scared` is the one with all four, so it is
+   * the only fighter that exercises every branch.
+   */
+  const scared = () => harness({ configId: 'scared' });
+
+  /** Walk a motion in, one direction per tick, then press special. */
+  const inputMotion = (h: ReturnType<typeof harness>, directions: InputFrame[]) => {
+    for (const direction of directions) h.run(direction);
+    h.run(BUTTON.Special);
+    return h.self.attack?.specId;
+  };
+
+  it('throws the 236 special for a quarter-circle forward', () => {
+    // Opponent is to the right, so forward is right.
+    const h = scared();
+    expect(inputMotion(h, [BUTTON.Down, BUTTON.Down | BUTTON.Right, BUTTON.Right]))
+      .toBe('scared-scream');
+  });
+
+  it('throws the 214 special for a quarter-circle back', () => {
+    const h = scared();
+    expect(inputMotion(h, [BUTTON.Down, BUTTON.Down | BUTTON.Left, BUTTON.Left]))
+      .toBe('scared-fur');
+  });
+
+  it('throws the 623 special for a dragon punch', () => {
+    const h = scared();
+    expect(inputMotion(h, [BUTTON.Right, BUTTON.Down, BUTTON.Down | BUTTON.Right]))
+      .toBe('scared-nine');
+  });
+
+  it('throws the function move for a double tap down', () => {
+    const h = scared();
+    expect(inputMotion(h, [BUTTON.Down, EMPTY_INPUT, BUTTON.Down])).toBe('scared-box');
+  });
+
+  it('falls back to the 236 special when no motion was input', () => {
+    // The roster has to stay playable for someone who does not know any of the
+    // motions, so a bare button is never a whiff.
+    const h = scared();
+    h.run(BUTTON.Special);
+    expect(h.self.attack?.specId).toBe('scared-scream');
+  });
+
+  it('prefers the dragon punch over the quarter-circle it contains', () => {
+    // A 623 passes through a forward and a down-forward, so a 236 read first
+    // would mean the reversal could never come out.
+    const h = scared();
+    expect(inputMotion(h, [BUTTON.Right, BUTTON.Down, BUTTON.Down | BUTTON.Right]))
+      .not.toBe('scared-scream');
+  });
+
+  it('mirrors the motion when the opponent is on the other side', () => {
+    const h = harness({ configId: 'scared' }, 100); // opponent to the left
+    h.run(EMPTY_INPUT); // let facing settle
+    expect(inputMotion(h, [BUTTON.Down, BUTTON.Down | BUTTON.Left, BUTTON.Left]))
+      .toBe('scared-scream');
+  });
+
+  it('gives a fighter without a 623 its quarter-back move for that motion', () => {
+    // `alien` has no dragon punch; the input must not resolve to nothing.
+    const h = harness({ configId: 'alien' });
+    const specId = inputMotion(h, [BUTTON.Right, BUTTON.Down, BUTTON.Down | BUTTON.Right]);
+    expect(specId).toBeTruthy();
+    expect(specId).not.toBe('scared-nine');
+  });
+});
+
+describe('the ultimate button', () => {
+  it('fires the ultimate on its own button, with a full meter', () => {
+    const h = harness({ energy: MAX_ENERGY });
+    h.run(BUTTON.Ultimate);
+    expect(h.self.state).toBe(FighterState.ULTIMATE);
+    expect(h.self.energy).toBe(0);
+  });
+
+  it('still accepts the original down-plus-special motion', () => {
+    // Kept so that hands trained on the trunk's controls keep working.
+    const h = harness({ energy: MAX_ENERGY });
+    h.run(BUTTON.Down | BUTTON.Special);
+    expect(h.self.state).toBe(FighterState.ULTIMATE);
+  });
+
+  it('comes out as a special instead when the meter is short', () => {
+    const h = harness({ energy: MAX_ENERGY - 1 });
+    h.run(BUTTON.Ultimate);
+    expect(h.self.state).toBe(FighterState.SPECIAL);
   });
 });

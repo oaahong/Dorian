@@ -160,15 +160,15 @@ describe('character selection and readiness', () => {
   });
 
   it('records each player’s pick against their own seat', () => {
-    selectCharacter(registry, 'host', 'collapse');
+    selectCharacter(registry, 'host', 'pink');
     selectCharacter(registry, 'guest', 'wizard');
     const room = roomOf(registry, 'host')!;
-    expect(room.players[0]?.characterId).toBe('collapse');
+    expect(room.players[0]?.characterId).toBe('pink');
     expect(room.players[1]?.characterId).toBe('wizard');
   });
 
   it('lets a player change their mind before starting', () => {
-    selectCharacter(registry, 'host', 'collapse');
+    selectCharacter(registry, 'host', 'pink');
     selectCharacter(registry, 'host', 'alien');
     expect(roomOf(registry, 'host')!.players[0]?.characterId).toBe('alien');
   });
@@ -176,7 +176,7 @@ describe('character selection and readiness', () => {
   it('clears readiness when the pick changes', () => {
     // Otherwise a player could ready up, swap character, and start a match the
     // other player never agreed to.
-    selectCharacter(registry, 'host', 'collapse');
+    selectCharacter(registry, 'host', 'pink');
     setReady(registry, 'host', true);
     selectCharacter(registry, 'host', 'alien');
     expect(roomOf(registry, 'host')!.players[0]?.ready).toBe(false);
@@ -186,7 +186,7 @@ describe('character selection and readiness', () => {
     const room = roomOf(registry, 'host')!;
     expect(isReadyToStart(room)).toBe(false);
 
-    selectCharacter(registry, 'host', 'collapse');
+    selectCharacter(registry, 'host', 'pink');
     setReady(registry, 'host', true);
     expect(isReadyToStart(room)).toBe(false);
 
@@ -197,13 +197,13 @@ describe('character selection and readiness', () => {
 
   it('refuses to start with an empty seat', () => {
     leaveRoom(registry, 'guest');
-    selectCharacter(registry, 'host', 'collapse');
+    selectCharacter(registry, 'host', 'pink');
     setReady(registry, 'host', true);
     expect(isReadyToStart(roomOf(registry, 'host')!)).toBe(false);
   });
 
   it('rejects a selection from a connection in no room', () => {
-    expect(selectCharacter(registry, 'stranger', 'collapse')).toEqual({ ok: false, error: 'not-in-room' });
+    expect(selectCharacter(registry, 'stranger', 'pink')).toEqual({ ok: false, error: 'not-in-room' });
   });
 });
 
@@ -215,7 +215,7 @@ describe('starting a match', () => {
     const created = createRoom(registry, 'host', NOW);
     const code = created.ok ? created.room.code : '';
     joinRoom(registry, 'guest', code, NOW);
-    selectCharacter(registry, 'host', 'collapse');
+    selectCharacter(registry, 'host', 'pink');
     selectCharacter(registry, 'guest', 'wizard');
     setReady(registry, 'host', true);
     setReady(registry, 'guest', true);
@@ -226,7 +226,7 @@ describe('starting a match', () => {
     // disagreed on either, they would desync on the very first tick.
     const room = roomOf(registry, 'host')!;
     const start = startMatch(registry, room);
-    expect(start.p1Character).toBe('collapse');
+    expect(start.p1Character).toBe('pink');
     expect(start.p2Character).toBe('wizard');
     expect(Number.isInteger(start.seed)).toBe(true);
     expect(['freezer', 'magicForest', 'diningTable']).toContain(start.stage);
@@ -244,7 +244,7 @@ describe('starting a match', () => {
       const created = createRoom(reg, 'a', NOW);
       const code = created.ok ? created.room.code : '';
       joinRoom(reg, 'b', code, NOW);
-      selectCharacter(reg, 'a', 'collapse');
+      selectCharacter(reg, 'a', 'pink');
       selectCharacter(reg, 'b', 'wizard');
       const room = roomOf(reg, 'a')!;
       return startMatch(reg, room);

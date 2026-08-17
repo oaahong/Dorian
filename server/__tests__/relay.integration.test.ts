@@ -122,7 +122,7 @@ async function pairUp() {
   guest.send({ t: 'joinRoom', code });
   await guest.next('roomState');
 
-  host.send({ t: 'selectCharacter', characterId: 'collapse' });
+  host.send({ t: 'selectCharacter', characterId: 'pink' });
   guest.send({ t: 'selectCharacter', characterId: 'wizard' });
   host.send({ t: 'ready', ready: true });
   guest.send({ t: 'ready', ready: true });
@@ -204,7 +204,7 @@ describe('starting a match', () => {
     const { hostStart, guestStart } = await pairUp();
     // Any disagreement here is an instant desync on tick zero.
     expect(hostStart).toEqual(guestStart);
-    expect(hostStart.p1Character).toBe('collapse');
+    expect(hostStart.p1Character).toBe('pink');
     expect(hostStart.p2Character).toBe('wizard');
     expect(hostStart.inputDelay).toBeGreaterThan(0);
   });
@@ -217,7 +217,7 @@ describe('starting a match', () => {
     guest.send({ t: 'joinRoom', code });
     await guest.next('roomState');
 
-    host.send({ t: 'selectCharacter', characterId: 'collapse' });
+    host.send({ t: 'selectCharacter', characterId: 'pink' });
     host.send({ t: 'ready', ready: true });
     await delay(100);
 

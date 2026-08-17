@@ -23,8 +23,8 @@ interface Harness {
 }
 
 function harness(overrides: Partial<SimFighter> = {}, opponentX = P2_SPAWN_X): Harness {
-  const self = { ...createFighter('collapse', P1_SPAWN_X, 1), ...overrides };
-  const opponent = createFighter('okboss', opponentX, -1);
+  const self = { ...createFighter('pink', P1_SPAWN_X, 1), ...overrides };
+  const opponent = createFighter('ok', opponentX, -1);
   const h: Harness = {
     self,
     opponent,
@@ -43,7 +43,7 @@ function harness(overrides: Partial<SimFighter> = {}, opponentX = P2_SPAWN_X): H
   return h;
 }
 
-// 'collapse' has controlStat 2, so CONTROL_RECOVERY_MULTIPLIER is exactly 1.0 and
+// 'pink' has controlStat 2, so CONTROL_RECOVERY_MULTIPLIER is exactly 1.0 and
 // attack durations are the raw spec values. That keeps the arithmetic legible.
 const LIGHT_TOTAL = LIGHT_SPEC.startupTicks + LIGHT_SPEC.activeTicks + LIGHT_SPEC.recoveryTicks;
 
@@ -84,8 +84,8 @@ describe('idle and walking', () => {
     const h = harness();
     h.run(BUTTON.Right);
     expect(h.self.state).toBe(FighterState.WALK);
-    // 'collapse' has speedStat 4 -> 310 px/s.
-    expect(h.self.vx).toBe(310);
+    // 'pink' has speedStat 3 -> 280 px/s.
+    expect(h.self.vx).toBe(280);
     expect(h.self.x).toBeGreaterThan(P1_SPAWN_X);
   });
 
@@ -124,8 +124,8 @@ describe('jumping', () => {
     const h = harness();
     h.run(BUTTON.Up);
     h.run(BUTTON.Up | BUTTON.Right);
-    // 310 px/s * 0.75 air control.
-    expect(h.self.vx).toBeCloseTo(310 * 0.75, 10);
+    // 280 px/s * 0.75 air control.
+    expect(h.self.vx).toBeCloseTo(280 * 0.75, 10);
   });
 
   it('returns to idle after landing', () => {
@@ -212,7 +212,7 @@ describe('attack lifecycle', () => {
 
   it('scales recovery by the control stat', () => {
     /**
-     * 'awkward' has controlStat 5 (multiplier 0.925), 'collapse' has 2 (1.0),
+     * 'ok' has controlStat 5 (multiplier 0.925), 'pink' has 2 (1.0),
      * measured on the identical shared HEAVY normal.
      *
      * HEAVY is used rather than LIGHT deliberately: LIGHT's totals are 19.25 vs
@@ -220,8 +220,8 @@ describe('attack lifecycle', () => {
      * invisible. HEAVY gives 34.65 vs 36 — awkward clears on tick 35, collapse
      * needs 36. Recovery scaling is only observable where it crosses a tick.
      */
-    const fast = harness({ configId: 'awkward' });
-    const slow = harness({ configId: 'collapse' });
+    const fast = harness({ configId: 'ok' });
+    const slow = harness({ configId: 'pink' });
     fast.run(BUTTON.Heavy);
     slow.run(BUTTON.Heavy);
 
@@ -257,11 +257,11 @@ describe('attack lifecycle', () => {
 
 describe('attack motion', () => {
   it('drags a dash attack forward only during its active frames', () => {
-    // 'okboss' special is a dash.
-    const h = harness({ configId: 'okboss', x: 400 }, 900);
+    // 'ok' leads with OK衝刺, a dashStrike — the kind that drives itself forward.
+    const h = harness({ configId: 'ok', x: 400 }, 900);
     h.run(BUTTON.Special);
     const spec = h.self.attack!;
-    expect(spec.kind).toBe('dash');
+    expect(spec.kind).toBe('dashStrike');
 
     h.run(EMPTY_INPUT, LIGHT_SPEC.startupTicks); // still in startup for this spec
     const beforeActive = h.self.x;

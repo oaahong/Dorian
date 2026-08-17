@@ -122,7 +122,7 @@ async function startMatch(): Promise<{ host: Peer; guest: Peer }> {
   guestClient.joinRoom(code);
   await waitFor(() => guestSeat === 1);
 
-  hostClient.selectCharacter('collapse');
+  hostClient.selectCharacter('pink');
   guestClient.selectCharacter('wizard');
   hostClient.setReady(true);
   guestClient.setReady(true);

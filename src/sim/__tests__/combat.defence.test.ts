@@ -32,12 +32,12 @@ const spec = (overrides: Partial<AttackSpec>): TickSpec =>
   registerSpec({ ...LIGHT_ATTACK, ...overrides });
 
 const attacker = (overrides: Partial<SimFighter> = {}): SimFighter => ({
-  ...createFighter('collapse', 500, 1),
+  ...createFighter('pink', 500, 1),
   ...overrides,
 });
 
 const defender = (overrides: Partial<SimFighter> = {}): SimFighter => ({
-  ...createFighter('okboss', 560, -1),
+  ...createFighter('ok', 560, -1),
   ...overrides,
 });
 

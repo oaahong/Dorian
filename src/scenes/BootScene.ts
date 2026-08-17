@@ -16,10 +16,10 @@ export class BootScene extends Phaser.Scene {
     this.load.on('loaderror', (file: { key?: string }) => console.warn(`[Boot] Asset failed: ${file.key ?? 'unknown'}`));
     this.load.once('complete', () => { label.setText('READY'); barBg.setStrokeStyle(2, COLORS.cyan); });
     // Menus only ever show the card small, so boot fetches thumbnails: about
-    // 560 KB rather than the 26 MB of source art. The full cards are loaded in
-    // PrepareMatchScene, once it is known which two are needed.
+    // 960 KB rather than the 25 MB of source art. The poses the match actually
+    // fights with are loaded in PrepareMatchScene, once the two are known.
     FIGHTERS.forEach((fighter) =>
-      this.load.image(thumbTextureKey(fighter), `assets/thumbs/card-${fighter.number}.webp`));
+      this.load.image(thumbTextureKey(fighter), `assets/thumbs/${fighter.cardTexture}.webp`));
   }
 
   create(): void {

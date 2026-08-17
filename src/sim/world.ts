@@ -232,7 +232,24 @@ function resolvePushCollision(world: SimWorld): void {
 // --- Combat -----------------------------------------------------------------
 
 /** Kinds whose hitbox is tested on every active tick rather than fired once. */
-const CONTINUOUS_KINDS = new Set(['melee', 'dash', 'slide', 'aura']);
+const CONTINUOUS_KINDS = new Set([
+  'melee', 'dash', 'slide', 'aura',
+  'strike', 'multiStrike', 'antiAir', 'burst', 'counter', 'commandThrow', 'dashStrike',
+]);
+
+/** Kinds that send something across the arena. */
+const PROJECTILE_KINDS = new Set(['sonic', 'water', 'salad', 'projectile', 'summon']);
+
+/**
+ * Kinds with no hitbox at all.
+ *
+ * They still occupy the fighter for their whole duration — that is the cost —
+ * but they do their work through armour, invulnerability or meter rather than by
+ * touching anyone. Listing them explicitly means a new kind that forgets to say
+ * what it is falls through to the melee default and is visibly wrong, rather than
+ * silently doing nothing.
+ */
+const NO_CONTACT_KINDS = new Set(['armor', 'parry', 'hide', 'install', 'meterCharge']);
 
 function stepCombat(world: SimWorld, events: SimEvent[]): void {
   processAttack(world, 0, events);
@@ -266,13 +283,14 @@ function processAttack(world: SimWorld, attackerIndex: PlayerIndex, events: SimE
 
   if (!attack.activeJustStarted) return;
   if (CONTINUOUS_KINDS.has(spec.kind)) return;
+  if (NO_CONTACT_KINDS.has(spec.kind)) return;
+
+  if (PROJECTILE_KINDS.has(spec.kind)) {
+    spawnProjectile(world, attackerIndex, spec, events);
+    return;
+  }
 
   switch (spec.kind) {
-    case 'sonic':
-    case 'water':
-    case 'salad':
-      spawnProjectile(world, attackerIndex, spec, events);
-      break;
     case 'zone':
       spawnZone(world, attackerIndex, defenderIndex, spec, events);
       break;

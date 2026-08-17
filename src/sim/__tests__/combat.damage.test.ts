@@ -10,12 +10,13 @@ import { attackRuntime } from './factories';
 /** Hit resolution, ported from CombatSystem.resolveHit. See docs/sim-spec.md §7. */
 
 const attacker = (overrides: Partial<SimFighter> = {}): SimFighter => ({
-  ...createFighter('collapse', 500, 1), // attackStat 5 -> 1.2x
+  ...createFighter('pink', 500, 1), // attackStat 4 -> 1.13x
   ...overrides,
 });
 
 const defender = (overrides: Partial<SimFighter> = {}): SimFighter => ({
-  ...createFighter('okboss', 560, -1), // hpStat 4 -> 0.96x mitigation
+  // hpStat 4 -> 0.96x mitigation, and a 0.97 per-fighter scalar on top.
+  ...createFighter('ok', 560, -1),
   ...overrides,
 });
 
@@ -30,21 +31,21 @@ describe('damage formula', () => {
     const a = attacker();
     const d = defender();
     hit(a, d);
-    // 5 damage * 1.2 (attackStat 5) * 0.96 (hpStat 4) = 5.76
-    expect(MAX_HP - d.hp).toBeCloseTo(5 * (0.85 + 5 * 0.07) * (1.08 - 4 * 0.03), 10);
+    // 5 damage * 1.13 (attackStat 4) * 0.96 (hpStat 4) * 0.97 (scalar)
+    expect(MAX_HP - d.hp).toBeCloseTo(5 * (0.85 + 4 * 0.07) * (1.08 - 4 * 0.03) * 0.97, 10);
   });
 
   it('hits harder from a higher attack stat', () => {
     const weak = defender();
     const strong = defender();
-    hit(attacker({ configId: 'cry' }), weak); // attackStat 2
-    hit(attacker({ configId: 'collapse' }), strong); // attackStat 5
+    hit(attacker({ configId: 'ya' }), weak); // attackStat 2
+    hit(attacker({ configId: 'pink' }), strong); // attackStat 5
     expect(strong.hp).toBeLessThan(weak.hp);
   });
 
   it('takes less from a higher HP stat', () => {
     const tanky = defender({ configId: 'salad' }); // hpStat 5
-    const frail = defender({ configId: 'cry' }); // hpStat 2
+    const frail = defender({ configId: 'ya' }); // hpStat 2
     hit(attacker(), tanky);
     hit(attacker(), frail);
     expect(tanky.hp).toBeGreaterThan(frail.hp);
@@ -69,7 +70,7 @@ describe('blocking', () => {
     defender({ guardHeld: true, state: FighterState.BLOCK, ...overrides });
 
   it('reduces damage to the chip ratio', () => {
-    const spec = getSpec('collapse-special'); // chipRatio 0.10
+    const spec = getSpec('pink-scream'); // chipRatio 0.10
     const open = defender();
     const blocking = guarding();
     hit(attacker(), open, spec);
@@ -150,7 +151,7 @@ describe('meter', () => {
   });
 
   it('gives a reduced share on a blocked hit that deals chip', () => {
-    const spec = getSpec('collapse-special');
+    const spec = getSpec('pink-scream');
     const a = attacker();
     const d = defender({ guardHeld: true, state: FighterState.BLOCK });
     hit(a, d, spec);
@@ -220,7 +221,7 @@ describe('receiveImpact', () => {
       const light = defender({ hp: 1 });
       const heavy = defender({ hp: 1 });
       receiveImpact(light, 50, LIGHT_SPEC, 1, false, 0);
-      receiveImpact(heavy, 50, getSpec('collapse-ult'), 1, false, 0);
+      receiveImpact(heavy, 50, getSpec('pink-ult'), 1, false, 0);
       expect(heavy.vx).toBeGreaterThan(light.vx);
     });
 
@@ -232,7 +233,7 @@ describe('receiveImpact', () => {
   });
 
   describe('aura stun lock-out', () => {
-    const AURA = getSpec('awkward-special'); // kind: 'aura', stunLockoutMs 2800
+    const AURA = getSpec('ok-fear'); // kind: 'aura', stunLockoutMs 2800
 
     it('applies the full stun the first time', () => {
       const d = defender();
@@ -285,8 +286,8 @@ describe('hit events', () => {
   });
 
   it('classifies specials and ultimates by weight', () => {
-    const special = hit(attacker(), defender(), getSpec('collapse-special'));
-    const ultimate = hit(attacker(), defender(), getSpec('collapse-ult'));
+    const special = hit(attacker(), defender(), getSpec('pink-scream'));
+    const ultimate = hit(attacker(), defender(), getSpec('pink-ult'));
     expect(special.events[0]).toMatchObject({ impact: 'special' });
     expect(ultimate.events[0]).toMatchObject({ impact: 'ultimate' });
   });

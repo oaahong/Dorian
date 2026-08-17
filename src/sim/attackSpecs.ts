@@ -5,6 +5,7 @@ import type {
   InvulnerabilityWindow,
 } from '../combat/AttackSpec';
 import { HEAVY_ATTACK, LIGHT_ATTACK } from '../combat/AttackSpec';
+import { allSpecials } from '../fighters/FighterConfig';
 import { FIGHTERS } from '../fighters/fighterData';
 import {
   DEFAULT_SPECIAL_COOLDOWN_TICKS,
@@ -63,6 +64,8 @@ export interface TickSpec {
   armor: ArmorWindow | null;
   unblockable: boolean;
   hardKnockdown: boolean;
+  /** Meter awarded when the move finishes recovery. Zero for most attacks. */
+  meterOnComplete: number;
 }
 
 /** Matches the inline fallbacks in the original CombatSystem, in ticks. */
@@ -103,6 +106,7 @@ export function toTickSpec(spec: AttackSpec): TickSpec {
     armor: spec.armor ?? null,
     unblockable: spec.unblockable ?? false,
     hardKnockdown: spec.hardKnockdown ?? false,
+    meterOnComplete: spec.meterOnComplete ?? 0,
   };
 }
 
@@ -134,7 +138,7 @@ export function registerSpec(spec: AttackSpec): TickSpec {
 
 for (const spec of [LIGHT_SPEC, HEAVY_SPEC]) REGISTRY.set(spec.id, spec);
 for (const fighter of FIGHTERS) {
-  for (const source of [fighter.special, fighter.ultimate]) registerSpec(source);
+  for (const source of [...allSpecials(fighter), fighter.ultimate]) registerSpec(source);
 }
 
 /**

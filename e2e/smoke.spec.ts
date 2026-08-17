@@ -59,8 +59,8 @@ test('boots with menu thumbnails only, not the full card art', async ({ page }) 
   /**
    * Boot used to pull 26 MB of source PNG and cut 104 poses before the title
    * screen appeared. The menus only ever show a card at 238x298, so they load
-   * thumbnails; the full art waits until a match knows which two it needs. This
-   * asserts the split has not quietly regressed.
+   * thumbnails; the poses a match fights with wait until it knows which two it
+   * needs. This asserts the split has not quietly regressed.
    */
   const loaded = await page.evaluate(() => {
     const keys = window.__MEME_CAT_GAME__!.textures.getTextureKeys();
@@ -71,7 +71,7 @@ test('boots with menu thumbnails only, not the full card art', async ({ page }) 
     };
   });
 
-  expect(loaded.thumbs).toBe(8);
+  expect(loaded.thumbs).toBe(12);
   expect(loaded.poses).toBe(0);
   expect(loaded.fullCards).toBe(0);
 
@@ -87,6 +87,9 @@ test('boots with menu thumbnails only, not the full card art', async ({ page }) 
   });
 
   expect(art.cards, 'no full-resolution card should be fetched at boot').toBe(0);
+  // Twelve cards rather than eight, and still inside the original budget — but
+  // only just, at about 940 KB. A thirteenth fighter needs the thumbnails
+  // re-encoded, not the budget raised.
   expect(art.thumbs, 'thumbnails should stay under a megabyte').toBeLessThan(1_000_000);
   expect(art.thumbs, 'thumbnails should actually have loaded').toBeGreaterThan(0);
 });

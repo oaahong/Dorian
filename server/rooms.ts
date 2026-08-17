@@ -163,7 +163,7 @@ export function startMatch(registry: Registry, room: Room): MatchStart {
   return {
     seed: nextInt(registry.rng, 1, 0x7fffffff),
     stage: STAGES[nextInt(registry.rng, 0, STAGES.length)]!,
-    p1Character: room.players[0]?.characterId ?? 'collapse',
+    p1Character: room.players[0]?.characterId ?? 'pink',
     p2Character: room.players[1]?.characterId ?? 'wizard',
   };
 }

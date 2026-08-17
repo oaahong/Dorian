@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { allSpecials } from '../../fighters/FighterConfig';
 import { FIGHTERS } from '../../fighters/fighterData';
 import { HEAVY_ATTACK, LIGHT_ATTACK } from '../../combat/AttackSpec';
 import { HEAVY_SPEC, LIGHT_SPEC, allSpecs, getSpec, toTickSpec } from '../attackSpecs';
@@ -35,7 +36,7 @@ describe('toTickSpec', () => {
 
   it('carries every timing field of every roster attack through untouched', () => {
     for (const fighter of FIGHTERS) {
-      for (const source of [fighter.special, fighter.ultimate]) {
+      for (const source of [...allSpecials(fighter), fighter.ultimate]) {
         const spec = toTickSpec(source);
         expect(spec.startupTicks, `${source.id}`).toBe(source.startup);
         expect(spec.activeTicks, `${source.id}`).toBe(source.active);
@@ -75,14 +76,19 @@ describe('toTickSpec', () => {
 });
 
 describe('spec registry', () => {
-  it('registers the two normals plus a special and ultimate per fighter', () => {
-    expect(allSpecs()).toHaveLength(2 + FIGHTERS.length * 2);
+  it('registers the two normals plus every special and ultimate on the roster', () => {
+    const rosterSpecs = FIGHTERS.reduce(
+      (total, fighter) => total + allSpecials(fighter).length + 1,
+      0,
+    );
+    expect(allSpecs()).toHaveLength(2 + rosterSpecs);
   });
 
   it('resolves every id the roster references', () => {
     for (const fighter of FIGHTERS) {
-      expect(getSpec(fighter.special.id).id).toBe(fighter.special.id);
-      expect(getSpec(fighter.ultimate.id).id).toBe(fighter.ultimate.id);
+      for (const spec of [...allSpecials(fighter), fighter.ultimate]) {
+        expect(getSpec(spec.id).id).toBe(spec.id);
+      }
     }
     expect(getSpec('light')).toBe(LIGHT_SPEC);
     expect(getSpec('heavy')).toBe(HEAVY_SPEC);
@@ -94,6 +100,6 @@ describe('spec registry', () => {
   });
 
   it('returns the identical object for repeated lookups', () => {
-    expect(getSpec('collapse-special')).toBe(getSpec('collapse-special'));
+    expect(getSpec('alien-beam')).toBe(getSpec('alien-beam'));
   });
 });

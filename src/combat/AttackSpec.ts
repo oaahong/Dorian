@@ -20,16 +20,45 @@
  * It also happens to be the unit the delivered upgraded build authors in, which is
  * what lets its movesets be dropped in as data rather than translated.
  */
+/**
+ * What an attack *does*, which is what the simulation switches on.
+ *
+ * These are behaviours, not flavours. Two moves share a kind when the simulation
+ * would do the same thing with them, however differently they are drawn — which
+ * is why `burst`, `antiAir` and `commandThrow` are separate (their boxes, their
+ * categories or their propulsion differ) while a dozen visually distinct fireballs
+ * are all `projectile`.
+ */
 export type AttackKind =
+  // Swung at arm's length: a box in front of the fighter, tested every active tick.
   | 'melee'
+  | 'strike'
+  | 'multiStrike'
+  | 'antiAir'
+  | 'burst'
+  | 'counter'
+  | 'commandThrow'
+  // Self-propelled: the same box, but the fighter drives forward under it.
+  | 'dash'
+  | 'slide'
+  | 'dashStrike'
+  // Something leaves the fighter and travels.
   | 'sonic'
   | 'water'
-  | 'dash'
-  | 'aura'
   | 'salad'
-  | 'slide'
+  | 'projectile'
+  | 'summon'
+  // Placed or fired geometry.
+  | 'aura'
   | 'beam'
   | 'zone'
+  // No hitbox at all. These occupy the fighter and do their work through
+  // armour, invulnerability or meter rather than by touching anyone.
+  | 'armor'
+  | 'parry'
+  | 'hide'
+  | 'install'
+  | 'meterCharge'
   | 'ultimate-sonic'
   | 'ultimate-water'
   | 'ultimate-ok'
@@ -113,6 +142,13 @@ export interface AttackSpec {
   unblockable?: boolean;
   /** A knockdown the defender cannot recover from early. */
   hardKnockdown?: boolean;
+  /**
+   * Meter awarded when the move finishes its recovery, rather than on contact.
+   *
+   * This is how the utility moves pay: a taunt or a flex earns its meter for
+   * having been held through, and whiffing is not a thing it can do.
+   */
+  meterOnComplete?: number;
 }
 
 export const LIGHT_ATTACK: AttackSpec = {

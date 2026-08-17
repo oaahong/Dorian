@@ -137,7 +137,7 @@ export class CpuBrain {
 
   private specialDistanceGood(world: SimWorld, distance: number): boolean {
     const self = world.fighters[this.selfIndex];
-    switch (getSpec(config(self).special.id).kind) {
+    switch (getSpec(config(self).specials.quarterForward.id).kind) {
       case 'dash':
       case 'slide':
         return distance >= 120 && distance <= 330;
