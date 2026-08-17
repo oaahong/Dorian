@@ -44,7 +44,7 @@ export class BattleHUD {
     this.roundTextP2 = scene.add.text(GAME_WIDTH - 45, 83, '☆ ☆', { fontFamily:FONT_FAMILY, fontSize:'19px', color:'#00C8FF' }).setOrigin(1,0).setDepth(1002);
     this.p1Special = scene.add.text(45, 655, '', { fontFamily:FONT_FAMILY, fontSize:'13px', color:'#E9B928' }).setDepth(1004);
     this.p2Special = scene.add.text(GAME_WIDTH - 45, 655, '', { fontFamily:FONT_FAMILY, fontSize:'13px', color:'#00C8FF' }).setOrigin(1,0).setDepth(1004);
-    this.help = scene.add.text(GAME_WIDTH / 2, 635, 'P1: WASD / F G H / T ULT    •    P2: ARROWS / J K L / I ULT    •    ESC PAUSE    •    M MUTE', { fontFamily:FONT_FAMILY, fontSize:'14px', color:'#d8d0bf', backgroundColor:'#050505aa', padding:{x:10,y:5} }).setOrigin(.5).setDepth(1005);
+    this.help = scene.add.text(GAME_WIDTH / 2, 635, 'P1: WASD / F G H / R THROW / T ULT    •    P2: ARROWS / J K L / U I    •    ESC PAUSE    •    M MUTE', { fontFamily:FONT_FAMILY, fontSize:'14px', color:'#d8d0bf', backgroundColor:'#050505aa', padding:{x:10,y:5} }).setOrigin(.5).setDepth(1005);
     scene.tweens.add({ targets:this.help, alpha:.28, delay:4500, duration:900 });
   }
 

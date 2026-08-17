@@ -413,6 +413,63 @@ describe('projectiles', () => {
   });
 });
 
+describe('the universal throw', () => {
+  /**
+   * The throw exists to answer a fighter who simply holds back and blocks, so the
+   * behaviour worth testing at world level is exactly that: two fighters in range,
+   * one blocking, one throwing.
+   */
+  const inRange = (w: SimWorld) => {
+    w.fighters[0].x = 600;
+    w.fighters[1].x = 660;
+    return w;
+  };
+
+  it('lands on an opponent who is holding block', () => {
+    const w = inRange(toFight(world()));
+    // P2 holds away from P1, which is the block stance.
+    run(w, 20, BUTTON.Throw, BUTTON.Right);
+    expect(w.fighters[1].hp).toBeLessThan(100);
+    expect(w.fighters[1].state).toBe(FighterState.HITSTUN);
+  });
+
+  it('leaves a blocked light doing almost nothing by comparison', () => {
+    const blocked = inRange(toFight(world()));
+    run(blocked, 20, BUTTON.Light, BUTTON.Right);
+
+    const thrown = inRange(toFight(world()));
+    run(thrown, 20, BUTTON.Throw, BUTTON.Right);
+
+    expect(thrown.fighters[1].hp).toBeLessThan(blocked.fighters[1].hp);
+  });
+
+  it('whiffs against an opponent who jumps', () => {
+    const w = inRange(toFight(world()));
+    run(w, 4, EMPTY_INPUT, BUTTON.Up); // P2 leaves the ground first
+    run(w, 16, BUTTON.Throw);
+    expect(w.fighters[1].hp).toBe(100);
+  });
+
+  it('whiffs at a range a heavy would still reach', () => {
+    // Reach is the throw's price for being unblockable: 76 against the heavy's
+    // 104. Light is 78, so the throw is only meaningfully shorter than the heavy —
+    // which is the spacing this pins down.
+    const far = (w: SimWorld) => {
+      w.fighters[0].x = 600;
+      w.fighters[1].x = 780;
+      return w;
+    };
+
+    const thrown = far(toFight(world()));
+    run(thrown, 24, BUTTON.Throw);
+    expect(thrown.fighters[1].hp).toBe(100);
+
+    const swung = far(toFight(world()));
+    run(swung, 24, BUTTON.Heavy);
+    expect(swung.fighters[1].hp).toBeLessThan(100);
+  });
+});
+
 describe('zones', () => {
   // 'wizard' has a `zone` special.
   it('waits out its telegraph before it can hit', () => {

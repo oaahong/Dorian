@@ -4,7 +4,7 @@ import type {
   AttackSpec,
   InvulnerabilityWindow,
 } from '../combat/AttackSpec';
-import { HEAVY_ATTACK, LIGHT_ATTACK } from '../combat/AttackSpec';
+import { HEAVY_ATTACK, LIGHT_ATTACK, THROW_ATTACK } from '../combat/AttackSpec';
 import { allSpecials } from '../fighters/FighterConfig';
 import { FIGHTERS } from '../fighters/fighterData';
 import {
@@ -115,6 +115,7 @@ const EMPTY_WINDOWS: readonly InvulnerabilityWindow[] = Object.freeze([]);
 
 export const LIGHT_SPEC: TickSpec = toTickSpec(LIGHT_ATTACK);
 export const HEAVY_SPEC: TickSpec = toTickSpec(HEAVY_ATTACK);
+export const THROW_SPEC: TickSpec = toTickSpec(THROW_ATTACK);
 
 const REGISTRY = new Map<string, TickSpec>();
 
@@ -136,7 +137,7 @@ export function registerSpec(spec: AttackSpec): TickSpec {
   return resolved;
 }
 
-for (const spec of [LIGHT_SPEC, HEAVY_SPEC]) REGISTRY.set(spec.id, spec);
+for (const spec of [LIGHT_SPEC, HEAVY_SPEC, THROW_SPEC]) REGISTRY.set(spec.id, spec);
 for (const fighter of FIGHTERS) {
   for (const source of [...allSpecials(fighter), fighter.ultimate]) registerSpec(source);
 }

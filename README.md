@@ -224,7 +224,8 @@ exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`
 - The twelve fighters, their frame data, and their specials — chosen by motion
   (236 / 214 / 623 / double-tap down), parsed inside the simulation from a hashed
   input ring so the two clients cannot disagree about what came out.
-- Invulnerability windows, armour, command throws and multi-hit strings.
+- Invulnerability windows, armour, multi-hit strings, and the universal throw —
+  unblockable, so it answers a fighter who will not stop holding back.
 - All 610 art assets and the Python pipeline that regenerates them, replacing the
   browser-side pose cutting entirely.
 - Frame-authored `AttackSpec`, in ticks, which is what made the frame data
@@ -232,16 +233,14 @@ exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`
 
 **Not yet ported**, in the order it makes sense to do it:
 
-1. **The universal throw.** `BUTTON.Throw` is sampled and sent but nothing
-   consumes it — the only throw on the roster is goblin's command throw.
-2. **The chargeable H special**, with its 0.40 / 0.90 second levels. Needs charge
+1. **The chargeable H special**, with its 0.40 / 0.90 second levels. Needs charge
    state in `SimFighter`, and the levels expressed as three specs.
-3. **Ultimate cut-ins** — the twelve staged presentations, with their voice lines
+2. **Ultimate cut-ins** — the twelve staged presentations, with their voice lines
    and backgrounds. The art is already in `public/assets/ultimate-backgrounds/`
    and the ultimates currently resolve without them.
-4. **Summons and installs.** `tempura`'s penguins spawn as ordinary projectiles
+3. **Summons and installs.** `tempura`'s penguins spawn as ordinary projectiles
    and `doge`/`goblin`'s installs currently only pay meter.
-5. **Training mode**, and the status effects (`sticky`, `loveStun`, `afterimage`)
+4. **Training mode**, and the status effects (`sticky`, `loveStun`, `afterimage`)
    the upgraded move data carries but the simulation does not yet read.
 
 The upgraded build's own documentation is kept verbatim at

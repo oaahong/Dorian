@@ -1,26 +1,4 @@
 /**
- * Authored frame data for one attack.
- *
- * **Every duration here is in ticks**, at the fixed TICK_HZ of the simulation —
- * `startup: 5` is five ticks, not five milliseconds.
- *
- * This used to be authored in milliseconds and rounded to ticks at module load,
- * which meant the numbers a designer typed were never quite the numbers the game
- * ran: LIGHT's 90 ms startup became 5 ticks, or 83.3 ms, and no amount of tuning
- * the 90 could express 5.5. Rounding also had to be re-proved safe every time a
- * value changed, because a window under half a tick silently became zero and made
- * an attack unable to connect at all.
- *
- * Ticks are what the simulation counts, so authoring in ticks removes the
- * conversion and the whole class of bug with it. The current values were produced
- * by applying the old rounding once and keeping the result, so this is exactly the
- * frame data the game was already running — see the golden replays, which are
- * unchanged.
- *
- * It also happens to be the unit the delivered upgraded build authors in, which is
- * what lets its movesets be dropped in as data rather than translated.
- */
-/**
  * What an attack *does*, which is what the simulation switches on.
  *
  * These are behaviours, not flavours. Two moves share a kind when the simulation
@@ -105,6 +83,24 @@ export interface ArmorWindow {
   to: number;
 }
 
+/**
+ * Authored frame data for one attack.
+ *
+ * **Every duration here is in ticks**, at the fixed TICK_HZ of the simulation —
+ * `startup: 5` is five ticks, not five milliseconds.
+ *
+ * This used to be authored in milliseconds and rounded to ticks at module load,
+ * which meant the numbers a designer typed were never quite the numbers the game
+ * ran: LIGHT's 90 ms startup became 5 ticks, or 83.3 ms, and no amount of tuning
+ * the 90 could express 5.5. Rounding also had to be re-proved safe every time a
+ * value changed, because a window under half a tick silently became zero and made
+ * an attack unable to connect at all.
+ *
+ * Ticks are what the simulation counts, so authoring in ticks removes the
+ * conversion and the whole class of bug with it. It is also the unit the upgraded
+ * build authored in, which is what let its movesets arrive as data rather than as
+ * a translation.
+ */
 export interface AttackSpec {
   id: string;
   name: string;
@@ -167,6 +163,39 @@ export const LIGHT_ATTACK: AttackSpec = {
   chipRatio: 0,
   energyOnHit: 5,
   energyOnReceive: 3,
+};
+
+/**
+ * The universal throw, on its own button.
+ *
+ * Every fighter has this one; it is the answer to a turtling opponent, which is
+ * why it is unblockable and why its reach is shorter than either normal. Five
+ * frames of startup make it fast enough to be a real threat up close and slow
+ * enough to be jumped — and a whiffed one leaves twenty frames of recovery, which
+ * is the price for guessing wrong.
+ *
+ * `goblin`'s 鎖喉告白 is a *command* throw: more damage and more reach for a motion
+ * input and a longer commitment. This is the one anybody can do.
+ */
+export const THROW_ATTACK: AttackSpec = {
+  id: 'throw',
+  name: 'THROW',
+  kind: 'commandThrow',
+  startup: 5,
+  active: 3,
+  recovery: 20,
+  damage: 12,
+  hitstun: 20,
+  // Nothing to block, so nothing to be stunned by blocking it.
+  blockstun: 1,
+  knockbackX: 240,
+  knockbackY: -70,
+  reach: 76,
+  chipRatio: 0,
+  energyOnHit: 8,
+  energyOnReceive: 5,
+  unblockable: true,
+  hardKnockdown: true,
 };
 
 export const HEAVY_ATTACK: AttackSpec = {

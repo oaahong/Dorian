@@ -146,6 +146,8 @@ export function poseFor(fighter: SimFighter): PoseName {
       return 'special';
     case FighterState.ULTIMATE:
       return 'ultimate';
+    case FighterState.THROW:
+      return 'throw';
     case FighterState.BLOCK:
     case FighterState.BLOCKSTUN:
       return 'block';

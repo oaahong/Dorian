@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { allSpecials } from '../../fighters/FighterConfig';
 import { FIGHTERS } from '../../fighters/fighterData';
 import { HEAVY_ATTACK, LIGHT_ATTACK } from '../../combat/AttackSpec';
-import { HEAVY_SPEC, LIGHT_SPEC, allSpecs, getSpec, toTickSpec } from '../attackSpecs';
+import { HEAVY_SPEC, LIGHT_SPEC, THROW_SPEC, allSpecs, getSpec, toTickSpec } from '../attackSpecs';
 import { DEFAULT_SPECIAL_COOLDOWN_TICKS, DEFAULT_STUN_LOCKOUT_TICKS } from '../constants';
 
 /**
@@ -76,12 +76,13 @@ describe('toTickSpec', () => {
 });
 
 describe('spec registry', () => {
-  it('registers the two normals plus every special and ultimate on the roster', () => {
+  it('registers the shared normals plus every special and ultimate on the roster', () => {
     const rosterSpecs = FIGHTERS.reduce(
       (total, fighter) => total + allSpecials(fighter).length + 1,
       0,
     );
-    expect(allSpecs()).toHaveLength(2 + rosterSpecs);
+    // Light, heavy and the universal throw are shared by everybody.
+    expect(allSpecs()).toHaveLength(3 + rosterSpecs);
   });
 
   it('resolves every id the roster references', () => {
@@ -92,6 +93,7 @@ describe('spec registry', () => {
     }
     expect(getSpec('light')).toBe(LIGHT_SPEC);
     expect(getSpec('heavy')).toBe(HEAVY_SPEC);
+    expect(getSpec('throw')).toBe(THROW_SPEC);
   });
 
   it('throws on an unknown id rather than returning undefined', () => {

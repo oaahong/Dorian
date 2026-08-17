@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { FighterState } from '../../fighters/FighterState';
 import { BUTTON, EMPTY_INPUT, type InputFrame } from '../input';
-import { BLOCK_STANCE_RANGE, INPUT_BUFFER_TICKS, MAX_ENERGY, P1_SPAWN_X, msToTicks } from '../constants';
+import { BLOCK_STANCE_RANGE, GROUND_Y, INPUT_BUFFER_TICKS, MAX_ENERGY, P1_SPAWN_X, msToTicks } from '../constants';
 import { canUseSpecial, createFighter, stepFighter } from '../fighter';
 import type { SimEvent, SimFighter } from '../types';
 
@@ -367,5 +367,51 @@ describe('the ultimate button', () => {
     const h = harness({ energy: MAX_ENERGY - 1 });
     h.run(BUTTON.Ultimate);
     expect(h.self.state).toBe(FighterState.SPECIAL);
+  });
+});
+
+describe('the universal throw', () => {
+  it('comes out on its own button', () => {
+    const h = harness();
+    h.run(BUTTON.Throw);
+    expect(h.self.state).toBe(FighterState.THROW);
+    expect(h.self.attack?.specId).toBe('throw');
+  });
+
+  it('beats a light pressed on the same tick', () => {
+    // A throw is what you reach for against someone who will not stop blocking;
+    // losing the input to your own light would defeat the point.
+    const h = harness();
+    h.run(BUTTON.Throw | BUTTON.Light);
+    expect(h.self.state).toBe(FighterState.THROW);
+  });
+
+  it('does not share the special cooldown', () => {
+    // The two used to be gated by the same field, which meant a spent special
+    // locked out the throw and vice versa.
+    const h = harness();
+    h.run(BUTTON.Special);
+    expect(h.self.state).toBe(FighterState.SPECIAL);
+    h.run(EMPTY_INPUT, 60); // let the special finish, cooldown still running
+    expect(h.self.nextSpecialTick).toBeGreaterThan(h.tick);
+
+    h.run(BUTTON.Throw);
+    expect(h.self.state).toBe(FighterState.THROW);
+  });
+
+  it('cannot be started from the air', () => {
+    const h = harness();
+    h.run(BUTTON.Up);
+    h.run(EMPTY_INPUT, 6);
+    expect(h.self.y).toBeLessThan(GROUND_Y - 1);
+    h.run(BUTTON.Throw);
+    expect(h.self.state).not.toBe(FighterState.THROW);
+  });
+
+  it('fires once per press, not once per held tick', () => {
+    const h = harness();
+    h.run(BUTTON.Throw);
+    h.run(BUTTON.Throw, 60);
+    expect(h.self.state).toBe(FighterState.IDLE);
   });
 });

@@ -1,7 +1,7 @@
 import { getFighterConfig } from '../fighters/fighterData';
 import type { FighterConfig } from '../fighters/FighterConfig';
 import { FighterState } from '../fighters/FighterState';
-import { getSpec, HEAVY_SPEC, LIGHT_SPEC, type TickSpec } from './attackSpecs';
+import { getSpec, HEAVY_SPEC, LIGHT_SPEC, THROW_SPEC, type TickSpec } from './attackSpecs';
 import {
   AIR_CONTROL_SCALE,
   ARENA_MAX_X,
@@ -104,7 +104,8 @@ export function isAttacking(fighter: SimFighter): boolean {
     fighter.state === FighterState.LIGHT_ATTACK ||
     fighter.state === FighterState.HEAVY_ATTACK ||
     fighter.state === FighterState.SPECIAL ||
-    fighter.state === FighterState.ULTIMATE
+    fighter.state === FighterState.ULTIMATE ||
+    fighter.state === FighterState.THROW
   );
 }
 
@@ -325,6 +326,7 @@ function processIntent(
   const lightPressed = justPressed(input, fighter.prevButtons, BUTTON.Light);
   const heavyPressed = justPressed(input, fighter.prevButtons, BUTTON.Heavy);
   const jumpPressed = justPressed(input, fighter.prevButtons, BUTTON.Up);
+  const throwPressed = justPressed(input, fighter.prevButtons, BUTTON.Throw);
   const specialEdge = justPressed(input, fighter.prevButtons, BUTTON.Special);
   const downBuffered = crouch || tick <= fighter.downBufferedUntilTick;
   const specialPressed = specialEdge && !downBuffered;
@@ -371,6 +373,19 @@ function processIntent(
   }
   if (specialPressed && canUseSpecial(fighter, tick)) {
     startSpecial(fighter, tick, crouch, cfg, player, events);
+    return;
+  }
+  /**
+   * Before the normals, because a throw is what you reach for when they will not
+   * stop blocking, and having to beat your own light to it would defeat the point.
+   *
+   * No cooldown gate: by the time `processIntent` runs the fighter is provably
+   * free to act, and the throw's twenty frames of recovery are its cost — the same
+   * deal the normals get. Sharing `nextSpecialTick` would have meant a spent
+   * special locked out the throw and vice versa.
+   */
+  if (throwPressed) {
+    startAttack(fighter, THROW_SPEC, FighterState.THROW, false, false, player, events);
     return;
   }
   if (lightPressed) {

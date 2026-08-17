@@ -23,12 +23,12 @@
 export type PoseName =
   | 'idle' | 'walkForward' | 'walkBack' | 'jump' | 'crouch'
   | 'light' | 'heavy' | 'block' | 'hit' | 'special' | 'ultimate'
-  | 'victory' | 'ko';
+  | 'throw' | 'victory' | 'ko';
 
 export const POSE_NAMES: readonly PoseName[] = [
   'idle', 'walkForward', 'walkBack', 'jump', 'crouch',
   'light', 'heavy', 'block', 'hit', 'special', 'ultimate',
-  'victory', 'ko',
+  'throw', 'victory', 'ko',
 ];
 
 type PoseNumbers = Record<PoseName, number>;
@@ -46,6 +46,7 @@ const STANDARD_LAYOUT: PoseNumbers = {
   hit: 16,
   special: 24,
   ultimate: 28,
+  throw: 18,
   victory: 23,
   ko: 22,
 };
@@ -66,6 +67,7 @@ const ALIEN_LAYOUT: PoseNumbers = {
   hit: 16,
   special: 24,
   ultimate: 28,
+  throw: 22,
   victory: 21,
   ko: 20,
 };
