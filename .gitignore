@@ -9,3 +9,6 @@ build/
 coverage/
 playwright-report/
 test-results/
+
+# Transpiled site used by the upgraded build's runtime acceptance test
+.runtime-site/

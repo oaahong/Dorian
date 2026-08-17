@@ -208,6 +208,38 @@ label for humans. That is also why there is no release-please or
 semantic-release: their main service is generating a changelog from commit
 subjects, and FIX_NOTES is already better than what that produces.
 
+## The upgraded build, and what is still to come
+
+This branch merges the separately-delivered upgraded build (`project-working-upgraded`)
+back into the trunk. Both descend from the initial commit and grew in opposite
+directions: the trunk extracted the game into a deterministic simulation and put it
+online, while the upgraded build stayed on the original object-oriented Phaser 3 code
+and deepened the *fighting game* — twelve characters instead of eight, frame data with
+armour and cancel rules, motion inputs, a chargeable H special, ultimates with cut-ins,
+summons, and a training mode.
+
+Nothing about that is expressible as a text merge, because the upgraded build extends
+exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`). So
+the merge is staged:
+
+- **This commit** brings in everything that does not fight the architecture: the 610
+  art assets (360 poses, 226 skill cells, 12 ultimate backgrounds, 12 cards), the twelve
+  source character sheets, and the Python asset pipeline that regenerates them.
+- **The port** re-expresses the upgraded gameplay in `src/sim`, so it keeps working
+  under lockstep. Frame-based timing is the *better* fit here — the trunk's own
+  `AttackSpec` is authored in milliseconds and rounded to ticks.
+
+The upgraded build's own documentation is kept verbatim at
+[docs/upgraded-build.md](docs/upgraded-build.md); it is the specification for the port,
+not a description of this tree. Its delivered QA suite is kept at
+[scripts/upgraded-acceptance/](scripts/upgraded-acceptance/) for the same reason — those
+scripts assert against the un-ported source, so they do not run yet, but between them
+they pin down the roster, the ultimate names, the charge thresholds and the input
+precedence that the port has to reproduce.
+
+The characters below are the trunk's current eight. The port replaces them with the
+upgraded twelve listed in [docs/upgraded-build.md](docs/upgraded-build.md).
+
 ## Characters
 
 1. 崩潰喵喵貓 — 崩潰音波 / JPEG震爆

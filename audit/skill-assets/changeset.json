@@ -1,0 +1,37 @@
+{
+  "modified": [
+    "README.md",
+    "package.json",
+    "scripts/runtime-test.mjs",
+    "scripts/static-qa.mjs",
+    "src/combat/CombatSystem.ts",
+    "src/combat/MoveData.ts",
+    "src/combat/UltimateAttack.ts",
+    "src/controllers/CPUController.ts",
+    "src/controllers/Controller.ts",
+    "src/controllers/PlayerController.ts",
+    "src/data/fighterData.ts",
+    "src/fighters/Fighter.ts",
+    "src/fighters/FighterState.ts",
+    "src/scenes/BattleScene.ts",
+    "src/scenes/BootScene.ts",
+    "src/scenes/CharacterSelectScene.ts",
+    "src/ui/BattleHUD.ts"
+  ],
+  "new": [
+    "scripts/extract_skill_assets.py",
+    "scripts/generate_skill_contact_sheets.py",
+    "scripts/logic-test.mjs",
+    "scripts/prepare-runtime-fallback.mjs",
+    "scripts/skill_crop_config.json",
+    "scripts/validate_skill_assets.py",
+    "src/combat/ChargeableSpecialH.ts",
+    "src/combat/SummonEntity.ts",
+    "src/combat/UltimateCutInManager.ts",
+    "src/combat/UltimateInputState.ts",
+    "src/data/specialHData.ts",
+    "src/data/ultimateDefinitions.ts",
+    "src/systems/SkillAssetLoader.ts"
+  ],
+  "missingFromCurrent": []
+}

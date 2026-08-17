@@ -1,0 +1,3066 @@
+{
+  "alien": {
+    "fighterId": "alien",
+    "sourceTexture": "card-alien",
+    "sourceFile": "Alien cat.png",
+    "layout": "manual-irregular",
+    "poses": {
+      "1": {
+        "kind": "normalized",
+        "x": 0.012,
+        "y": 0.043,
+        "width": 0.162016,
+        "height": 0.133177,
+        "captionTrim": 0.18
+      },
+      "2": {
+        "kind": "normalized",
+        "x": 0.174016,
+        "y": 0.043,
+        "width": 0.162992,
+        "height": 0.133177,
+        "captionTrim": 0.18
+      },
+      "3": {
+        "kind": "normalized",
+        "x": 0.337008,
+        "y": 0.043,
+        "width": 0.162992,
+        "height": 0.133177,
+        "captionTrim": 0.18
+      },
+      "4": {
+        "kind": "normalized",
+        "x": 0.5,
+        "y": 0.043,
+        "width": 0.162016,
+        "height": 0.133177,
+        "captionTrim": 0.18
+      },
+      "5": {
+        "kind": "normalized",
+        "x": 0.662016,
+        "y": 0.043,
+        "width": 0.162992,
+        "height": 0.133177,
+        "captionTrim": 0.18
+      },
+      "6": {
+        "kind": "normalized",
+        "x": 0.825008,
+        "y": 0.043,
+        "width": 0.162992,
+        "height": 0.133177,
+        "captionTrim": 0.18
+      },
+      "7": {
+        "kind": "normalized",
+        "x": 0.012,
+        "y": 0.204708,
+        "width": 0.1952,
+        "height": 0.131241,
+        "captionTrim": 0.18
+      },
+      "8": {
+        "kind": "normalized",
+        "x": 0.2072,
+        "y": 0.204708,
+        "width": 0.1952,
+        "height": 0.131241,
+        "captionTrim": 0.18
+      },
+      "9": {
+        "kind": "normalized",
+        "x": 0.4024,
+        "y": 0.204708,
+        "width": 0.1952,
+        "height": 0.131241,
+        "captionTrim": 0.18
+      },
+      "10": {
+        "kind": "normalized",
+        "x": 0.5976,
+        "y": 0.204708,
+        "width": 0.1952,
+        "height": 0.131241,
+        "captionTrim": 0.18
+      },
+      "11": {
+        "kind": "normalized",
+        "x": 0.7928,
+        "y": 0.204708,
+        "width": 0.1952,
+        "height": 0.131241,
+        "captionTrim": 0.18
+      },
+      "12": {
+        "kind": "normalized",
+        "x": 0.012,
+        "y": 0.35806,
+        "width": 0.1952,
+        "height": 0.129815,
+        "captionTrim": 0.18
+      },
+      "13": {
+        "kind": "normalized",
+        "x": 0.2072,
+        "y": 0.35806,
+        "width": 0.1952,
+        "height": 0.129815,
+        "captionTrim": 0.18
+      },
+      "14": {
+        "kind": "normalized",
+        "x": 0.4024,
+        "y": 0.35806,
+        "width": 0.1952,
+        "height": 0.129815,
+        "captionTrim": 0.18
+      },
+      "15": {
+        "kind": "normalized",
+        "x": 0.5976,
+        "y": 0.35806,
+        "width": 0.1952,
+        "height": 0.129815,
+        "captionTrim": 0.18
+      },
+      "16": {
+        "kind": "normalized",
+        "x": 0.7928,
+        "y": 0.35806,
+        "width": 0.1952,
+        "height": 0.129815,
+        "captionTrim": 0.18
+      },
+      "17": {
+        "kind": "normalized",
+        "x": 0.012,
+        "y": 0.517118,
+        "width": 0.1952,
+        "height": 0.122682,
+        "captionTrim": 0.18
+      },
+      "18": {
+        "kind": "normalized",
+        "x": 0.2072,
+        "y": 0.517118,
+        "width": 0.1952,
+        "height": 0.122682,
+        "captionTrim": 0.18
+      },
+      "19": {
+        "kind": "normalized",
+        "x": 0.4024,
+        "y": 0.517118,
+        "width": 0.1952,
+        "height": 0.122682,
+        "captionTrim": 0.18
+      },
+      "20": {
+        "kind": "normalized",
+        "x": 0.5976,
+        "y": 0.517118,
+        "width": 0.1952,
+        "height": 0.122682,
+        "captionTrim": 0.18
+      },
+      "21": {
+        "kind": "normalized",
+        "x": 0.7928,
+        "y": 0.517118,
+        "width": 0.1952,
+        "height": 0.122682,
+        "captionTrim": 0.18
+      },
+      "22": {
+        "kind": "normalized",
+        "x": 0.012,
+        "y": 0.661198,
+        "width": 0.1952,
+        "height": 0.125535,
+        "captionTrim": 0.18
+      },
+      "23": {
+        "kind": "normalized",
+        "x": 0.2072,
+        "y": 0.661198,
+        "width": 0.1952,
+        "height": 0.125535,
+        "captionTrim": 0.18
+      },
+      "24": {
+        "kind": "normalized",
+        "x": 0.4024,
+        "y": 0.661198,
+        "width": 0.1952,
+        "height": 0.125535,
+        "captionTrim": 0.18
+      },
+      "25": {
+        "kind": "normalized",
+        "x": 0.5976,
+        "y": 0.661198,
+        "width": 0.1952,
+        "height": 0.125535,
+        "captionTrim": 0.18
+      },
+      "26": {
+        "kind": "normalized",
+        "x": 0.7928,
+        "y": 0.661198,
+        "width": 0.1952,
+        "height": 0.125535,
+        "captionTrim": 0.18
+      },
+      "27": {
+        "kind": "normalized",
+        "x": 0.012,
+        "y": 0.815264,
+        "width": 0.18544,
+        "height": 0.119116,
+        "captionTrim": 0.18
+      },
+      "28": {
+        "kind": "custom-merged",
+        "x": 221.53,
+        "y": 1143.0,
+        "width": 324.14,
+        "height": 167.0,
+        "captionTrim": 0.18,
+        "note": "wide merged action/VFX panel"
+      },
+      "29": {
+        "kind": "normalized",
+        "x": 0.486336,
+        "y": 0.815264,
+        "width": 0.238144,
+        "height": 0.119116,
+        "captionTrim": 0.18
+      },
+      "30": {
+        "kind": "custom-merged",
+        "x": 812.87,
+        "y": 1143.0,
+        "width": 295.67,
+        "height": 167.0,
+        "captionTrim": 0.18,
+        "note": "wide merged action/VFX panel"
+      }
+    },
+    "captionTrim": 0.18,
+    "backgroundRemoval": {
+      "threshold": 30,
+      "edgeConnected": true,
+      "feather": 1.2,
+      "preserveInteriorBlack": true
+    }
+  },
+  "doge": {
+    "fighterId": "doge",
+    "sourceTexture": "card-doge",
+    "sourceFile": "Doge.png",
+    "layout": "6x5-grid",
+    "poses": {
+      "1": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.06,
+        "width": 0.163333,
+        "height": 0.141854,
+        "captionTrim": 0.17
+      },
+      "2": {
+        "kind": "normalized",
+        "x": 0.173333,
+        "y": 0.06,
+        "width": 0.163333,
+        "height": 0.141854,
+        "captionTrim": 0.17
+      },
+      "3": {
+        "kind": "normalized",
+        "x": 0.336667,
+        "y": 0.06,
+        "width": 0.163333,
+        "height": 0.141854,
+        "captionTrim": 0.17
+      },
+      "4": {
+        "kind": "normalized",
+        "x": 0.5,
+        "y": 0.06,
+        "width": 0.163333,
+        "height": 0.141854,
+        "captionTrim": 0.17
+      },
+      "5": {
+        "kind": "normalized",
+        "x": 0.663333,
+        "y": 0.06,
+        "width": 0.163333,
+        "height": 0.141854,
+        "captionTrim": 0.17
+      },
+      "6": {
+        "kind": "normalized",
+        "x": 0.826667,
+        "y": 0.06,
+        "width": 0.163333,
+        "height": 0.141854,
+        "captionTrim": 0.17
+      },
+      "7": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.226106,
+        "width": 0.163333,
+        "height": 0.14408,
+        "captionTrim": 0.17
+      },
+      "8": {
+        "kind": "normalized",
+        "x": 0.173333,
+        "y": 0.226106,
+        "width": 0.163333,
+        "height": 0.14408,
+        "captionTrim": 0.17
+      },
+      "9": {
+        "kind": "normalized",
+        "x": 0.336667,
+        "y": 0.226106,
+        "width": 0.163333,
+        "height": 0.14408,
+        "captionTrim": 0.17
+      },
+      "10": {
+        "kind": "normalized",
+        "x": 0.5,
+        "y": 0.226106,
+        "width": 0.163333,
+        "height": 0.14408,
+        "captionTrim": 0.17
+      },
+      "11": {
+        "kind": "normalized",
+        "x": 0.663333,
+        "y": 0.226106,
+        "width": 0.163333,
+        "height": 0.14408,
+        "captionTrim": 0.17
+      },
+      "12": {
+        "kind": "normalized",
+        "x": 0.826667,
+        "y": 0.226106,
+        "width": 0.163333,
+        "height": 0.14408,
+        "captionTrim": 0.17
+      },
+      "13": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.400143,
+        "width": 0.163333,
+        "height": 0.142653,
+        "captionTrim": 0.17
+      },
+      "14": {
+        "kind": "normalized",
+        "x": 0.173333,
+        "y": 0.400143,
+        "width": 0.163333,
+        "height": 0.142653,
+        "captionTrim": 0.17
+      },
+      "15": {
+        "kind": "normalized",
+        "x": 0.336667,
+        "y": 0.400143,
+        "width": 0.163333,
+        "height": 0.142653,
+        "captionTrim": 0.17
+      },
+      "16": {
+        "kind": "normalized",
+        "x": 0.5,
+        "y": 0.400143,
+        "width": 0.163333,
+        "height": 0.142653,
+        "captionTrim": 0.17
+      },
+      "17": {
+        "kind": "normalized",
+        "x": 0.663333,
+        "y": 0.400143,
+        "width": 0.163333,
+        "height": 0.142653,
+        "captionTrim": 0.17
+      },
+      "18": {
+        "kind": "normalized",
+        "x": 0.826667,
+        "y": 0.400143,
+        "width": 0.163333,
+        "height": 0.142653,
+        "captionTrim": 0.17
+      },
+      "19": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.568474,
+        "width": 0.163333,
+        "height": 0.146933,
+        "captionTrim": 0.17
+      },
+      "20": {
+        "kind": "normalized",
+        "x": 0.173333,
+        "y": 0.568474,
+        "width": 0.163333,
+        "height": 0.146933,
+        "captionTrim": 0.17
+      },
+      "21": {
+        "kind": "normalized",
+        "x": 0.336667,
+        "y": 0.568474,
+        "width": 0.163333,
+        "height": 0.146933,
+        "captionTrim": 0.17
+      },
+      "22": {
+        "kind": "normalized",
+        "x": 0.5,
+        "y": 0.568474,
+        "width": 0.163333,
+        "height": 0.146933,
+        "captionTrim": 0.17
+      },
+      "23": {
+        "kind": "normalized",
+        "x": 0.663333,
+        "y": 0.568474,
+        "width": 0.163333,
+        "height": 0.146933,
+        "captionTrim": 0.17
+      },
+      "24": {
+        "kind": "normalized",
+        "x": 0.826667,
+        "y": 0.568474,
+        "width": 0.163333,
+        "height": 0.146933,
+        "captionTrim": 0.17
+      },
+      "25": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.740371,
+        "width": 0.163333,
+        "height": 0.162625,
+        "captionTrim": 0.17
+      },
+      "26": {
+        "kind": "normalized",
+        "x": 0.173333,
+        "y": 0.740371,
+        "width": 0.163333,
+        "height": 0.162625,
+        "captionTrim": 0.17
+      },
+      "27": {
+        "kind": "normalized",
+        "x": 0.336667,
+        "y": 0.740371,
+        "width": 0.163333,
+        "height": 0.162625,
+        "captionTrim": 0.17
+      },
+      "28": {
+        "kind": "normalized",
+        "x": 0.5,
+        "y": 0.740371,
+        "width": 0.163333,
+        "height": 0.162625,
+        "captionTrim": 0.17
+      },
+      "29": {
+        "kind": "normalized",
+        "x": 0.663333,
+        "y": 0.740371,
+        "width": 0.163333,
+        "height": 0.162625,
+        "captionTrim": 0.17
+      },
+      "30": {
+        "kind": "normalized",
+        "x": 0.826667,
+        "y": 0.740371,
+        "width": 0.163333,
+        "height": 0.162625,
+        "captionTrim": 0.17
+      }
+    },
+    "captionTrim": 0.17,
+    "backgroundRemoval": {
+      "threshold": 30,
+      "edgeConnected": true,
+      "feather": 1.2,
+      "preserveInteriorBlack": true
+    }
+  },
+  "ya": {
+    "fighterId": "ya",
+    "sourceTexture": "card-ya",
+    "sourceFile": "YA鼠.png",
+    "layout": "5x6-grid",
+    "poses": {
+      "1": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.125449,
+        "captionTrim": 0.17
+      },
+      "2": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.125449,
+        "captionTrim": 0.17
+      },
+      "3": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.125449,
+        "captionTrim": 0.17
+      },
+      "4": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.125449,
+        "captionTrim": 0.17
+      },
+      "5": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.125449,
+        "captionTrim": 0.17
+      },
+      "6": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.206847,
+        "width": 0.196,
+        "height": 0.120542,
+        "captionTrim": 0.17
+      },
+      "7": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.206847,
+        "width": 0.196,
+        "height": 0.120542,
+        "captionTrim": 0.17
+      },
+      "8": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.206847,
+        "width": 0.196,
+        "height": 0.120542,
+        "captionTrim": 0.17
+      },
+      "9": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.206847,
+        "width": 0.196,
+        "height": 0.120542,
+        "captionTrim": 0.17
+      },
+      "10": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.206847,
+        "width": 0.196,
+        "height": 0.120542,
+        "captionTrim": 0.17
+      },
+      "11": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.349501,
+        "width": 0.196,
+        "height": 0.126961,
+        "captionTrim": 0.17
+      },
+      "12": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.349501,
+        "width": 0.196,
+        "height": 0.126961,
+        "captionTrim": 0.17
+      },
+      "13": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.349501,
+        "width": 0.196,
+        "height": 0.126961,
+        "captionTrim": 0.17
+      },
+      "14": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.349501,
+        "width": 0.196,
+        "height": 0.126961,
+        "captionTrim": 0.17
+      },
+      "15": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.349501,
+        "width": 0.196,
+        "height": 0.126961,
+        "captionTrim": 0.17
+      },
+      "16": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.498573,
+        "width": 0.196,
+        "height": 0.121255,
+        "captionTrim": 0.17
+      },
+      "17": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.498573,
+        "width": 0.196,
+        "height": 0.121255,
+        "captionTrim": 0.17
+      },
+      "18": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.498573,
+        "width": 0.196,
+        "height": 0.121255,
+        "captionTrim": 0.17
+      },
+      "19": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.498573,
+        "width": 0.196,
+        "height": 0.121255,
+        "captionTrim": 0.17
+      },
+      "20": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.498573,
+        "width": 0.196,
+        "height": 0.121255,
+        "captionTrim": 0.17
+      },
+      "21": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.64194,
+        "width": 0.196,
+        "height": 0.108417,
+        "captionTrim": 0.17
+      },
+      "22": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.64194,
+        "width": 0.196,
+        "height": 0.108417,
+        "captionTrim": 0.17
+      },
+      "23": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.64194,
+        "width": 0.196,
+        "height": 0.108417,
+        "captionTrim": 0.17
+      },
+      "24": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.64194,
+        "width": 0.196,
+        "height": 0.108417,
+        "captionTrim": 0.17
+      },
+      "25": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.64194,
+        "width": 0.196,
+        "height": 0.108417,
+        "captionTrim": 0.17
+      },
+      "26": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.771755,
+        "width": 0.196,
+        "height": 0.142653,
+        "captionTrim": 0.17
+      },
+      "27": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.771755,
+        "width": 0.196,
+        "height": 0.142653,
+        "captionTrim": 0.17
+      },
+      "28": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.771755,
+        "width": 0.196,
+        "height": 0.142653,
+        "captionTrim": 0.17
+      },
+      "29": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.771755,
+        "width": 0.196,
+        "height": 0.142653,
+        "captionTrim": 0.17
+      },
+      "30": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.771755,
+        "width": 0.196,
+        "height": 0.142653,
+        "captionTrim": 0.17
+      }
+    },
+    "captionTrim": 0.17,
+    "backgroundRemoval": {
+      "threshold": 30,
+      "edgeConnected": true,
+      "feather": 1.2,
+      "preserveInteriorBlack": true
+    }
+  },
+  "tempura": {
+    "fighterId": "tempura",
+    "sourceTexture": "card-tempura",
+    "sourceFile": "Oh fucking 天婦羅尬哩涼.png",
+    "layout": "manual-irregular",
+    "poses": {
+      "1": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.061,
+        "width": 0.196,
+        "height": 0.110184,
+        "captionTrim": 0.18
+      },
+      "2": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.061,
+        "width": 0.196,
+        "height": 0.110184,
+        "captionTrim": 0.18
+      },
+      "3": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.061,
+        "width": 0.196,
+        "height": 0.110184,
+        "captionTrim": 0.18
+      },
+      "4": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.061,
+        "width": 0.196,
+        "height": 0.110184,
+        "captionTrim": 0.18
+      },
+      "5": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.061,
+        "width": 0.196,
+        "height": 0.110184,
+        "captionTrim": 0.18
+      },
+      "6": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.208274,
+        "width": 0.196,
+        "height": 0.096291,
+        "captionTrim": 0.18
+      },
+      "7": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.208274,
+        "width": 0.196,
+        "height": 0.096291,
+        "captionTrim": 0.18
+      },
+      "8": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.208274,
+        "width": 0.196,
+        "height": 0.096291,
+        "captionTrim": 0.18
+      },
+      "9": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.208274,
+        "width": 0.196,
+        "height": 0.096291,
+        "captionTrim": 0.18
+      },
+      "10": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.208274,
+        "width": 0.196,
+        "height": 0.096291,
+        "captionTrim": 0.18
+      },
+      "11": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.341655,
+        "width": 0.196,
+        "height": 0.094151,
+        "captionTrim": 0.18
+      },
+      "12": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.341655,
+        "width": 0.196,
+        "height": 0.094151,
+        "captionTrim": 0.18
+      },
+      "13": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.341655,
+        "width": 0.196,
+        "height": 0.094151,
+        "captionTrim": 0.18
+      },
+      "14": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.341655,
+        "width": 0.196,
+        "height": 0.094151,
+        "captionTrim": 0.18
+      },
+      "15": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.341655,
+        "width": 0.196,
+        "height": 0.094151,
+        "captionTrim": 0.18
+      },
+      "16": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.472896,
+        "width": 0.196,
+        "height": 0.097004,
+        "captionTrim": 0.18
+      },
+      "17": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.472896,
+        "width": 0.196,
+        "height": 0.097004,
+        "captionTrim": 0.18
+      },
+      "18": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.472896,
+        "width": 0.196,
+        "height": 0.097004,
+        "captionTrim": 0.18
+      },
+      "19": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.472896,
+        "width": 0.196,
+        "height": 0.097004,
+        "captionTrim": 0.18
+      },
+      "20": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.472896,
+        "width": 0.196,
+        "height": 0.097004,
+        "captionTrim": 0.18
+      },
+      "21": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.607703,
+        "width": 0.196,
+        "height": 0.099144,
+        "captionTrim": 0.18
+      },
+      "22": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.607703,
+        "width": 0.196,
+        "height": 0.099144,
+        "captionTrim": 0.18
+      },
+      "23": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.607703,
+        "width": 0.196,
+        "height": 0.099144,
+        "captionTrim": 0.18
+      },
+      "24": {
+        "kind": "custom-merged",
+        "x": 670.96,
+        "y": 852.0,
+        "width": 439.82,
+        "height": 139.0,
+        "captionTrim": 0.18,
+        "note": "wide merged action/VFX panel"
+      },
+      "25": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.74465,
+        "width": 0.196,
+        "height": 0.101284,
+        "captionTrim": 0.18
+      },
+      "26": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.74465,
+        "width": 0.196,
+        "height": 0.101284,
+        "captionTrim": 0.18
+      },
+      "27": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.74465,
+        "width": 0.196,
+        "height": 0.101284,
+        "captionTrim": 0.18
+      },
+      "28": {
+        "kind": "custom-merged",
+        "x": 670.96,
+        "y": 1044.0,
+        "width": 439.82,
+        "height": 142.0,
+        "captionTrim": 0.18,
+        "note": "wide merged action/VFX panel"
+      },
+      "29": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.883,
+        "width": 0.195,
+        "height": 0.098,
+        "captionTrim": 0.18
+      },
+      "30": {
+        "kind": "normalized",
+        "x": 0.205,
+        "y": 0.883,
+        "width": 0.197,
+        "height": 0.098,
+        "captionTrim": 0.18
+      }
+    },
+    "captionTrim": 0.18,
+    "backgroundRemoval": {
+      "threshold": 30,
+      "edgeConnected": true,
+      "feather": 1.2,
+      "preserveInteriorBlack": true
+    }
+  },
+  "goblin": {
+    "fighterId": "goblin",
+    "sourceTexture": "card-goblin",
+    "sourceFile": "哥布林也想談戀愛.png",
+    "layout": "5x6-grid",
+    "poses": {
+      "1": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.133295,
+        "captionTrim": 0.17
+      },
+      "2": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.133295,
+        "captionTrim": 0.17
+      },
+      "3": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.133295,
+        "captionTrim": 0.17
+      },
+      "4": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.133295,
+        "captionTrim": 0.17
+      },
+      "5": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.133295,
+        "captionTrim": 0.17
+      },
+      "6": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.21398,
+        "width": 0.196,
+        "height": 0.123395,
+        "captionTrim": 0.17
+      },
+      "7": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.21398,
+        "width": 0.196,
+        "height": 0.123395,
+        "captionTrim": 0.17
+      },
+      "8": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.21398,
+        "width": 0.196,
+        "height": 0.123395,
+        "captionTrim": 0.17
+      },
+      "9": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.21398,
+        "width": 0.196,
+        "height": 0.123395,
+        "captionTrim": 0.17
+      },
+      "10": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.21398,
+        "width": 0.196,
+        "height": 0.123395,
+        "captionTrim": 0.17
+      },
+      "11": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.35806,
+        "width": 0.196,
+        "height": 0.121969,
+        "captionTrim": 0.17
+      },
+      "12": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.35806,
+        "width": 0.196,
+        "height": 0.121969,
+        "captionTrim": 0.17
+      },
+      "13": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.35806,
+        "width": 0.196,
+        "height": 0.121969,
+        "captionTrim": 0.17
+      },
+      "14": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.35806,
+        "width": 0.196,
+        "height": 0.121969,
+        "captionTrim": 0.17
+      },
+      "15": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.35806,
+        "width": 0.196,
+        "height": 0.121969,
+        "captionTrim": 0.17
+      },
+      "16": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.500713,
+        "width": 0.196,
+        "height": 0.115549,
+        "captionTrim": 0.17
+      },
+      "17": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.500713,
+        "width": 0.196,
+        "height": 0.115549,
+        "captionTrim": 0.17
+      },
+      "18": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.500713,
+        "width": 0.196,
+        "height": 0.115549,
+        "captionTrim": 0.17
+      },
+      "19": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.500713,
+        "width": 0.196,
+        "height": 0.115549,
+        "captionTrim": 0.17
+      },
+      "20": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.500713,
+        "width": 0.196,
+        "height": 0.115549,
+        "captionTrim": 0.17
+      },
+      "21": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.636234,
+        "width": 0.196,
+        "height": 0.103424,
+        "captionTrim": 0.17
+      },
+      "22": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.636234,
+        "width": 0.196,
+        "height": 0.103424,
+        "captionTrim": 0.17
+      },
+      "23": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.636234,
+        "width": 0.196,
+        "height": 0.103424,
+        "captionTrim": 0.17
+      },
+      "24": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.636234,
+        "width": 0.196,
+        "height": 0.103424,
+        "captionTrim": 0.17
+      },
+      "25": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.636234,
+        "width": 0.196,
+        "height": 0.103424,
+        "captionTrim": 0.17
+      },
+      "26": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.774608,
+        "width": 0.196,
+        "height": 0.131954,
+        "captionTrim": 0.17
+      },
+      "27": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.774608,
+        "width": 0.196,
+        "height": 0.131954,
+        "captionTrim": 0.17
+      },
+      "28": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.774608,
+        "width": 0.196,
+        "height": 0.131954,
+        "captionTrim": 0.17
+      },
+      "29": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.774608,
+        "width": 0.196,
+        "height": 0.131954,
+        "captionTrim": 0.17
+      },
+      "30": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.774608,
+        "width": 0.196,
+        "height": 0.131954,
+        "captionTrim": 0.17
+      }
+    },
+    "captionTrim": 0.17,
+    "backgroundRemoval": {
+      "threshold": 30,
+      "edgeConnected": true,
+      "feather": 1.2,
+      "preserveInteriorBlack": true
+    }
+  },
+  "salad": {
+    "fighterId": "salad",
+    "sourceTexture": "card-salad",
+    "sourceFile": "沙拉貓貓.png",
+    "layout": "5x6-grid",
+    "poses": {
+      "1": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.091213,
+        "captionTrim": 0.17
+      },
+      "2": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.091213,
+        "captionTrim": 0.17
+      },
+      "3": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.091213,
+        "captionTrim": 0.17
+      },
+      "4": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.091213,
+        "captionTrim": 0.17
+      },
+      "5": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.091213,
+        "captionTrim": 0.17
+      },
+      "6": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.191869,
+        "width": 0.196,
+        "height": 0.095578,
+        "captionTrim": 0.17
+      },
+      "7": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.191869,
+        "width": 0.196,
+        "height": 0.095578,
+        "captionTrim": 0.17
+      },
+      "8": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.191869,
+        "width": 0.196,
+        "height": 0.095578,
+        "captionTrim": 0.17
+      },
+      "9": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.191869,
+        "width": 0.196,
+        "height": 0.095578,
+        "captionTrim": 0.17
+      },
+      "10": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.191869,
+        "width": 0.196,
+        "height": 0.095578,
+        "captionTrim": 0.17
+      },
+      "11": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.328816,
+        "width": 0.196,
+        "height": 0.105563,
+        "captionTrim": 0.17
+      },
+      "12": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.328816,
+        "width": 0.196,
+        "height": 0.105563,
+        "captionTrim": 0.17
+      },
+      "13": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.328816,
+        "width": 0.196,
+        "height": 0.105563,
+        "captionTrim": 0.17
+      },
+      "14": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.328816,
+        "width": 0.196,
+        "height": 0.105563,
+        "captionTrim": 0.17
+      },
+      "15": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.328816,
+        "width": 0.196,
+        "height": 0.105563,
+        "captionTrim": 0.17
+      },
+      "16": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.475036,
+        "width": 0.196,
+        "height": 0.103424,
+        "captionTrim": 0.17
+      },
+      "17": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.475036,
+        "width": 0.196,
+        "height": 0.103424,
+        "captionTrim": 0.17
+      },
+      "18": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.475036,
+        "width": 0.196,
+        "height": 0.103424,
+        "captionTrim": 0.17
+      },
+      "19": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.475036,
+        "width": 0.196,
+        "height": 0.103424,
+        "captionTrim": 0.17
+      },
+      "20": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.475036,
+        "width": 0.196,
+        "height": 0.103424,
+        "captionTrim": 0.17
+      },
+      "21": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.616976,
+        "width": 0.196,
+        "height": 0.094151,
+        "captionTrim": 0.17
+      },
+      "22": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.616976,
+        "width": 0.196,
+        "height": 0.094151,
+        "captionTrim": 0.17
+      },
+      "23": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.616976,
+        "width": 0.196,
+        "height": 0.094151,
+        "captionTrim": 0.17
+      },
+      "24": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.616976,
+        "width": 0.196,
+        "height": 0.094151,
+        "captionTrim": 0.17
+      },
+      "25": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.616976,
+        "width": 0.196,
+        "height": 0.094151,
+        "captionTrim": 0.17
+      },
+      "26": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.746077,
+        "width": 0.196,
+        "height": 0.123395,
+        "captionTrim": 0.17
+      },
+      "27": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.746077,
+        "width": 0.196,
+        "height": 0.123395,
+        "captionTrim": 0.17
+      },
+      "28": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.746077,
+        "width": 0.196,
+        "height": 0.123395,
+        "captionTrim": 0.17
+      },
+      "29": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.746077,
+        "width": 0.196,
+        "height": 0.123395,
+        "captionTrim": 0.17
+      },
+      "30": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.746077,
+        "width": 0.196,
+        "height": 0.123395,
+        "captionTrim": 0.17
+      }
+    },
+    "captionTrim": 0.17,
+    "backgroundRemoval": {
+      "threshold": 30,
+      "edgeConnected": true,
+      "feather": 1.2,
+      "preserveInteriorBlack": true
+    }
+  },
+  "wizard": {
+    "fighterId": "wizard",
+    "sourceTexture": "card-wizard",
+    "sourceFile": "魔法胖橘貓.png",
+    "layout": "5x6-grid",
+    "poses": {
+      "1": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.067,
+        "width": 0.196,
+        "height": 0.096411,
+        "captionTrim": 0.17
+      },
+      "2": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.067,
+        "width": 0.196,
+        "height": 0.096411,
+        "captionTrim": 0.17
+      },
+      "3": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.067,
+        "width": 0.196,
+        "height": 0.096411,
+        "captionTrim": 0.17
+      },
+      "4": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.067,
+        "width": 0.196,
+        "height": 0.096411,
+        "captionTrim": 0.17
+      },
+      "5": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.067,
+        "width": 0.196,
+        "height": 0.096411,
+        "captionTrim": 0.17
+      },
+      "6": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.192708,
+        "width": 0.196,
+        "height": 0.098958,
+        "captionTrim": 0.17
+      },
+      "7": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.192708,
+        "width": 0.196,
+        "height": 0.098958,
+        "captionTrim": 0.17
+      },
+      "8": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.192708,
+        "width": 0.196,
+        "height": 0.098958,
+        "captionTrim": 0.17
+      },
+      "9": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.192708,
+        "width": 0.196,
+        "height": 0.098958,
+        "captionTrim": 0.17
+      },
+      "10": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.192708,
+        "width": 0.196,
+        "height": 0.098958,
+        "captionTrim": 0.17
+      },
+      "11": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.326823,
+        "width": 0.196,
+        "height": 0.10612,
+        "captionTrim": 0.17
+      },
+      "12": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.326823,
+        "width": 0.196,
+        "height": 0.10612,
+        "captionTrim": 0.17
+      },
+      "13": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.326823,
+        "width": 0.196,
+        "height": 0.10612,
+        "captionTrim": 0.17
+      },
+      "14": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.326823,
+        "width": 0.196,
+        "height": 0.10612,
+        "captionTrim": 0.17
+      },
+      "15": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.326823,
+        "width": 0.196,
+        "height": 0.10612,
+        "captionTrim": 0.17
+      },
+      "16": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.470703,
+        "width": 0.196,
+        "height": 0.101562,
+        "captionTrim": 0.17
+      },
+      "17": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.470703,
+        "width": 0.196,
+        "height": 0.101562,
+        "captionTrim": 0.17
+      },
+      "18": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.470703,
+        "width": 0.196,
+        "height": 0.101562,
+        "captionTrim": 0.17
+      },
+      "19": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.470703,
+        "width": 0.196,
+        "height": 0.101562,
+        "captionTrim": 0.17
+      },
+      "20": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.470703,
+        "width": 0.196,
+        "height": 0.101562,
+        "captionTrim": 0.17
+      },
+      "21": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.597005,
+        "width": 0.196,
+        "height": 0.114583,
+        "captionTrim": 0.17
+      },
+      "22": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.597005,
+        "width": 0.196,
+        "height": 0.114583,
+        "captionTrim": 0.17
+      },
+      "23": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.597005,
+        "width": 0.196,
+        "height": 0.114583,
+        "captionTrim": 0.17
+      },
+      "24": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.597005,
+        "width": 0.196,
+        "height": 0.114583,
+        "captionTrim": 0.17
+      },
+      "25": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.597005,
+        "width": 0.196,
+        "height": 0.114583,
+        "captionTrim": 0.17
+      },
+      "26": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.74349,
+        "width": 0.196,
+        "height": 0.13151,
+        "captionTrim": 0.17
+      },
+      "27": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.74349,
+        "width": 0.196,
+        "height": 0.13151,
+        "captionTrim": 0.17
+      },
+      "28": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.74349,
+        "width": 0.196,
+        "height": 0.13151,
+        "captionTrim": 0.17
+      },
+      "29": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.74349,
+        "width": 0.196,
+        "height": 0.13151,
+        "captionTrim": 0.17
+      },
+      "30": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.74349,
+        "width": 0.196,
+        "height": 0.13151,
+        "captionTrim": 0.17
+      }
+    },
+    "captionTrim": 0.17,
+    "backgroundRemoval": {
+      "threshold": 30,
+      "edgeConnected": true,
+      "feather": 1.2,
+      "preserveInteriorBlack": true
+    }
+  },
+  "blade": {
+    "fighterId": "blade",
+    "sourceTexture": "card-blade",
+    "sourceFile": "我的刀盾.png",
+    "layout": "5x6-grid",
+    "poses": {
+      "1": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.119743,
+        "captionTrim": 0.17
+      },
+      "2": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.119743,
+        "captionTrim": 0.17
+      },
+      "3": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.119743,
+        "captionTrim": 0.17
+      },
+      "4": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.119743,
+        "captionTrim": 0.17
+      },
+      "5": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.119743,
+        "captionTrim": 0.17
+      },
+      "6": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.204708,
+        "width": 0.196,
+        "height": 0.116262,
+        "captionTrim": 0.17
+      },
+      "7": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.204708,
+        "width": 0.196,
+        "height": 0.116262,
+        "captionTrim": 0.17
+      },
+      "8": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.204708,
+        "width": 0.196,
+        "height": 0.116262,
+        "captionTrim": 0.17
+      },
+      "9": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.204708,
+        "width": 0.196,
+        "height": 0.116262,
+        "captionTrim": 0.17
+      },
+      "10": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.204708,
+        "width": 0.196,
+        "height": 0.116262,
+        "captionTrim": 0.17
+      },
+      "11": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.345934,
+        "width": 0.196,
+        "height": 0.116976,
+        "captionTrim": 0.17
+      },
+      "12": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.345934,
+        "width": 0.196,
+        "height": 0.116976,
+        "captionTrim": 0.17
+      },
+      "13": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.345934,
+        "width": 0.196,
+        "height": 0.116976,
+        "captionTrim": 0.17
+      },
+      "14": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.345934,
+        "width": 0.196,
+        "height": 0.116976,
+        "captionTrim": 0.17
+      },
+      "15": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.345934,
+        "width": 0.196,
+        "height": 0.116976,
+        "captionTrim": 0.17
+      },
+      "16": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.487874,
+        "width": 0.196,
+        "height": 0.115549,
+        "captionTrim": 0.17
+      },
+      "17": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.487874,
+        "width": 0.196,
+        "height": 0.115549,
+        "captionTrim": 0.17
+      },
+      "18": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.487874,
+        "width": 0.196,
+        "height": 0.115549,
+        "captionTrim": 0.17
+      },
+      "19": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.487874,
+        "width": 0.196,
+        "height": 0.115549,
+        "captionTrim": 0.17
+      },
+      "20": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.487874,
+        "width": 0.196,
+        "height": 0.115549,
+        "captionTrim": 0.17
+      },
+      "21": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.629815,
+        "width": 0.196,
+        "height": 0.116262,
+        "captionTrim": 0.17
+      },
+      "22": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.629815,
+        "width": 0.196,
+        "height": 0.116262,
+        "captionTrim": 0.17
+      },
+      "23": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.629815,
+        "width": 0.196,
+        "height": 0.116262,
+        "captionTrim": 0.17
+      },
+      "24": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.629815,
+        "width": 0.196,
+        "height": 0.116262,
+        "captionTrim": 0.17
+      },
+      "25": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.629815,
+        "width": 0.196,
+        "height": 0.116262,
+        "captionTrim": 0.17
+      },
+      "26": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.772468,
+        "width": 0.196,
+        "height": 0.159058,
+        "captionTrim": 0.17
+      },
+      "27": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.772468,
+        "width": 0.196,
+        "height": 0.159058,
+        "captionTrim": 0.17
+      },
+      "28": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.772468,
+        "width": 0.196,
+        "height": 0.159058,
+        "captionTrim": 0.17
+      },
+      "29": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.772468,
+        "width": 0.196,
+        "height": 0.159058,
+        "captionTrim": 0.17
+      },
+      "30": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.772468,
+        "width": 0.196,
+        "height": 0.159058,
+        "captionTrim": 0.17
+      }
+    },
+    "captionTrim": 0.17,
+    "backgroundRemoval": {
+      "threshold": 30,
+      "edgeConnected": true,
+      "feather": 1.2,
+      "preserveInteriorBlack": true
+    }
+  },
+  "pink": {
+    "fighterId": "pink",
+    "sourceTexture": "card-pink",
+    "sourceFile": "粉紅星星.png",
+    "layout": "5x6-grid",
+    "poses": {
+      "1": {
+        "kind": "pixel",
+        "x": 20.2,
+        "y": 60.0,
+        "width": 216.32,
+        "height": 166.0,
+        "captionTrim": 0.02
+      },
+      "2": {
+        "kind": "pixel",
+        "x": 236.52,
+        "y": 60.0,
+        "width": 216.32,
+        "height": 166.0,
+        "captionTrim": 0.02
+      },
+      "3": {
+        "kind": "pixel",
+        "x": 452.84,
+        "y": 60.0,
+        "width": 216.32,
+        "height": 166.0,
+        "captionTrim": 0.02
+      },
+      "4": {
+        "kind": "pixel",
+        "x": 669.16,
+        "y": 60.0,
+        "width": 216.32,
+        "height": 166.0,
+        "captionTrim": 0.02
+      },
+      "5": {
+        "kind": "pixel",
+        "x": 885.48,
+        "y": 60.0,
+        "width": 216.32,
+        "height": 166.0,
+        "captionTrim": 0.02
+      },
+      "6": {
+        "kind": "pixel",
+        "x": 20.2,
+        "y": 248.0,
+        "width": 216.32,
+        "height": 158.0,
+        "captionTrim": 0.02
+      },
+      "7": {
+        "kind": "pixel",
+        "x": 236.52,
+        "y": 248.0,
+        "width": 216.32,
+        "height": 158.0,
+        "captionTrim": 0.02
+      },
+      "8": {
+        "kind": "pixel",
+        "x": 452.84,
+        "y": 248.0,
+        "width": 216.32,
+        "height": 158.0,
+        "captionTrim": 0.02
+      },
+      "9": {
+        "kind": "pixel",
+        "x": 669.16,
+        "y": 248.0,
+        "width": 216.32,
+        "height": 158.0,
+        "captionTrim": 0.02
+      },
+      "10": {
+        "kind": "pixel",
+        "x": 885.48,
+        "y": 248.0,
+        "width": 216.32,
+        "height": 158.0,
+        "captionTrim": 0.02
+      },
+      "11": {
+        "kind": "pixel",
+        "x": 20.2,
+        "y": 428.0,
+        "width": 216.32,
+        "height": 170.0,
+        "captionTrim": 0.02
+      },
+      "12": {
+        "kind": "pixel",
+        "x": 236.52,
+        "y": 428.0,
+        "width": 216.32,
+        "height": 170.0,
+        "captionTrim": 0.02
+      },
+      "13": {
+        "kind": "pixel",
+        "x": 452.84,
+        "y": 428.0,
+        "width": 216.32,
+        "height": 170.0,
+        "captionTrim": 0.02
+      },
+      "14": {
+        "kind": "pixel",
+        "x": 669.16,
+        "y": 428.0,
+        "width": 216.32,
+        "height": 170.0,
+        "captionTrim": 0.02
+      },
+      "15": {
+        "kind": "pixel",
+        "x": 885.48,
+        "y": 428.0,
+        "width": 216.32,
+        "height": 170.0,
+        "captionTrim": 0.02
+      },
+      "16": {
+        "kind": "pixel",
+        "x": 20.2,
+        "y": 620.0,
+        "width": 216.32,
+        "height": 171.0,
+        "captionTrim": 0.02
+      },
+      "17": {
+        "kind": "pixel",
+        "x": 236.52,
+        "y": 620.0,
+        "width": 216.32,
+        "height": 171.0,
+        "captionTrim": 0.02
+      },
+      "18": {
+        "kind": "pixel",
+        "x": 452.84,
+        "y": 620.0,
+        "width": 216.32,
+        "height": 171.0,
+        "captionTrim": 0.02
+      },
+      "19": {
+        "kind": "pixel",
+        "x": 669.16,
+        "y": 620.0,
+        "width": 216.32,
+        "height": 171.0,
+        "captionTrim": 0.02
+      },
+      "20": {
+        "kind": "pixel",
+        "x": 885.48,
+        "y": 620.0,
+        "width": 216.32,
+        "height": 171.0,
+        "captionTrim": 0.02
+      },
+      "21": {
+        "kind": "pixel",
+        "x": 20.2,
+        "y": 813.0,
+        "width": 216.32,
+        "height": 177.0,
+        "captionTrim": 0.02
+      },
+      "22": {
+        "kind": "pixel",
+        "x": 236.52,
+        "y": 813.0,
+        "width": 216.32,
+        "height": 177.0,
+        "captionTrim": 0.02
+      },
+      "23": {
+        "kind": "pixel",
+        "x": 452.84,
+        "y": 813.0,
+        "width": 216.32,
+        "height": 177.0,
+        "captionTrim": 0.02
+      },
+      "24": {
+        "kind": "pixel",
+        "x": 669.16,
+        "y": 813.0,
+        "width": 216.32,
+        "height": 177.0,
+        "captionTrim": 0.02
+      },
+      "25": {
+        "kind": "pixel",
+        "x": 885.48,
+        "y": 813.0,
+        "width": 216.32,
+        "height": 177.0,
+        "captionTrim": 0.02
+      },
+      "26": {
+        "kind": "pixel",
+        "x": 20.2,
+        "y": 1012.0,
+        "width": 216.32,
+        "height": 239.0,
+        "captionTrim": 0.02
+      },
+      "27": {
+        "kind": "pixel",
+        "x": 236.52,
+        "y": 1012.0,
+        "width": 216.32,
+        "height": 239.0,
+        "captionTrim": 0.02
+      },
+      "28": {
+        "kind": "pixel",
+        "x": 452.84,
+        "y": 1012.0,
+        "width": 216.32,
+        "height": 239.0,
+        "captionTrim": 0.02
+      },
+      "29": {
+        "kind": "pixel",
+        "x": 669.16,
+        "y": 1012.0,
+        "width": 216.32,
+        "height": 239.0,
+        "captionTrim": 0.02
+      },
+      "30": {
+        "kind": "pixel",
+        "x": 885.48,
+        "y": 1012.0,
+        "width": 216.32,
+        "height": 239.0,
+        "captionTrim": 0.02
+      }
+    },
+    "captionTrim": 0.02,
+    "backgroundRemoval": {
+      "threshold": 30,
+      "edgeConnected": true,
+      "feather": 1.2,
+      "preserveInteriorBlack": true
+    }
+  },
+  "sauce": {
+    "fighterId": "sauce",
+    "sourceTexture": "card-sauce",
+    "sourceFile": "蘸醬胡渣狗.png",
+    "layout": "5x6-grid",
+    "poses": {
+      "1": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.113324,
+        "captionTrim": 0.17
+      },
+      "2": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.113324,
+        "captionTrim": 0.17
+      },
+      "3": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.113324,
+        "captionTrim": 0.17
+      },
+      "4": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.113324,
+        "captionTrim": 0.17
+      },
+      "5": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.113324,
+        "captionTrim": 0.17
+      },
+      "6": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.199001,
+        "width": 0.196,
+        "height": 0.114836,
+        "captionTrim": 0.17
+      },
+      "7": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.199001,
+        "width": 0.196,
+        "height": 0.114836,
+        "captionTrim": 0.17
+      },
+      "8": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.199001,
+        "width": 0.196,
+        "height": 0.114836,
+        "captionTrim": 0.17
+      },
+      "9": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.199001,
+        "width": 0.196,
+        "height": 0.114836,
+        "captionTrim": 0.17
+      },
+      "10": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.199001,
+        "width": 0.196,
+        "height": 0.114836,
+        "captionTrim": 0.17
+      },
+      "11": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.339515,
+        "width": 0.196,
+        "height": 0.116262,
+        "captionTrim": 0.17
+      },
+      "12": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.339515,
+        "width": 0.196,
+        "height": 0.116262,
+        "captionTrim": 0.17
+      },
+      "13": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.339515,
+        "width": 0.196,
+        "height": 0.116262,
+        "captionTrim": 0.17
+      },
+      "14": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.339515,
+        "width": 0.196,
+        "height": 0.116262,
+        "captionTrim": 0.17
+      },
+      "15": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.339515,
+        "width": 0.196,
+        "height": 0.116262,
+        "captionTrim": 0.17
+      },
+      "16": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.482168,
+        "width": 0.196,
+        "height": 0.113409,
+        "captionTrim": 0.17
+      },
+      "17": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.482168,
+        "width": 0.196,
+        "height": 0.113409,
+        "captionTrim": 0.17
+      },
+      "18": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.482168,
+        "width": 0.196,
+        "height": 0.113409,
+        "captionTrim": 0.17
+      },
+      "19": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.482168,
+        "width": 0.196,
+        "height": 0.113409,
+        "captionTrim": 0.17
+      },
+      "20": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.482168,
+        "width": 0.196,
+        "height": 0.113409,
+        "captionTrim": 0.17
+      },
+      "21": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.621969,
+        "width": 0.196,
+        "height": 0.114836,
+        "captionTrim": 0.17
+      },
+      "22": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.621969,
+        "width": 0.196,
+        "height": 0.114836,
+        "captionTrim": 0.17
+      },
+      "23": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.621969,
+        "width": 0.196,
+        "height": 0.114836,
+        "captionTrim": 0.17
+      },
+      "24": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.621969,
+        "width": 0.196,
+        "height": 0.114836,
+        "captionTrim": 0.17
+      },
+      "25": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.621969,
+        "width": 0.196,
+        "height": 0.114836,
+        "captionTrim": 0.17
+      },
+      "26": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.763195,
+        "width": 0.196,
+        "height": 0.14622,
+        "captionTrim": 0.17
+      },
+      "27": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.763195,
+        "width": 0.196,
+        "height": 0.14622,
+        "captionTrim": 0.17
+      },
+      "28": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.763195,
+        "width": 0.196,
+        "height": 0.14622,
+        "captionTrim": 0.17
+      },
+      "29": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.763195,
+        "width": 0.196,
+        "height": 0.14622,
+        "captionTrim": 0.17
+      },
+      "30": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.763195,
+        "width": 0.196,
+        "height": 0.14622,
+        "captionTrim": 0.17
+      }
+    },
+    "captionTrim": 0.17,
+    "backgroundRemoval": {
+      "threshold": 30,
+      "edgeConnected": true,
+      "feather": 1.2,
+      "preserveInteriorBlack": true
+    }
+  },
+  "scared": {
+    "fighterId": "scared",
+    "sourceTexture": "card-scared",
+    "sourceFile": "驚嚇小貓.png",
+    "layout": "5x6-grid",
+    "poses": {
+      "1": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.115464,
+        "captionTrim": 0.17
+      },
+      "2": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.115464,
+        "captionTrim": 0.17
+      },
+      "3": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.115464,
+        "captionTrim": 0.17
+      },
+      "4": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.115464,
+        "captionTrim": 0.17
+      },
+      "5": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.06,
+        "width": 0.196,
+        "height": 0.115464,
+        "captionTrim": 0.17
+      },
+      "6": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.21184,
+        "width": 0.196,
+        "height": 0.114836,
+        "captionTrim": 0.17
+      },
+      "7": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.21184,
+        "width": 0.196,
+        "height": 0.114836,
+        "captionTrim": 0.17
+      },
+      "8": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.21184,
+        "width": 0.196,
+        "height": 0.114836,
+        "captionTrim": 0.17
+      },
+      "9": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.21184,
+        "width": 0.196,
+        "height": 0.114836,
+        "captionTrim": 0.17
+      },
+      "10": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.21184,
+        "width": 0.196,
+        "height": 0.114836,
+        "captionTrim": 0.17
+      },
+      "11": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.354494,
+        "width": 0.196,
+        "height": 0.120542,
+        "captionTrim": 0.17
+      },
+      "12": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.354494,
+        "width": 0.196,
+        "height": 0.120542,
+        "captionTrim": 0.17
+      },
+      "13": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.354494,
+        "width": 0.196,
+        "height": 0.120542,
+        "captionTrim": 0.17
+      },
+      "14": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.354494,
+        "width": 0.196,
+        "height": 0.120542,
+        "captionTrim": 0.17
+      },
+      "15": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.354494,
+        "width": 0.196,
+        "height": 0.120542,
+        "captionTrim": 0.17
+      },
+      "16": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.505706,
+        "width": 0.196,
+        "height": 0.110556,
+        "captionTrim": 0.17
+      },
+      "17": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.505706,
+        "width": 0.196,
+        "height": 0.110556,
+        "captionTrim": 0.17
+      },
+      "18": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.505706,
+        "width": 0.196,
+        "height": 0.110556,
+        "captionTrim": 0.17
+      },
+      "19": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.505706,
+        "width": 0.196,
+        "height": 0.110556,
+        "captionTrim": 0.17
+      },
+      "20": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.505706,
+        "width": 0.196,
+        "height": 0.110556,
+        "captionTrim": 0.17
+      },
+      "21": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.649786,
+        "width": 0.196,
+        "height": 0.112696,
+        "captionTrim": 0.17
+      },
+      "22": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.649786,
+        "width": 0.196,
+        "height": 0.112696,
+        "captionTrim": 0.17
+      },
+      "23": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.649786,
+        "width": 0.196,
+        "height": 0.112696,
+        "captionTrim": 0.17
+      },
+      "24": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.649786,
+        "width": 0.196,
+        "height": 0.112696,
+        "captionTrim": 0.17
+      },
+      "25": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.649786,
+        "width": 0.196,
+        "height": 0.112696,
+        "captionTrim": 0.17
+      },
+      "26": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.787447,
+        "width": 0.196,
+        "height": 0.134094,
+        "captionTrim": 0.17
+      },
+      "27": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.787447,
+        "width": 0.196,
+        "height": 0.134094,
+        "captionTrim": 0.17
+      },
+      "28": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.787447,
+        "width": 0.196,
+        "height": 0.134094,
+        "captionTrim": 0.17
+      },
+      "29": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.787447,
+        "width": 0.196,
+        "height": 0.134094,
+        "captionTrim": 0.17
+      },
+      "30": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.787447,
+        "width": 0.196,
+        "height": 0.134094,
+        "captionTrim": 0.17
+      }
+    },
+    "captionTrim": 0.17,
+    "backgroundRemoval": {
+      "threshold": 30,
+      "edgeConnected": true,
+      "feather": 1.2,
+      "preserveInteriorBlack": true
+    }
+  },
+  "ok": {
+    "fighterId": "ok",
+    "sourceTexture": "card-ok",
+    "sourceFile": "OK喵老大.png",
+    "layout": "5x6-grid",
+    "poses": {
+      "1": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.067,
+        "width": 0.196,
+        "height": 0.106177,
+        "captionTrim": 0.17
+      },
+      "2": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.067,
+        "width": 0.196,
+        "height": 0.106177,
+        "captionTrim": 0.17
+      },
+      "3": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.067,
+        "width": 0.196,
+        "height": 0.106177,
+        "captionTrim": 0.17
+      },
+      "4": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.067,
+        "width": 0.196,
+        "height": 0.106177,
+        "captionTrim": 0.17
+      },
+      "5": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.067,
+        "width": 0.196,
+        "height": 0.106177,
+        "captionTrim": 0.17
+      },
+      "6": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.205729,
+        "width": 0.196,
+        "height": 0.096354,
+        "captionTrim": 0.17
+      },
+      "7": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.205729,
+        "width": 0.196,
+        "height": 0.096354,
+        "captionTrim": 0.17
+      },
+      "8": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.205729,
+        "width": 0.196,
+        "height": 0.096354,
+        "captionTrim": 0.17
+      },
+      "9": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.205729,
+        "width": 0.196,
+        "height": 0.096354,
+        "captionTrim": 0.17
+      },
+      "10": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.205729,
+        "width": 0.196,
+        "height": 0.096354,
+        "captionTrim": 0.17
+      },
+      "11": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.334635,
+        "width": 0.196,
+        "height": 0.10026,
+        "captionTrim": 0.17
+      },
+      "12": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.334635,
+        "width": 0.196,
+        "height": 0.10026,
+        "captionTrim": 0.17
+      },
+      "13": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.334635,
+        "width": 0.196,
+        "height": 0.10026,
+        "captionTrim": 0.17
+      },
+      "14": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.334635,
+        "width": 0.196,
+        "height": 0.10026,
+        "captionTrim": 0.17
+      },
+      "15": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.334635,
+        "width": 0.196,
+        "height": 0.10026,
+        "captionTrim": 0.17
+      },
+      "16": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.46875,
+        "width": 0.196,
+        "height": 0.091146,
+        "captionTrim": 0.17
+      },
+      "17": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.46875,
+        "width": 0.196,
+        "height": 0.091146,
+        "captionTrim": 0.17
+      },
+      "18": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.46875,
+        "width": 0.196,
+        "height": 0.091146,
+        "captionTrim": 0.17
+      },
+      "19": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.46875,
+        "width": 0.196,
+        "height": 0.091146,
+        "captionTrim": 0.17
+      },
+      "20": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.46875,
+        "width": 0.196,
+        "height": 0.091146,
+        "captionTrim": 0.17
+      },
+      "21": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.593099,
+        "width": 0.196,
+        "height": 0.093099,
+        "captionTrim": 0.17
+      },
+      "22": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.593099,
+        "width": 0.196,
+        "height": 0.093099,
+        "captionTrim": 0.17
+      },
+      "23": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.593099,
+        "width": 0.196,
+        "height": 0.093099,
+        "captionTrim": 0.17
+      },
+      "24": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.593099,
+        "width": 0.196,
+        "height": 0.093099,
+        "captionTrim": 0.17
+      },
+      "25": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.593099,
+        "width": 0.196,
+        "height": 0.093099,
+        "captionTrim": 0.17
+      },
+      "26": {
+        "kind": "normalized",
+        "x": 0.01,
+        "y": 0.719401,
+        "width": 0.196,
+        "height": 0.115234,
+        "captionTrim": 0.17
+      },
+      "27": {
+        "kind": "normalized",
+        "x": 0.206,
+        "y": 0.719401,
+        "width": 0.196,
+        "height": 0.115234,
+        "captionTrim": 0.17
+      },
+      "28": {
+        "kind": "normalized",
+        "x": 0.402,
+        "y": 0.719401,
+        "width": 0.196,
+        "height": 0.115234,
+        "captionTrim": 0.17
+      },
+      "29": {
+        "kind": "normalized",
+        "x": 0.598,
+        "y": 0.719401,
+        "width": 0.196,
+        "height": 0.115234,
+        "captionTrim": 0.17
+      },
+      "30": {
+        "kind": "normalized",
+        "x": 0.794,
+        "y": 0.719401,
+        "width": 0.196,
+        "height": 0.115234,
+        "captionTrim": 0.17
+      }
+    },
+    "captionTrim": 0.17,
+    "backgroundRemoval": {
+      "threshold": 30,
+      "edgeConnected": true,
+      "feather": 1.2,
+      "preserveInteriorBlack": true
+    }
+  }
+}
