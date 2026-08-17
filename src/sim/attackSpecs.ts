@@ -73,6 +73,8 @@ export interface TickSpec {
   projectileCount: number;
   selfStatus: { kind: 'install'; ticks: number } | null;
   hitStatus: { kind: 'slow'; ticks: number } | null;
+  /** Cosmetic: the render layer trails fading copies while this attack runs. */
+  afterimage: boolean;
 }
 
 /** Matches the inline fallbacks in the original CombatSystem, in ticks. */
@@ -118,6 +120,7 @@ export function toTickSpec(spec: AttackSpec): TickSpec {
     projectileCount: spec.projectileCount ?? 1,
     selfStatus: spec.selfStatus ?? null,
     hitStatus: spec.hitStatus ?? null,
+    afterimage: spec.afterimage ?? false,
   };
 }
 

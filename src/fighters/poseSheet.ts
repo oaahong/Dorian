@@ -74,6 +74,46 @@ const ALIEN_LAYOUT: PoseNumbers = {
 
 const LAYOUTS: Record<string, PoseNumbers> = { alien: ALIEN_LAYOUT };
 
+/**
+ * The skill-sheet cells the chargeable special is drawn from.
+ *
+ * `A`, `B` and `C` are the three wind-up frames — the pipeline categorises them as
+ * `H_CHARGE_FIGHTER` — and `D` is the release. They are separate from the numbered
+ * pose sheet because they come from a different source sheet with a different
+ * pipeline, so they are keyed and loaded separately rather than pretending to be
+ * poses.
+ */
+const CHARGE_CELLS = ['A', 'B', 'C'] as const;
+const RELEASE_CELL = 'D';
+
+const skillTextureKey = (fighterId: string, cell: string): string =>
+  `skill-${fighterId}-${cell.toLowerCase()}`;
+
+const skillPath = (fighterId: string, cell: string): string =>
+  `assets/skills/${fighterId}/${cell}.png`;
+
+/** The wind-up frame for a charge level, so the player can see what they have. */
+export const chargeTextureKey = (fighterId: string, level: 1 | 2 | 3): string =>
+  skillTextureKey(fighterId, CHARGE_CELLS[level - 1]!);
+
+export const chargePath = (fighterId: string, level: 1 | 2 | 3): string =>
+  skillPath(fighterId, CHARGE_CELLS[level - 1]!);
+
+/** The release frame, shared with the ultimate cut-in's portrait. */
+export const releaseTextureKey = (fighterId: string): string =>
+  skillTextureKey(fighterId, RELEASE_CELL);
+
+export const releasePath = (fighterId: string): string =>
+  skillPath(fighterId, RELEASE_CELL);
+
+/** Every skill texture a match needs for one fighter, as key and path. */
+export function skillTexturesFor(fighterId: string): { key: string; path: string }[] {
+  return [...CHARGE_CELLS, RELEASE_CELL].map((cell) => ({
+    key: skillTextureKey(fighterId, cell),
+    path: skillPath(fighterId, cell),
+  }));
+}
+
 export function poseNumber(fighterId: string, pose: PoseName): number {
   return (LAYOUTS[fighterId] ?? STANDARD_LAYOUT)[pose];
 }

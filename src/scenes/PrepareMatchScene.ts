@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser';
 import { getFighterConfig } from '../fighters/fighterData';
 import type { FighterConfig } from '../fighters/FighterConfig';
-import { POSE_NAMES, posePath, poseTextureKey } from '../fighters/poseSheet';
+import { POSE_NAMES, posePath, poseTextureKey, skillTexturesFor } from '../fighters/poseSheet';
 import { ultimateDefinitionFor } from '../fighters/ultimateDefinitions';
 import { gameState } from '../systems/GameState';
 import { COLORS, FONT_FAMILY, GAME_HEIGHT, GAME_WIDTH } from '../utils/constants';
@@ -54,17 +54,17 @@ export class PrepareMatchScene extends Phaser.Scene {
         this.load.image(key, posePath(fighter.id, pose));
       }
 
-      // The ultimate's cut-in: one full-screen background and one portrait. Loaded
-      // here with the poses rather than at boot, for the same reason — twelve
-      // backgrounds is 30 MB and a match needs two of them.
+      // The skill sheet: three wind-up frames, and the release frame that doubles
+      // as the ultimate cut-in's portrait.
+      for (const { key, path } of skillTexturesFor(fighter.id)) {
+        if (!this.textures.exists(key)) this.load.image(key, path);
+      }
+
+      // The cut-in background. Loaded here with the poses rather than at boot for
+      // the same reason — twelve of them is 30 MB and a match needs two.
       const ultimate = ultimateDefinitionFor(fighter.id);
       if (!this.textures.exists(ultimate.backgroundTexture)) {
         this.load.image(ultimate.backgroundTexture, `assets/ultimate-backgrounds/${fighter.id}.png`);
-      }
-      if (!this.textures.exists(ultimate.portraitTexture)) {
-        // The texture key ends in the sheet cell it came from, lower-cased.
-        const cell = ultimate.portraitTexture.slice(-1).toUpperCase();
-        this.load.image(ultimate.portraitTexture, `assets/skills/${fighter.id}/${cell}.png`);
       }
     }
   }

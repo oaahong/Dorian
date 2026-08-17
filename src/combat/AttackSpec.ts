@@ -165,6 +165,14 @@ export interface AttackSpec {
   /** A timed debuff the *defender* takes from a clean hit. */
   hitStatus?: { kind: 'slow'; ticks: number };
   /**
+   * Draw a trail of fading copies behind the fighter while this is active.
+   *
+   * Purely cosmetic, and deliberately declared on the move rather than inferred
+   * from its speed: 九命殘影 is a *nine-lives afterimage*, which is a story about
+   * the character, not a side effect of how fast it happens to travel.
+   */
+  afterimage?: boolean;
+  /**
    * Meter awarded when the move finishes its recovery, rather than on contact.
    *
    * This is how the utility moves pay: a taunt or a flex earns its meter for

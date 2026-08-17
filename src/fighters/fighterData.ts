@@ -422,6 +422,7 @@ export const FIGHTERS: FighterConfig[] = [
         hitstun: 20, blockstun: 12, knockbackX: 340, knockbackY: -110,
         reach: 210, cooldown: 96,
         invulnerable: [{ against: 'projectile', from: 4, to: 9 }],
+        afterimage: true,
       }),
       functionMove: utility({
         id: 'scared-box', name: '紙箱避難', kind: 'hide',

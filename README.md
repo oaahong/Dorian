@@ -237,6 +237,8 @@ exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`
 - Summons that arrive as a column, installs that buff damage for a few seconds, and
   the movement slow that sticky and awkward hits leave behind.
 - Training mode, which is what makes any of the frame data above readable.
+- The skill sheet's three wind-up frames and its release frame, so a charge level is
+  something you can see rather than count, and 九命殘影's afterimage trail.
 - All 610 art assets and the Python pipeline that regenerates them, replacing the
   browser-side pose cutting entirely.
 - Frame-authored `AttackSpec`, in ticks, which is what made the frame data
@@ -244,10 +246,11 @@ exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`
 
 **Not yet ported**, in the order it makes sense to do it:
 
-1. **Charge visuals.** The upgraded build had three wind-up frames per fighter in
-   its skill sheets; a charging fighter currently holds the special pose.
-2. **Ultimate voice audio.** The cut-in shows the line; there is no clip behind it.
-3. **`afterimage`**, the one status in the move data still purely cosmetic.
+1. **Ultimate voice audio.** The cut-in shows the line; there is no clip behind it,
+   and there cannot be yet — the upgraded build referenced keys like
+   `ult_alien_voice`, but no audio was ever delivered with it and there is none in
+   `source-assets` or the pipeline archives. `AudioManager` synthesises everything
+   it plays, so a voice would have to be recorded rather than ported.
 
 The upgraded build's own documentation is kept verbatim at
 [docs/upgraded-build.md](docs/upgraded-build.md) — it describes a tree this is not,

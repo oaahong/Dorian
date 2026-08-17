@@ -170,6 +170,16 @@ export const CHARGE_SPECIALS: Record<string, ChargeSpecial> = {
   },
 };
 
+/**
+ * Every charge-level spec id, so the view can tell a released charge from an
+ * ordinary special without matching on the shape of the string.
+ */
+const CHARGE_SPEC_IDS = new Set(
+  Object.values(CHARGE_SPECIALS).flatMap((entry) => entry.levels.map((level) => level.id)),
+);
+
+export const isChargeSpecId = (specId: string): boolean => CHARGE_SPEC_IDS.has(specId);
+
 export function chargeSpecialFor(fighterId: string): ChargeSpecial {
   const found = CHARGE_SPECIALS[fighterId];
   if (!found) throw new Error(`No chargeable special for fighter: ${fighterId}`);
