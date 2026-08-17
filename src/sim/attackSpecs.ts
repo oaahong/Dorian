@@ -2,23 +2,19 @@ import type { AttackKind, AttackSpec } from '../combat/AttackSpec';
 import { HEAVY_ATTACK, LIGHT_ATTACK } from '../combat/AttackSpec';
 import { FIGHTERS } from '../fighters/fighterData';
 import {
-  DEFAULT_SPECIAL_COOLDOWN_MS,
-  DEFAULT_STUN_LOCKOUT_MS,
-  msToTicks,
+  DEFAULT_SPECIAL_COOLDOWN_TICKS,
+  DEFAULT_STUN_LOCKOUT_TICKS,
 } from './constants';
 
 /**
- * Frame data, converted from authored milliseconds to whole ticks once at module
- * load.
+ * An AttackSpec with every optional field resolved, built once at module load.
  *
- * Doing the rounding here rather than per frame means the hot path never divides
- * by a frame delta, and both clients start from byte-identical windows. It also
- * resolves the `?? 1500` / `?? 2800` style fallbacks that used to be scattered
- * through CombatSystem, so the simulation never has to remember a default.
- *
- * Rounding shifts some windows by a few milliseconds (LIGHT startup goes from
- * 90 ms to 5 ticks = 83.3 ms). That is the deliberate one-off balance change
- * called out in the migration plan.
+ * AttackSpec is already authored in ticks, so this no longer converts anything —
+ * what it still does is settle the `?? 1500` / `?? 2800` style fallbacks that used
+ * to be scattered through CombatSystem, so the simulation never has to remember a
+ * default and two clients cannot disagree about one. The `Ticks` suffix marks the
+ * resolved side of that: an AttackSpec field may be absent, the matching TickSpec
+ * field never is.
  *
  * See docs/sim-spec.md §6.
  */
@@ -38,7 +34,7 @@ export interface TickSpec {
   knockbackY: number;
   reach: number;
 
-  /** Always resolved; falls back to DEFAULT_SPECIAL_COOLDOWN_MS. */
+  /** Always resolved; falls back to DEFAULT_SPECIAL_COOLDOWN_TICKS. */
   cooldownTicks: number;
   /** Always resolved; 0 means a blocked hit deals nothing. */
   chipRatio: number;
@@ -48,14 +44,14 @@ export interface TickSpec {
   projectileSpeed: number;
   lifetimeTicks: number;
   telegraphTicks: number;
-  /** Only meaningful for `aura`; resolved to DEFAULT_STUN_LOCKOUT_MS. */
+  /** Only meaningful for `aura`; resolved to DEFAULT_STUN_LOCKOUT_TICKS. */
   stunLockoutTicks: number;
 }
 
-/** Matches the inline fallbacks in the original CombatSystem. */
+/** Matches the inline fallbacks in the original CombatSystem, in ticks. */
 const DEFAULT_PROJECTILE_SPEED = 600;
-const DEFAULT_PROJECTILE_LIFETIME_MS = 900;
-const DEFAULT_ZONE_TELEGRAPH_MS = 450;
+const DEFAULT_PROJECTILE_LIFETIME_TICKS = 54; // was 900 ms
+const DEFAULT_ZONE_TELEGRAPH_TICKS = 27; // was 450 ms
 
 export function toTickSpec(spec: AttackSpec): TickSpec {
   return {
@@ -63,26 +59,26 @@ export function toTickSpec(spec: AttackSpec): TickSpec {
     name: spec.name,
     kind: spec.kind,
 
-    startupTicks: msToTicks(spec.startupMs),
-    activeTicks: msToTicks(spec.activeMs),
-    recoveryTicks: msToTicks(spec.recoveryMs),
+    startupTicks: spec.startup,
+    activeTicks: spec.active,
+    recoveryTicks: spec.recovery,
 
     damage: spec.damage,
-    hitstunTicks: msToTicks(spec.hitstunMs),
-    blockstunTicks: msToTicks(spec.blockstunMs),
+    hitstunTicks: spec.hitstun,
+    blockstunTicks: spec.blockstun,
     knockbackX: spec.knockbackX,
     knockbackY: spec.knockbackY,
     reach: spec.reach,
 
-    cooldownTicks: msToTicks(spec.cooldownMs ?? DEFAULT_SPECIAL_COOLDOWN_MS),
+    cooldownTicks: spec.cooldown ?? DEFAULT_SPECIAL_COOLDOWN_TICKS,
     chipRatio: spec.chipRatio ?? 0,
     energyOnHit: spec.energyOnHit,
     energyOnReceive: spec.energyOnReceive,
 
     projectileSpeed: spec.projectileSpeed ?? DEFAULT_PROJECTILE_SPEED,
-    lifetimeTicks: msToTicks(spec.lifetimeMs ?? DEFAULT_PROJECTILE_LIFETIME_MS),
-    telegraphTicks: msToTicks(spec.telegraphMs ?? DEFAULT_ZONE_TELEGRAPH_MS),
-    stunLockoutTicks: msToTicks(spec.stunLockoutMs ?? DEFAULT_STUN_LOCKOUT_MS),
+    lifetimeTicks: spec.lifetime ?? DEFAULT_PROJECTILE_LIFETIME_TICKS,
+    telegraphTicks: spec.telegraph ?? DEFAULT_ZONE_TELEGRAPH_TICKS,
+    stunLockoutTicks: spec.stunLockout ?? DEFAULT_STUN_LOCKOUT_TICKS,
   };
 }
 

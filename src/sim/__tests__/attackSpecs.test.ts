@@ -2,23 +2,26 @@ import { describe, it, expect } from 'vitest';
 import { FIGHTERS } from '../../fighters/fighterData';
 import { HEAVY_ATTACK, LIGHT_ATTACK } from '../../combat/AttackSpec';
 import { HEAVY_SPEC, LIGHT_SPEC, allSpecs, getSpec, toTickSpec } from '../attackSpecs';
-import { DEFAULT_SPECIAL_COOLDOWN_MS, DEFAULT_STUN_LOCKOUT_MS, msToTicks } from '../constants';
+import { DEFAULT_SPECIAL_COOLDOWN_TICKS, DEFAULT_STUN_LOCKOUT_TICKS } from '../constants';
 
 /**
- * Frame data is authored in milliseconds but the simulation counts ticks. The
- * conversion happens once, at module load, so no rounding happens in the hot path
- * and both clients get identical windows. See docs/sim-spec.md §6.
+ * Frame data and the simulation now agree on their unit: both count ticks. What
+ * toTickSpec still earns its name for is resolving the optional fields, so the hot
+ * path never meets an `undefined` and two clients cannot fall back differently.
+ * See docs/sim-spec.md §6.
  */
 
 describe('toTickSpec', () => {
-  it('converts the shared normals to whole ticks', () => {
-    expect(LIGHT_SPEC.startupTicks).toBe(5); // 90 ms
-    expect(LIGHT_SPEC.activeTicks).toBe(5); // 90 ms
-    expect(LIGHT_SPEC.recoveryTicks).toBe(10); // 160 ms
+  it('leaves the shared normals timings exactly as authored', () => {
+    // These are the same numbers the millisecond authoring used to round to, which
+    // is why the golden replays did not move when the unit changed.
+    expect(LIGHT_SPEC.startupTicks).toBe(5);
+    expect(LIGHT_SPEC.activeTicks).toBe(5);
+    expect(LIGHT_SPEC.recoveryTicks).toBe(10);
 
-    expect(HEAVY_SPEC.startupTicks).toBe(11); // 180 ms
-    expect(HEAVY_SPEC.activeTicks).toBe(7); // 120 ms
-    expect(HEAVY_SPEC.recoveryTicks).toBe(18); // 300 ms
+    expect(HEAVY_SPEC.startupTicks).toBe(11);
+    expect(HEAVY_SPEC.activeTicks).toBe(7);
+    expect(HEAVY_SPEC.recoveryTicks).toBe(18);
   });
 
   it('carries the non-timing fields across unchanged', () => {
@@ -30,15 +33,15 @@ describe('toTickSpec', () => {
     expect(HEAVY_SPEC.knockbackY).toBe(HEAVY_ATTACK.knockbackY);
   });
 
-  it('converts every timing field of every roster attack', () => {
+  it('carries every timing field of every roster attack through untouched', () => {
     for (const fighter of FIGHTERS) {
       for (const source of [fighter.special, fighter.ultimate]) {
         const spec = toTickSpec(source);
-        expect(spec.startupTicks, `${source.id}`).toBe(msToTicks(source.startupMs));
-        expect(spec.activeTicks, `${source.id}`).toBe(msToTicks(source.activeMs));
-        expect(spec.recoveryTicks, `${source.id}`).toBe(msToTicks(source.recoveryMs));
-        expect(spec.hitstunTicks, `${source.id}`).toBe(msToTicks(source.hitstunMs));
-        expect(spec.blockstunTicks, `${source.id}`).toBe(msToTicks(source.blockstunMs));
+        expect(spec.startupTicks, `${source.id}`).toBe(source.startup);
+        expect(spec.activeTicks, `${source.id}`).toBe(source.active);
+        expect(spec.recoveryTicks, `${source.id}`).toBe(source.recovery);
+        expect(spec.hitstunTicks, `${source.id}`).toBe(source.hitstun);
+        expect(spec.blockstunTicks, `${source.id}`).toBe(source.blockstun);
       }
     }
   });
@@ -46,16 +49,16 @@ describe('toTickSpec', () => {
   it('resolves the documented defaults for absent optional timings', () => {
     // CombatSystem used `?? 1500` / `?? 2800` / `?? 900` inline. Resolving them
     // once here means the simulation never has to remember a fallback.
-    const noCooldown = toTickSpec({ ...LIGHT_ATTACK, cooldownMs: undefined });
-    expect(noCooldown.cooldownTicks).toBe(msToTicks(DEFAULT_SPECIAL_COOLDOWN_MS));
+    const noCooldown = toTickSpec({ ...LIGHT_ATTACK, cooldown: undefined });
+    expect(noCooldown.cooldownTicks).toBe(DEFAULT_SPECIAL_COOLDOWN_TICKS);
 
-    const aura = toTickSpec({ ...LIGHT_ATTACK, kind: 'aura', stunLockoutMs: undefined });
-    expect(aura.stunLockoutTicks).toBe(msToTicks(DEFAULT_STUN_LOCKOUT_MS));
+    const aura = toTickSpec({ ...LIGHT_ATTACK, kind: 'aura', stunLockout: undefined });
+    expect(aura.stunLockoutTicks).toBe(DEFAULT_STUN_LOCKOUT_TICKS);
   });
 
   it('honours a declared cooldown over the default', () => {
-    const spec = toTickSpec({ ...LIGHT_ATTACK, cooldownMs: 2000 });
-    expect(spec.cooldownTicks).toBe(msToTicks(2000));
+    const spec = toTickSpec({ ...LIGHT_ATTACK, cooldown: 120 });
+    expect(spec.cooldownTicks).toBe(120);
   });
 
   it('defaults chipRatio to zero so an unblockable-through move deals no chip', () => {

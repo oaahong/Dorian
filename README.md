@@ -226,8 +226,10 @@ the merge is staged:
   art assets (360 poses, 226 skill cells, 12 ultimate backgrounds, 12 cards), the twelve
   source character sheets, and the Python asset pipeline that regenerates them.
 - **The port** re-expresses the upgraded gameplay in `src/sim`, so it keeps working
-  under lockstep. Frame-based timing is the *better* fit here — the trunk's own
-  `AttackSpec` is authored in milliseconds and rounded to ticks.
+  under lockstep. Its frame-based timing is the *better* fit, so the first step was
+  to adopt it: `AttackSpec` is now authored in ticks rather than in milliseconds
+  rounded to ticks, which is a unit change only — the golden replays are unchanged
+  across it.
 
 The upgraded build's own documentation is kept verbatim at
 [docs/upgraded-build.md](docs/upgraded-build.md); it is the specification for the port,
@@ -274,7 +276,7 @@ src/
 │  ├─ world.ts             stepWorld(world, [p1, p2]) -> SimEvent[]
 │  ├─ fighter.ts           physics and the per-fighter state machine
 │  ├─ combat.ts            boxes, blocking, damage
-│  ├─ attackSpecs.ts       frame data, converted from milliseconds to ticks
+│  ├─ attackSpecs.ts       frame data in ticks, with every optional field resolved
 │  ├─ cpu.ts               the AI, seeded so a 1P match replays
 │  ├─ input.ts             one byte of raw buttons — the network payload
 │  ├─ rng.ts hash.ts       seeded xorshift32, FNV-1a for desync detection

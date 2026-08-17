@@ -95,22 +95,26 @@ describe('attack specs', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it('defines a positive startup/active/recovery window for every attack', () => {
+  it('defines a whole-tick startup/active/recovery window for every attack', () => {
+    // Authored in ticks, so this is no longer a question of rounding surviving —
+    // it is that a window is a countable number of frames. A fractional one would
+    // decrement past its boundary without ever equalling it.
     for (const spec of ALL_SPECS) {
-      expect(spec.startupMs, `${spec.id}.startupMs`).toBeGreaterThan(0);
-      expect(spec.activeMs, `${spec.id}.activeMs`).toBeGreaterThan(0);
-      expect(spec.recoveryMs, `${spec.id}.recoveryMs`).toBeGreaterThan(0);
+      for (const field of ['startup', 'active', 'recovery'] as const) {
+        expect(Number.isInteger(spec[field]), `${spec.id}.${field} = ${spec[field]}`).toBe(true);
+        expect(spec[field], `${spec.id}.${field}`).toBeGreaterThan(0);
+      }
     }
   });
 
-  it('survives the conversion to 60 Hz ticks without collapsing a window to zero', () => {
-    // Phase 2 rounds every *Ms field to whole ticks. A window shorter than half a
-    // tick would round to 0 and make the attack unable to ever connect.
-    const toTicks = (ms: number) => Math.round((ms * 60) / 1000);
+  it('keeps every optional duration a whole number of ticks too', () => {
     for (const spec of ALL_SPECS) {
-      expect(toTicks(spec.startupMs), `${spec.id}.startupMs`).toBeGreaterThan(0);
-      expect(toTicks(spec.activeMs), `${spec.id}.activeMs`).toBeGreaterThan(0);
-      expect(toTicks(spec.recoveryMs), `${spec.id}.recoveryMs`).toBeGreaterThan(0);
+      for (const field of ['cooldown', 'lifetime', 'telegraph', 'stunLockout'] as const) {
+        const value = spec[field];
+        if (value === undefined) continue;
+        expect(Number.isInteger(value), `${spec.id}.${field} = ${value}`).toBe(true);
+        expect(value, `${spec.id}.${field}`).toBeGreaterThan(0);
+      }
     }
   });
 
@@ -119,7 +123,7 @@ describe('attack specs', () => {
       expect(spec.damage, `${spec.id}.damage`).toBeGreaterThan(0);
       expect(spec.reach, `${spec.id}.reach`).toBeGreaterThan(0);
       // Blocking must always be better than being hit, or blocking is pointless.
-      expect(spec.blockstunMs, `${spec.id}`).toBeLessThan(spec.hitstunMs);
+      expect(spec.blockstun, `${spec.id}`).toBeLessThan(spec.hitstun);
     }
   });
 
@@ -147,9 +151,9 @@ describe('attack specs', () => {
 describe('special and ultimate wiring', () => {
   it('gives every special a cooldown and every ultimate none', () => {
     for (const fighter of FIGHTERS) {
-      expect(fighter.special.cooldownMs, `${fighter.id}.special`).toBeGreaterThan(0);
+      expect(fighter.special.cooldown, `${fighter.id}.special`).toBeGreaterThan(0);
       // Ultimates are gated by the 100-point meter, not by a timer.
-      expect(fighter.ultimate.cooldownMs, `${fighter.id}.ultimate`).toBeUndefined();
+      expect(fighter.ultimate.cooldown, `${fighter.id}.ultimate`).toBeUndefined();
     }
   });
 
@@ -163,7 +167,7 @@ describe('special and ultimate wiring', () => {
   it('makes every ultimate hit harder and reach further than its special', () => {
     for (const fighter of FIGHTERS) {
       expect(fighter.ultimate.damage, `${fighter.id}`).toBeGreaterThan(fighter.special.damage);
-      expect(fighter.ultimate.hitstunMs, `${fighter.id}`).toBeGreaterThan(fighter.special.hitstunMs);
+      expect(fighter.ultimate.hitstun, `${fighter.id}`).toBeGreaterThan(fighter.special.hitstun);
     }
   });
 
@@ -180,13 +184,13 @@ describe('special and ultimate wiring', () => {
     for (const spec of ALL_SPECS) {
       if (['sonic', 'water', 'salad'].includes(spec.kind)) {
         expect(spec.projectileSpeed, `${spec.id}.projectileSpeed`).toBeGreaterThan(0);
-        expect(spec.lifetimeMs, `${spec.id}.lifetimeMs`).toBeGreaterThan(0);
+        expect(spec.lifetime, `${spec.id}.lifetime`).toBeGreaterThan(0);
       }
       if (['zone', 'ultimate-salad'].includes(spec.kind)) {
-        expect(spec.telegraphMs, `${spec.id}.telegraphMs`).toBeGreaterThan(0);
+        expect(spec.telegraph, `${spec.id}.telegraph`).toBeGreaterThan(0);
       }
       if (spec.kind === 'aura') {
-        expect(spec.stunLockoutMs, `${spec.id}.stunLockoutMs`).toBeGreaterThan(0);
+        expect(spec.stunLockout, `${spec.id}.stunLockout`).toBeGreaterThan(0);
       }
     }
   });

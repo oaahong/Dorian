@@ -208,21 +208,26 @@ Blocked: damage scaled to `chipRatio`, knockback to 24%, no vertical knockback,
 
 ## 6. Attacks
 
-`AttackSpec` ([AttackSpec.ts](../src/combat/AttackSpec.ts)) is authored in
-milliseconds and converted to whole ticks once at module load by
-[attackSpecs.ts](../src/sim/attackSpecs.ts), which also resolves the `?? 1500` /
-`?? 2800` / `?? 900` fallbacks that used to be scattered through the combat code.
+`AttackSpec` ([AttackSpec.ts](../src/combat/AttackSpec.ts)) is authored **in
+ticks**. [attackSpecs.ts](../src/sim/attackSpecs.ts) no longer converts anything;
+what it still does at module load is resolve the `?? 1500` / `?? 2800` / `?? 900`
+fallbacks that used to be scattered through the combat code, which is why every
+`TickSpec` field is required where its `AttackSpec` counterpart is optional.
 
-Rounding shifts some windows by a few milliseconds — `startupMs: 90` becomes
-5 ticks, or 83.3 ms. That was a deliberate one-off balance change when the fixed
-timestep landed; integer frame data is cleaner for a fighting game.
+It was authored in milliseconds until the upgraded build was merged. Two units for
+one quantity meant the numbers a designer typed were never the numbers the game
+ran — `startupMs: 90` became 5 ticks, or 83.3 ms, and nothing you could type in the
+90 would express 5.5 — and every edit re-opened the question of whether some window
+had rounded to zero and quietly stopped connecting. The current values are the old
+rounding applied once and kept, so the change was unit-only: the golden replays are
+byte-identical across it.
 
-Shared normals:
+Shared normals, in ticks:
 
 | | startup | active | recovery | damage | hitstun | blockstun | kbX | kbY | reach |
 |---|---|---|---|---|---|---|---|---|---|
-| `LIGHT_ATTACK` | 90 ms / 5t | 90 / 5t | 160 / 10t | 5 | 180 | 90 | 150 | −40 | 78 |
-| `HEAVY_ATTACK` | 180 ms / 11t | 120 / 7t | 300 / 18t | 9 | 300 | 150 | 255 | −110 | 104 |
+| `LIGHT_ATTACK` | 5 | 5 | 10 | 5 | 11 | 5 | 150 | −40 | 78 |
+| `HEAVY_ATTACK` | 11 | 7 | 18 | 9 | 18 | 9 | 255 | −110 | 104 |
 
 Per-fighter specials and ultimates live in
 [fighterData.ts](../src/fighters/fighterData.ts) and are shape-checked by
@@ -337,7 +342,7 @@ position depends on the opponent:
 | | `zone` | `ultimate-salad` |
 |---|---|---|
 | x | `clamp(defender.x + defender.vx × 0.15, 120, 1160)` | `clamp(defender.x, 130, 1150)` |
-| telegraph | `telegraphMs ?? 450` | `?? 500` |
+| telegraph | `telegraph ?? 27t` | `30t` as authored |
 | active | `spec.activeTicks` | **13 ticks, hard-coded** |
 | hit radius | `< 100` | `< 150` |
 
