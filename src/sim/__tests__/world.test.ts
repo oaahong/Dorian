@@ -15,6 +15,7 @@ import {
   MAX_ENERGY,
 } from '../constants';
 import { BUTTON, EMPTY_INPUT, type InputFrame } from '../input';
+import { ultimateDefinitionFor } from '../../fighters/ultimateDefinitions';
 import { createWorld, checksum, stepWorld, type MatchSetup } from '../world';
 import type { SimEvent, SimWorld } from '../types';
 
@@ -514,9 +515,17 @@ describe('ultimates', () => {
    * the least-exercised code in the simulation and the most spectacular when they
    * break, so each family gets a case.
    */
+  /**
+   * Fire the ultimate and run past its cut-in.
+   *
+   * The simulation freezes itself for the whole cut-in — 87 ticks and up — so a
+   * fixed number of ticks afterwards is mostly spent frozen. This waits the freeze
+   * out and then gives the move `ticks` to resolve.
+   */
   const fireUltimate = (w: SimWorld, ticks = 90) => {
     w.fighters[0].energy = MAX_ENERGY;
     run(w, 1, BUTTON.Down | BUTTON.Special);
+    while (w.hitStopTicks > 0) run(w, 1);
     run(w, ticks);
   };
 
@@ -532,6 +541,31 @@ describe('ultimates', () => {
     // The presentation must not repeat every tick of the attack.
     const later = run(w, 60);
     expect(later.filter((e) => e.t === 'ultimateStart')).toHaveLength(0);
+  });
+
+  it('freezes for exactly as long as the cut-in the view will play', () => {
+    /**
+     * The load-bearing invariant of the whole cut-in. The presentation is the
+     * render layer's business, but its length is the simulation's: a pause that
+     * only stopped drawing would let two clients disagree about how far the match
+     * had advanced. So the freeze comes from the ultimate's own definition, and
+     * both sides read the same number.
+     */
+    const w = toFight(world({ p1Character: 'pink' }));
+    w.fighters[0].energy = MAX_ENERGY;
+    run(w, 1, BUTTON.Down | BUTTON.Special);
+    expect(w.hitStopTicks).toBe(ultimateDefinitionFor('pink').cutInTicks);
+  });
+
+  it('holds the round clock still for the whole cut-in', () => {
+    // Freezing the action but not the timer would let a cornered player spend a
+    // second of someone else's clock by firing an ultimate.
+    const w = toFight(world({ p1Character: 'pink' }));
+    w.fighters[0].energy = MAX_ENERGY;
+    run(w, 1, BUTTON.Down | BUTTON.Special);
+    const clock = w.roundTicksRemaining;
+    run(w, ultimateDefinitionFor('pink').cutInTicks - 1);
+    expect(w.roundTicksRemaining).toBe(clock);
   });
 
   it('lands a wide-box ultimate', () => {

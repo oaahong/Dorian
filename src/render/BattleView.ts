@@ -6,8 +6,10 @@ import { VFXManager } from '../systems/VFXManager';
 import { StageRenderer } from '../stages/StageRenderer';
 import { BattleHUD } from '../ui/BattleHUD';
 import { COLORS, FONT_FAMILY, GAME_HEIGHT, GAME_WIDTH } from '../utils/constants';
+import { ultimateDefinitionFor } from '../fighters/ultimateDefinitions';
 import { CombatView } from './CombatView';
 import { FighterView } from './FighterView';
+import { UltimateCutIn } from './UltimateCutIn';
 
 /**
  * Everything the player sees, driven entirely by `SimWorld` plus the event stream
@@ -24,6 +26,7 @@ export class BattleView {
   private readonly combat: CombatView;
   private readonly fighters: [FighterView, FighterView];
   private readonly hud: BattleHUD;
+  private readonly cutIn: UltimateCutIn;
 
   constructor(private readonly scene: Phaser.Scene, sim: SimWorld, modeLabel: string) {
     scene.cameras.main.setBackgroundColor(COLORS.bg);
@@ -36,11 +39,18 @@ export class BattleView {
     this.vfx = new VFXManager(scene, this.world);
     this.combat = new CombatView(scene, this.world, this.vfx);
     this.hud = new BattleHUD(scene, sim, modeLabel);
+    this.cutIn = new UltimateCutIn(scene);
+    // A round can end, or the scene can be left, in the middle of a cut-in.
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.cutIn.stop());
   }
 
   /** Draw one frame. `events` is everything the simulation emitted since the last call. */
   render(sim: SimWorld, events: readonly SimEvent[]): void {
     for (const event of events) this.handle(sim, event);
+
+    // Driven by the simulation's own freeze countdown, not by elapsed time — see
+    // UltimateCutIn for why that distinction matters.
+    if (this.cutIn.isActive) this.cutIn.sync(sim.hitStopTicks);
 
     const now = this.scene.time.now;
     this.fighters[0].sync(sim.fighters[0], now);
@@ -138,17 +148,17 @@ export class BattleView {
     }
   }
 
-  private presentUltimate(sim: SimWorld, player: 0 | 1, specId: string): void {
-    const config = getFighterConfig(sim.fighters[player].configId);
-    const color = config.palette.primary;
-    const overlay = this.vfx.ultimateBackdrop(color, 1250);
-    this.vfx.popup(config.ultimate.name || specId, GAME_WIDTH / 2, 155, COLORS.white, 48);
-    this.vfx.flash(COLORS.white, 0.32, 85);
-    this.vfx.shake(0.012, 360);
-    this.vfx.pixelBlocks(color, 30);
+  private presentUltimate(sim: SimWorld, player: 0 | 1, _specId: string): void {
+    const fighter = sim.fighters[player];
+    const definition = ultimateDefinitionFor(fighter.configId);
+
+    // The simulation has already frozen itself for `cutInTicks`; the cut-in reads
+    // that countdown each frame rather than starting a clock of its own.
+    this.cutIn.start(definition, player);
+
+    this.vfx.pixelBlocks(getFighterConfig(fighter.configId).palette.primary, 30);
     this.fighters[player].punchScale(1.45, 680);
     AudioManager.play('ultimate');
-    this.scene.time.delayedCall(1250, () => overlay.destroy());
   }
 
   private onRoundEnd(sim: SimWorld, event: Extract<SimEvent, { t: 'roundEnd' }>): void {

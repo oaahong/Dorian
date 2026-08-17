@@ -229,6 +229,8 @@ exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`
   unblockable, so it answers a fighter who will not stop holding back.
 - The chargeable special, in three levels, on the bare special button — including
   a CPU that decides how long to hold it.
+- Ultimate cut-ins: background, portrait, shouted line and title card, with the
+  simulation freezing itself for exactly as long as the presentation runs.
 - All 610 art assets and the Python pipeline that regenerates them, replacing the
   browser-side pose cutting entirely.
 - Frame-authored `AttackSpec`, in ticks, which is what made the frame data
@@ -236,15 +238,13 @@ exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`
 
 **Not yet ported**, in the order it makes sense to do it:
 
-1. **Ultimate cut-ins** — the twelve staged presentations, with their voice lines
-   and backgrounds. The art is already in `public/assets/ultimate-backgrounds/`
-   and the ultimates currently resolve without them.
-2. **Summons and installs.** `tempura`'s penguins spawn as ordinary projectiles
+1. **Summons and installs.** `tempura`'s penguins spawn as ordinary projectiles
    and `doge`/`goblin`'s installs currently only pay meter.
-3. **Training mode**, and the status effects (`sticky`, `loveStun`, `afterimage`,
+2. **Training mode**, and the status effects (`sticky`, `loveStun`, `afterimage`,
    `awkward`) the move data carries but the simulation does not yet read.
-4. **Charge visuals.** The upgraded build had three wind-up frames per fighter in
+3. **Charge visuals.** The upgraded build had three wind-up frames per fighter in
    its skill sheets; a charging fighter currently holds the special pose.
+4. **Ultimate voice audio.** The cut-in shows the line; there is no clip behind it.
 
 The upgraded build's own documentation is kept verbatim at
 [docs/upgraded-build.md](docs/upgraded-build.md) — it describes a tree this is not,

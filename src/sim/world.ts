@@ -1,4 +1,5 @@
 import { FighterState } from '../fighters/FighterState';
+import { ultimateDefinitionFor } from '../fighters/ultimateDefinitions';
 import { getSpec, type TickSpec } from './attackSpecs';
 import {
   ARENA_MAX_X,
@@ -274,7 +275,16 @@ function processAttack(world: SimWorld, attackerIndex: PlayerIndex, events: SimE
   if (attacker.state === FighterState.ULTIMATE && !attack.presented) {
     attack.presented = true;
     events.push({ t: 'ultimateStart', player: attackerIndex, specId: spec.id });
-    applyHitStop(world, ULTIMATE_PRESENT_HIT_STOP_TICKS);
+    /**
+     * Freeze for the whole cut-in, not just a beat.
+     *
+     * The presentation is the render layer's job, but its *length* has to be the
+     * simulation's: a pause that only stopped drawing would let the two clients
+     * disagree about how many ticks the match advanced. So the cut-in reuses
+     * hit-stop, and its duration comes from the ultimate's definition — derived
+     * from the voice line, resolved to ticks at module load, never measured.
+     */
+    applyHitStop(world, ultimateDefinitionFor(attacker.configId).cutInTicks);
   }
 
   if (attackActive(attacker) && CONTINUOUS_KINDS.has(spec.kind)) {
@@ -316,9 +326,6 @@ function processAttack(world: SimWorld, attackerIndex: PlayerIndex, events: SimE
       tryHit(world, attackerIndex, spec, () => getMeleeHitbox(attacker, spec), events);
   }
 }
-
-/** The 120 ms freeze when an ultimate is first presented. */
-const ULTIMATE_PRESENT_HIT_STOP_TICKS = 7;
 
 function hitBit(index: PlayerIndex): number {
   return index === 0 ? HIT_P1 : HIT_P2;

@@ -80,7 +80,7 @@ exports[`two-player scripted match > matches the recorded checksum trail 1`] = `
   "t840:3b2a4eb6",
   "t960:5b83ef0",
   "t1080:e06bda1a",
-  "t1200:5e5578c7",
+  "t1200:5b344667",
 ]
 `;
 
@@ -88,20 +88,20 @@ exports[`two-player scripted match > matches the recorded final state 1`] = `
 {
   "matchWinner": null,
   "p1": {
-    "hp": 0,
-    "state": "KO",
+    "hp": 14.9986,
+    "state": "LIGHT_ATTACK",
     "x": 160.9074,
   },
   "p2": {
     "hp": 100,
-    "state": "VICTORY",
+    "state": "ULTIMATE",
     "x": 765.0625,
   },
-  "phase": "ending",
+  "phase": "fight",
   "round": 1,
   "roundWins": [
     0,
-    1,
+    0,
   ],
   "tick": 1200,
 }

@@ -1,4 +1,5 @@
 import { test, expect, type ConsoleMessage, type Page } from '@playwright/test';
+import { POSE_NAMES } from '../src/fighters/poseSheet';
 import {
   activeSceneKeys,
   readBattle,
@@ -98,11 +99,22 @@ test('cuts the poses for exactly the two fighters in the match', async ({ page }
   await page.goto('/');
   await startVersusBattle(page);
 
-  const keys = await page.evaluate(() =>
-    window.__MEME_CAT_GAME__!.textures.getTextureKeys().filter((key) => key.startsWith('pose-')),
-  );
-  // Thirteen poses each, and nobody else's art is cut.
-  expect(keys.length).toBe(2 * 13);
+  const loaded = await page.evaluate(() => {
+    const keys = window.__MEME_CAT_GAME__!.textures.getTextureKeys();
+    return {
+      poses: keys.filter((key) => key.startsWith('pose-')).length,
+      backgrounds: keys.filter((key) => key.startsWith('ultimate-bg-')).length,
+      portraits: keys.filter((key) => key.startsWith('skill-')).length,
+    };
+  });
+
+  // Derived rather than written out, so adding a pose does not fail this on a
+  // number that was never the point.
+  expect(loaded.poses).toBe(2 * POSE_NAMES.length);
+  // And the two fighters' cut-in art, which is 30 MB across the whole roster and so
+  // is fetched per match for the same reason the poses are.
+  expect(loaded.backgrounds).toBe(2);
+  expect(loaded.portraits).toBe(2);
 });
 
 test('navigates title -> mode select -> character select -> battle', async ({ page }) => {
