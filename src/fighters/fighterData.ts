@@ -31,12 +31,25 @@ const special = (
   spec: Omit<AttackSpec, Optional> & Partial<Pick<AttackSpec, Optional>>,
 ): AttackSpec => ({ chipRatio: 0.1, energyOnHit: 10, energyOnReceive: 7, ...spec });
 
-/** Ultimates cost the whole bar, so they grant none — the meter is the cooldown. */
+/**
+ * Ultimates cost the whole bar, so they grant none — the meter is the cooldown.
+ *
+ * They are also invulnerable for the whole of their startup, which is not how
+ * they were ported and is a deliberate change. An ultimate now begins a timeline
+ * that runs for a hundred ticks and more; without this, any light attack thrown
+ * during the startup deletes the entire thing — a full meter and every beat that
+ * would have followed — for four frames of poke. That is not a punish, it is a
+ * coin flip on whether the most expensive move in the game happens at all.
+ *
+ * The window ends when the startup does, so the recovery is still fully
+ * punishable. Firing one into a guarded opponent remains a bad idea.
+ */
 const ultimate = (spec: Omit<AttackSpec, Optional>): AttackSpec => ({
   chipRatio: 0.15,
   energyOnHit: 0,
   energyOnReceive: 10,
   ...spec,
+  invulnerable: spec.invulnerable ?? [{ against: 'all', from: 1, to: spec.startup }],
 });
 
 /** A utility move that never touches anyone: no damage, no reach, no chip. */
@@ -138,9 +151,10 @@ export const FIGHTERS: FighterConfig[] = [
       id: 'doge-ult', name: '超級賽狗', kind: 'ultimate-sonic',
       startup: 26, active: 14, recovery: 40, damage: 29,
       hitstun: 44, blockstun: 18, knockbackX: 520, knockbackY: -210, reach: 540,
-      // 超級賽狗 is a transformation as much as a hit: five seconds of harder
-      // hitting afterwards, whether or not the swing itself connected.
-      selfStatus: { kind: 'install', ticks: 300 },
+      // The transformation itself is on the timeline, at the tick the change
+      // lands — see ultimateTimelines. It used to be `selfStatus`, which fires on
+      // the move *completing*, and an ultimate no longer completes: control comes
+      // back part-way through while the rest of the timeline plays out.
     }),
   },
   {
@@ -242,7 +256,6 @@ export const FIGHTERS: FighterConfig[] = [
       id: 'goblin-ult', name: '長老您保重', kind: 'ultimate-ok',
       startup: 32, active: 12, recovery: 45, damage: 34,
       hitstun: 50, blockstun: 20, knockbackX: 500, knockbackY: -280, reach: 520,
-      selfStatus: { kind: 'install', ticks: 300 },
     }),
   },
   {

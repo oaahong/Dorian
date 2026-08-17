@@ -90,6 +90,7 @@ export function createFighter(configId: string, x: number, facing: 1 | -1): SimF
     downBufferedUntilTick: -1,
     dashTicks: 0,
     nextParryTick: 0,
+    captureTicks: 0,
     chargeTicks: 0,
     installTicks: 0,
     slowTicks: 0,
@@ -117,6 +118,7 @@ export function resetFighter(fighter: SimFighter, x: number, facing: 1 | -1): vo
   fighter.downBufferedUntilTick = -1;
   fighter.dashTicks = 0;
   fighter.nextParryTick = 0;
+  fighter.captureTicks = 0;
   fighter.chargeTicks = 0;
   fighter.installTicks = 0;
   fighter.slowTicks = 0;
@@ -300,6 +302,23 @@ export function stepFighter(
   // a world at a different tick still has the right amount left on it.
   if (fighter.installTicks > 0) fighter.installTicks -= 1;
   if (fighter.slowTicks > 0) fighter.slowTicks -= 1;
+
+  /**
+   * Being held by a grab ultimate outranks everything, including an attack
+   * already in progress. It is the one status that takes the fighter away
+   * entirely — anything less and the victim could simply throw a jab out of the
+   * middle of a cinematic that is supposed to be happening *to* them.
+   */
+  if (fighter.captureTicks > 0) {
+    fighter.captureTicks -= 1;
+    fighter.attack = null;
+    fighter.vx = 0;
+    fighter.vy = 0;
+    fighter.state = FighterState.HITSTUN;
+    fighter.stateRemainingTicks = Math.max(fighter.stateRemainingTicks, 1);
+    fighter.prevButtons = inputEnabled ? input : 0;
+    return;
+  }
 
   if (fighter.attack) {
     // A cancel is offered *before* the attack advances, so the frame the move

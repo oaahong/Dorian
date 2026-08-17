@@ -106,3 +106,105 @@ exports[`two-player scripted match > matches the recorded final state 1`] = `
   "tick": 1200,
 }
 `;
+
+exports[`ultimate timelines > replays alien against salad identically 1`] = `
+[
+  "t150:398b37a7",
+  "t300:d410aba5",
+  "t450:954bb5ce",
+  "t600:fbac22b5",
+  "t750:451afc8c",
+  "t900:19442e2",
+]
+`;
+
+exports[`ultimate timelines > replays alien against salad identically 2`] = `
+{
+  "matchWinner": null,
+  "p1": {
+    "hp": 100,
+    "state": "IDLE",
+    "x": 141.6667,
+  },
+  "p2": {
+    "hp": 30.3884,
+    "state": "DASH_FORWARD",
+    "x": 362.9946,
+  },
+  "phase": "fight",
+  "round": 1,
+  "roundWins": [
+    0,
+    0,
+  ],
+  "tick": 900,
+}
+`;
+
+exports[`ultimate timelines > replays doge against sauce identically 1`] = `
+[
+  "t150:c74c2b19",
+  "t300:b97de7da",
+  "t450:3a00d900",
+  "t600:e1438c6e",
+  "t750:12973708",
+  "t900:53e12432",
+]
+`;
+
+exports[`ultimate timelines > replays doge against sauce identically 2`] = `
+{
+  "matchWinner": null,
+  "p1": {
+    "hp": 100,
+    "state": "ULTIMATE",
+    "x": 170.7679,
+  },
+  "p2": {
+    "hp": 60.1336,
+    "state": "HITSTUN",
+    "x": 269.6164,
+  },
+  "phase": "fight",
+  "round": 1,
+  "roundWins": [
+    0,
+    0,
+  ],
+  "tick": 900,
+}
+`;
+
+exports[`ultimate timelines > replays ok against wizard identically 1`] = `
+[
+  "t150:6e8f5426",
+  "t300:540b2dc8",
+  "t450:70286611",
+  "t600:bae0e96d",
+  "t750:7ba7bb61",
+  "t900:187e8dc0",
+]
+`;
+
+exports[`ultimate timelines > replays ok against wizard identically 2`] = `
+{
+  "matchWinner": null,
+  "p1": {
+    "hp": 100,
+    "state": "ULTIMATE",
+    "x": 97.3333,
+  },
+  "p2": {
+    "hp": 50.2467,
+    "state": "HITSTUN",
+    "x": 183.3333,
+  },
+  "phase": "fight",
+  "round": 1,
+  "roundWins": [
+    0,
+    0,
+  ],
+  "tick": 900,
+}
+`;

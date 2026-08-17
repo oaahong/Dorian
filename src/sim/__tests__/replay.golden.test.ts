@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { CpuBrain } from '../cpu';
 import { BUTTON, EMPTY_INPUT, type InputFrame } from '../input';
+import { MAX_ENERGY } from '../constants';
 import { createRng } from '../rng';
 import { checksum, createWorld, stepWorld, type MatchSetup } from '../world';
 import type { SimWorld } from '../types';
@@ -104,6 +105,49 @@ describe('projectile and zone characters', () => {
     const world = createWorld(setup);
     expect(trail(world, 900, script)).toMatchSnapshot();
   });
+});
+
+/**
+ * The ultimates, which none of the other scenarios ever reach.
+ *
+ * Their timelines are the most intricate thing in the simulation — up to a dozen
+ * boxes at different heights, a locked target, an install part-way through, a
+ * grab that decides on its first tick whether it caught anybody — and until this
+ * existed, none of it had a regression net at all. The meter is granted directly
+ * rather than earned, because the point is the timeline, not the road to it.
+ */
+describe('ultimate timelines', () => {
+  const fireAt = (tick: number): [InputFrame, InputFrame] => [
+    tick % 200 === 0 ? BUTTON.Down | BUTTON.Special : tick % 9 === 0 ? BUTTON.Right : EMPTY_INPUT,
+    tick % 6 === 0 ? BUTTON.Left : EMPTY_INPUT,
+  ];
+
+  const pairs: [string, string][] = [
+    ['alien', 'salad'],   // a locked target, and an overhead-then-low mix-up
+    ['ok', 'wizard'],     // a grab, and four fixed tentacles
+    ['doge', 'sauce'],    // a transformation, and a blinking rampage
+  ];
+
+  for (const [p1, p2] of pairs) {
+    it(`replays ${p1} against ${p2} identically`, () => {
+      const play = () => {
+        const world = createWorld({ ...SETUP, p1Character: p1, p2Character: p2 });
+        const checksums: string[] = [];
+        for (let i = 0; i < 900; i += 1) {
+          // Topped up every tick, so the ultimate is always available on cue and
+          // the scenario does not depend on how the meter happened to build.
+          world.fighters[0].energy = MAX_ENERGY;
+          stepWorld(world, fireAt(i));
+          if ((i + 1) % 150 === 0) checksums.push(`t${i + 1}:${checksum(world).toString(16)}`);
+        }
+        return { checksums, summary: summarise(world) };
+      };
+      const first = play();
+      expect(play()).toEqual(first);
+      expect(first.checksums).toMatchSnapshot();
+      expect(first.summary).toMatchSnapshot();
+    });
+  }
 });
 
 describe('match played to a decision', () => {

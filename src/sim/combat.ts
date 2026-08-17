@@ -272,6 +272,21 @@ const HIT_STOP_TICKS: Record<ImpactWeight | 'blocked', number> = {
   ultimate: msToTicks(150),
 };
 
+/**
+ * How long the world freezes for one beat of an ultimate.
+ *
+ * Not the ultimate's own weight, which is what the spec would give every phase.
+ * A finisher earns the full stop; the nine 2.3-damage jabs of a grab do not, and
+ * charging each of them nine ticks of freeze stretched a 145-tick timeline past
+ * 250 and left the victim held long after the move should have let go. Scaled by
+ * what the beat actually did, so the pauses land where the impact is.
+ */
+export function ultimatePhaseHitStop(damage: number): number {
+  if (damage >= 12) return HIT_STOP_TICKS.ultimate;
+  if (damage >= 6) return HIT_STOP_TICKS.heavy;
+  return HIT_STOP_TICKS.light;
+}
+
 /** Meter earned on a blocked hit, as a share of the clean-hit value. */
 const BLOCKED_ENERGY_SHARE = 0.35;
 

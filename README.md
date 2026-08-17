@@ -246,14 +246,13 @@ exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`
 
 **Not yet ported**, in the order it makes sense to do it:
 
-1. **Multi-phase ultimate timelines.** Each ultimate here is one burst plus a
-   staged cut-in. The upgraded build scripts them: alien sweeps low, then
-   vertically, then bombards, then covers the screen — four hitboxes with
-   different heights and timings — and salad, wizard, penguin, husky and ok have
-   their own shapes, including summons that outlive the move and a capture that
-   holds the opponent for forty frames. Porting them means splitting its
-   `UltimateAttack` in two, because there the hitboxes and the Phaser tweens that
-   draw them live in the same function; only the first half can cross into `sim`.
+1. **The two summon ultimates.** `tempura`'s nine mirrored clones and `scared`'s
+   husky companion are entities that outlive the move — the upgraded build keeps
+   them alive for six hundred frames, mirrors the owner's inputs onto the clones,
+   walks the husky toward the opponent under its own AI, and lets both be damaged
+   out. Everything else about those two ultimates is ported; for now each keeps a
+   single screen-wide beat in place of its companions, so the move resolves
+   rather than doing nothing.
 
 2. **Ultimate voice audio.** The cut-in shows the line; there is no clip behind it,
    and there cannot be yet — the upgraded build referenced keys like

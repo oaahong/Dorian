@@ -16,6 +16,8 @@ import {
 } from '../constants';
 import { BUTTON, EMPTY_INPUT, type InputFrame } from '../input';
 import { ultimateDefinitionFor } from '../../fighters/ultimateDefinitions';
+import { ultimateTimelineFor } from '../../fighters/ultimateTimelines';
+import { getSpec } from '../attackSpecs';
 import { createWorld, checksum, stepWorld, type MatchSetup } from '../world';
 import type { SimEvent, SimWorld } from '../types';
 
@@ -576,16 +578,19 @@ describe('ultimates', () => {
     expect(w.fighters[1].hp).toBeLessThan(100);
   });
 
-  it('does not let a wide-box ultimate reach across the whole arena', () => {
-    // doge's ultimate-sonic has reach 540, so from one wall it covers roughly
-    // half the 1090 px arena. It aims correctly — facing is recomputed toward the
-    // opponent every tick — it simply falls short.
+  /**
+   * Reach no longer decides an ultimate — the timeline does. doge's is a
+   * transformation whose one screen-wide burst covers the arena, so the wall-to-
+   * wall case that used to fall short now connects, and the thing worth asserting
+   * is the transformation rather than the distance.
+   */
+  it('lands a transformation ultimate from across the arena, and transforms', () => {
     const w = toFight(world({ p1Character: 'doge' }));
     w.fighters[0].x = 1100;
     w.fighters[1].x = 150;
     fireUltimate(w);
-    expect(w.fighters[0].facing).toBe(-1);
-    expect(w.fighters[1].hp).toBe(100);
+    expect(w.fighters[1].hp).toBeLessThan(100);
+    expect(w.fighters[0].installTicks).toBeGreaterThan(0);
   });
 
   it('lands a screen-wide ultimate regardless of distance', () => {
@@ -597,21 +602,23 @@ describe('ultimates', () => {
     expect(w.fighters[1].hp).toBeLessThan(100);
   });
 
-  it('drops a delayed ground zone for the salad ultimate', () => {
-    // 'salad' has ultimate-salad: a telegraphed zone under the defender. The
-    // spawn tick is not asserted directly — the ultimate's own presentation
-    // hit-stop shifts it — so the test waits for the zone to appear instead.
+  /**
+   * salad's ultimate was a zone; it is now two phases with different guard
+   * heights, which is the whole reason it is worth firing. The zone machinery it
+   * used to borrow is still there for the ordinary zone specials.
+   */
+  it('gives the salad ultimate an overhead and then a low, not a zone', () => {
     const w = toFight(world({ p1Character: 'salad' }));
     w.fighters[1].x = 700;
-    w.fighters[0].energy = MAX_ENERGY;
-    run(w, 1, BUTTON.Down | BUTTON.Special);
+    // Past the startup, so the timeline has begun but none of its beats have.
+    fireUltimate(w, getSpec('salad-ult').startupTicks + 1);
+    expect(w.zones).toHaveLength(0);
+    expect(w.ultimates).toHaveLength(1);
 
-    for (let i = 0; i < 120 && w.zones.length === 0; i += 1) run(w, 1);
-    expect(w.zones).toHaveLength(1);
-    expect(w.zones[0]!.triggered).toBe(false);
-    expect(w.fighters[1].hp).toBe(100); // harmless while telegraphing
+    const heights = ultimateTimelineFor('salad').phases.map((phase) => phase.attackType);
+    expect(heights).toEqual(['overhead', 'low']);
 
-    run(w, 90);
+    run(w, 120);
     expect(w.fighters[1].hp).toBeLessThan(100);
   });
 

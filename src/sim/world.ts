@@ -1,5 +1,6 @@
 import { FighterState } from '../fighters/FighterState';
 import { ultimateDefinitionFor } from '../fighters/ultimateDefinitions';
+import { ultimateTimelineFor, type UltimatePhase } from '../fighters/ultimateTimelines';
 import { getSpec, type TickSpec } from './attackSpecs';
 import {
   ARENA_MAX_X,
@@ -23,19 +24,22 @@ import {
   impactWeight,
   rectsIntersect,
   resolveHit,
+  ultimatePhaseHitStop,
 } from './combat';
 import { createFighter, isAirborne, isKO, resetFighter, stepFighter, attackActive } from './fighter';
 import { finalizeHash, hashBool, hashFloat, hashInt, hashString, HASH_SEED } from './hash';
 import { EMPTY_INPUT, type InputFrame } from './input';
-import { createRng } from './rng';
+import { createRng, nextInt } from './rng';
 import {
   HIT_P1,
   HIT_P2,
   type PlayerIndex,
+  type Rect,
   type RoundWinner,
   type SimEvent,
   type SimFighter,
   type SimProjectile,
+  type SimUltimate,
   type SimWorld,
   type SimZone,
 } from './types';
@@ -72,6 +76,7 @@ export function createWorld(setup: MatchSetup): SimWorld {
     ],
     projectiles: [],
     zones: [],
+    ultimates: [],
     nextEntityId: 1,
     roundWins: [0, 0],
     matchWinner: null,
@@ -147,6 +152,7 @@ function beginRound(world: SimWorld): void {
   world.hitStopTicks = 0;
   world.projectiles = [];
   world.zones = [];
+  world.ultimates = [];
   resetFighter(world.fighters[0], P1_SPAWN_X, 1);
   resetFighter(world.fighters[1], P2_SPAWN_X, -1);
   enterPhase(world, 'intro');
@@ -257,6 +263,7 @@ function stepCombat(world: SimWorld, events: SimEvent[]): void {
   processAttack(world, 1, events);
   updateProjectiles(world, events);
   updateZones(world, events);
+  updateUltimates(world, events);
 }
 
 function applyHitStop(world: SimWorld, ticks: number): void {
@@ -300,6 +307,11 @@ function processAttack(world: SimWorld, attackerIndex: PlayerIndex, events: SimE
     return;
   }
 
+  if (spec.kind.startsWith('ultimate-')) {
+    beginUltimate(world, attackerIndex, spec);
+    return;
+  }
+
   switch (spec.kind) {
     case 'zone':
       spawnZone(world, attackerIndex, defenderIndex, spec, events);
@@ -307,24 +319,205 @@ function processAttack(world: SimWorld, attackerIndex: PlayerIndex, events: SimE
     case 'beam':
       fireBeam(world, attackerIndex, spec, events);
       break;
-    case 'ultimate-salad':
-      spawnUltimateSaladZone(world, attackerIndex, defenderIndex, spec, events);
-      break;
-    case 'ultimate-water':
-    case 'ultimate-social':
-    case 'ultimate-freeze':
-    case 'ultimate-alien':
-    case 'ultimate-magic':
-      // These hit the whole screen; there is no geometry to test.
-      tryHit(world, attackerIndex, spec, () => getHurtbox(defender), events);
-      break;
-    case 'ultimate-ok':
-    case 'ultimate-sonic':
-      tryHit(world, attackerIndex, spec, () => wideUltimateBox(attacker, spec), events);
-      break;
     default:
       tryHit(world, attackerIndex, spec, () => getMeleeHitbox(attacker, spec), events);
   }
+}
+
+// --- Ultimates --------------------------------------------------------------
+
+/**
+ * Start an ultimate's timeline.
+ *
+ * The owner's own attack is left running only until the timeline's `releaseTick`;
+ * after that the boxes keep arriving on their own. That split is what the
+ * upgraded build's `releaseOwnerControl` does, and it is why a super can cover a
+ * hundred ticks without the fighter standing still for all of them.
+ */
+function beginUltimate(world: SimWorld, ownerIndex: PlayerIndex, spec: TickSpec): void {
+  const owner = world.fighters[ownerIndex]!;
+  const opponent = world.fighters[ownerIndex === 0 ? 1 : 0]!;
+  const timeline = ultimateTimelineFor(owner.configId);
+
+  // Paid on commitment, not on contact. Goblin's confession costs him whether or
+  // not anybody was moved by it.
+  if (timeline.selfDamage) {
+    owner.hp = Math.max(1, owner.hp - timeline.selfDamage);
+  }
+
+  world.ultimates.push({
+    ownerIndex,
+    fighterId: owner.configId,
+    specId: spec.id,
+    elapsedTicks: 0,
+    lockedTargetX: opponent.x,
+    resolved: timeline.phases.map(() => false),
+    // A grab decides on the first tick whether it caught anybody, and lives with
+    // the answer. Deciding later would let the victim be dragged in by walking
+    // toward a move that had already missed them.
+    captured:
+      timeline.capture !== undefined &&
+      Math.abs(opponent.x - owner.x) <= timeline.capture.range &&
+      !isAirborne(opponent) &&
+      opponent.hp > 0,
+  });
+}
+
+function updateUltimates(world: SimWorld, events: SimEvent[]): void {
+  for (let i = world.ultimates.length - 1; i >= 0; i -= 1) {
+    const ultimate = world.ultimates[i]!;
+
+    /**
+     * A knocked-out fighter's super stops with them.
+     *
+     * It could equally be argued the other way — the move was already paid for —
+     * but a timeline that kept landing after its owner was on the floor would
+     * also keep the victim in a capture they can no longer be released from by
+     * anybody. Ending it is the version with no way to get stuck.
+     */
+    if (isKO(world.fighters[ultimate.ownerIndex]!)) {
+      releaseCapture(world, ultimate);
+      events.push({ t: 'ultimateEnd', player: ultimate.ownerIndex, specId: ultimate.specId });
+      world.ultimates.splice(i, 1);
+      continue;
+    }
+
+    ultimate.elapsedTicks += 1;
+    advanceUltimate(world, ultimate, events);
+
+    if (ultimate.elapsedTicks >= ultimateTimelineFor(ultimate.fighterId).ticks) {
+      releaseCapture(world, ultimate);
+      events.push({ t: 'ultimateEnd', player: ultimate.ownerIndex, specId: ultimate.specId });
+      world.ultimates.splice(i, 1);
+    }
+  }
+}
+
+/** Let go of anyone this ultimate was holding, whatever ended it. */
+function releaseCapture(world: SimWorld, ultimate: SimUltimate): void {
+  if (!ultimate.captured) return;
+  world.fighters[ultimate.ownerIndex === 0 ? 1 : 0]!.captureTicks = 0;
+}
+
+function advanceUltimate(world: SimWorld, ultimate: SimUltimate, events: SimEvent[]): void {
+  const timeline = ultimateTimelineFor(ultimate.fighterId);
+  const owner = world.fighters[ultimate.ownerIndex]!;
+  const defenderIndex: PlayerIndex = ultimate.ownerIndex === 0 ? 1 : 0;
+  const defender = world.fighters[defenderIndex]!;
+  const tick = ultimate.elapsedTicks;
+
+  if (tick === timeline.targetLockTick) ultimate.lockedTargetX = defender.x;
+
+  // Control comes back part-way through, so the fighter can move while their own
+  // super is still landing.
+  if (tick === timeline.releaseTick && owner.attack?.specId === ultimate.specId) {
+    owner.attack = null;
+    if (!isKO(owner)) owner.state = FighterState.IDLE;
+  }
+
+  if (timeline.install && tick === timeline.install.atTick) {
+    owner.installTicks = timeline.install.ticks;
+  }
+
+  if (timeline.capture && ultimate.captured) {
+    // Re-applied every tick rather than set once, so the hold cannot be escaped
+    // by anything that happens to clear the counter.
+    if (tick >= timeline.capture.from && tick < timeline.capture.to && !isKO(defender)) {
+      defender.captureTicks = 2;
+    }
+  }
+
+  if (timeline.blink && tick >= timeline.blink.fromTick && tick <= timeline.blink.toTick) {
+    if ((tick - timeline.blink.fromTick) % timeline.blink.everyTicks === 0) {
+      const spread = timeline.blink.spreadX;
+      owner.x = clampToArena(owner.x + nextInt(world.rng, -spread, spread));
+    }
+  }
+
+  const spec = getSpec(ultimate.specId);
+  for (let index = 0; index < timeline.phases.length; index += 1) {
+    const phase = timeline.phases[index]!;
+    if (ultimate.resolved[index]) continue;
+    if (tick < phase.from || tick >= phase.from + phase.ticks) continue;
+    // A grab that caught nobody swings at nothing for its whole duration.
+    if (timeline.capture && !ultimate.captured) continue;
+
+    const box = phaseBox(phase, owner, defender, ultimate.lockedTargetX);
+    if (!rectsIntersect(box, getHurtbox(defender))) continue;
+
+    const result = resolveUltimatePhase(world, ultimate, phase, spec, events);
+    if (!result) continue;
+    ultimate.resolved[index] = true;
+    events.push({
+      t: 'ultimatePhase',
+      player: ultimate.ownerIndex,
+      specId: ultimate.specId,
+      seq: phase.seq,
+      label: phase.label,
+    });
+  }
+}
+
+/**
+ * Where a phase's box sits this tick.
+ *
+ * Pure in its inputs so it can be asked by a test without a world — the geometry
+ * is the half of the upgraded build's timelines worth porting, and it should be
+ * checkable on its own.
+ */
+export function phaseBox(
+  phase: UltimatePhase,
+  owner: SimFighter,
+  defender: SimFighter,
+  lockedTargetX: number,
+): Rect {
+  const anchorX =
+    phase.anchor === 'arena' ? ARENA_MIN_X
+    : phase.anchor === 'absolute' ? 0
+    : phase.anchor === 'owner' ? owner.x
+    : phase.anchor === 'opponent' ? defender.x
+    : lockedTargetX;
+  return {
+    x: anchorX + phase.offsetX,
+    y: phase.y,
+    width: phase.width,
+    height: phase.height,
+  };
+}
+
+/**
+ * Apply one phase, borrowing the ultimate's spec for everything the phase does
+ * not name — knockback, meter, hit-stop — but overriding the damage and the
+ * guard height, which are what make the beats different from one another.
+ */
+function resolveUltimatePhase(
+  world: SimWorld,
+  ultimate: SimUltimate,
+  phase: UltimatePhase,
+  spec: TickSpec,
+  events: SimEvent[],
+): boolean {
+  const owner = world.fighters[ultimate.ownerIndex]!;
+  const defenderIndex: PlayerIndex = ultimate.ownerIndex === 0 ? 1 : 0;
+  const defender = world.fighters[defenderIndex]!;
+
+  const phaseSpec: TickSpec = {
+    ...spec,
+    damage: phase.damage,
+    hits: [phase.damage],
+    attackType: phase.attackType,
+  };
+  const result = resolveHit(owner, defender, phaseSpec, world.tick, ultimate.ownerIndex, events);
+  if (!result) return false;
+  // Scaled to the beat rather than to the ultimate — see `ultimatePhaseHitStop`.
+  // Hit-stop freezes the timeline along with everything else, so an over-generous
+  // freeze here does not just feel wrong, it stretches the move.
+  applyHitStop(world, result.blocked ? result.hitStopTicks : ultimatePhaseHitStop(phase.damage));
+  return true;
+}
+
+function clampToArena(x: number): number {
+  return x < ARENA_MIN_X ? ARENA_MIN_X : x > ARENA_MAX_X ? ARENA_MAX_X : x;
 }
 
 function hitBit(index: PlayerIndex): number {
@@ -372,12 +565,6 @@ function tryHit(
   // merely refused to be interrupted by it.
   attack.result = result.blocked ? 'block' : 'hit';
   applyHitStop(world, result.hitStopTicks);
-}
-
-function wideUltimateBox(attacker: SimFighter, spec: TickSpec) {
-  const reach = spec.reach;
-  const centerX = attacker.facing > 0 ? attacker.x + reach / 2 : attacker.x - reach / 2;
-  return { x: centerX - reach / 2, y: 120, width: reach, height: GROUND_Y - 70 };
 }
 
 // --- Projectiles ------------------------------------------------------------
@@ -495,11 +682,8 @@ function updateProjectiles(world: SimWorld, events: SimEvent[]): void {
 /** How far ahead of the defender a zone is placed, as a share of their velocity. */
 const ZONE_LEAD_FACTOR = 0.15;
 const ZONE_HIT_RADIUS = 100;
-const ULTIMATE_SALAD_HIT_RADIUS = 150;
 /** A target jumping higher than this clears the zone. */
 const ZONE_MAX_HEIGHT = 250;
-/** Hard-coded in the original, rather than read from the spec. */
-const ULTIMATE_SALAD_ACTIVE_TICKS = 13;
 
 function spawnZone(
   world: SimWorld,
@@ -513,18 +697,6 @@ function spawnZone(
   // attack whose spawn position depends on the opponent.
   const x = clamp(defender.x + defender.vx * ZONE_LEAD_FACTOR, 120, GAME_WIDTH - 120);
   pushZone(world, ownerIndex, spec, x, spec.telegraphTicks, spec.zoneDurationTicks, events);
-}
-
-function spawnUltimateSaladZone(
-  world: SimWorld,
-  ownerIndex: PlayerIndex,
-  defenderIndex: PlayerIndex,
-  spec: TickSpec,
-  events: SimEvent[],
-): void {
-  const defender = world.fighters[defenderIndex];
-  const x = clamp(defender.x, 130, GAME_WIDTH - 130);
-  pushZone(world, ownerIndex, spec, x, spec.telegraphTicks, ULTIMATE_SALAD_ACTIVE_TICKS, events);
 }
 
 function pushZone(
@@ -569,10 +741,10 @@ function updateZones(world: SimWorld, events: SimEvent[]): void {
     }
 
     zone.activeTicks -= 1;
-    const radius = spec.kind === 'ultimate-salad' ? ULTIMATE_SALAD_HIT_RADIUS : ZONE_HIT_RADIUS;
     const hurtbox = getHurtbox(target);
     const inZone =
-      Math.abs(target.x - zone.x) < radius && hurtbox.y + hurtbox.height > GROUND_Y - ZONE_MAX_HEIGHT;
+      Math.abs(target.x - zone.x) < ZONE_HIT_RADIUS &&
+      hurtbox.y + hurtbox.height > GROUND_Y - ZONE_MAX_HEIGHT;
     const bit = hitBit(targetIndex);
 
     if (inZone && (zone.hitMask & bit) === 0) {
@@ -704,6 +876,20 @@ export function checksum(world: SimWorld): number {
       h = hashInt(h, attack.armorUsed);
       h = hashString(h, attack.result);
     }
+  }
+
+  /**
+   * Ultimates in flight. Each one carries a locked target, a per-phase hit record
+   * and whether its grab caught anybody — all of which decide damage that has not
+   * been dealt yet, so two clients disagreeing about any of it diverge silently.
+   */
+  for (const ultimate of world.ultimates) {
+    h = hashInt(h, ultimate.ownerIndex);
+    h = hashString(h, ultimate.specId);
+    h = hashInt(h, ultimate.elapsedTicks);
+    h = hashFloat(h, ultimate.lockedTargetX);
+    h = hashBool(h, ultimate.captured);
+    for (const resolved of ultimate.resolved) h = hashBool(h, resolved);
   }
 
   for (const projectile of world.projectiles) {

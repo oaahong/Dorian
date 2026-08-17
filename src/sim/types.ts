@@ -33,6 +33,9 @@ export type SimEvent =
   | { t: 'roundEnd'; winner: RoundWinner; reason: 'KO' | 'TIME' }
   | { t: 'matchEnd'; winner: PlayerIndex }
   | { t: 'ultimateStart'; player: PlayerIndex; specId: string }
+  /** One beat of an ultimate's timeline came out. The render layer stages it. */
+  | { t: 'ultimatePhase'; player: PlayerIndex; specId: string; seq: number; label: string }
+  | { t: 'ultimateEnd'; player: PlayerIndex; specId: string }
   | { t: 'projectileSpawn'; id: number; player: PlayerIndex; specId: string; x: number; y: number }
   | { t: 'projectileEnd'; id: number }
   | { t: 'zoneSpawn'; id: number; player: PlayerIndex; specId: string; x: number }
@@ -100,6 +103,28 @@ export interface SimZone {
  * scene field. If it is not in this object, it cannot be snapshotted, hashed or
  * rolled back, and two clients will eventually disagree about it.
  */
+/**
+ * An ultimate playing out its timeline.
+ *
+ * Separate from the owner's `SimAttack` because the two have different lifetimes:
+ * control comes back at the timeline's `releaseTick` while the boxes keep landing
+ * for another fifty ticks. Modelling it as one attack would mean either freezing
+ * the fighter for the whole thing or losing the second half of their own super.
+ */
+export interface SimUltimate {
+  ownerIndex: PlayerIndex;
+  fighterId: string;
+  specId: string;
+  /** Ticks since the timeline began — after the cut-in, which is spent as hit-stop. */
+  elapsedTicks: number;
+  /** Where the opponent was at `targetLockTick`; meaningless before it. */
+  lockedTargetX: number;
+  /** One flag per phase, in the timeline's order, so each connects at most once. */
+  resolved: boolean[];
+  /** Whether a grab found anybody. False for every ultimate that is not one. */
+  captured: boolean;
+}
+
 export interface SimWorld {
   tick: number;
   phase: RoundPhase;
@@ -112,6 +137,8 @@ export interface SimWorld {
   fighters: [SimFighter, SimFighter];
   projectiles: SimProjectile[];
   zones: SimZone[];
+  /** Ultimates currently playing out. At most one per fighter. */
+  ultimates: SimUltimate[];
   nextEntityId: number;
   roundWins: [number, number];
   matchWinner: PlayerIndex | null;
@@ -217,6 +244,14 @@ export interface SimFighter {
   dashTicks: number;
   /** Absolute tick at which the parry comes off its cooldown. */
   nextParryTick: number;
+  /**
+   * Ticks left held by an opponent's grab ultimate.
+   *
+   * While positive the fighter cannot act or move at all. It is the only status
+   * that takes control away outright, which is why it belongs to exactly one
+   * move in the game.
+   */
+  captureTicks: number;
   /**
    * Ticks the bare special button has been held while winding up.
    *

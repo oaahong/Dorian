@@ -27,6 +27,8 @@ export class BattleView {
   private readonly fighters: [FighterView, FighterView];
   private readonly hud: BattleHUD;
   private readonly cutIn: UltimateCutIn;
+  /** The last ultimate phase named on screen, so a flurry says its name once. */
+  private lastPhaseLabel = '';
 
   constructor(private readonly scene: Phaser.Scene, sim: SimWorld, modeLabel: string) {
     scene.cameras.main.setBackgroundColor(COLORS.bg);
@@ -69,6 +71,7 @@ export class BattleView {
 
     switch (event.t) {
       case 'roundStart':
+        this.lastPhaseLabel = '';
         this.fighters[0].reset();
         this.fighters[1].reset();
         this.combat.clear();
@@ -91,6 +94,15 @@ export class BattleView {
 
       case 'ultimateStart':
         this.presentUltimate(sim, event.player, event.specId);
+        break;
+
+      case 'ultimatePhase':
+        this.presentUltimatePhase(sim, event);
+        break;
+
+      case 'ultimateEnd':
+        // So the next ultimate can announce a beat this one already named.
+        this.lastPhaseLabel = '';
         break;
 
       case 'hit':
@@ -159,6 +171,60 @@ export class BattleView {
     this.vfx.pixelBlocks(getFighterConfig(fighter.configId).palette.primary, 30);
     this.fighters[player].punchScale(1.45, 680);
     AudioManager.play('ultimate');
+  }
+
+  /**
+   * One beat of an ultimate's timeline.
+   *
+   * The simulation says *that* a phase landed and what it was called; everything
+   * here is the staging. Naming the beat matters more than it looks — a four-part
+   * ultimate reads as one long flash otherwise, and the labels are how a player
+   * learns that the third part is the one aimed where they used to be standing.
+   */
+  private presentUltimatePhase(
+    sim: SimWorld,
+    event: Extract<SimEvent, { t: 'ultimatePhase' }>,
+  ): void {
+    const owner = sim.fighters[event.player];
+    const palette = getFighterConfig(owner.configId).palette;
+    this.vfx.flash(palette.accent, 0.22, 90);
+    this.vfx.shake(0.009, 140);
+    this.phaseCallout(event.label, palette.primary);
+  }
+
+  /**
+   * Name the beat, high on the screen and only when the name changes.
+   *
+   * Not `announce`, which owns the centre of the screen for ROUND and K.O. — a
+   * grab's ten-hit flurry would stack ten copies of the same word over the
+   * fighters, which is worse than saying nothing. Repeats are dropped for the
+   * same reason: the flurry is one idea, not ten.
+   */
+  private phaseCallout(text: string, color: number): void {
+    if (text === this.lastPhaseLabel) return;
+    this.lastPhaseLabel = text;
+
+    const label = this.scene.add
+      .text(GAME_WIDTH / 2, 190, text, {
+        fontFamily: FONT_FAMILY,
+        fontSize: '30px',
+        color: `#${color.toString(16).padStart(6, '0')}`,
+        stroke: '#050505',
+        strokeThickness: 8,
+      })
+      .setOrigin(0.5)
+      .setDepth(1290)
+      .setAlpha(0);
+
+    this.scene.tweens.add({
+      targets: label,
+      alpha: { from: 0, to: 1 },
+      y: 160,
+      duration: 140,
+      yoyo: true,
+      hold: 260,
+      onComplete: () => label.destroy(),
+    });
   }
 
   private onRoundEnd(sim: SimWorld, event: Extract<SimEvent, { t: 'roundEnd' }>): void {

@@ -10,6 +10,7 @@ import {
   SPEED_BY_STAT,
 } from '../constants';
 import { LIGHT_SPEC, getSpec } from '../attackSpecs';
+import { ultimateTimelineFor } from '../../fighters/ultimateTimelines';
 import { resolveHit } from '../combat';
 import { createFighter, stepFighter } from '../fighter';
 import { checksum, createWorld, stepWorld, type MatchSetup } from '../world';
@@ -214,15 +215,42 @@ describe('an installed fighter’s state is part of the world', () => {
 });
 
 describe('meter and state guards', () => {
-  it('keeps the ultimate’s install even when the swing misses', () => {
+  /**
+   * The install is on the timeline now, at the tick the transformation lands, and
+   * it no longer waits for the move to finish — it cannot, because an ultimate
+   * never finishes as an attack. Control is handed back part-way through and the
+   * remaining beats play out on their own.
+   *
+   * It also does not care what the burst did. A transformation is paid for with
+   * the hundred-odd ticks it takes, not with a successful read, so blocking it
+   * denies the damage and nothing else.
+   */
+  it('grants the ultimate’s install even when the burst is blocked', () => {
     const w = toFight(world({ p1Character: 'doge' }));
     w.fighters[0].energy = MAX_ENERGY;
-    w.fighters[1].x = 1100; // far out of reach
+    w.fighters[0].x = 500;
+    w.fighters[1].x = 620;
     run(w, 1, BUTTON.Down | BUTTON.Special);
     while (w.hitStopTicks > 0) run(w, 1);
-    run(w, 120);
-    expect(w.fighters[1].hp).toBe(MAX_HP);
+    // Hold away for the whole thing, so every phase is guarded.
+    run(w, 120, EMPTY_INPUT, BUTTON.Right);
+
     expect(w.fighters[0].installTicks).toBeGreaterThan(0);
     expect(w.fighters[0].state).not.toBe(FighterState.ULTIMATE);
+  });
+
+  it('hands control back before the timeline is over', () => {
+    const w = toFight(world({ p1Character: 'alien' }));
+    w.fighters[0].energy = MAX_ENERGY;
+    run(w, 1, BUTTON.Down | BUTTON.Special);
+    while (w.hitStopTicks > 0) run(w, 1);
+
+    // The timeline does not begin until the ultimate's own startup has passed —
+    // the cut-in is spent before that, as hit-stop.
+    const timeline = ultimateTimelineFor('alien');
+    run(w, getSpec('alien-ult').startupTicks + timeline.releaseTick + 1);
+    expect(w.fighters[0].state).not.toBe(FighterState.ULTIMATE);
+    // The rest of the timeline is still running without them.
+    expect(w.ultimates).toHaveLength(1);
   });
 });
