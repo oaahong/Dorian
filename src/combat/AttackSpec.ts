@@ -149,6 +149,22 @@ export interface AttackSpec {
   /** A knockdown the defender cannot recover from early. */
   hardKnockdown?: boolean;
   /**
+   * How many projectiles a `summon` puts out, trailing each other in a column.
+   *
+   * One is the default and covers every ordinary fireball. A summon's whole idea is
+   * that it keeps arriving, so a single one that misses is not the end of it.
+   */
+  projectileCount?: number;
+  /**
+   * A timed buff the *attacker* gains when the move completes.
+   *
+   * On completion rather than on contact, because an install is paid for with the
+   * frames it takes rather than with a successful read.
+   */
+  selfStatus?: { kind: 'install'; ticks: number };
+  /** A timed debuff the *defender* takes from a clean hit. */
+  hitStatus?: { kind: 'slow'; ticks: number };
+  /**
    * Meter awarded when the move finishes its recovery, rather than on contact.
    *
    * This is how the utility moves pay: a taunt or a flex earns its meter for

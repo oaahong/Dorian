@@ -5,6 +5,7 @@ import { getSpec, HEAVY_SPEC, LIGHT_SPEC } from './attackSpecs';
 import {
   ATTACK_MULTIPLIER,
   CROUCH_HURTBOX_SCALE,
+  INSTALL_DAMAGE_MULTIPLIER,
   FIGHTER_HURTBOX_HEIGHT,
   FIGHTER_HURTBOX_WIDTH,
   HP_STAT_MITIGATION,
@@ -294,9 +295,11 @@ export function resolveHit(
   const hitIndex = attacker.attack ? attacker.attack.hitsUsed : 0;
   const perHitDamage = spec.hits[Math.min(hitIndex, spec.hits.length - 1)]!;
   const defenderConfig = config(defender);
+  const install = attacker.installTicks > 0 ? INSTALL_DAMAGE_MULTIPLIER : 1;
   const fullDamage =
     perHitDamage *
     ATTACK_MULTIPLIER(config(attacker).attackStat) *
+    install *
     HP_STAT_MITIGATION(defenderConfig.hpStat) *
     defenderConfig.damageTakenScalar;
   const damage = blocked ? fullDamage * spec.chipRatio : fullDamage;
@@ -306,6 +309,11 @@ export function resolveHit(
   if (!blocked) {
     addEnergy(attacker, spec.energyOnHit);
     addEnergy(defender, spec.energyOnReceive);
+    // A debuff is the reward for a clean hit only. Chipping someone's guard should
+    // not also glue their feet to the floor.
+    if (!armored && spec.hitStatus?.kind === 'slow') {
+      defender.slowTicks = Math.max(defender.slowTicks, spec.hitStatus.ticks);
+    }
   } else if (spec.chipRatio > 0) {
     addEnergy(attacker, Math.ceil(spec.energyOnHit * BLOCKED_ENERGY_SHARE));
     addEnergy(defender, Math.ceil(spec.energyOnReceive * BLOCKED_ENERGY_SHARE));

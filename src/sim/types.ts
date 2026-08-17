@@ -193,4 +193,13 @@ export interface SimFighter {
    * so there is no separate "is charging" flag to keep in step with it.
    */
   chargeTicks: number;
+  /**
+   * Ticks remaining on the install buff: harder hits and a bigger body.
+   *
+   * Counted down in the fighter step rather than compared against an absolute
+   * expiry tick, so it survives being snapshotted into a world whose tick differs.
+   */
+  installTicks: number;
+  /** Ticks remaining on the movement slow a sticky or awkward hit leaves behind. */
+  slowTicks: number;
 }

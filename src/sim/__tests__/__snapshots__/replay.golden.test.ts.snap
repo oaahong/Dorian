@@ -25,12 +25,12 @@ exports[`match played to a decision > reaches a winner and matches the recorded 
 
 exports[`one-player match against the CPU > replays identically, including every CPU decision 1`] = `
 [
-  "t150:eae66c3c",
-  "t300:1a93ad2e",
-  "t450:a2770d1c",
-  "t600:902e39d0",
-  "t750:fee64d0a",
-  "t900:59e72862",
+  "t150:cdaf0a9d",
+  "t300:5bf883ef",
+  "t450:56de59b6",
+  "t600:2d34265",
+  "t750:9d1dd436",
+  "t900:83719738",
 ]
 `;
 
@@ -59,28 +59,28 @@ exports[`one-player match against the CPU > replays identically, including every
 
 exports[`projectile and zone characters > matches the recorded checksum trail 1`] = `
 [
-  "t120:8b818a98",
-  "t240:4cd819f1",
-  "t360:861fee0c",
-  "t480:267175b",
-  "t600:90ef117c",
-  "t720:a07d7a40",
-  "t840:35858374",
+  "t120:c6e52280",
+  "t240:fcaa4e8d",
+  "t360:2d7776b3",
+  "t480:ff4d84a5",
+  "t600:63b390de",
+  "t720:fd667599",
+  "t840:7240c49e",
 ]
 `;
 
 exports[`two-player scripted match > matches the recorded checksum trail 1`] = `
 [
-  "t120:86b80fc9",
-  "t240:b34b8c7d",
-  "t360:29eca8c6",
-  "t480:5bb77d39",
-  "t600:213c7188",
-  "t720:ff2761cc",
-  "t840:3b2a4eb6",
-  "t960:5b83ef0",
-  "t1080:e06bda1a",
-  "t1200:5b344667",
+  "t120:9088b6ce",
+  "t240:c77ccaf1",
+  "t360:c88362bd",
+  "t480:ded758cb",
+  "t600:5cc749ab",
+  "t720:f35fcbcb",
+  "t840:a1eddeef",
+  "t960:104559da",
+  "t1080:8ec50d6a",
+  "t1200:5de49fdd",
 ]
 `;
 

@@ -19,8 +19,10 @@ import type { AttackSpec } from '../combat/AttackSpec';
  * preserving the relative weights — 驚嚇衝撞's `120 < 190 < 280` is the clearest
  * case, and its ordering survives.
  *
- * The statuses some of these carried — `sticky`, `awkward` — are not read by the
- * simulation yet, so those moves are here without them.
+ * `尷尬招呼波` and `黏醬飛射` carry the movement slow their names imply, scaling with
+ * the charge level; the rest of the upgraded build's status list maps onto
+ * mechanics that already exist — `box` is an invulnerability window, `parryWindow`
+ * and `counterStance` are armour, `loveStun` is simply a lot of hitstun.
  */
 
 export interface ChargeSpecial {
@@ -85,9 +87,9 @@ export const CHARGE_SPECIALS: Record<string, ChargeSpecial> = {
   ya: {
     displayName: '尷尬招呼波',
     levels: [
-      level({ id: 'h-ya-1', name: '尷尬招呼波 Lv1', kind: 'zone', damage: 2, reach: 90, knockbackX: 136, telegraph: 18, zoneDuration: 84 }),
-      level({ id: 'h-ya-2', name: '尷尬招呼波 Lv2', kind: 'zone', damage: 3, reach: 150, knockbackX: 141, telegraph: 18, zoneDuration: 120 }),
-      level({ id: 'h-ya-3', name: '尷尬招呼波 Lv3', kind: 'zone', damage: 4, reach: 230, knockbackX: 146, telegraph: 18, zoneDuration: 168 }),
+      level({ id: 'h-ya-1', name: '尷尬招呼波 Lv1', kind: 'zone', damage: 2, reach: 90, knockbackX: 136, telegraph: 18, zoneDuration: 84, hitStatus: { kind: 'slow', ticks: 84 } }),
+      level({ id: 'h-ya-2', name: '尷尬招呼波 Lv2', kind: 'zone', damage: 3, reach: 150, knockbackX: 141, telegraph: 18, zoneDuration: 120, hitStatus: { kind: 'slow', ticks: 120 } }),
+      level({ id: 'h-ya-3', name: '尷尬招呼波 Lv3', kind: 'zone', damage: 4, reach: 230, knockbackX: 146, telegraph: 18, zoneDuration: 168, hitStatus: { kind: 'slow', ticks: 168 } }),
     ],
   },
   tempura: {
@@ -143,9 +145,9 @@ export const CHARGE_SPECIALS: Record<string, ChargeSpecial> = {
   sauce: {
     displayName: '黏醬飛射',
     levels: [
-      level({ id: 'h-sauce-1', name: '黏醬飛射 Lv1', kind: 'projectile', damage: 5, reach: 300, knockbackX: 151, projectileSpeed: 480, lifetime: 48 }),
-      level({ id: 'h-sauce-2', name: '黏醬飛射 Lv2', kind: 'projectile', damage: 7, reach: 380, knockbackX: 162, projectileSpeed: 540, lifetime: 56 }),
-      level({ id: 'h-sauce-3', name: '黏醬飛射 Lv3', kind: 'projectile', damage: 9, reach: 460, knockbackX: 172, projectileSpeed: 600, lifetime: 64 }),
+      level({ id: 'h-sauce-1', name: '黏醬飛射 Lv1', kind: 'projectile', damage: 5, reach: 300, knockbackX: 151, projectileSpeed: 480, lifetime: 48, hitStatus: { kind: 'slow', ticks: 60 } }),
+      level({ id: 'h-sauce-2', name: '黏醬飛射 Lv2', kind: 'projectile', damage: 7, reach: 380, knockbackX: 162, projectileSpeed: 540, lifetime: 56, hitStatus: { kind: 'slow', ticks: 90 } }),
+      level({ id: 'h-sauce-3', name: '黏醬飛射 Lv3', kind: 'projectile', damage: 9, reach: 460, knockbackX: 172, projectileSpeed: 600, lifetime: 64, hitStatus: { kind: 'slow', ticks: 120 } }),
     ],
   },
   scared: {

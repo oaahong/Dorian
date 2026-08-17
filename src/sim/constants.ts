@@ -117,6 +117,18 @@ export const CONTROL_COOLDOWN_MULTIPLIER = (stat: number): number => 1.08 - stat
 /** Damage taken is scaled by the defender's HP stat. */
 export const HP_STAT_MITIGATION = (stat: number): number => 1.08 - stat * 0.03;
 
+/**
+ * What an install is worth: a quarter more damage for as long as it lasts.
+ *
+ * Deliberately damage rather than speed or frame data. A buff that changed timings
+ * would mean every matchup had two sets of frames to learn, and the fighters that
+ * get an install are the ones whose problem is closing a round, not moving.
+ */
+export const INSTALL_DAMAGE_MULTIPLIER = 1.25;
+
+/** How much a sticky or awkward hit slows the walk it leaves behind. */
+export const SLOW_MOVE_MULTIPLIER = 0.7;
+
 export const MAX_HP = 100;
 export const MAX_ENERGY = 100;
 

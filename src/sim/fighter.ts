@@ -19,6 +19,7 @@ import {
   MAX_ENERGY,
   MAX_HP,
   SLIDE_ATTACK_SPEED,
+  SLOW_MOVE_MULTIPLIER,
   SPEED_BY_STAT,
   STUN_FRICTION_PER_TICK,
 } from './constants';
@@ -72,6 +73,8 @@ export function createFighter(configId: string, x: number, facing: 1 | -1): SimF
      */
     downBufferedUntilTick: -1,
     chargeTicks: 0,
+    installTicks: 0,
+    slowTicks: 0,
   };
 }
 
@@ -94,6 +97,8 @@ export function resetFighter(fighter: SimFighter, x: number, facing: 1 | -1): vo
   resetCommandHistory(fighter.commandHistory);
   fighter.downBufferedUntilTick = -1;
   fighter.chargeTicks = 0;
+  fighter.installTicks = 0;
+  fighter.slowTicks = 0;
 }
 
 /**
@@ -248,6 +253,12 @@ export function stepFighter(
    */
   recordInput(fighter.commandHistory, inputEnabled ? input : EMPTY_INPUT);
 
+  // Timed statuses tick down here, once, before anything reads them. Counting down
+  // rather than comparing against an absolute expiry means a snapshot restored into
+  // a world at a different tick still has the right amount left on it.
+  if (fighter.installTicks > 0) fighter.installTicks -= 1;
+  if (fighter.slowTicks > 0) fighter.slowTicks -= 1;
+
   if (fighter.attack) {
     advanceAttack(fighter, cfg);
   } else if (
@@ -308,6 +319,8 @@ function advanceAttack(fighter: SimFighter, cfg: FighterConfig): void {
     if (spec.meterOnComplete > 0) {
       fighter.energy = Math.min(MAX_ENERGY, fighter.energy + spec.meterOnComplete);
     }
+    // An install is earned by seeing the move through, not by landing it.
+    if (spec.selfStatus?.kind === 'install') fighter.installTicks = spec.selfStatus.ticks;
     fighter.attack = null;
     fighter.state = isAirborne(fighter) ? FighterState.JUMP : FighterState.IDLE;
   }
@@ -365,7 +378,8 @@ function processIntent(
   /** A special edge does its ordinary job unless the legacy motion claimed it. */
   const specialPressed = specialEdge && !legacyUltimateMotion;
 
-  const speed = SPEED_BY_STAT[cfg.speedStat] ?? SPEED_BY_STAT[3]!;
+  const baseSpeed = SPEED_BY_STAT[cfg.speedStat] ?? SPEED_BY_STAT[3]!;
+  const speed = fighter.slowTicks > 0 ? baseSpeed * SLOW_MOVE_MULTIPLIER : baseSpeed;
 
   /**
    * Winding up beats everything.

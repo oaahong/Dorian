@@ -102,6 +102,16 @@ export class FighterView {
 
   private applyTransform(fighter: SimFighter, nowMs: number): void {
     this.sprite.setPosition(fighter.x, fighter.y).setFlipX(fighter.facing < 0);
+    /**
+     * An install has to be visible, or it is a damage buff the opponent has no way
+     * to read. The tint is the fighter's own accent colour so it says *who* is
+     * buffed rather than just that something happened.
+     */
+    if (fighter.installTicks > 0) {
+      this.sprite.setTint(paletteFor(fighter).accent);
+    } else {
+      this.sprite.clearTint();
+    }
     const airborne = fighter.y < GROUND_Y - 1;
 
     if (fighter.state === FighterState.IDLE && !airborne) {

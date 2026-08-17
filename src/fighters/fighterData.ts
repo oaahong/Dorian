@@ -96,6 +96,7 @@ export const FIGHTERS: FighterConfig[] = [
         startup: 18, active: 5, recovery: 23, damage: 8,
         hitstun: 18, blockstun: 11, knockbackX: 130, knockbackY: -200,
         reach: 310, cooldown: 108, telegraph: 24,
+        hitStatus: { kind: 'slow', ticks: 48 },
       }),
       functionMove: antiAir('alien-antenna', '天線升頻', 7, 4, 24, 8, 115, 5),
     },
@@ -137,6 +138,9 @@ export const FIGHTERS: FighterConfig[] = [
       id: 'doge-ult', name: '超級賽狗', kind: 'ultimate-sonic',
       startup: 26, active: 14, recovery: 40, damage: 29,
       hitstun: 44, blockstun: 18, knockbackX: 520, knockbackY: -210, reach: 540,
+      // 超級賽狗 is a transformation as much as a hit: five seconds of harder
+      // hitting afterwards, whether or not the swing itself connected.
+      selfStatus: { kind: 'install', ticks: 300 },
     }),
   },
   {
@@ -185,6 +189,8 @@ export const FIGHTERS: FighterConfig[] = [
         hits: [4, 4, 4], rehitTicks: 14,
         hitstun: 16, blockstun: 10, knockbackX: 200, knockbackY: -40,
         reach: 520, cooldown: 114, projectileSpeed: 420, lifetime: 90,
+        // Three of them, in a column. Blocking the first still leaves two coming.
+        projectileCount: 3,
       }),
       quarterBack: special({
         id: 'tempura-paper', name: '紙片亂飛', kind: 'projectile',
@@ -192,6 +198,7 @@ export const FIGHTERS: FighterConfig[] = [
         hits: [3, 3, 3], rehitTicks: 8,
         hitstun: 15, blockstun: 10, knockbackX: 180, knockbackY: -40,
         reach: 460, cooldown: 96, projectileSpeed: 600, lifetime: 60,
+        projectileCount: 5,
       }),
       functionMove: utility({
         id: 'tempura-paperread', name: '讀報裝忙', kind: 'armor',
@@ -228,12 +235,14 @@ export const FIGHTERS: FighterConfig[] = [
       functionMove: utility({
         id: 'goblin-bangs', name: '瀏海降臨', kind: 'install',
         startup: 12, active: 1, recovery: 12, cooldown: 180, meterOnComplete: 14,
+        selfStatus: { kind: 'install', ticks: 180 },
       }),
     },
     ultimate: ultimate({
       id: 'goblin-ult', name: '長老您保重', kind: 'ultimate-ok',
       startup: 32, active: 12, recovery: 45, damage: 34,
       hitstun: 50, blockstun: 20, knockbackX: 500, knockbackY: -280, reach: 520,
+      selfStatus: { kind: 'install', ticks: 300 },
     }),
   },
   {
@@ -360,6 +369,9 @@ export const FIGHTERS: FighterConfig[] = [
         startup: 17, active: 4, recovery: 20, damage: 7,
         hitstun: 19, blockstun: 12, knockbackX: 300, knockbackY: -60,
         reach: 390, cooldown: 96, projectileSpeed: 540, lifetime: 54,
+        // Low damage, but it glues them down for a second — this fighter wins by
+        // attrition and needs them slow to do it.
+        hitStatus: { kind: 'slow', ticks: 60 },
       }),
       quarterBack: special({
         id: 'sauce-shake', name: '濕狗甩水', kind: 'projectile',

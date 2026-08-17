@@ -389,6 +389,15 @@ function projectileSize(kind: string): { width: number; height: number } {
   return { width: 90, height: 46 };
 }
 
+/**
+ * How far apart the members of a summoned column stand.
+ *
+ * They are spaced behind the caster rather than staggered in time, so the whole
+ * column exists from the first tick and can be hashed and rolled back without a
+ * spawn schedule to keep in step.
+ */
+const SUMMON_SPACING_X = 74;
+
 function spawnProjectile(
   world: SimWorld,
   ownerIndex: PlayerIndex,
@@ -397,27 +406,32 @@ function spawnProjectile(
 ): void {
   const owner = world.fighters[ownerIndex];
   const { width, height } = projectileSize(spec.kind);
-  const projectile: SimProjectile = {
-    id: world.nextEntityId++,
-    ownerIndex,
-    specId: spec.id,
-    x: owner.x + owner.facing * PROJECTILE_SPAWN_OFFSET_X,
-    y: owner.y - PROJECTILE_SPAWN_Y,
-    vx: owner.facing * spec.projectileSpeed,
-    width,
-    height,
-    lifeTicks: spec.lifetimeTicks,
-    hitMask: 0,
-  };
-  world.projectiles.push(projectile);
-  events.push({
-    t: 'projectileSpawn',
-    id: projectile.id,
-    player: ownerIndex,
-    specId: spec.id,
-    x: projectile.x,
-    y: projectile.y,
-  });
+
+  for (let index = 0; index < spec.projectileCount; index += 1) {
+    const projectile: SimProjectile = {
+      id: world.nextEntityId++,
+      ownerIndex,
+      specId: spec.id,
+      // Each one starts a little further back, so a summon arrives as a column
+      // rather than as a single wide hitbox.
+      x: owner.x + owner.facing * (PROJECTILE_SPAWN_OFFSET_X - index * SUMMON_SPACING_X),
+      y: owner.y - PROJECTILE_SPAWN_Y,
+      vx: owner.facing * spec.projectileSpeed,
+      width,
+      height,
+      lifeTicks: spec.lifetimeTicks,
+      hitMask: 0,
+    };
+    world.projectiles.push(projectile);
+    events.push({
+      t: 'projectileSpawn',
+      id: projectile.id,
+      player: ownerIndex,
+      specId: spec.id,
+      x: projectile.x,
+      y: projectile.y,
+    });
+  }
 }
 
 function updateProjectiles(world: SimWorld, events: SimEvent[]): void {
@@ -651,6 +665,8 @@ export function checksum(world: SimWorld): number {
     h = hashInt(h, fighter.prevButtons);
     h = hashInt(h, fighter.downBufferedUntilTick);
     h = hashInt(h, fighter.chargeTicks);
+    h = hashInt(h, fighter.installTicks);
+    h = hashInt(h, fighter.slowTicks);
 
     // The command ring decides whether a motion input has been completed, so two
     // clients holding different histories would disagree about which move comes

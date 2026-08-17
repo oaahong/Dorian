@@ -69,6 +69,10 @@ export interface TickSpec {
   hardKnockdown: boolean;
   /** Meter awarded when the move finishes recovery. Zero for most attacks. */
   meterOnComplete: number;
+  /** How many projectiles a summon puts out. One for everything else. */
+  projectileCount: number;
+  selfStatus: { kind: 'install'; ticks: number } | null;
+  hitStatus: { kind: 'slow'; ticks: number } | null;
 }
 
 /** Matches the inline fallbacks in the original CombatSystem, in ticks. */
@@ -111,6 +115,9 @@ export function toTickSpec(spec: AttackSpec): TickSpec {
     unblockable: spec.unblockable ?? false,
     hardKnockdown: spec.hardKnockdown ?? false,
     meterOnComplete: spec.meterOnComplete ?? 0,
+    projectileCount: spec.projectileCount ?? 1,
+    selfStatus: spec.selfStatus ?? null,
+    hitStatus: spec.hitStatus ?? null,
   };
 }
 
