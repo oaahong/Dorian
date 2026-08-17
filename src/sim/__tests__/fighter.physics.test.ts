@@ -20,7 +20,7 @@ import { attackRuntime } from './factories';
  */
 
 const spawn = (overrides: Partial<SimFighter> = {}): SimFighter => ({
-  ...createFighter('collapse', 350, 1),
+  ...createFighter('pink', 350, 1),
   ...overrides,
 });
 

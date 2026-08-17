@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import { BUTTON, EMPTY_INPUT, type InputFrame } from '../sim/input';
+import { BUTTON, EMPTY_INPUT, INPUT_FRAME_MASK, type InputFrame } from '../sim/input';
 
 const P1_KEYS = {
   [BUTTON.Left]: 'KeyA',
@@ -9,6 +9,8 @@ const P1_KEYS = {
   [BUTTON.Light]: 'KeyF',
   [BUTTON.Heavy]: 'KeyG',
   [BUTTON.Special]: 'KeyH',
+  [BUTTON.Throw]: 'KeyR',
+  [BUTTON.Ultimate]: 'KeyT',
 } as const;
 
 const P2_KEYS = {
@@ -19,6 +21,8 @@ const P2_KEYS = {
   [BUTTON.Light]: 'KeyJ',
   [BUTTON.Heavy]: 'KeyK',
   [BUTTON.Special]: 'KeyL',
+  [BUTTON.Throw]: 'KeyU',
+  [BUTTON.Ultimate]: 'KeyI',
 } as const;
 
 /**
@@ -69,7 +73,7 @@ export class KeyboardSampler {
 
   /** Read and clear the latch. Call exactly once per simulation tick. */
   sample(): InputFrame {
-    const frame = (this.held | this.latched) & 0x7f;
+    const frame = (this.held | this.latched) & INPUT_FRAME_MASK;
     this.latched = 0;
     return frame;
   }

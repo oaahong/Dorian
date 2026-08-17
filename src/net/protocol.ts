@@ -9,8 +9,8 @@ import type { PlayerIndex } from '../sim/types';
  * - Lobby traffic is JSON. It is rare, human-readable in a network inspector, and
  *   its shape changes as features are added.
  * - Input and checksum traffic is binary. It runs 60 times a second for the whole
- *   match, and a frame really is one byte — wrapping that in JSON would multiply
- *   the bandwidth by roughly thirty for no benefit.
+ *   match, and a frame really is two bytes — wrapping that in JSON would multiply
+ *   the bandwidth by roughly fifteen for no benefit.
  */
 
 // --- Lobby (JSON) -----------------------------------------------------------
@@ -163,16 +163,26 @@ export interface ChecksumPacket {
   hash: number;
 }
 
-/** `[kind:u8][startTick:u32][count:u8][frames:u8...]` — six bytes plus the run. */
+/**
+ * `[kind:u8][startTick:u32][count:u8][frames:u16le...]` — six bytes plus two per
+ * frame.
+ *
+ * A frame was one byte until the control scheme grew a throw and a dedicated
+ * ultimate button, which put it at nine bits. Both clients are served the same
+ * build and a match cannot start between mismatched ones, so widening the field
+ * needs no version negotiation — but it does mean an old client and a new one
+ * would talk past each other rather than fail loudly, which is worth knowing if a
+ * deploy is ever staged rather than atomic.
+ */
 export function encodeInput(packet: InputPacket): Uint8Array {
   const count = Math.min(packet.frames.length, MAX_INPUT_BATCH);
-  const bytes = new Uint8Array(6 + count);
+  const bytes = new Uint8Array(6 + count * 2);
   const view = new DataView(bytes.buffer);
   view.setUint8(0, KIND_INPUT);
   view.setUint32(1, packet.startTick, true);
   view.setUint8(5, count);
   for (let i = 0; i < count; i += 1) {
-    bytes[6 + i] = packet.frames[i]! & INPUT_FRAME_MASK;
+    view.setUint16(6 + i * 2, packet.frames[i]! & INPUT_FRAME_MASK, true);
   }
   return bytes;
 }
@@ -205,9 +215,11 @@ export function decodeBinary(data: ArrayBufferView | ArrayBuffer): BinaryPacket 
       if (bytes.length < 6) return null;
       const count = view.getUint8(5);
       if (count > MAX_INPUT_BATCH) return null;
-      if (bytes.length < 6 + count) return null;
+      if (bytes.length < 6 + count * 2) return null;
       const frames: InputFrame[] = [];
-      for (let i = 0; i < count; i += 1) frames.push(bytes[6 + i]! & INPUT_FRAME_MASK);
+      for (let i = 0; i < count; i += 1) {
+        frames.push(view.getUint16(6 + i * 2, true) & INPUT_FRAME_MASK);
+      }
       return { kind: 'input', startTick: view.getUint32(1, true), frames };
     }
     case KIND_CHECKSUM: {

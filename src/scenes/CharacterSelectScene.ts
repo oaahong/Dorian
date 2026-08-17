@@ -12,6 +12,33 @@ interface CursorState {
 }
 
 /**
+ * The select grid: twelve fighters in four columns of three.
+ *
+ * It used to be four by two with taller cells, and a third row at that size ran
+ * off the bottom of the 720px stage — so the cells shrank rather than the roster
+ * being paged. One definition, because the layout, the cursor wrap and the
+ * highlight position all derive from it, and when they were three separate copies
+ * of `% 4` and `/ 4` the row count could drift between them.
+ */
+const GRID = { cols: 4, rows: 3, startX: 112, startY: 172, gapX: 152, gapY: 186 } as const;
+
+/** Cell art, and the gap under it the name label sits in. */
+const CARD = {
+  width: 110,
+  height: 138,
+  frameWidth: 120,
+  frameHeight: 150,
+  labelOffsetY: 92,
+  /** How much the focused cell swells. */
+  focusScale: 1.05,
+} as const;
+
+const cellPosition = (index: number) => ({
+  x: GRID.startX + (index % GRID.cols) * GRID.gapX,
+  y: GRID.startY + Math.floor(index / GRID.cols) * GRID.gapY,
+});
+
+/**
  * Character select intentionally uses KeyboardEvent.code instead of key.
  * On macOS / Windows with a CJK IME active, event.key can become "Process"
  * or composition text for WASD/F/G. event.code always tracks the physical key,
@@ -26,6 +53,7 @@ export class CharacterSelectScene extends Phaser.Scene {
   private p2Frame!: Phaser.GameObjects.Rectangle;
   private detailCard!: Phaser.GameObjects.Image;
   private detailText!: Phaser.GameObjects.Text;
+  private taglineText!: Phaser.GameObjects.Text;
   private focusOwner: 1 | 2 = 1;
   private inputLockedUntil = 0;
   private leaving = false;
@@ -50,25 +78,20 @@ export class CharacterSelectScene extends Phaser.Scene {
       stroke: '#050505',
       strokeThickness: 7,
     });
-    this.add.text(32, 65, gameState.data.mode === 'cpu' ? 'P1 SELECT • CPU WILL RANDOMIZE' : 'P1 + P2 SELECT', {
+    this.add.text(32, 68, gameState.data.mode === 'cpu' ? 'P1 SELECT • CPU WILL RANDOMIZE' : 'P1 + P2 SELECT', {
       fontFamily: FONT_FAMILY,
       fontSize: '17px',
       color: '#F3E9D0',
     });
 
-    const startX = 112;
-    const startY = 190;
-    const gapX = 170;
-    const gapY = 245;
-
     FIGHTERS.forEach((fighter, index) => {
-      const col = index % 4;
-      const row = Math.floor(index / 4);
-      const x = startX + col * gapX;
-      const y = startY + row * gapY;
-
-      const frame = this.add.rectangle(x, y, 146, 190, 0x090909, 1).setStrokeStyle(2, 0x5f5226, 0.9);
-      const card = this.add.image(x, y, thumbTextureKey(fighter)).setDisplaySize(136, 170).setInteractive({ useHandCursor: true });
+      const { x, y } = cellPosition(index);
+      const frame = this.add
+        .rectangle(x, y, CARD.frameWidth, CARD.frameHeight, 0x090909, 1)
+        .setStrokeStyle(2, 0x5f5226, 0.9);
+      const card = this.add.image(x, y, thumbTextureKey(fighter))
+        .setDisplaySize(CARD.width, CARD.height)
+        .setInteractive({ useHandCursor: true });
 
       card.on('pointerover', () => {
         if (this.leaving) return;
@@ -101,7 +124,7 @@ export class CharacterSelectScene extends Phaser.Scene {
         this.tryFinishSelection();
       });
 
-      this.add.text(x, y + 103, `${fighter.number} ${fighter.shortName}`, {
+      this.add.text(x, y + CARD.labelOffsetY, `${fighter.number} ${fighter.shortName}`, {
         fontFamily: FONT_FAMILY,
         fontSize: '15px',
         color: '#F3E9D0',
@@ -111,24 +134,33 @@ export class CharacterSelectScene extends Phaser.Scene {
       this.cards.push(card);
     });
 
-    this.p1Frame = this.add.rectangle(0, 0, 156, 200, 0x000000, 0).setStrokeStyle(5, COLORS.gold, 1).setDepth(10);
-    this.p2Frame = this.add.rectangle(0, 0, 166, 210, 0x000000, 0).setStrokeStyle(4, COLORS.cyan, 1).setDepth(11).setAlpha(gameState.data.mode === 'pvp' ? 1 : 0);
+    this.p1Frame = this.add.rectangle(0, 0, 132, 162, 0x000000, 0).setStrokeStyle(5, COLORS.gold, 1).setDepth(10);
+    this.p2Frame = this.add.rectangle(0, 0, 142, 172, 0x000000, 0).setStrokeStyle(4, COLORS.cyan, 1).setDepth(11).setAlpha(gameState.data.mode === 'pvp' ? 1 : 0);
 
-    this.detailCard = this.add.image(950, 275, thumbTextureKey(FIGHTERS[0]!)).setDisplaySize(238, 298);
-    this.detailText = this.add.text(795, 445, '', {
+    this.detailCard = this.add.image(950, 232, thumbTextureKey(FIGHTERS[0]!)).setDisplaySize(214, 268);
+    // Ten lines of detail at 18px overflowed the panel and collided with the
+    // help line once the roster grew a stat row; tightened to fit inside it.
+    this.detailText = this.add.text(795, 386, '', {
       fontFamily: FONT_FAMILY,
-      fontSize: '18px',
+      fontSize: '17px',
       color: '#F3E9D0',
-      lineSpacing: 8,
+      lineSpacing: 5,
       wordWrap: { width: 400 },
     });
 
-    this.add.rectangle(972, 360, 470, 640, 0x090909, 0.65).setStrokeStyle(2, COLORS.gold, 0.55).setDepth(-1);
+    this.taglineText = this.add.text(795, 650, '', {
+      fontFamily: FONT_FAMILY,
+      fontSize: '16px',
+      color: '#bfb49c',
+      wordWrap: { width: 380 },
+    });
+
+    this.add.rectangle(972, 356, 470, 630, 0x090909, 0.65).setStrokeStyle(2, COLORS.gold, 0.55).setDepth(-1);
 
     const help = gameState.data.mode === 'cpu'
       ? 'WASD / ARROWS MOVE  •  F / ENTER CONFIRM  •  G / ESC BACK'
       : 'P1 WASD + F     P2 ARROWS + J     G / ESC BACK';
-    this.add.text(960, 675, help, {
+    this.add.text(960, 698, help, {
       fontFamily: FONT_FAMILY,
       fontSize: '15px',
       color: '#bfb49c',
@@ -250,18 +282,13 @@ export class CharacterSelectScene extends Phaser.Scene {
   }
 
   private moveCursor(cursor: CursorState, dx: number, dy: number): void {
-    let col = cursor.index % 4;
-    let row = Math.floor(cursor.index / 4);
-    col = (col + dx + 4) % 4;
-    row = (row + dy + 2) % 2;
-    cursor.index = row * 4 + col;
+    const col = (Math.floor(cursor.index % GRID.cols) + dx + GRID.cols) % GRID.cols;
+    const row = (Math.floor(cursor.index / GRID.cols) + dy + GRID.rows) % GRID.rows;
+    cursor.index = row * GRID.cols + col;
   }
 
   private updateSelectionVisuals(): void {
-    const pos = (index: number) => ({
-      x: 112 + (index % 4) * 170,
-      y: 190 + Math.floor(index / 4) * 245,
-    });
+    const pos = cellPosition;
 
     const p1 = pos(this.p1.index);
     this.p1Frame.setPosition(p1.x, p1.y).setAlpha(this.p1.locked ? 0.55 : 1);
@@ -270,7 +297,12 @@ export class CharacterSelectScene extends Phaser.Scene {
     this.p2Frame.setPosition(p2.x, p2.y).setAlpha(gameState.data.mode === 'pvp' ? (this.p2.locked ? 0.55 : 1) : 0);
 
     const focusIndex = this.focusOwner === 1 ? this.p1.index : this.p2.index;
-    this.cards.forEach((card, i) => card.setDisplaySize(i === focusIndex ? 143 : 136, i === focusIndex ? 179 : 170));
+    // Derived from CARD rather than written out again: these were the old
+    // cell dimensions and silently overrode the layout when the grid shrank.
+    this.cards.forEach((card, i) => {
+      const scale = i === focusIndex ? CARD.focusScale : 1;
+      card.setDisplaySize(CARD.width * scale, CARD.height * scale);
+    });
 
     const focused = FIGHTERS[this.focusOwner === 1 ? this.p1.index : this.p2.index]!;
     this.detailCard.setTexture(thumbTextureKey(focused));
@@ -290,10 +322,13 @@ export class CharacterSelectScene extends Phaser.Scene {
       `RANGE    ${bars(focused.rangeStat)}`,
       `CONTROL  ${bars(focused.controlStat)}`,
       '',
-      `SPECIAL  ${focused.special.name}`,
+      `SPECIAL  ${focused.specials.quarterForward.name}`,
       `ULTIMATE ${focused.ultimate.name}`,
-      '',
-      focused.tagline,
     ]).setColor(this.focusOwner === 1 ? '#E9B928' : '#00C8FF');
+
+    // The tagline sits outside the stat block so it can wrap without pushing the
+    // moves off the bottom of the panel, which is what it did when it was the
+    // last line of one long text object.
+    this.taglineText.setText(focused.tagline);
   }
 }

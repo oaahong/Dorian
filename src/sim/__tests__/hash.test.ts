@@ -77,7 +77,7 @@ describe('hashFloat', () => {
 
 describe('hashString', () => {
   it('distinguishes fighter ids', () => {
-    expect(hashString(HASH_SEED, 'collapse')).not.toBe(hashString(HASH_SEED, 'cry'));
+    expect(hashString(HASH_SEED, 'pink')).not.toBe(hashString(HASH_SEED, 'ya'));
   });
 
   it('distinguishes strings of the same length', () => {
@@ -100,10 +100,10 @@ describe('mixed field hashing', () => {
         hashInt(hashFloat(hashFloat(hashString(HASH_SEED, f.id), f.hp), f.x), f.state) ^ f.energy,
       );
 
-    const base = { id: 'collapse', hp: 100, x: 350, state: 0, energy: 0 };
+    const base = { id: 'pink', hp: 100, x: 350, state: 0, energy: 0 };
     const baseline = hashFighter(base);
 
-    expect(hashFighter({ ...base, id: 'cry' })).not.toBe(baseline);
+    expect(hashFighter({ ...base, id: 'ya' })).not.toBe(baseline);
     expect(hashFighter({ ...base, hp: 99.5 })).not.toBe(baseline);
     expect(hashFighter({ ...base, x: 350.001 })).not.toBe(baseline);
     expect(hashFighter({ ...base, state: 1 })).not.toBe(baseline);

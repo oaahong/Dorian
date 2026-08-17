@@ -18,7 +18,7 @@ import type { ChecksumMessage, InputMessage, Transport } from '../Transport';
 
 const SETUP: MatchSetup = {
   seed: 20260815,
-  p1Character: 'collapse',
+  p1Character: 'pink',
   p2Character: 'wizard',
   stage: 'freezer',
 };

@@ -1,0 +1,12 @@
+import fs from 'node:fs';import path from 'node:path';import {spawnSync} from 'node:child_process';import process from 'node:process';
+const root=process.cwd(),site=path.join(root,'.runtime-site'),out=path.join(site,'src');fs.rmSync(site,{recursive:true,force:true});fs.mkdirSync(out,{recursive:true});
+function walk(dir){return fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):e.name.endsWith('.ts')?[path.join(dir,e.name)]:[])}
+const files=walk(path.join(root,'src'));
+const args=['node_modules/typescript/bin/tsc','--target','ES2022','--module','ESNext','--moduleResolution','Bundler','--strict','true','--skipLibCheck','true','--esModuleInterop','true','--allowSyntheticDefaultImports','true','--lib','ES2022,DOM,DOM.Iterable','--outDir',out,'--rootDir',path.join(root,'src'),...files];
+const r=spawnSync(process.execPath,args,{cwd:root,encoding:'utf8'});if(r.status!==0){process.stderr.write(r.stdout+r.stderr);process.exit(r.status??1);}
+for(const file of walkJs(out)){let s=fs.readFileSync(file,'utf8');s=s.replace(/import\s+['"]\.\/style\.css['"];?/g,'');s=s.replace(/(from\s+['"])(\.\.?\/[^'"]+)(['"])/g,(m,a,b,c)=>a+withJs(b)+c);s=s.replace(/(import\s*\(\s*['"])(\.\.?\/[^'"]+)(['"]\s*\))/g,(m,a,b,c)=>a+withJs(b)+c);s=s.replace(/(['"`])\/assets\//g,'$1assets/');fs.writeFileSync(file,s);}
+function walkJs(dir){return fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walkJs(path.join(dir,e.name)):e.name.endsWith('.js')?[path.join(dir,e.name)]:[])}
+function withJs(p){return /\.[a-z0-9]+$/i.test(p)?p:p+'.js'}
+fs.mkdirSync(path.join(site,'vendor'),{recursive:true});fs.copyFileSync(path.join(root,'node_modules/phaser/dist/phaser.esm.js'),path.join(site,'vendor/phaser.esm.js'));fs.copyFileSync(path.join(root,'src/style.css'),path.join(site,'style.css'));fs.symlinkSync(path.join(root,'public/assets'),path.join(site,'assets'),'dir');
+fs.writeFileSync(path.join(site,'index.html'),`<!doctype html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MEME FIGHT QA</title><link rel="stylesheet" href="./style.css"><script type="importmap">{"imports":{"phaser":"./vendor/phaser.esm.js"}}</script></head><body><div id="game-shell"><div id="game"></div><div class="crt-overlay"></div></div><script type="module" src="./src/main.js"></script></body></html>`);
+console.log(`RUNTIME FALLBACK SITE READY: ${site}`);

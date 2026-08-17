@@ -150,8 +150,8 @@ describe('LockstepSession', () => {
 
     it('masks a frame carrying undefined bits', () => {
       session.submitLocalInput(0, EMPTY_INPUT);
-      session.acceptRemoteInput({ startTick: DELAY, frames: [0xff] });
-      expect(session.inputsForTick(DELAY)?.[1]).toBe(0x7f);
+      session.acceptRemoteInput({ startTick: DELAY, frames: [0xffff] });
+      expect(session.inputsForTick(DELAY)?.[1]).toBe(0x1ff);
     });
   });
 

@@ -1,5 +1,6 @@
 import type { AttackKind } from '../combat/AttackSpec';
 import type { FighterState } from '../fighters/FighterState';
+import type { CommandHistory } from './command';
 
 /**
  * Simulation state. Plain data only — no class instances, no object references
@@ -142,6 +143,15 @@ export interface SimAttack {
   hitMask: number;
   /** Whether the ultimate's one-off presentation has already fired. */
   presented: boolean;
+  /**
+   * How many of the spec's `hits` have landed. Indexes the damage list, and once
+   * it reaches the end the attack can no longer connect.
+   */
+  hitsUsed: number;
+  /** Absolute tick from which a multi-hit attack may connect again. */
+  rehitReadyTick: number;
+  /** How many hits this instance's armour window has already absorbed. */
+  armorUsed: number;
 }
 
 export interface SimFighter {
@@ -166,6 +176,14 @@ export interface SimFighter {
   guardHeld: boolean;
   /** Previous tick's raw button mask, for rising-edge detection. */
   prevButtons: number;
+  /**
+   * The last COMMAND_HISTORY_TICKS of raw input, for motion recognition.
+   *
+   * In the world rather than in a controller because lockstep only ships raw
+   * input: anything derived has to be recomputed identically on both machines,
+   * and anything remembered has to be restorable by a rollback.
+   */
+  commandHistory: CommandHistory;
   /** Absolute tick until which a crouch press still counts toward the ultimate. */
   downBufferedUntilTick: number;
 }

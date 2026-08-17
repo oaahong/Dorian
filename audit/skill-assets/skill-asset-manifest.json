@@ -1,0 +1,5842 @@
+{
+  "version": 1,
+  "sourcePipeline": "scripts/extract_skill_assets.py",
+  "fighters": {
+    "alien": {
+      "sourceSheet": "Alien cat必殺技.png",
+      "assets": [
+        {
+          "poseId": "A",
+          "textureId": "skill-alien-a",
+          "sourceSheet": "Alien cat必殺技.png",
+          "sourceRect": [
+            15,
+            14,
+            301,
+            261
+          ],
+          "outputPath": "public/assets/skills/alien/A.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            222,
+            209
+          ],
+          "sha256": "8369db2f4e05a7c1818e25f62bee36899e758c4d64b2bcbc424805994171a3b4"
+        },
+        {
+          "poseId": "B",
+          "textureId": "skill-alien-b",
+          "sourceSheet": "Alien cat必殺技.png",
+          "sourceRect": [
+            326,
+            14,
+            614,
+            261
+          ],
+          "outputPath": "public/assets/skills/alien/B.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            245,
+            236
+          ],
+          "sha256": "3a14fe38373e35e432f33ffb37840346c29f2793d6bd9a87f54621d3f4a0cc15"
+        },
+        {
+          "poseId": "C",
+          "textureId": "skill-alien-c",
+          "sourceSheet": "Alien cat必殺技.png",
+          "sourceRect": [
+            638,
+            14,
+            926,
+            261
+          ],
+          "outputPath": "public/assets/skills/alien/C.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            271,
+            244
+          ],
+          "sha256": "d897bdfa666d6b39841c359709ee472941c16d706c652e88205f52b2361f6bfb"
+        },
+        {
+          "poseId": "D",
+          "textureId": "skill-alien-d",
+          "sourceSheet": "Alien cat必殺技.png",
+          "sourceRect": [
+            950,
+            14,
+            1238,
+            261
+          ],
+          "outputPath": "public/assets/skills/alien/D.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_RELEASE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            288,
+            174
+          ],
+          "sha256": "164f08eeb7e5f90dadf4ca4f593ce0aef5d05d7b163904b703ba4adc35a43413"
+        },
+        {
+          "poseId": "E",
+          "textureId": "skill-alien-e",
+          "sourceSheet": "Alien cat必殺技.png",
+          "sourceRect": [
+            15,
+            325,
+            302,
+            572
+          ],
+          "outputPath": "public/assets/skills/alien/E.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            254,
+            100
+          ],
+          "sha256": "7c380f70f174163d12996cf7202f6b4948548ffad64a1d2ba0f1033f2fee0bef"
+        },
+        {
+          "poseId": "F",
+          "textureId": "skill-alien-f",
+          "sourceSheet": "Alien cat必殺技.png",
+          "sourceRect": [
+            326,
+            325,
+            614,
+            572
+          ],
+          "outputPath": "public/assets/skills/alien/F.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            284,
+            174
+          ],
+          "sha256": "b91f08f2a5c1472d0100e3564822db176cc1b4392049bff0b4926b5cd82653b9"
+        },
+        {
+          "poseId": "G",
+          "textureId": "skill-alien-g",
+          "sourceSheet": "Alien cat必殺技.png",
+          "sourceRect": [
+            638,
+            325,
+            926,
+            572
+          ],
+          "outputPath": "public/assets/skills/alien/G.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            288,
+            235
+          ],
+          "sha256": "994d16da1c16b777e1076fd6ec25e82fbed17e3a7858ec23ec0b433b27b7dcae"
+        },
+        {
+          "poseId": "H",
+          "textureId": "skill-alien-h",
+          "sourceSheet": "Alien cat必殺技.png",
+          "sourceRect": [
+            950,
+            325,
+            1238,
+            572
+          ],
+          "outputPath": "public/assets/skills/alien/H.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            265,
+            203
+          ],
+          "sha256": "0759348d9f859cdc07224cd89ab34b8e73ee6202079703537da6dd517b35bb8a"
+        },
+        {
+          "poseId": "I",
+          "textureId": "skill-alien-i",
+          "sourceSheet": "Alien cat必殺技.png",
+          "sourceRect": [
+            15,
+            638,
+            301,
+            884
+          ],
+          "outputPath": "public/assets/skills/alien/I.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            234,
+            241
+          ],
+          "sha256": "558ae0fa95545dbeb593759e4be54b793ea2a07bf23563fb8c79c6a5dc15604f"
+        },
+        {
+          "poseId": "J",
+          "textureId": "skill-alien-j",
+          "sourceSheet": "Alien cat必殺技.png",
+          "sourceRect": [
+            326,
+            638,
+            614,
+            884
+          ],
+          "outputPath": "public/assets/skills/alien/J.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            180,
+            202
+          ],
+          "sha256": "05916b392901fee6b1b41ac08a8d8b4ee865d60f5c7a53cd75b7f2e869f5e55d"
+        },
+        {
+          "poseId": "K",
+          "textureId": "skill-alien-k",
+          "sourceSheet": "Alien cat必殺技.png",
+          "sourceRect": [
+            638,
+            638,
+            926,
+            884
+          ],
+          "outputPath": "public/assets/skills/alien/K.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            288,
+            246
+          ],
+          "sha256": "28ec20bf9f5b563eb8b7bde37f7cf8c8f256b285068d24f81fc561553f545418"
+        },
+        {
+          "poseId": "L",
+          "textureId": "skill-alien-l",
+          "sourceSheet": "Alien cat必殺技.png",
+          "sourceRect": [
+            950,
+            638,
+            1238,
+            884
+          ],
+          "outputPath": "public/assets/skills/alien/L.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            287,
+            235
+          ],
+          "sha256": "bf9805137fe08f46639d28c81c917febc5a46eb09eb636f03aad85b5e836eb41"
+        },
+        {
+          "poseId": "M",
+          "textureId": "skill-alien-m",
+          "sourceSheet": "Alien cat必殺技.png",
+          "sourceRect": [
+            15,
+            949,
+            302,
+            1194
+          ],
+          "outputPath": "public/assets/skills/alien/M.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            286,
+            239
+          ],
+          "sha256": "95f13c9c3dfe08f3a6cc7fd2d40ffd1c9f68fdb3de6049a76cb509e03ab71cb5"
+        },
+        {
+          "poseId": "N",
+          "textureId": "skill-alien-n",
+          "sourceSheet": "Alien cat必殺技.png",
+          "sourceRect": [
+            326,
+            949,
+            614,
+            1194
+          ],
+          "outputPath": "public/assets/skills/alien/N.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            287,
+            245
+          ],
+          "sha256": "31fe8d1dc561ae73412ccaff0f66c63b4f6a6f4b1fa26aedda3ff88e1c10e4cd"
+        },
+        {
+          "poseId": "O",
+          "textureId": "skill-alien-o",
+          "sourceSheet": "Alien cat必殺技.png",
+          "sourceRect": [
+            638,
+            949,
+            926,
+            1194
+          ],
+          "outputPath": "public/assets/skills/alien/O.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            288,
+            245
+          ],
+          "sha256": "593ed6add9e4ba9ef3fd08caa983b762d1c8a141a2cd9a1a713ad3c68f7c77ae"
+        },
+        {
+          "poseId": "P",
+          "textureId": "skill-alien-p",
+          "sourceSheet": "Alien cat必殺技.png",
+          "sourceRect": [
+            950,
+            949,
+            1238,
+            1194
+          ],
+          "outputPath": "public/assets/skills/alien/P.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            288,
+            186
+          ],
+          "sha256": "d874f9edd0fcbe5d6940195449c1a4c76cd72bf9ccc1558b8220d1a7cfd743fc"
+        }
+      ]
+    },
+    "doge": {
+      "sourceSheet": "Doge必殺技.jpg",
+      "assets": [
+        {
+          "poseId": "A",
+          "textureId": "skill-doge-a",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            16,
+            14,
+            250,
+            271
+          ],
+          "outputPath": "public/assets/skills/doge/A.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            178,
+            190
+          ],
+          "sha256": "c51f4749bf477077f22699314f4d8ad33a8bc6a0468eca86e89fa1a17c7b1a0d"
+        },
+        {
+          "poseId": "B",
+          "textureId": "skill-doge-b",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            254,
+            14,
+            487,
+            271
+          ],
+          "outputPath": "public/assets/skills/doge/B.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            212,
+            205
+          ],
+          "sha256": "099dbf5c0457e88a4ffc7018d0d2de86e1e4f45c5e4d7b02d502f2e0c023b9c1"
+        },
+        {
+          "poseId": "C",
+          "textureId": "skill-doge-c",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            490,
+            14,
+            741,
+            271
+          ],
+          "outputPath": "public/assets/skills/doge/C.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            244,
+            233
+          ],
+          "sha256": "2afe75250ffedb3cac97b149e9fd362fd186b8b286aced618d5c17622179d875"
+        },
+        {
+          "poseId": "D",
+          "textureId": "skill-doge-d",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            745,
+            14,
+            1012,
+            271
+          ],
+          "outputPath": "public/assets/skills/doge/D.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_RELEASE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            240,
+            163
+          ],
+          "sha256": "26caaf0027049dd58bbdabee0167813d482956119e7b1a4689e0d295ac880dc2"
+        },
+        {
+          "poseId": "E",
+          "textureId": "skill-doge-e",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            1016,
+            14,
+            1237,
+            271
+          ],
+          "outputPath": "public/assets/skills/doge/E.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            182,
+            104
+          ],
+          "sha256": "4c608c2d2d4163b90c48a7a48dd014e64588998b312867a935e18f19a22552e0"
+        },
+        {
+          "poseId": "F",
+          "textureId": "skill-doge-f",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            1241,
+            14,
+            1518,
+            271
+          ],
+          "outputPath": "public/assets/skills/doge/F.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            253,
+            158
+          ],
+          "sha256": "f460b37b67c9471bf8f5e714486f416bb60f3f6d62281343ce3e9c88ae6bd677"
+        },
+        {
+          "poseId": "G",
+          "textureId": "skill-doge-g",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            16,
+            329,
+            250,
+            572
+          ],
+          "outputPath": "public/assets/skills/doge/G.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            222,
+            210
+          ],
+          "sha256": "9c6fd2146f27230d82aad37b70fc4a522e35d869ad0626afef37201b841503ee"
+        },
+        {
+          "poseId": "H",
+          "textureId": "skill-doge-h",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            254,
+            329,
+            487,
+            572
+          ],
+          "outputPath": "public/assets/skills/doge/H.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            170,
+            183
+          ],
+          "sha256": "90eb651f0e91179ce9b08a795ccffc77939962741db214e2250efe1258e3f815"
+        },
+        {
+          "poseId": "I",
+          "textureId": "skill-doge-i",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            490,
+            329,
+            741,
+            572
+          ],
+          "outputPath": "public/assets/skills/doge/I.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            243,
+            234
+          ],
+          "sha256": "43923a941fdaf8de50d781ea59bae932bac9c4594c0a956c34664230c74fa93b"
+        },
+        {
+          "poseId": "J",
+          "textureId": "skill-doge-j",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            745,
+            329,
+            1012,
+            572
+          ],
+          "outputPath": "public/assets/skills/doge/J.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            197,
+            224
+          ],
+          "sha256": "b385c1d7001e3caadd4d19aa50551c37c0c817d88adf82fde55362ead1b5ec5a"
+        },
+        {
+          "poseId": "K",
+          "textureId": "skill-doge-k",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            1016,
+            329,
+            1237,
+            572
+          ],
+          "outputPath": "public/assets/skills/doge/K.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            206,
+            194
+          ],
+          "sha256": "6b0c3f61ad1f205f626de977ef62180d16b0ba4130961ebd295f3cb928977ae6"
+        },
+        {
+          "poseId": "L",
+          "textureId": "skill-doge-l",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            1241,
+            329,
+            1518,
+            572
+          ],
+          "outputPath": "public/assets/skills/doge/L.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            214,
+            215
+          ],
+          "sha256": "3c5a965a645370c43ca68a230a5e0515133704f04b07a9655758ecf641f0f5f7"
+        },
+        {
+          "poseId": "M",
+          "textureId": "skill-doge-m",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            16,
+            630,
+            250,
+            890
+          ],
+          "outputPath": "public/assets/skills/doge/M.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            216,
+            172
+          ],
+          "sha256": "f209dec8913e80bb774933d83685d1b48d863cd0fac71ab7a4ca46b9c9a77a04"
+        },
+        {
+          "poseId": "N",
+          "textureId": "skill-doge-n",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            254,
+            630,
+            487,
+            890
+          ],
+          "outputPath": "public/assets/skills/doge/N.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            184,
+            238
+          ],
+          "sha256": "0c9d5c13dec1c669bdc1962011c1c317dfea86ce21f5f62e4f295c585f26893b"
+        },
+        {
+          "poseId": "O",
+          "textureId": "skill-doge-o",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            490,
+            630,
+            741,
+            890
+          ],
+          "outputPath": "public/assets/skills/doge/O.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            242,
+            235
+          ],
+          "sha256": "d8613b537812d68b584930480eb944cd070f7d968dd38f3884c59cda1b1c0110"
+        },
+        {
+          "poseId": "P",
+          "textureId": "skill-doge-p",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            745,
+            630,
+            1012,
+            890
+          ],
+          "outputPath": "public/assets/skills/doge/P.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            249,
+            225
+          ],
+          "sha256": "5ac00557cd6bbec96baaa9bdf167939b0ee5b97c1f90741b45ff009f3a49d0ee"
+        },
+        {
+          "poseId": "Q",
+          "textureId": "skill-doge-q",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            1016,
+            630,
+            1237,
+            890
+          ],
+          "outputPath": "public/assets/skills/doge/Q.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            198,
+            216
+          ],
+          "sha256": "ac1181d22ee8bb4e5bef0b456adb1ccf32dc5b40dc0b38812935d4ae97bd5d84"
+        },
+        {
+          "poseId": "R",
+          "textureId": "skill-doge-r",
+          "sourceSheet": "Doge必殺技.jpg",
+          "sourceRect": [
+            1241,
+            630,
+            1518,
+            890
+          ],
+          "outputPath": "public/assets/skills/doge/R.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            265,
+            203
+          ],
+          "sha256": "49807465334cfc1b41300a58a6c73ddbed02e61dc68c98693c5ffa09165fabcb"
+        }
+      ]
+    },
+    "ya": {
+      "sourceSheet": "YA鼠必殺技.jpg",
+      "assets": [
+        {
+          "poseId": "A",
+          "textureId": "skill-ya-a",
+          "sourceSheet": "YA鼠必殺技.jpg",
+          "sourceRect": [
+            18,
+            16,
+            298,
+            275
+          ],
+          "outputPath": "public/assets/skills/ya/A.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            189,
+            223
+          ],
+          "sha256": "217949a13d9edcb79faf75564210f10c6e6084a846b4cba0f649630d7781a693"
+        },
+        {
+          "poseId": "B",
+          "textureId": "skill-ya-b",
+          "sourceSheet": "YA鼠必殺技.jpg",
+          "sourceRect": [
+            314,
+            16,
+            593,
+            275
+          ],
+          "outputPath": "public/assets/skills/ya/B.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            254,
+            218
+          ],
+          "sha256": "d79b6e270ecbda9d61337510fb10405e6a951a9f7d0b071ec9c2682f1c999f16"
+        },
+        {
+          "poseId": "C",
+          "textureId": "skill-ya-c",
+          "sourceSheet": "YA鼠必殺技.jpg",
+          "sourceRect": [
+            610,
+            16,
+            888,
+            275
+          ],
+          "outputPath": "public/assets/skills/ya/C.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            273,
+            249
+          ],
+          "sha256": "a6d0e7975be2d4144e983caac0d553415eab9f61b590d583c3d078e22690bcc8"
+        },
+        {
+          "poseId": "D",
+          "textureId": "skill-ya-d",
+          "sourceSheet": "YA鼠必殺技.jpg",
+          "sourceRect": [
+            904,
+            16,
+            1216,
+            275
+          ],
+          "outputPath": "public/assets/skills/ya/D.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_RELEASE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            299,
+            196
+          ],
+          "sha256": "76e7c6eeffb96172cea055bc4875856ca13eb8afc97ae7d39900d396f7fd85e0"
+        },
+        {
+          "poseId": "E",
+          "textureId": "skill-ya-e",
+          "sourceSheet": "YA鼠必殺技.jpg",
+          "sourceRect": [
+            1233,
+            16,
+            1518,
+            275
+          ],
+          "outputPath": "public/assets/skills/ya/E.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            267,
+            147
+          ],
+          "sha256": "2e5a6cd6e3f8849775a494ba47c9d86442676448e9c09aa50aa78382003761d5"
+        },
+        {
+          "poseId": "F",
+          "textureId": "skill-ya-f",
+          "sourceSheet": "YA鼠必殺技.jpg",
+          "sourceRect": [
+            18,
+            344,
+            298,
+            597
+          ],
+          "outputPath": "public/assets/skills/ya/F.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            271,
+            203
+          ],
+          "sha256": "03a390e678b2ab7b8a9055fb817b877079f15ffe0fce4a5a0be52349d7c256f4"
+        },
+        {
+          "poseId": "G",
+          "textureId": "skill-ya-g",
+          "sourceSheet": "YA鼠必殺技.jpg",
+          "sourceRect": [
+            314,
+            344,
+            593,
+            597
+          ],
+          "outputPath": "public/assets/skills/ya/G.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            279,
+            231
+          ],
+          "sha256": "d92580f5b9c851407051165e592074c50353e7e96542ace4c4464009198f297f"
+        },
+        {
+          "poseId": "H",
+          "textureId": "skill-ya-h",
+          "sourceSheet": "YA鼠必殺技.jpg",
+          "sourceRect": [
+            610,
+            344,
+            888,
+            597
+          ],
+          "outputPath": "public/assets/skills/ya/H.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            175,
+            235
+          ],
+          "sha256": "7bfddf5f86fb5b9b11cb0e8bb423dc700f90478f65fa4ac030573a96bb8017d3"
+        },
+        {
+          "poseId": "I",
+          "textureId": "skill-ya-i",
+          "sourceSheet": "YA鼠必殺技.jpg",
+          "sourceRect": [
+            904,
+            344,
+            1181,
+            597
+          ],
+          "outputPath": "public/assets/skills/ya/I.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            271,
+            229
+          ],
+          "sha256": "eb33d25ec40fef0bd550579ea329dc74631cbf5fbfeca93eba9aaf0745af9e5e"
+        },
+        {
+          "poseId": "J",
+          "textureId": "skill-ya-j",
+          "sourceSheet": "YA鼠必殺技.jpg",
+          "sourceRect": [
+            1198,
+            344,
+            1518,
+            597
+          ],
+          "outputPath": "public/assets/skills/ya/J.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            320,
+            246
+          ],
+          "sha256": "a5e33ec25ebbec4e04c8d630d69d3b1f6025a8433633bd65053dc0e62d2eae90"
+        },
+        {
+          "poseId": "K",
+          "textureId": "skill-ya-k",
+          "sourceSheet": "YA鼠必殺技.jpg",
+          "sourceRect": [
+            18,
+            665,
+            347,
+            933
+          ],
+          "outputPath": "public/assets/skills/ya/K.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            242,
+            203
+          ],
+          "sha256": "33687a3e9f1d99491a688339f268a9c2a715e92169571968dcd0d0508b6f1f7c"
+        },
+        {
+          "poseId": "L",
+          "textureId": "skill-ya-l",
+          "sourceSheet": "YA鼠必殺技.jpg",
+          "sourceRect": [
+            364,
+            665,
+            664,
+            933
+          ],
+          "outputPath": "public/assets/skills/ya/L.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            171,
+            248
+          ],
+          "sha256": "56ccd01896bf40b6a343ea1ab751ac9601bde0bc5261fa7dab8d6b352041f008"
+        },
+        {
+          "poseId": "M",
+          "textureId": "skill-ya-m",
+          "sourceSheet": "YA鼠必殺技.jpg",
+          "sourceRect": [
+            681,
+            665,
+            1053,
+            933
+          ],
+          "outputPath": "public/assets/skills/ya/M.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            325,
+            257
+          ],
+          "sha256": "ea81de131bac492195041f04b8c76f300dadb6c63cda75e17dbb8bcdc6efacd2"
+        },
+        {
+          "poseId": "N",
+          "textureId": "skill-ya-n",
+          "sourceSheet": "YA鼠必殺技.jpg",
+          "sourceRect": [
+            1070,
+            665,
+            1518,
+            933
+          ],
+          "outputPath": "public/assets/skills/ya/N.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            428,
+            259
+          ],
+          "sha256": "53543ad33b37fc9ad23bdc2e999647a79ddc3e370c4140065ed5dc46b62e8ea5"
+        }
+      ]
+    },
+    "tempura": {
+      "sourceSheet": "Oh fucking 天婦羅尬哩涼必殺技.png",
+      "assets": [
+        {
+          "poseId": "A",
+          "textureId": "skill-tempura-a",
+          "sourceSheet": "Oh fucking 天婦羅尬哩涼必殺技.png",
+          "sourceRect": [
+            16,
+            15,
+            301,
+            250
+          ],
+          "outputPath": "public/assets/skills/tempura/A.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            199,
+            148
+          ],
+          "sha256": "33b22291eac06abc0d4e695f7303898a868ee48886517db348a646c3cd90b32f"
+        },
+        {
+          "poseId": "B",
+          "textureId": "skill-tempura-b",
+          "sourceSheet": "Oh fucking 天婦羅尬哩涼必殺技.png",
+          "sourceRect": [
+            327,
+            15,
+            613,
+            250
+          ],
+          "outputPath": "public/assets/skills/tempura/B.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            233,
+            140
+          ],
+          "sha256": "0882a3bd68be987e4dfb42e337f3a96e365c8e96c38e8bdfda66aa9af8a826c0"
+        },
+        {
+          "poseId": "C",
+          "textureId": "skill-tempura-c",
+          "sourceSheet": "Oh fucking 天婦羅尬哩涼必殺技.png",
+          "sourceRect": [
+            639,
+            15,
+            925,
+            250
+          ],
+          "outputPath": "public/assets/skills/tempura/C.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            237,
+            140
+          ],
+          "sha256": "e0aea5baf6b70b5054e148b0bb36f9c2e4a872925e2643cedf783f5a860015c8"
+        },
+        {
+          "poseId": "D",
+          "textureId": "skill-tempura-d",
+          "sourceSheet": "Oh fucking 天婦羅尬哩涼必殺技.png",
+          "sourceRect": [
+            951,
+            15,
+            1237,
+            250
+          ],
+          "outputPath": "public/assets/skills/tempura/D.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_RELEASE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            286,
+            182
+          ],
+          "sha256": "939970d4c6db5513c248b44d8df4290719fe4ee393b837c537b37889c1cbd003"
+        },
+        {
+          "poseId": "E",
+          "textureId": "skill-tempura-e",
+          "sourceSheet": "Oh fucking 天婦羅尬哩涼必殺技.png",
+          "sourceRect": [
+            16,
+            326,
+            301,
+            562
+          ],
+          "outputPath": "public/assets/skills/tempura/E.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            260,
+            104
+          ],
+          "sha256": "b158e87ab26c99023950ca750728bd9a2c4a4c14a78bfe5c849b2a0e7b445428"
+        },
+        {
+          "poseId": "F",
+          "textureId": "skill-tempura-f",
+          "sourceSheet": "Oh fucking 天婦羅尬哩涼必殺技.png",
+          "sourceRect": [
+            327,
+            326,
+            613,
+            562
+          ],
+          "outputPath": "public/assets/skills/tempura/F.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            225,
+            148
+          ],
+          "sha256": "1f32fa55ef514023fa23a4db4a0fe8b2156f062505ee8d6a4b00863d31de37ab"
+        },
+        {
+          "poseId": "G",
+          "textureId": "skill-tempura-g",
+          "sourceSheet": "Oh fucking 天婦羅尬哩涼必殺技.png",
+          "sourceRect": [
+            639,
+            326,
+            925,
+            562
+          ],
+          "outputPath": "public/assets/skills/tempura/G.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            285,
+            135
+          ],
+          "sha256": "8dfd4d40d9d14124221a7d405e3f1fad057d4ea1a56de22d75da82485d1837e9"
+        },
+        {
+          "poseId": "H",
+          "textureId": "skill-tempura-h",
+          "sourceSheet": "Oh fucking 天婦羅尬哩涼必殺技.png",
+          "sourceRect": [
+            951,
+            326,
+            1237,
+            562
+          ],
+          "outputPath": "public/assets/skills/tempura/H.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            255,
+            216
+          ],
+          "sha256": "83afe8274448ca8ab0bc1ae22b409fe493d7f4441add30d71a5d70197cf0c498"
+        },
+        {
+          "poseId": "I",
+          "textureId": "skill-tempura-i",
+          "sourceSheet": "Oh fucking 天婦羅尬哩涼必殺技.png",
+          "sourceRect": [
+            16,
+            639,
+            301,
+            851
+          ],
+          "outputPath": "public/assets/skills/tempura/I.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            241,
+            198
+          ],
+          "sha256": "410d050aaa3ca01534702c9e6d8740d3c2446ad6a70603389638c896a39375a1"
+        },
+        {
+          "poseId": "J",
+          "textureId": "skill-tempura-j",
+          "sourceSheet": "Oh fucking 天婦羅尬哩涼必殺技.png",
+          "sourceRect": [
+            327,
+            639,
+            613,
+            851
+          ],
+          "outputPath": "public/assets/skills/tempura/J.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            214,
+            169
+          ],
+          "sha256": "e52bc16df483031e21c354c7a2de34da68b1215b5b8864bb797aa7a35effbba9"
+        },
+        {
+          "poseId": "K",
+          "textureId": "skill-tempura-k",
+          "sourceSheet": "Oh fucking 天婦羅尬哩涼必殺技.png",
+          "sourceRect": [
+            639,
+            639,
+            925,
+            851
+          ],
+          "outputPath": "public/assets/skills/tempura/K.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            215,
+            180
+          ],
+          "sha256": "4441222f04b638df5dee10061d80a6dd423bc079f315f2f6ec404afa02b44f35"
+        },
+        {
+          "poseId": "L",
+          "textureId": "skill-tempura-l",
+          "sourceSheet": "Oh fucking 天婦羅尬哩涼必殺技.png",
+          "sourceRect": [
+            951,
+            639,
+            1237,
+            851
+          ],
+          "outputPath": "public/assets/skills/tempura/L.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            234,
+            176
+          ],
+          "sha256": "1c033551eb62bdb6e6404e1fdcea961853efcb096b3445852b8e92c0b0cd117b"
+        },
+        {
+          "poseId": "M",
+          "textureId": "skill-tempura-m",
+          "sourceSheet": "Oh fucking 天婦羅尬哩涼必殺技.png",
+          "sourceRect": [
+            16,
+            927,
+            301,
+            1161
+          ],
+          "outputPath": "public/assets/skills/tempura/M.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            224,
+            171
+          ],
+          "sha256": "e6020a94e0071dc8ae55acb89eb23f0566297e939847228b57662ac8b520ea72"
+        },
+        {
+          "poseId": "N",
+          "textureId": "skill-tempura-n",
+          "sourceSheet": "Oh fucking 天婦羅尬哩涼必殺技.png",
+          "sourceRect": [
+            327,
+            927,
+            613,
+            1161
+          ],
+          "outputPath": "public/assets/skills/tempura/N.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            230,
+            169
+          ],
+          "sha256": "6c442624594a2cdaf3d14823e176b6c271f2820b3015f46cff6d5ae260170b11"
+        },
+        {
+          "poseId": "O",
+          "textureId": "skill-tempura-o",
+          "sourceSheet": "Oh fucking 天婦羅尬哩涼必殺技.png",
+          "sourceRect": [
+            639,
+            927,
+            925,
+            1161
+          ],
+          "outputPath": "public/assets/skills/tempura/O.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            274,
+            202
+          ],
+          "sha256": "9adc380437d9f300446f4d7914edb85d70eefd3e39ddd240bc7f30656f9b2200"
+        },
+        {
+          "poseId": "P",
+          "textureId": "skill-tempura-p",
+          "sourceSheet": "Oh fucking 天婦羅尬哩涼必殺技.png",
+          "sourceRect": [
+            951,
+            927,
+            1237,
+            1161
+          ],
+          "outputPath": "public/assets/skills/tempura/P.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            286,
+            227
+          ],
+          "sha256": "8baaa6dd759bd192622251d52c683bfaa85923da6a767768355e1bf2f500d6d0"
+        }
+      ]
+    },
+    "goblin": {
+      "sourceSheet": "哥布林也想談戀愛必殺技.png",
+      "assets": [
+        {
+          "poseId": "A",
+          "textureId": "skill-goblin-a",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            17,
+            14,
+            242,
+            196
+          ],
+          "outputPath": "public/assets/skills/goblin/A.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            134,
+            175
+          ],
+          "sha256": "c6c5aad5fc37cd6b981f3d3fa3eb1245e32fee31241a9c94216770dae57db86d"
+        },
+        {
+          "poseId": "B",
+          "textureId": "skill-goblin-b",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            266,
+            14,
+            484,
+            196
+          ],
+          "outputPath": "public/assets/skills/goblin/B.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            155,
+            175
+          ],
+          "sha256": "c1e733f6502fac1ddf296ccae9ebd25de2735b98f1fa5ee4be22227a33092724"
+        },
+        {
+          "poseId": "C",
+          "textureId": "skill-goblin-c",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            509,
+            14,
+            743,
+            196
+          ],
+          "outputPath": "public/assets/skills/goblin/C.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            233,
+            174
+          ],
+          "sha256": "9be5ab13baeaa588d6bed06397eee37cde18f9d9e1520124060dba68c4f1ec59"
+        },
+        {
+          "poseId": "D",
+          "textureId": "skill-goblin-d",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            768,
+            14,
+            991,
+            196
+          ],
+          "outputPath": "public/assets/skills/goblin/D.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_RELEASE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            205,
+            155
+          ],
+          "sha256": "2189c9aee409d6dadcd582380fd8eec29ecca48d088852ae2a26f2e8428556e8"
+        },
+        {
+          "poseId": "E",
+          "textureId": "skill-goblin-e",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            1015,
+            14,
+            1237,
+            196
+          ],
+          "outputPath": "public/assets/skills/goblin/E.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            126,
+            125
+          ],
+          "sha256": "a1a2d679be31565a862f043a0f7c1478c6a4edb3992b971723c7ad0cb8d499b9"
+        },
+        {
+          "poseId": "F",
+          "textureId": "skill-goblin-f",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            17,
+            255,
+            241,
+            445
+          ],
+          "outputPath": "public/assets/skills/goblin/F.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            215,
+            188
+          ],
+          "sha256": "66538aa9ff56ecb0c2738030f10e8b54ac1c5e6ea6d0926fc1971533547ac835"
+        },
+        {
+          "poseId": "G",
+          "textureId": "skill-goblin-g",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            265,
+            255,
+            484,
+            445
+          ],
+          "outputPath": "public/assets/skills/goblin/G.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            219,
+            190
+          ],
+          "sha256": "646702acb1059839b3681bceb92393caaa7461d2986bb896c8d1096046670441"
+        },
+        {
+          "poseId": "H",
+          "textureId": "skill-goblin-h",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            508,
+            255,
+            744,
+            445
+          ],
+          "outputPath": "public/assets/skills/goblin/H.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            234,
+            187
+          ],
+          "sha256": "a36e32409a317a289ac00f153fea7c98cbe5b541c1ed977b95cb3427dd7f82b6"
+        },
+        {
+          "poseId": "I",
+          "textureId": "skill-goblin-i",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            768,
+            255,
+            990,
+            445
+          ],
+          "outputPath": "public/assets/skills/goblin/I.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            174,
+            185
+          ],
+          "sha256": "a5440183b7d6a3e74d11a943616dd7a0771d65023d3a4dcce1dacc88dcfad8e7"
+        },
+        {
+          "poseId": "J",
+          "textureId": "skill-goblin-j",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            1015,
+            255,
+            1237,
+            445
+          ],
+          "outputPath": "public/assets/skills/goblin/J.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            205,
+            173
+          ],
+          "sha256": "7ece098598b52b66ae5cbbb42eb877e3ef4b331fc2212159206b109ab06e24a8"
+        },
+        {
+          "poseId": "K",
+          "textureId": "skill-goblin-k",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            17,
+            506,
+            241,
+            696
+          ],
+          "outputPath": "public/assets/skills/goblin/K.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            208,
+            190
+          ],
+          "sha256": "0a580c3a1aa5dab0f5781b0daba7e084d86b29a91d268b8037335033ec081fe0"
+        },
+        {
+          "poseId": "L",
+          "textureId": "skill-goblin-l",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            265,
+            506,
+            484,
+            696
+          ],
+          "outputPath": "public/assets/skills/goblin/L.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            122,
+            190
+          ],
+          "sha256": "4b2443f6bb42fb0ae1ad10cdaaf87f4435988c2b3ed3fa035fbccc16b8c18475"
+        },
+        {
+          "poseId": "M",
+          "textureId": "skill-goblin-m",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            508,
+            506,
+            743,
+            696
+          ],
+          "outputPath": "public/assets/skills/goblin/M.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            161,
+            190
+          ],
+          "sha256": "d2f896ae0910e6e3e7bfc6fdb973a801fe2ef6a80b18b2e9b81ad18d5481761e"
+        },
+        {
+          "poseId": "N",
+          "textureId": "skill-goblin-n",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            768,
+            506,
+            990,
+            696
+          ],
+          "outputPath": "public/assets/skills/goblin/N.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            147,
+            190
+          ],
+          "sha256": "fb64d3050f8699ece4126fee3aa1add6b356a2b765e7d21f640e51503f535a8b"
+        },
+        {
+          "poseId": "O",
+          "textureId": "skill-goblin-o",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            1015,
+            506,
+            1237,
+            696
+          ],
+          "outputPath": "public/assets/skills/goblin/O.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            130,
+            176
+          ],
+          "sha256": "636e684ead707a5f8f2ae1047a52ff10441798de4745c02c23bf32c64bff58ae"
+        },
+        {
+          "poseId": "P",
+          "textureId": "skill-goblin-p",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            17,
+            756,
+            241,
+            932
+          ],
+          "outputPath": "public/assets/skills/goblin/P.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            175,
+            176
+          ],
+          "sha256": "44ee5987025f59d6cdf1c6f8ec2942ee3d0b99d237989d11361429b187e06175"
+        },
+        {
+          "poseId": "Q",
+          "textureId": "skill-goblin-q",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            265,
+            756,
+            484,
+            932
+          ],
+          "outputPath": "public/assets/skills/goblin/Q.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            200,
+            176
+          ],
+          "sha256": "dd2efbec3ac6437aec987570ca8973abab2333e0fa8fa11682abd113c7734355"
+        },
+        {
+          "poseId": "R",
+          "textureId": "skill-goblin-r",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            508,
+            756,
+            743,
+            932
+          ],
+          "outputPath": "public/assets/skills/goblin/R.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            226,
+            175
+          ],
+          "sha256": "70ba35f9d369be4aec0112a105c572984ed595ccc73bceaf795e57e6f043d61a"
+        },
+        {
+          "poseId": "S",
+          "textureId": "skill-goblin-s",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            768,
+            756,
+            990,
+            932
+          ],
+          "outputPath": "public/assets/skills/goblin/S.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            222,
+            176
+          ],
+          "sha256": "d282ab416c371b87b0f0c0193c893c316cd0bac99f0214fee3d768766e9608cd"
+        },
+        {
+          "poseId": "T",
+          "textureId": "skill-goblin-t",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            1015,
+            756,
+            1238,
+            932
+          ],
+          "outputPath": "public/assets/skills/goblin/T.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            192,
+            176
+          ],
+          "sha256": "f9868117abcacd1b9e69cc707e9880bdd9d2a68c5c7ddbe63249528bb6ab252a"
+        },
+        {
+          "poseId": "U",
+          "textureId": "skill-goblin-u",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            111,
+            994,
+            405,
+            1186
+          ],
+          "outputPath": "public/assets/skills/goblin/U.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            272,
+            179
+          ],
+          "sha256": "2f958c6f9762139c3f8a1d13daacb9c2194d1e868d3caf3e6210318e4a0861d8"
+        },
+        {
+          "poseId": "V",
+          "textureId": "skill-goblin-v",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            430,
+            994,
+            761,
+            1186
+          ],
+          "outputPath": "public/assets/skills/goblin/V.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            308,
+            185
+          ],
+          "sha256": "327ab380c50a81d0a5609fb2c9a6de551aee82c944d3147160931a751dae4187"
+        },
+        {
+          "poseId": "W",
+          "textureId": "skill-goblin-w",
+          "sourceSheet": "哥布林也想談戀愛必殺技.png",
+          "sourceRect": [
+            785,
+            994,
+            1139,
+            1186
+          ],
+          "outputPath": "public/assets/skills/goblin/W.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            347,
+            192
+          ],
+          "sha256": "e0fb09267576fe29aef04963ac9b00448c7b86cb52b0ede66e01baecd8071aeb"
+        }
+      ]
+    },
+    "salad": {
+      "sourceSheet": "沙拉貓貓必殺技.png",
+      "assets": [
+        {
+          "poseId": "A",
+          "textureId": "skill-salad-a",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            16,
+            15,
+            206,
+            286
+          ],
+          "outputPath": "public/assets/skills/salad/A.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            189,
+            189
+          ],
+          "sha256": "ec13ad84e3ec2db4cf6fcd1a9f46246c21d41b400abc21ede458c6c5579f43d4"
+        },
+        {
+          "poseId": "B",
+          "textureId": "skill-salad-b",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            232,
+            15,
+            429,
+            286
+          ],
+          "outputPath": "public/assets/skills/salad/B.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            189,
+            213
+          ],
+          "sha256": "347356266beea6275d22fc070fcdd6ce1dbe5d22f67b7dc2a14832288194ebf1"
+        },
+        {
+          "poseId": "C",
+          "textureId": "skill-salad-c",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            455,
+            15,
+            642,
+            286
+          ],
+          "outputPath": "public/assets/skills/salad/C.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            176,
+            235
+          ],
+          "sha256": "007c8c4820d494a76c4c0529145cab5da154a99ac78df321833e27cb7919eb6a"
+        },
+        {
+          "poseId": "D",
+          "textureId": "skill-salad-d",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            668,
+            15,
+            869,
+            286
+          ],
+          "outputPath": "public/assets/skills/salad/D.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_RELEASE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            201,
+            180
+          ],
+          "sha256": "a4ef51283f85fca0992fc42b834cfb4de9e11b8f2a28ccf21d728898ccb8216a"
+        },
+        {
+          "poseId": "E",
+          "textureId": "skill-salad-e",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            896,
+            15,
+            1091,
+            286
+          ],
+          "outputPath": "public/assets/skills/salad/E.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            195,
+            187
+          ],
+          "sha256": "2fcf04018f45f27bf9c03a4079b75fb07749a370a5dadb82c94abb67072daa53"
+        },
+        {
+          "poseId": "F",
+          "textureId": "skill-salad-f",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            16,
+            363,
+            206,
+            638
+          ],
+          "outputPath": "public/assets/skills/salad/F.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            189,
+            228
+          ],
+          "sha256": "5407463cdf354bbbd012b426182394dcb83fddaa02eaf3024ddddd9f9ac1a8ea"
+        },
+        {
+          "poseId": "G",
+          "textureId": "skill-salad-g",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            232,
+            363,
+            429,
+            638
+          ],
+          "outputPath": "public/assets/skills/salad/G.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            197,
+            275
+          ],
+          "sha256": "90ea6bf7330470b37a9e12c3383be4268226f31db64d2d490c8fe6b8e3a2aa9c"
+        },
+        {
+          "poseId": "H",
+          "textureId": "skill-salad-h",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            455,
+            363,
+            642,
+            638
+          ],
+          "outputPath": "public/assets/skills/salad/H.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            183,
+            208
+          ],
+          "sha256": "4c13b507e034ea0188317a1cac9f6d080ac36199206b6b7f836ff5e8914d73c1"
+        },
+        {
+          "poseId": "I",
+          "textureId": "skill-salad-i",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            668,
+            363,
+            869,
+            638
+          ],
+          "outputPath": "public/assets/skills/salad/I.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            187,
+            265
+          ],
+          "sha256": "102a21168c8c3dbf7a8198c6314d395e818701f81ad89f98a5fe9208e2e0f13e"
+        },
+        {
+          "poseId": "J",
+          "textureId": "skill-salad-j",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            896,
+            363,
+            1091,
+            638
+          ],
+          "outputPath": "public/assets/skills/salad/J.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            195,
+            220
+          ],
+          "sha256": "9ff1907166a9c5d1d229716d52dc09b4cb2c388aa02bfca760b81fa1c4eaa796"
+        },
+        {
+          "poseId": "K",
+          "textureId": "skill-salad-k",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            16,
+            711,
+            206,
+            1008
+          ],
+          "outputPath": "public/assets/skills/salad/K.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            190,
+            253
+          ],
+          "sha256": "b517b885dde3ebda99c365c2a6a03e415d468151d3bd87a9b08881160ade607a"
+        },
+        {
+          "poseId": "L",
+          "textureId": "skill-salad-l",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            232,
+            711,
+            429,
+            1008
+          ],
+          "outputPath": "public/assets/skills/salad/L.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            197,
+            276
+          ],
+          "sha256": "15be89df2aaad9bda00986e529fe766bb6fe5ce860dcb9ad4bb12e2c605eab36"
+        },
+        {
+          "poseId": "M",
+          "textureId": "skill-salad-m",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            455,
+            711,
+            642,
+            1008
+          ],
+          "outputPath": "public/assets/skills/salad/M.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            187,
+            286
+          ],
+          "sha256": "00a8ee2eae3ca6dd4bb52035a9df246535e7d2b148ba26afc16d8a8cda60a324"
+        },
+        {
+          "poseId": "N",
+          "textureId": "skill-salad-n",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            668,
+            711,
+            869,
+            1008
+          ],
+          "outputPath": "public/assets/skills/salad/N.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            201,
+            285
+          ],
+          "sha256": "803892dac0447b6796e3be1903ac504c9baeea0186237dcd92ddd19f1f7b0705"
+        },
+        {
+          "poseId": "O",
+          "textureId": "skill-salad-o",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            896,
+            711,
+            1091,
+            1008
+          ],
+          "outputPath": "public/assets/skills/salad/O.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            195,
+            251
+          ],
+          "sha256": "c27d034c2489ccd247df201adb60ae97e2d860532fdd30ccaddec7025894b497"
+        },
+        {
+          "poseId": "L2",
+          "textureId": "skill-salad-l2",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            16,
+            1088,
+            206,
+            1274
+          ],
+          "outputPath": "public/assets/skills/salad/L2.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            188,
+            167
+          ],
+          "sha256": "0c9f8058fc56248c399ef4b8d475b471d294bc216edf0d3d95eddc97340234e9"
+        },
+        {
+          "poseId": "M2",
+          "textureId": "skill-salad-m2",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            232,
+            1088,
+            429,
+            1274
+          ],
+          "outputPath": "public/assets/skills/salad/M2.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            197,
+            168
+          ],
+          "sha256": "1d755f23026d911e25aeea5731e2f7f6b76ee0575b7121f2e928c7d120fc4b8c"
+        },
+        {
+          "poseId": "N2",
+          "textureId": "skill-salad-n2",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            455,
+            1088,
+            642,
+            1274
+          ],
+          "outputPath": "public/assets/skills/salad/N2.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            182,
+            162
+          ],
+          "sha256": "bdeaa1d4b04dd7d999fc032245d5c5f799d9dedbe907dc6aa8a80cdf990a33be"
+        },
+        {
+          "poseId": "O2",
+          "textureId": "skill-salad-o2",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            668,
+            1088,
+            869,
+            1274
+          ],
+          "outputPath": "public/assets/skills/salad/O2.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            199,
+            165
+          ],
+          "sha256": "5cb4ba0486af253a2d9cec2e1f5786a7be5ff959eac1c9b722b8fe7bc66a5206"
+        },
+        {
+          "poseId": "P",
+          "textureId": "skill-salad-p",
+          "sourceSheet": "沙拉貓貓必殺技.png",
+          "sourceRect": [
+            896,
+            1088,
+            1091,
+            1274
+          ],
+          "outputPath": "public/assets/skills/salad/P.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            195,
+            162
+          ],
+          "sha256": "2a7ffd0fb28866e9ee5c0a6cc52b1d40c658814d996cc61388b7f7ebaa5e87dd"
+        }
+      ]
+    },
+    "wizard": {
+      "sourceSheet": "魔法胖橘貓必殺技.png",
+      "assets": [
+        {
+          "poseId": "A",
+          "textureId": "skill-wizard-a",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            13,
+            12,
+            288,
+            237
+          ],
+          "outputPath": "public/assets/skills/wizard/A.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            203,
+            161
+          ],
+          "sha256": "6eb91b2b065b5b8d2681a945367538d5d4314a7acaa5235519b9622cbfd6a03d"
+        },
+        {
+          "poseId": "B",
+          "textureId": "skill-wizard-b",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            304,
+            12,
+            583,
+            237
+          ],
+          "outputPath": "public/assets/skills/wizard/B.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            226,
+            157
+          ],
+          "sha256": "2775ac8a2b5e567af515ec63d30cd4e1dcacf6cf460dc663151f2c31928b35d8"
+        },
+        {
+          "poseId": "C",
+          "textureId": "skill-wizard-c",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            599,
+            12,
+            879,
+            237
+          ],
+          "outputPath": "public/assets/skills/wizard/C.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            222,
+            225
+          ],
+          "sha256": "c51ebad91c7bbc00ecfacb2e4c4e5e193e35b364dea047c76152261785199df7"
+        },
+        {
+          "poseId": "D",
+          "textureId": "skill-wizard-d",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            894,
+            12,
+            1118,
+            237
+          ],
+          "outputPath": "public/assets/skills/wizard/D.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_RELEASE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            168,
+            65
+          ],
+          "sha256": "deec4f1111ae03351a943930a3003ba11540d3d3bc73700f5153a17328e6ed22"
+        },
+        {
+          "poseId": "E",
+          "textureId": "skill-wizard-e",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            1132,
+            12,
+            1378,
+            237
+          ],
+          "outputPath": "public/assets/skills/wizard/E.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            246,
+            119
+          ],
+          "sha256": "7265335f88a7eb3210ad1b54e9dec6695eace2f31a1d5ce7cb988274840bdd07"
+        },
+        {
+          "poseId": "F",
+          "textureId": "skill-wizard-f",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            1393,
+            12,
+            1760,
+            237
+          ],
+          "outputPath": "public/assets/skills/wizard/F.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            363,
+            169
+          ],
+          "sha256": "528947ed7c71fc87a4703ac7625adae73dcecb04c064cefdd4cfa051150f734a"
+        },
+        {
+          "poseId": "G",
+          "textureId": "skill-wizard-g",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            13,
+            294,
+            288,
+            514
+          ],
+          "outputPath": "public/assets/skills/wizard/G.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            193,
+            146
+          ],
+          "sha256": "f6327be1baf99232cc9aeabf3fa98fc5b1fe8a00413b57d48df24bca249ad0ee"
+        },
+        {
+          "poseId": "H",
+          "textureId": "skill-wizard-h",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            304,
+            294,
+            571,
+            514
+          ],
+          "outputPath": "public/assets/skills/wizard/H.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            207,
+            220
+          ],
+          "sha256": "572ac3b23d2f105f470d6dc96224d40b114f07cdfe51b8111132752159e72c81"
+        },
+        {
+          "poseId": "I",
+          "textureId": "skill-wizard-i",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            586,
+            294,
+            879,
+            514
+          ],
+          "outputPath": "public/assets/skills/wizard/I.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            292,
+            209
+          ],
+          "sha256": "4a0429895dc505ebc9d5d609ee662a0af863fec452a9360ba475b59daf455396"
+        },
+        {
+          "poseId": "J",
+          "textureId": "skill-wizard-j",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            893,
+            294,
+            1169,
+            514
+          ],
+          "outputPath": "public/assets/skills/wizard/J.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            276,
+            205
+          ],
+          "sha256": "ddc04eafbc7c95956c7bb3ea59fe9085bf4a06898d558bf8049fef59c1947110"
+        },
+        {
+          "poseId": "K",
+          "textureId": "skill-wizard-k",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            1184,
+            294,
+            1412,
+            514
+          ],
+          "outputPath": "public/assets/skills/wizard/K.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            142,
+            206
+          ],
+          "sha256": "284b8b19fb66a4aa9cd07fa2f3d797a8a7e789a13004021a7a54283eb0ff0e2f"
+        },
+        {
+          "poseId": "L",
+          "textureId": "skill-wizard-l",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            1427,
+            294,
+            1760,
+            514
+          ],
+          "outputPath": "public/assets/skills/wizard/L.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            293,
+            211
+          ],
+          "sha256": "d0528d1d410e9e1f9f258b0ba6be59da1b5456bc5742fcd4e3e5864b253c98df"
+        },
+        {
+          "poseId": "M",
+          "textureId": "skill-wizard-m",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            13,
+            571,
+            288,
+            823
+          ],
+          "outputPath": "public/assets/skills/wizard/M.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            270,
+            252
+          ],
+          "sha256": "cff9ba9a3cdd9ee60be6bf1fef713b36550fce3ab697e1a51e63e1131061f4ef"
+        },
+        {
+          "poseId": "N",
+          "textureId": "skill-wizard-n",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            304,
+            571,
+            571,
+            823
+          ],
+          "outputPath": "public/assets/skills/wizard/N.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            240,
+            243
+          ],
+          "sha256": "68949252e097201917bc1a0b3b85250ccfd7743d284ab07a28ac3f7146373911"
+        },
+        {
+          "poseId": "O",
+          "textureId": "skill-wizard-o",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            586,
+            571,
+            879,
+            823
+          ],
+          "outputPath": "public/assets/skills/wizard/O.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            279,
+            252
+          ],
+          "sha256": "d4c5bef35020635432f3e927f68c43f1f87d6f3d1c382dd2c27f4f9c1654e0c3"
+        },
+        {
+          "poseId": "P",
+          "textureId": "skill-wizard-p",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            893,
+            571,
+            1135,
+            823
+          ],
+          "outputPath": "public/assets/skills/wizard/P.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            233,
+            248
+          ],
+          "sha256": "0fd676b8d5e45d67110bbc100fced1ab55c574c78f933cfbdf0eb13685732e89"
+        },
+        {
+          "poseId": "Q",
+          "textureId": "skill-wizard-q",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            1150,
+            571,
+            1432,
+            823
+          ],
+          "outputPath": "public/assets/skills/wizard/Q.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            282,
+            252
+          ],
+          "sha256": "562f44585429cde706b2f08f87e695ca5c09e08dca5254001af16cb0e41e0660"
+        },
+        {
+          "poseId": "R",
+          "textureId": "skill-wizard-r",
+          "sourceSheet": "魔法胖橘貓必殺技.png",
+          "sourceRect": [
+            1447,
+            571,
+            1760,
+            823
+          ],
+          "outputPath": "public/assets/skills/wizard/R.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            282,
+            234
+          ],
+          "sha256": "c7d6773ede968a1ef6a21d47e3c5d381da45e4ad183230291b8297feb8146576"
+        }
+      ]
+    },
+    "blade": {
+      "sourceSheet": "我的刀盾必殺技.png",
+      "assets": [
+        {
+          "poseId": "A",
+          "textureId": "skill-blade-a",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            14,
+            13,
+            291,
+            239
+          ],
+          "outputPath": "public/assets/skills/blade/A.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            189,
+            154
+          ],
+          "sha256": "61ef855c99cb65417a10bf9eb0da54db2c987ca01f21e4b3b6b1e1bc1bac0fcf"
+        },
+        {
+          "poseId": "B",
+          "textureId": "skill-blade-b",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            307,
+            13,
+            584,
+            239
+          ],
+          "outputPath": "public/assets/skills/blade/B.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            224,
+            158
+          ],
+          "sha256": "a68ef8c520d80917e703cba3a908a10a47653cd37a57a6c4e73b34cbd3b89ace"
+        },
+        {
+          "poseId": "C",
+          "textureId": "skill-blade-c",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            600,
+            13,
+            878,
+            239
+          ],
+          "outputPath": "public/assets/skills/blade/C.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            234,
+            203
+          ],
+          "sha256": "d3ebe9c37a7b9fa32a935ba5110fe4511c4996df34338c894852f03d6ae76453"
+        },
+        {
+          "poseId": "D",
+          "textureId": "skill-blade-d",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            893,
+            13,
+            1171,
+            239
+          ],
+          "outputPath": "public/assets/skills/blade/D.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_RELEASE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            277,
+            157
+          ],
+          "sha256": "439f38539589ae78fedd3c074411ef08efad461bd66449d72fca6fcf1c540c8a"
+        },
+        {
+          "poseId": "E",
+          "textureId": "skill-blade-e",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            1187,
+            13,
+            1465,
+            239
+          ],
+          "outputPath": "public/assets/skills/blade/E.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            112,
+            85
+          ],
+          "sha256": "3aaf2c153fe32dd227fa0203b8ac4f736a79e2cb2c32b46549312ed2be3c11f4"
+        },
+        {
+          "poseId": "F",
+          "textureId": "skill-blade-f",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            1481,
+            13,
+            1758,
+            239
+          ],
+          "outputPath": "public/assets/skills/blade/F.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            204,
+            160
+          ],
+          "sha256": "2fd7336442d7cbe5cbed3c2735c15581585fa63cc9c463f54be4d33e519bcb3c"
+        },
+        {
+          "poseId": "G",
+          "textureId": "skill-blade-g",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            14,
+            297,
+            291,
+            523
+          ],
+          "outputPath": "public/assets/skills/blade/G.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            262,
+            219
+          ],
+          "sha256": "66e615c253fd33bc59df36ab4be312854dda60d5159063c73d8d065b99b34960"
+        },
+        {
+          "poseId": "H",
+          "textureId": "skill-blade-h",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            307,
+            297,
+            584,
+            523
+          ],
+          "outputPath": "public/assets/skills/blade/H.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            265,
+            211
+          ],
+          "sha256": "b1261ca1c2c9fa6345707165f32fdc7b171dfc3f0ef982fe13e1415166d60243"
+        },
+        {
+          "poseId": "I",
+          "textureId": "skill-blade-i",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            600,
+            297,
+            878,
+            523
+          ],
+          "outputPath": "public/assets/skills/blade/I.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            249,
+            225
+          ],
+          "sha256": "726c8f376c9186feb07f69edc65145a1bc6a8bd5e7a2c2e69c11b9b18c417dd3"
+        },
+        {
+          "poseId": "J",
+          "textureId": "skill-blade-j",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            893,
+            297,
+            1171,
+            523
+          ],
+          "outputPath": "public/assets/skills/blade/J.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            278,
+            211
+          ],
+          "sha256": "8a459e8c7f2bc886f4a425c1772507ff9da83f9cb0474888ca391b432d09a8fa"
+        },
+        {
+          "poseId": "K",
+          "textureId": "skill-blade-k",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            1187,
+            297,
+            1465,
+            523
+          ],
+          "outputPath": "public/assets/skills/blade/K.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            152,
+            226
+          ],
+          "sha256": "5b4f799f36bc4e5a0e9826c97e8a47ea2c3c0fb3ae69a2d7245ea9774252ae31"
+        },
+        {
+          "poseId": "L",
+          "textureId": "skill-blade-l",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            1481,
+            297,
+            1758,
+            523
+          ],
+          "outputPath": "public/assets/skills/blade/L.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            260,
+            214
+          ],
+          "sha256": "a8905fa230d6cf90e97e762505924fdf6d07c59a90a2f9f861a9fc15e4c94b5f"
+        },
+        {
+          "poseId": "M",
+          "textureId": "skill-blade-m",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            14,
+            580,
+            291,
+            806
+          ],
+          "outputPath": "public/assets/skills/blade/M.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            277,
+            122
+          ],
+          "sha256": "2e2f8638777842cbe9684605e6e31e31c786bace4977327d58488474b7a2c4c4"
+        },
+        {
+          "poseId": "N",
+          "textureId": "skill-blade-n",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            307,
+            580,
+            584,
+            806
+          ],
+          "outputPath": "public/assets/skills/blade/N.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            276,
+            148
+          ],
+          "sha256": "5843d7a78c0c332a6bc96c806df690164cde1bbe5ac590faca60c7fd41fbccd0"
+        },
+        {
+          "poseId": "O",
+          "textureId": "skill-blade-o",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            600,
+            580,
+            878,
+            806
+          ],
+          "outputPath": "public/assets/skills/blade/O.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            272,
+            220
+          ],
+          "sha256": "d28c7a69f272041ae5d7f3c698d53fc6dd711ea1c8808d85536fd05f93da22c9"
+        },
+        {
+          "poseId": "P",
+          "textureId": "skill-blade-p",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            893,
+            580,
+            1171,
+            806
+          ],
+          "outputPath": "public/assets/skills/blade/P.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            278,
+            199
+          ],
+          "sha256": "100d26f9631c1e51fb8e163c537ccc622801a1139ec53ffc0b43c54b89b5076a"
+        },
+        {
+          "poseId": "Q",
+          "textureId": "skill-blade-q",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            1187,
+            580,
+            1465,
+            806
+          ],
+          "outputPath": "public/assets/skills/blade/Q.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            268,
+            193
+          ],
+          "sha256": "eb90f37fe711c904028423c21e395e95cde246959c7a2512fae3665f80ee1227"
+        },
+        {
+          "poseId": "R",
+          "textureId": "skill-blade-r",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": [
+            1480,
+            580,
+            1758,
+            806
+          ],
+          "outputPath": "public/assets/skills/blade/R.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            275,
+            211
+          ],
+          "sha256": "fa9f94a43348ebbcb56d41167f194ebb90722503672c30261dafe4a26084204e"
+        }
+      ],
+      "derivedAssets": [
+        {
+          "poseId": "K_weapon_blue",
+          "textureId": "skill-blade-k_weapon_blue",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": "derived from source cell K connected spatial component",
+          "outputPath": "public/assets/skills/blade/K_weapon_blue.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "weapon socket",
+          "feetBaseline": null,
+          "category": "WEAPON",
+          "runtimeUsage": "DUAL_HEAVY independent attached sword",
+          "size": [
+            88,
+            226
+          ],
+          "sha256": "556ac4fea37f627971797f73838f2f3fc8f5e1af534b9b184c1b9fbefdd10cec"
+        },
+        {
+          "poseId": "K_weapon_black",
+          "textureId": "skill-blade-k_weapon_black",
+          "sourceSheet": "我的刀盾必殺技.png",
+          "sourceRect": "derived from source cell K connected spatial component",
+          "outputPath": "public/assets/skills/blade/K_weapon_black.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "weapon socket",
+          "feetBaseline": null,
+          "category": "WEAPON",
+          "runtimeUsage": "DUAL_HEAVY independent attached sword",
+          "size": [
+            60,
+            225
+          ],
+          "sha256": "f46adf762389e92bf718b977d4987c95cdecd76e085c6f3d19e19b07f4f42f23"
+        }
+      ]
+    },
+    "pink": {
+      "sourceSheet": "粉紅星星必殺技.png",
+      "assets": [
+        {
+          "poseId": "A",
+          "textureId": "skill-pink-a",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            14,
+            34,
+            180,
+            265
+          ],
+          "outputPath": "public/assets/skills/pink/A.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            121,
+            181
+          ],
+          "sha256": "c8b57e93e8f80250ea3975fa99f03eec9a0dc96a570726ce035de51fd8873e25"
+        },
+        {
+          "poseId": "B",
+          "textureId": "skill-pink-b",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            196,
+            34,
+            372,
+            265
+          ],
+          "outputPath": "public/assets/skills/pink/B.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            121,
+            177
+          ],
+          "sha256": "ead2bd775c4c7418985a557af7736e16a7778943955e2f1db13324bf25a64341"
+        },
+        {
+          "poseId": "C",
+          "textureId": "skill-pink-c",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            388,
+            34,
+            570,
+            265
+          ],
+          "outputPath": "public/assets/skills/pink/C.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            147,
+            192
+          ],
+          "sha256": "28d48485a8071013ba52d7174c6db9177d846c9d38eec12f50140eb33d08edf5"
+        },
+        {
+          "poseId": "D",
+          "textureId": "skill-pink-d",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            586,
+            34,
+            794,
+            265
+          ],
+          "outputPath": "public/assets/skills/pink/D.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_RELEASE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            191,
+            168
+          ],
+          "sha256": "3341bebb3a6f72f0d678755551838c7f0ad022649d148486197e4bdb74af9e41"
+        },
+        {
+          "poseId": "E",
+          "textureId": "skill-pink-e",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            810,
+            34,
+            1040,
+            265
+          ],
+          "outputPath": "public/assets/skills/pink/E.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            214,
+            204
+          ],
+          "sha256": "b6eea7815626241157abcd93a602a6c01fa5e8b3add159bcb4e8f865e966b337"
+        },
+        {
+          "poseId": "F",
+          "textureId": "skill-pink-f",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            13,
+            332,
+            203,
+            560
+          ],
+          "outputPath": "public/assets/skills/pink/F.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            184,
+            198
+          ],
+          "sha256": "c821637ad3f7797ff3bb344b036a021d959b42afc9eecd6d7b04c21dbabadb84"
+        },
+        {
+          "poseId": "G",
+          "textureId": "skill-pink-g",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            219,
+            332,
+            399,
+            560
+          ],
+          "outputPath": "public/assets/skills/pink/G.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            180,
+            224
+          ],
+          "sha256": "1559bdc7ca03ffb6a137048e1dbfe2e7452f05c55f52bec7a6eddcfd1f0eea83"
+        },
+        {
+          "poseId": "H",
+          "textureId": "skill-pink-h",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            415,
+            332,
+            645,
+            560
+          ],
+          "outputPath": "public/assets/skills/pink/H.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            230,
+            219
+          ],
+          "sha256": "40a05b58b5dcd0b80bb7058917ccc0a595345738368750d7a989b1b2338beefd"
+        },
+        {
+          "poseId": "I",
+          "textureId": "skill-pink-i",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            661,
+            332,
+            838,
+            560
+          ],
+          "outputPath": "public/assets/skills/pink/I.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            161,
+            201
+          ],
+          "sha256": "94f4f3863a9a159fd38559d5a69ac1d1199f4293ef5a220252b946dadb815ca1"
+        },
+        {
+          "poseId": "J",
+          "textureId": "skill-pink-j",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            853,
+            332,
+            1040,
+            560
+          ],
+          "outputPath": "public/assets/skills/pink/J.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            187,
+            197
+          ],
+          "sha256": "c0a1688ab4ebc440501d1994fee5fb89fde997ef322f5557832835f98eaa103a"
+        },
+        {
+          "poseId": "K",
+          "textureId": "skill-pink-k",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            13,
+            630,
+            206,
+            854
+          ],
+          "outputPath": "public/assets/skills/pink/K.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            193,
+            210
+          ],
+          "sha256": "84c1b0ffa5e725d9e8fe6328b4fe5690104c81730965e698e883bd6c72ea4bd8"
+        },
+        {
+          "poseId": "L",
+          "textureId": "skill-pink-l",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            220,
+            630,
+            410,
+            854
+          ],
+          "outputPath": "public/assets/skills/pink/L.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            160,
+            207
+          ],
+          "sha256": "dfc7273da41b57e9da9b7323929c635028066d48ae47a5258a691885e1e017a5"
+        },
+        {
+          "poseId": "M",
+          "textureId": "skill-pink-m",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            424,
+            630,
+            637,
+            854
+          ],
+          "outputPath": "public/assets/skills/pink/M.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            213,
+            205
+          ],
+          "sha256": "4bc6991affa32ec5d84b2e4985a7bc20d0bf2e5b49b3661109f893ea733a2346"
+        },
+        {
+          "poseId": "N",
+          "textureId": "skill-pink-n",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            652,
+            630,
+            847,
+            854
+          ],
+          "outputPath": "public/assets/skills/pink/N.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            188,
+            201
+          ],
+          "sha256": "040899bd2645d599d25502b6b3a62538fa95cf3ed1ae1d34dbd3e63df4947f07"
+        },
+        {
+          "poseId": "O",
+          "textureId": "skill-pink-o",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            862,
+            630,
+            1040,
+            854
+          ],
+          "outputPath": "public/assets/skills/pink/O.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            159,
+            189
+          ],
+          "sha256": "557014395ad7e39920ad896dbb20f2cb58442ad4743cec52f135ad46dd501c32"
+        },
+        {
+          "poseId": "P",
+          "textureId": "skill-pink-p",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            13,
+            928,
+            183,
+            1148
+          ],
+          "outputPath": "public/assets/skills/pink/P.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            168,
+            209
+          ],
+          "sha256": "2df1564f26c8875c3d452f7bc7e0e7727301d407a8680ec57d5efdce4c2cd44b"
+        },
+        {
+          "poseId": "Q",
+          "textureId": "skill-pink-q",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            199,
+            928,
+            387,
+            1148
+          ],
+          "outputPath": "public/assets/skills/pink/Q.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            188,
+            199
+          ],
+          "sha256": "27f10f5b7dec2bb9b3c247282d51773c1835f8defa4a3f9f191249a3941d829f"
+        },
+        {
+          "poseId": "R",
+          "textureId": "skill-pink-r",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            403,
+            928,
+            627,
+            1148
+          ],
+          "outputPath": "public/assets/skills/pink/R.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            224,
+            209
+          ],
+          "sha256": "aa985ef760d30102a912e37e5acf11be6af4beadf449f88c5967d0c62cf52db0"
+        },
+        {
+          "poseId": "S",
+          "textureId": "skill-pink-s",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            643,
+            928,
+            825,
+            1148
+          ],
+          "outputPath": "public/assets/skills/pink/S.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            182,
+            193
+          ],
+          "sha256": "b464281cd73b77c412df19fc1230e8b145f043f145ed23345c3d1aaad892a9df"
+        },
+        {
+          "poseId": "T",
+          "textureId": "skill-pink-t",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            841,
+            928,
+            1040,
+            1148
+          ],
+          "outputPath": "public/assets/skills/pink/T.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            199,
+            154
+          ],
+          "sha256": "200afd94095248602883c141f54e9e67734a2319c024d57393dd96c3f2a58192"
+        },
+        {
+          "poseId": "U",
+          "textureId": "skill-pink-u",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            14,
+            1226,
+            353,
+            1478
+          ],
+          "outputPath": "public/assets/skills/pink/U.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            320,
+            211
+          ],
+          "sha256": "a1a09c15c2227b6734c69140d5d2f81e3ff5c40f2b372ffd16100c2dd8edfe23"
+        },
+        {
+          "poseId": "V",
+          "textureId": "skill-pink-v",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            369,
+            1226,
+            679,
+            1478
+          ],
+          "outputPath": "public/assets/skills/pink/V.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            310,
+            236
+          ],
+          "sha256": "3cc16831a1653ba19c707bb9c84c65d7d3d24e9c02070bd33870798ba2980da9"
+        },
+        {
+          "poseId": "W",
+          "textureId": "skill-pink-w",
+          "sourceSheet": "粉紅星星必殺技.png",
+          "sourceRect": [
+            694,
+            1226,
+            1040,
+            1478
+          ],
+          "outputPath": "public/assets/skills/pink/W.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            316,
+            248
+          ],
+          "sha256": "2b5c2425cae5fc55fba1ecb67bd909f6b2f818e8790d2c6ed7a09f75b8daebed"
+        }
+      ]
+    },
+    "sauce": {
+      "sourceSheet": "蘸醬胡渣狗必殺技.png",
+      "assets": [
+        {
+          "poseId": "A",
+          "textureId": "skill-sauce-a",
+          "sourceSheet": "蘸醬胡渣狗必殺技.png",
+          "sourceRect": [
+            15,
+            15,
+            321,
+            269
+          ],
+          "outputPath": "public/assets/skills/sauce/A.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            242,
+            196
+          ],
+          "sha256": "4eabc2dee6817054af28b84427ddc525d17d27240186a0510f4b33b013808e5a"
+        },
+        {
+          "poseId": "B",
+          "textureId": "skill-sauce-b",
+          "sourceSheet": "蘸醬胡渣狗必殺技.png",
+          "sourceRect": [
+            338,
+            15,
+            641,
+            269
+          ],
+          "outputPath": "public/assets/skills/sauce/B.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            259,
+            206
+          ],
+          "sha256": "9b7b8b1f3f60556f2705a702fe14c8c8cc8b5b1892b1cbf48e7df2d1f2eec489"
+        },
+        {
+          "poseId": "C",
+          "textureId": "skill-sauce-c",
+          "sourceSheet": "蘸醬胡渣狗必殺技.png",
+          "sourceRect": [
+            658,
+            15,
+            957,
+            269
+          ],
+          "outputPath": "public/assets/skills/sauce/C.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            266,
+            216
+          ],
+          "sha256": "ca496b1004ffaa323d8bdf0ce62f5008060472a7caab1982a4db31d2444a82ec"
+        },
+        {
+          "poseId": "D",
+          "textureId": "skill-sauce-d",
+          "sourceSheet": "蘸醬胡渣狗必殺技.png",
+          "sourceRect": [
+            974,
+            15,
+            1338,
+            269
+          ],
+          "outputPath": "public/assets/skills/sauce/D.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_RELEASE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            361,
+            176
+          ],
+          "sha256": "f1c78a4f337006558c58b9075614c5dfbb8571e70d9e9fcdd2b171d331c17674"
+        },
+        {
+          "poseId": "E",
+          "textureId": "skill-sauce-e",
+          "sourceSheet": "蘸醬胡渣狗必殺技.png",
+          "sourceRect": [
+            1354,
+            15,
+            1603,
+            269
+          ],
+          "outputPath": "public/assets/skills/sauce/E.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            124,
+            76
+          ],
+          "sha256": "650c06a95c16fd6e63fed20fb7240989ea57b5b56515f24dc9ead52d6affe5f8"
+        },
+        {
+          "poseId": "F",
+          "textureId": "skill-sauce-f",
+          "sourceSheet": "蘸醬胡渣狗必殺技.png",
+          "sourceRect": [
+            15,
+            325,
+            321,
+            556
+          ],
+          "outputPath": "public/assets/skills/sauce/F.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            271,
+            144
+          ],
+          "sha256": "a6baf7060ea290684438cb562a018af72844c0ee4e362c80a00b5aa4aeff33b6"
+        },
+        {
+          "poseId": "G",
+          "textureId": "skill-sauce-g",
+          "sourceSheet": "蘸醬胡渣狗必殺技.png",
+          "sourceRect": [
+            338,
+            325,
+            641,
+            556
+          ],
+          "outputPath": "public/assets/skills/sauce/G.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            301,
+            199
+          ],
+          "sha256": "d3efc398d1a9325df9aa9eebc5ac43d433b248f9c11b13d87126fcae1f88fd6a"
+        },
+        {
+          "poseId": "H",
+          "textureId": "skill-sauce-h",
+          "sourceSheet": "蘸醬胡渣狗必殺技.png",
+          "sourceRect": [
+            658,
+            325,
+            957,
+            556
+          ],
+          "outputPath": "public/assets/skills/sauce/H.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            258,
+            210
+          ],
+          "sha256": "896c9251e844b62dc7f349f3ca21502d7e582f2eedafb80aa38ef56780a68b0e"
+        },
+        {
+          "poseId": "I",
+          "textureId": "skill-sauce-i",
+          "sourceSheet": "蘸醬胡渣狗必殺技.png",
+          "sourceRect": [
+            974,
+            325,
+            1338,
+            556
+          ],
+          "outputPath": "public/assets/skills/sauce/I.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            339,
+            182
+          ],
+          "sha256": "93abc2774692d3975b651a1a1cda6cf9c8e657177322516ae92ab68330e16740"
+        },
+        {
+          "poseId": "J",
+          "textureId": "skill-sauce-j",
+          "sourceSheet": "蘸醬胡渣狗必殺技.png",
+          "sourceRect": [
+            1354,
+            325,
+            1603,
+            556
+          ],
+          "outputPath": "public/assets/skills/sauce/J.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            218,
+            199
+          ],
+          "sha256": "00e7754705886b3fbcb5148c3538434ff111b91b07f81a63410cb0a780dd8627"
+        },
+        {
+          "poseId": "K",
+          "textureId": "skill-sauce-k",
+          "sourceSheet": "蘸醬胡渣狗必殺技.png",
+          "sourceRect": [
+            15,
+            614,
+            321,
+            888
+          ],
+          "outputPath": "public/assets/skills/sauce/K.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            306,
+            176
+          ],
+          "sha256": "6541096843664c5991df2c304ab9b357252f8be8ecbca6f0a8c6a7089c1fc8a9"
+        },
+        {
+          "poseId": "L",
+          "textureId": "skill-sauce-l",
+          "sourceSheet": "蘸醬胡渣狗必殺技.png",
+          "sourceRect": [
+            338,
+            614,
+            641,
+            888
+          ],
+          "outputPath": "public/assets/skills/sauce/L.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            296,
+            218
+          ],
+          "sha256": "b4fbc81c820a759e34cec2f6554a6649147b9af96058bc6c38435d85a3787942"
+        },
+        {
+          "poseId": "M",
+          "textureId": "skill-sauce-m",
+          "sourceSheet": "蘸醬胡渣狗必殺技.png",
+          "sourceRect": [
+            658,
+            614,
+            957,
+            888
+          ],
+          "outputPath": "public/assets/skills/sauce/M.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            299,
+            227
+          ],
+          "sha256": "6a95ccfa893f8094f3cbf8c36a672dc5357e54bc575a3902947fe698ccafa1e8"
+        },
+        {
+          "poseId": "N",
+          "textureId": "skill-sauce-n",
+          "sourceSheet": "蘸醬胡渣狗必殺技.png",
+          "sourceRect": [
+            974,
+            614,
+            1338,
+            888
+          ],
+          "outputPath": "public/assets/skills/sauce/N.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            358,
+            243
+          ],
+          "sha256": "edd8e2f4f414c7f193c0eacb422b427951f0fb80827ca636e32358e1ac3be506"
+        },
+        {
+          "poseId": "O",
+          "textureId": "skill-sauce-o",
+          "sourceSheet": "蘸醬胡渣狗必殺技.png",
+          "sourceRect": [
+            1354,
+            614,
+            1603,
+            888
+          ],
+          "outputPath": "public/assets/skills/sauce/O.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            249,
+            234
+          ],
+          "sha256": "9cbcef1b43b8d20b19556b9486d998ea44b733e9c7477d5e563b84e21f8f0b04"
+        }
+      ]
+    },
+    "scared": {
+      "sourceSheet": "驚嚇小貓必殺技.png",
+      "assets": [
+        {
+          "poseId": "A",
+          "textureId": "skill-scared-a",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            17,
+            13,
+            236,
+            219
+          ],
+          "outputPath": "public/assets/skills/scared/A.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            183,
+            164
+          ],
+          "sha256": "563babeea3b847878227b01be7b9816f5bb4967935c640d6c7ccf996a105a4d2"
+        },
+        {
+          "poseId": "B",
+          "textureId": "skill-scared-b",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            260,
+            13,
+            477,
+            219
+          ],
+          "outputPath": "public/assets/skills/scared/B.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            206,
+            182
+          ],
+          "sha256": "949273365bde10534c8f901b4289193aa939ebdf71317c051c2a5c9ae703664f"
+        },
+        {
+          "poseId": "C",
+          "textureId": "skill-scared-c",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            501,
+            13,
+            714,
+            219
+          ],
+          "outputPath": "public/assets/skills/scared/C.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            212,
+            203
+          ],
+          "sha256": "63b171ce3c591dbedceb50373b72f410a73a637bc42f0555a2a7893d88c8ce87"
+        },
+        {
+          "poseId": "D",
+          "textureId": "skill-scared-d",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            738,
+            13,
+            952,
+            219
+          ],
+          "outputPath": "public/assets/skills/scared/D.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_RELEASE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            214,
+            155
+          ],
+          "sha256": "3c59db1d3b8051fd9b9a4194d0ddfd922a3b375ce396a908cd46b2eafa8f1877"
+        },
+        {
+          "poseId": "E",
+          "textureId": "skill-scared-e",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            975,
+            13,
+            1186,
+            219
+          ],
+          "outputPath": "public/assets/skills/scared/E.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            177,
+            55
+          ],
+          "sha256": "163da495efab92cb4ebddcefbab36505877f5005a90e3ede3ad5eaa51ce691f4"
+        },
+        {
+          "poseId": "F",
+          "textureId": "skill-scared-f",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            1210,
+            13,
+            1429,
+            219
+          ],
+          "outputPath": "public/assets/skills/scared/F.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            219,
+            94
+          ],
+          "sha256": "288fc91902cd12aceb7bfdf1219a1eba3cbf1eea3364f07905c402a685006895"
+        },
+        {
+          "poseId": "G",
+          "textureId": "skill-scared-g",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            17,
+            283,
+            236,
+            490
+          ],
+          "outputPath": "public/assets/skills/scared/G.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            219,
+            190
+          ],
+          "sha256": "c4a9a6ff65bbf1d95ddd64b5a60f1edbcde3bf609ddd0be6524abdc4a92b3f09"
+        },
+        {
+          "poseId": "H",
+          "textureId": "skill-scared-h",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            260,
+            283,
+            477,
+            490
+          ],
+          "outputPath": "public/assets/skills/scared/H.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            217,
+            125
+          ],
+          "sha256": "3e96916580be5ab5345f3b70792e65d0eccb3c54ac70580f3edb6fbc7793d017"
+        },
+        {
+          "poseId": "I",
+          "textureId": "skill-scared-i",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            501,
+            283,
+            714,
+            490
+          ],
+          "outputPath": "public/assets/skills/scared/I.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            201,
+            192
+          ],
+          "sha256": "da29bb923a50e5de883b2ed4fcff77585d1f588d146f037ef6c824aed9585472"
+        },
+        {
+          "poseId": "J",
+          "textureId": "skill-scared-j",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            738,
+            283,
+            952,
+            490
+          ],
+          "outputPath": "public/assets/skills/scared/J.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            173,
+            157
+          ],
+          "sha256": "8e5a2f019401799a5d49d1a08a7d46777ac4167b0bef3f6c495648c8fcc342e1"
+        },
+        {
+          "poseId": "K",
+          "textureId": "skill-scared-k",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            975,
+            283,
+            1186,
+            490
+          ],
+          "outputPath": "public/assets/skills/scared/K.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            207,
+            207
+          ],
+          "sha256": "8f3e720a315c060624a83e89b056c95b2515005db21f97c722d9bbac437379c7"
+        },
+        {
+          "poseId": "L",
+          "textureId": "skill-scared-l",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            1210,
+            283,
+            1429,
+            490
+          ],
+          "outputPath": "public/assets/skills/scared/L.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            179,
+            207
+          ],
+          "sha256": "42b97af301fa371a5507dcb1b9adc8f2eac789aa2c8b8238ae75b314c83bc934"
+        },
+        {
+          "poseId": "M",
+          "textureId": "skill-scared-m",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            17,
+            555,
+            236,
+            750
+          ],
+          "outputPath": "public/assets/skills/scared/M.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            219,
+            158
+          ],
+          "sha256": "ef9ff862f022b043b4588df98b70e56e225c3eb49dd08a962e0baf0d14dc6254"
+        },
+        {
+          "poseId": "N",
+          "textureId": "skill-scared-n",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            260,
+            555,
+            477,
+            750
+          ],
+          "outputPath": "public/assets/skills/scared/N.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            212,
+            165
+          ],
+          "sha256": "46f593ba11d766d1ce2b5592c1b927a55e819e3a742a83f53d078a0453db83b5"
+        },
+        {
+          "poseId": "O",
+          "textureId": "skill-scared-o",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            501,
+            555,
+            714,
+            750
+          ],
+          "outputPath": "public/assets/skills/scared/O.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            213,
+            160
+          ],
+          "sha256": "9e34d91ddc46a53f9fece4408cb2b7d807ed2e21b2e331201a03450e8c811c8e"
+        },
+        {
+          "poseId": "P",
+          "textureId": "skill-scared-p",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            738,
+            555,
+            952,
+            750
+          ],
+          "outputPath": "public/assets/skills/scared/P.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            177,
+            195
+          ],
+          "sha256": "d0ef9e78815a12308e9cedef89ca805c2c7791fa2bf3e2fa528b9f2e6b174671"
+        },
+        {
+          "poseId": "Q",
+          "textureId": "skill-scared-q",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            975,
+            555,
+            1186,
+            750
+          ],
+          "outputPath": "public/assets/skills/scared/Q.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            159,
+            195
+          ],
+          "sha256": "7c4eaacbfac5f53a87bdc7f02569075120e2863a0f392e1d5366c5fc67f6672d"
+        },
+        {
+          "poseId": "R",
+          "textureId": "skill-scared-r",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            1210,
+            555,
+            1429,
+            750
+          ],
+          "outputPath": "public/assets/skills/scared/R.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            211,
+            195
+          ],
+          "sha256": "f89d624ebeac652a7d8b966650c421a840aa75a3b8c36496ef5cb6efb6c85d84"
+        },
+        {
+          "poseId": "S",
+          "textureId": "skill-scared-s",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            162,
+            814,
+            417,
+            1023
+          ],
+          "outputPath": "public/assets/skills/scared/S.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            242,
+            206
+          ],
+          "sha256": "869657a2af43b02e1e6fe7d72390f1c3e1ad4600ef132c67b4538da309484ca8"
+        },
+        {
+          "poseId": "T",
+          "textureId": "skill-scared-t",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            442,
+            814,
+            693,
+            1023
+          ],
+          "outputPath": "public/assets/skills/scared/T.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            234,
+            191
+          ],
+          "sha256": "61371d60a3bb430527b3adbfae00eb4f8d940c1c33a75b6850be2ea152b0dc41"
+        },
+        {
+          "poseId": "U",
+          "textureId": "skill-scared-u",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            717,
+            814,
+            976,
+            1023
+          ],
+          "outputPath": "public/assets/skills/scared/U.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            199,
+            162
+          ],
+          "sha256": "705903fec24ffcacc90099328c41c0811cafcc7c9411baf54471358190e978f2"
+        },
+        {
+          "poseId": "V",
+          "textureId": "skill-scared-v",
+          "sourceSheet": "驚嚇小貓必殺技.png",
+          "sourceRect": [
+            1001,
+            814,
+            1244,
+            1023
+          ],
+          "outputPath": "public/assets/skills/scared/V.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            243,
+            186
+          ],
+          "sha256": "1bed3a2419b85b29f7e90d54e98b43ac2cbb667d4d2269e8b4641d6d71e592e6"
+        }
+      ]
+    },
+    "ok": {
+      "sourceSheet": "OK喵老大必殺技.png",
+      "assets": [
+        {
+          "poseId": "A",
+          "textureId": "skill-ok-a",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            13,
+            15,
+            269,
+            221
+          ],
+          "outputPath": "public/assets/skills/ok/A.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            216,
+            195
+          ],
+          "sha256": "85803ce2c202ce3f891d9423cf64ed053eec232152abe8013e655911a20e65c7"
+        },
+        {
+          "poseId": "B",
+          "textureId": "skill-ok-b",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            286,
+            15,
+            541,
+            221
+          ],
+          "outputPath": "public/assets/skills/ok/B.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            246,
+            206
+          ],
+          "sha256": "de7380cf51fdfb61d26c3102e1a87700212d8e33dc55e66a8dfd5660d023d395"
+        },
+        {
+          "poseId": "C",
+          "textureId": "skill-ok-c",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            557,
+            15,
+            813,
+            221
+          ],
+          "outputPath": "public/assets/skills/ok/C.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_CHARGE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            256,
+            206
+          ],
+          "sha256": "45057ae1d9dfaaf9a3d89f6b1694937635cb49739f7b45194ecae8d9e1d2bf7a"
+        },
+        {
+          "poseId": "D",
+          "textureId": "skill-ok-d",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            829,
+            15,
+            1084,
+            221
+          ],
+          "outputPath": "public/assets/skills/ok/D.png",
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "anchor": "feet",
+          "feetBaseline": 1.0,
+          "category": "H_RELEASE_FIGHTER",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            254,
+            180
+          ],
+          "sha256": "d89be3285aae459629a73244eb52f975852cc48418eab92b9c2095afcdf0e1dc"
+        },
+        {
+          "poseId": "E",
+          "textureId": "skill-ok-e",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            1101,
+            15,
+            1356,
+            221
+          ],
+          "outputPath": "public/assets/skills/ok/E.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            230,
+            100
+          ],
+          "sha256": "51d928410d11e4399ef976cbf575704a546d55883f7dea0bd33acba95d9fedf2"
+        },
+        {
+          "poseId": "F",
+          "textureId": "skill-ok-f",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            1373,
+            15,
+            1628,
+            221
+          ],
+          "outputPath": "public/assets/skills/ok/F.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            255,
+            201
+          ],
+          "sha256": "be95b490ccc3e647860bd97029f1889af659787a59987d49b1f7afb8e3516635"
+        },
+        {
+          "poseId": "G",
+          "textureId": "skill-ok-g",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            1645,
+            15,
+            1900,
+            221
+          ],
+          "outputPath": "public/assets/skills/ok/G.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "H_OR_SHARED_VFX",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            255,
+            206
+          ],
+          "sha256": "dd3a175afcb344a5e9de540ace8810307ff1b411a27f4a0034631387984ff519"
+        },
+        {
+          "poseId": "H",
+          "textureId": "skill-ok-h",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            13,
+            282,
+            269,
+            488
+          ],
+          "outputPath": "public/assets/skills/ok/H.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            244,
+            206
+          ],
+          "sha256": "47377c7993bd5566e85328df681fdaf33bf17df5f01ddd0b667821272710b6ac"
+        },
+        {
+          "poseId": "I",
+          "textureId": "skill-ok-i",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            286,
+            282,
+            541,
+            488
+          ],
+          "outputPath": "public/assets/skills/ok/I.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            186,
+            206
+          ],
+          "sha256": "dcab06e635bd9355cc527dcca75542ca011f59bc958d9189afb2e17f69a20fa3"
+        },
+        {
+          "poseId": "J",
+          "textureId": "skill-ok-j",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            557,
+            282,
+            813,
+            488
+          ],
+          "outputPath": "public/assets/skills/ok/J.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            203,
+            147
+          ],
+          "sha256": "a5af8e3680f1e9ad3c11c3725ebeadb8f78b1f26467db9c701f99f1be15403bf"
+        },
+        {
+          "poseId": "K",
+          "textureId": "skill-ok-k",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            829,
+            282,
+            1084,
+            488
+          ],
+          "outputPath": "public/assets/skills/ok/K.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            211,
+            145
+          ],
+          "sha256": "937774f2dc4f2904faa61dc2f97cd55b2256fb9aa795d27291eb18b8feb39c6c"
+        },
+        {
+          "poseId": "L",
+          "textureId": "skill-ok-l",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            1101,
+            282,
+            1356,
+            488
+          ],
+          "outputPath": "public/assets/skills/ok/L.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            215,
+            160
+          ],
+          "sha256": "abfa9e63964650df500065f76a32eed51e072ce17b5b682acd4896f20ef94149"
+        },
+        {
+          "poseId": "M",
+          "textureId": "skill-ok-m",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            1373,
+            282,
+            1628,
+            488
+          ],
+          "outputPath": "public/assets/skills/ok/M.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            210,
+            160
+          ],
+          "sha256": "33051d421faf780618352b82a500078f2497ba18446ec45496d4e511240e5841"
+        },
+        {
+          "poseId": "N",
+          "textureId": "skill-ok-n",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            1645,
+            282,
+            1900,
+            488
+          ],
+          "outputPath": "public/assets/skills/ok/N.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            237,
+            179
+          ],
+          "sha256": "10290155eef4cc8a55aecead0d33ec80f05ec062bcd72ea7178b1700e09f5c6a"
+        },
+        {
+          "poseId": "O",
+          "textureId": "skill-ok-o",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            13,
+            549,
+            269,
+            756
+          ],
+          "outputPath": "public/assets/skills/ok/O.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            255,
+            202
+          ],
+          "sha256": "15ff3753941e70db7a3268b09e82ab8e66d73f06c3220b980668e0493503b093"
+        },
+        {
+          "poseId": "P",
+          "textureId": "skill-ok-p",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            286,
+            549,
+            541,
+            756
+          ],
+          "outputPath": "public/assets/skills/ok/P.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            255,
+            202
+          ],
+          "sha256": "c382ecbc3992fe1d04429169cf77ef034c084d0c75350c53e16e91bd7e16ee3e"
+        },
+        {
+          "poseId": "Q",
+          "textureId": "skill-ok-q",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            557,
+            549,
+            813,
+            756
+          ],
+          "outputPath": "public/assets/skills/ok/Q.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            248,
+            154
+          ],
+          "sha256": "a8a1f4fc1e78dd67ad3e0dbe696117c62f4ad2c810336a494d483a5cb5c5a27f"
+        },
+        {
+          "poseId": "R",
+          "textureId": "skill-ok-r",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            829,
+            549,
+            1084,
+            756
+          ],
+          "outputPath": "public/assets/skills/ok/R.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            213,
+            140
+          ],
+          "sha256": "5c524a1c0b1dc4f1124e3ce1d8a6e6387d2ebeddfc364d454177774489f1f89f"
+        },
+        {
+          "poseId": "S",
+          "textureId": "skill-ok-s",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            1101,
+            549,
+            1356,
+            756
+          ],
+          "outputPath": "public/assets/skills/ok/S.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            254,
+            192
+          ],
+          "sha256": "c19c7a19d9b806915254c67c9bc668d761da4dd4c577df38a532197aec950eeb"
+        },
+        {
+          "poseId": "T",
+          "textureId": "skill-ok-t",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            1373,
+            549,
+            1628,
+            756
+          ],
+          "outputPath": "public/assets/skills/ok/T.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            255,
+            198
+          ],
+          "sha256": "830a3a8b85cda118225d8abce6d84d88c8184c64e8754eef0597b5849faa1f0e"
+        },
+        {
+          "poseId": "U",
+          "textureId": "skill-ok-u",
+          "sourceSheet": "OK喵老大必殺技.png",
+          "sourceRect": [
+            1645,
+            549,
+            1900,
+            756
+          ],
+          "outputPath": "public/assets/skills/ok/U.png",
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "anchor": "center",
+          "feetBaseline": null,
+          "category": "ULTIMATE_MODULE",
+          "runtimeUsage": "Chargeable Special H / Ultimate module",
+          "size": [
+            255,
+            171
+          ],
+          "sha256": "06cc2402be91196c66613e57bad67c59261675d0d6b01af6ba7d9f7e4acea5c2"
+        }
+      ]
+    }
+  },
+  "backgrounds": {
+    "alien": {
+      "source": "Alien cat背景.png",
+      "textureId": "ultimate-bg-alien",
+      "outputPath": "public/assets/ultimate-backgrounds/alien.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "sha256": "f9fbf2f9c8c7cd73f35f74593aca24d7376ef794c0a6b06e688dd7fabce2d173"
+    },
+    "doge": {
+      "source": "Doge-背景.png",
+      "textureId": "ultimate-bg-doge",
+      "outputPath": "public/assets/ultimate-backgrounds/doge.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "sha256": "3dbda3905a3f51c3ce162691a789fc182a1556419bfb0f609115194dc683627b"
+    },
+    "ya": {
+      "source": "YA鼠-背景.png",
+      "textureId": "ultimate-bg-ya",
+      "outputPath": "public/assets/ultimate-backgrounds/ya.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "sha256": "4b1bdbd7e3decaa7456e7c69dfce02f27c1dfae2ee22b10c85e62a9ea28bdf96"
+    },
+    "tempura": {
+      "source": "Oh fucking 天婦羅尬哩涼-背景.png",
+      "textureId": "ultimate-bg-tempura",
+      "outputPath": "public/assets/ultimate-backgrounds/tempura.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "sha256": "2f121969ee6b75a6cbfa78c65c7d95d47f20855fb50580debefedba00e03494f"
+    },
+    "goblin": {
+      "source": "哥布林也想談戀愛-背景.png",
+      "textureId": "ultimate-bg-goblin",
+      "outputPath": "public/assets/ultimate-backgrounds/goblin.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "sha256": "6c3e9edb0edfdd28b53d96e57f84de5e05333c6c4c9b96e0cd37765818f88789"
+    },
+    "salad": {
+      "source": "沙拉貓貓背景.png",
+      "textureId": "ultimate-bg-salad",
+      "outputPath": "public/assets/ultimate-backgrounds/salad.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "sha256": "fae401e3791dc8842fe013edbe83edf8e69d3e7440bc7b53ce9cc5fead7b3d6d"
+    },
+    "wizard": {
+      "source": "魔法胖橘貓背景.png",
+      "textureId": "ultimate-bg-wizard",
+      "outputPath": "public/assets/ultimate-backgrounds/wizard.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "sha256": "4d3aefebbd7bb02f196f3b792cbd262110d9be8f112b8eef9a5c89260b1c5fcb"
+    },
+    "blade": {
+      "source": "我的刀盾-背景.png",
+      "textureId": "ultimate-bg-blade",
+      "outputPath": "public/assets/ultimate-backgrounds/blade.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "sha256": "a3e115c64f1af3c3650ba1b95cbc1013d0e08790d445c19b9760dd5d13253af3"
+    },
+    "pink": {
+      "source": "粉紅星星-背景.png",
+      "textureId": "ultimate-bg-pink",
+      "outputPath": "public/assets/ultimate-backgrounds/pink.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "sha256": "7479ae6be08e7207c623ca29b313945da105399e2e79a658ad000627f3917e6d"
+    },
+    "sauce": {
+      "source": "蘸醬胡渣狗-背景.png",
+      "textureId": "ultimate-bg-sauce",
+      "outputPath": "public/assets/ultimate-backgrounds/sauce.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "sha256": "599c58ddf4b76bc1172747304c776003864ba1e97ca239f21256ea1bd24f1ac8"
+    },
+    "scared": {
+      "source": "驚嚇小貓-背景.png",
+      "textureId": "ultimate-bg-scared",
+      "outputPath": "public/assets/ultimate-backgrounds/scared.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "sha256": "89c10fab3c8fe2336c1d076eb312d12f1c2ff971d2c116982e3cbb46e475c92f"
+    },
+    "ok": {
+      "source": "OK喵老大-背景.png",
+      "textureId": "ultimate-bg-ok",
+      "outputPath": "public/assets/ultimate-backgrounds/ok.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "sha256": "30e66961770bc6f01d5241e3ceadfd4a9eb21f32cafcf160125c905c3d8ba1cd"
+    }
+  }
+}

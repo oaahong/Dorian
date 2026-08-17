@@ -1,11 +1,18 @@
 /**
- * One tick of raw controller state, packed into a single byte.
+ * One tick of raw controller state, packed into a 16-bit word.
  *
  * This is the network payload for lockstep, so it carries only what a physical
  * controller reports. Everything derived — jump/attack edges, whether the player
- * is blocking, whether a special press means "special" or "ultimate" — is
- * recomputed inside the simulation from this plus the previous frame, so that a
- * resimulation of the same bytes reaches the same result.
+ * is blocking, which motion a direction history spells — is recomputed inside the
+ * simulation from this plus the previous frames, so that a resimulation of the
+ * same bytes reaches the same result.
+ *
+ * It was a single byte with one bit spare until the upgraded build's control
+ * scheme arrived. That needs two more physical buttons — a throw and a dedicated
+ * ultimate — and nine bits do not fit in eight. Packing the four directions down
+ * to a 4-bit numpad value would have bought exactly the bit back, at the price of
+ * making `moveAxis` and the block check decode a field instead of testing a bit,
+ * on the hot path, to save one byte per tick on a 60 Hz stream. Two bytes it is.
  *
  * See docs/sim-spec.md §2.
  */
@@ -18,12 +25,14 @@ export const BUTTON = {
   Light: 1 << 4,
   Heavy: 1 << 5,
   Special: 1 << 6,
+  Throw: 1 << 7,
+  Ultimate: 1 << 8,
 } as const;
 
 export type Button = (typeof BUTTON)[keyof typeof BUTTON];
 
-/** All defined button bits. Bit 7 is unused and reserved. */
-export const INPUT_FRAME_MASK = 0x7f;
+/** All defined button bits. Bits 9..15 are unused and reserved. */
+export const INPUT_FRAME_MASK = 0x1ff;
 
 /** A packed frame of button state. Always in `0..INPUT_FRAME_MASK`. */
 export type InputFrame = number;
@@ -38,6 +47,8 @@ export interface ButtonState {
   light: boolean;
   heavy: boolean;
   special: boolean;
+  throw: boolean;
+  ultimate: boolean;
 }
 
 export function packInput(state: ButtonState): InputFrame {
@@ -48,7 +59,9 @@ export function packInput(state: ButtonState): InputFrame {
     (state.down ? BUTTON.Down : 0) |
     (state.light ? BUTTON.Light : 0) |
     (state.heavy ? BUTTON.Heavy : 0) |
-    (state.special ? BUTTON.Special : 0)
+    (state.special ? BUTTON.Special : 0) |
+    (state.throw ? BUTTON.Throw : 0) |
+    (state.ultimate ? BUTTON.Ultimate : 0)
   );
 }
 
@@ -61,6 +74,8 @@ export function unpackInput(frame: InputFrame): ButtonState {
     light: isDown(frame, BUTTON.Light),
     heavy: isDown(frame, BUTTON.Heavy),
     special: isDown(frame, BUTTON.Special),
+    throw: isDown(frame, BUTTON.Throw),
+    ultimate: isDown(frame, BUTTON.Ultimate),
   };
 }
 

@@ -4,9 +4,9 @@ A 2D browser fighting game built with Phaser 4, TypeScript and Vite, with
 intentionally absurd low-resolution meme-cat character cards. Two players can
 fight on one keyboard or across the internet.
 
-The eight supplied character sheets are cut apart at runtime by `SpriteExtractor`,
-which crops the 13 action panels, removes near-black pixels, trims transparent
-margins and registers each pose as a Phaser CanvasTexture.
+Twelve fighters, each with thirty poses cut from a source character sheet ahead of
+time by the Python pipeline in `scripts/`, so the client loads finished PNGs
+instead of cropping card art on the main thread at boot.
 
 ## Requirements
 
@@ -78,8 +78,9 @@ E2E_BASE_URL=https://<app> npm run test:e2e
 - Crouch: `S`
 - Light: `F`
 - Heavy: `G`
-- Special: `H`
-- Ultimate: `S + H` when MEME = 100
+- Special: `H` — with `236` / `214` / `623` / `SS` in front of it for the
+  fighter's other specials; bare `H` throws the 236
+- Ultimate: `T`, or `S + H`, when MEME = 100
 - Block: hold away from the opponent
 
 ### Player 2 Battle
@@ -89,8 +90,8 @@ E2E_BASE_URL=https://<app> npm run test:e2e
 - Crouch: `↓`
 - Light: `J`
 - Heavy: `K`
-- Special: `L`
-- Ultimate: `↓ + L` when MEME = 100
+- Special: `L` — same motions as P1
+- Ultimate: `I`, or `↓ + L`, when MEME = 100
 - Block: hold away from the opponent
 
 Online, both players use the Player 1 controls on their own keyboard; the seat the
@@ -131,9 +132,9 @@ anything else says which part is at fault.
 Pick `ONLINE VS`, create a room, and read the six-character code to a friend; they
 choose `ONLINE VS`, press `J`, and type it.
 
-Matches run **input-delay lockstep**: only button state crosses the wire — about
-six bytes a tick — and both clients run the same deterministic simulation over
-the same inputs. They exchange a checksum every second, so a divergence is
+Matches run **input-delay lockstep**: only button state crosses the wire — a
+couple of bytes a tick — and both clients run the same deterministic simulation
+over the same inputs. They exchange a checksum every second, so a divergence is
 reported rather than left to show up as two screens quietly disagreeing.
 
 The two clients try to connect **directly** to each other and fall back to routing
@@ -208,16 +209,65 @@ label for humans. That is also why there is no release-please or
 semantic-release: their main service is generating a changelog from commit
 subjects, and FIX_NOTES is already better than what that produces.
 
+## The upgraded build, and what is still to come
+
+This branch merges the separately-delivered upgraded build back into the trunk.
+Both descend from the initial commit and grew in opposite directions: the trunk
+extracted the game into a deterministic simulation and put it online, while the
+upgraded build stayed on the original object-oriented Phaser 3 code and deepened
+the *fighting game*. It could not be a text merge — the upgraded build extends
+exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`)
+— so its gameplay was re-expressed in `src/sim`, where lockstep can carry it.
+
+**Ported:**
+
+- The twelve fighters, their frame data, and their specials — chosen by motion
+  (236 / 214 / 623 / double-tap down), parsed inside the simulation from a hashed
+  input ring so the two clients cannot disagree about what came out.
+- Invulnerability windows, armour, command throws and multi-hit strings.
+- All 610 art assets and the Python pipeline that regenerates them, replacing the
+  browser-side pose cutting entirely.
+- Frame-authored `AttackSpec`, in ticks, which is what made the frame data
+  transferable as data rather than as a translation.
+
+**Not yet ported**, in the order it makes sense to do it:
+
+1. **The universal throw.** `BUTTON.Throw` is sampled and sent but nothing
+   consumes it — the only throw on the roster is goblin's command throw.
+2. **The chargeable H special**, with its 0.40 / 0.90 second levels. Needs charge
+   state in `SimFighter`, and the levels expressed as three specs.
+3. **Ultimate cut-ins** — the twelve staged presentations, with their voice lines
+   and backgrounds. The art is already in `public/assets/ultimate-backgrounds/`
+   and the ultimates currently resolve without them.
+4. **Summons and installs.** `tempura`'s penguins spawn as ordinary projectiles
+   and `doge`/`goblin`'s installs currently only pay meter.
+5. **Training mode**, and the status effects (`sticky`, `loveStun`, `afterimage`)
+   the upgraded move data carries but the simulation does not yet read.
+
+The upgraded build's own documentation is kept verbatim at
+[docs/upgraded-build.md](docs/upgraded-build.md) — it describes a tree this is not,
+and is the specification for the rest of the port. Its delivered QA suite is at
+[scripts/upgraded-acceptance/](scripts/upgraded-acceptance/); those scripts assert
+against the un-ported source and do not run, but between them they pin down the
+charge thresholds, the ultimate names and the input precedence still to reproduce.
+
 ## Characters
 
-1. 崩潰喵喵貓 — 崩潰音波 / JPEG震爆
-2. 哭哭預警貓 — 哭哭水柱 / 情緒海嘯
-3. OK老大貓 — OK衝刺 / 超級OK判定
-4. 尷尬微笑貓 — 尷尬僵直 / 社死領域
-5. 厭世沙拉貓 — 沙拉掀桌 / 健康餐大爆扣
-6. 震驚口水貓 — 冰櫃滑步 / 冷凍驚嚇
-7. 外星電波貓 — 電波光束 / 地球人退散
-8. 魔法胖橘貓 — JPEG魔法陣 / 爆裂喵法會
+Each has a 236, a 214 and a double-tap-down function move; `scared` is the only
+one with a 623 as well. Listed as **236 / ultimate**.
+
+1. Alien Meow／訊號壞掉喵 — 斷訊掃描波 / **逼逼逼動感光波**
+2. Doge — 側眼施壓 / **超級賽狗**
+3. YA鼠 — 尷尬打招呼 / **哈ㄗ咖西**
+4. oh fucking 天婦羅尬哩涼 — 企鵝縱隊 / **oh fucking 天婦羅尬哩涼！**
+5. 哥布林也想談戀愛 — 鎖喉告白 / **長老您保重**
+6. 沙拉貓貓 — 我不想吃這個 / **菜就多練**
+7. 魔法胖橘貓 — JPEG魔法陣 / **喵蘇魯的召喚！**
+8. 我的刀盾 — 鈍刀亂磨 / **汪爆氣流斬**
+9. 粉紅星星 — 尖叫嘴震 / **派甜心假面...露出**
+10. 蘸醬胡渣狗 — 蘸醬討飯 / **胡渣男！**
+11. 驚嚇小貓 — 尖叫震波 / **嗷嗷嗷嗷嗷！！**
+12. OK喵老大 — OK衝刺 / **大哥你是了解我的**
 
 ## Architecture
 
@@ -242,7 +292,7 @@ src/
 │  ├─ world.ts             stepWorld(world, [p1, p2]) -> SimEvent[]
 │  ├─ fighter.ts           physics and the per-fighter state machine
 │  ├─ combat.ts            boxes, blocking, damage
-│  ├─ attackSpecs.ts       frame data, converted from milliseconds to ticks
+│  ├─ attackSpecs.ts       frame data in ticks, with every optional field resolved
 │  ├─ cpu.ts               the AI, seeded so a 1P match replays
 │  ├─ input.ts             one byte of raw buttons — the network payload
 │  ├─ rng.ts hash.ts       seeded xorshift32, FNV-1a for desync detection
@@ -313,13 +363,19 @@ no configuration, not because the halves are entangled.
 
 ## Adding New Fighters
 
-1. Add the new card under `public/assets/cards/` using the same 1122×1402
-   action-sheet layout, then run `npm run assets:thumbs`.
+1. Put the source character sheet in `source-assets/`, add its crop profile to
+   `audit/sheet-profiles.json`, then run `npm run assets:poses` to cut the thirty
+   poses and `npm run assets:thumbs` for the menu card.
 2. Add one `FighterConfig` entry in `src/fighters/fighterData.ts`.
-3. Define its Special and Ultimate as data-driven `AttackSpec` entries.
-4. If the move needs a genuinely new behaviour, add one reusable `AttackKind` and
-   one handler in `src/sim/world.ts`; do not duplicate the fighter engine.
-5. Run `npm test`. The roster tests check the shape of the new entry, and the
+3. Define its specials and ultimate as data-driven `AttackSpec` entries — a 236, a
+   214, a function move, and optionally a 623.
+4. If the sheet does not follow the standard pose order, add a layout to
+   `src/fighters/poseSheet.ts` as `alien` does.
+5. If a move needs a genuinely new behaviour, add one reusable `AttackKind` and one
+   handler in `src/sim/world.ts`; do not duplicate the fighter engine.
+6. Widen the select grid in `src/scenes/CharacterSelectScene.ts` — `GRID` is one
+   definition and the layout, cursor wrap and highlight all follow from it.
+7. Run `npm test`. The roster tests check the shape of the new entry, and the
    golden replays will flag any change to existing behaviour.
 
 Anything added to the simulation has to obey the determinism rules — see
@@ -346,16 +402,33 @@ the extractor no longer removes. Lossless WebP is pixel-identical (0 pixels
 changed, measured the same way) and roughly 35% smaller, if the download matters
 more than keeping the originals in a universally-editable format.
 
-## Runtime Pose Extraction
+## Pose Extraction
 
-`SpriteExtractor` maps the card panels to:
+Poses are cut from the source character sheets ahead of time by
+`scripts/extract_poses.py`, which writes `public/assets/poses/<fighter>/01..30.png`
+with the background already removed.
 
-`idle`, `walkForward`, `walkBack`, `jump`, `crouch`, `light`, `heavy`, `block`,
-`hit`, `special`, `ultimate`, `victory`, `ko`.
+```bash
+npm run assets:poses
+npm run assets:poses:validate
+```
 
-It intentionally uses a conservative near-black threshold (`RGB < 25`) so dark
-character details such as the wizard cat's hat survive. Rough JPEG edges are part
-of the intended presentation.
+This used to happen in the browser: `SpriteExtractor` fetched a multi-megabyte card
+per fighter and cropped thirteen panels out of it with synchronous canvas passes
+before the match could start. Doing it offline is better on every axis — the crop
+rectangles and the alpha threshold live next to the art they were tuned against, a
+bad crop shows up in a contact sheet instead of on a moving fighter, and the client
+spends its first frames rendering rather than cutting.
 
-Extraction runs in `PrepareMatchScene`, for the two fighters in the match only —
-26 canvas passes rather than the 104 it used to do at boot.
+It also settles the argument the runtime extractor kept having with itself. A plain
+near-black test cleared the backdrop but also cleared a cat's pupils, because they
+are just as black; the fix was a flood fill inward from the crop edge, so enclosed
+dark areas are never reached. The pipeline does the same thing, once, offline.
+
+[poseSheet.ts](src/fighters/poseSheet.ts) maps the thirteen poses the renderer asks
+for — `idle`, `walkForward`, `walkBack`, `jump`, `crouch`, `light`, `heavy`,
+`block`, `hit`, `special`, `ultimate`, `victory`, `ko` — onto sheet numbers. Eleven
+of the twelve sheets share a layout; `alien` was shot in a different order and has
+its own.
+
+`PrepareMatchScene` loads only the poses the two chosen fighters need.

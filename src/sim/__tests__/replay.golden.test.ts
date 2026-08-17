@@ -24,7 +24,7 @@ import type { SimWorld } from '../types';
 
 const SETUP: MatchSetup = {
   seed: 20260815,
-  p1Character: 'collapse',
+  p1Character: 'pink',
   p2Character: 'wizard',
   stage: 'freezer',
 };
@@ -53,7 +53,9 @@ function summarise(world: SimWorld) {
 
 describe('two-player scripted match', () => {
   // A rotation that exercises walking, jumping, both normals, the special and the
-  // ultimate motion for both seats.
+  // ultimate motion for both seats. The special comes out with no motion behind
+  // it, so each fighter throws its 236 — which is the fallback the roster relies
+  // on for players who do not know the motions.
   const script = (tick: number): [InputFrame, InputFrame] => {
     const p1 =
       tick % 53 === 0 ? BUTTON.Down | BUTTON.Special
@@ -85,8 +87,8 @@ describe('two-player scripted match', () => {
 });
 
 describe('projectile and zone characters', () => {
-  // 'cry' fires a water projectile; 'alien' fires a beam.
-  const setup: MatchSetup = { ...SETUP, p1Character: 'cry', p2Character: 'alien' };
+  // 'ya' throws a projectile; 'alien' fires a beam and places a zone.
+  const setup: MatchSetup = { ...SETUP, p1Character: 'ya', p2Character: 'alien' };
   const script = (tick: number): [InputFrame, InputFrame] => [
     tick % 41 === 0 ? BUTTON.Special : tick % 4 === 0 ? BUTTON.Right : EMPTY_INPUT,
     tick % 47 === 0 ? BUTTON.Special : tick % 6 === 0 ? BUTTON.Left : EMPTY_INPUT,

@@ -120,7 +120,7 @@ export const HP_STAT_MITIGATION = (stat: number): number => 1.08 - stat * 0.03;
 export const MAX_HP = 100;
 export const MAX_ENERGY = 100;
 
-/** Default cooldown for a special that does not declare one. */
-export const DEFAULT_SPECIAL_COOLDOWN_MS = 1500;
-/** Default stun lock-out for an `aura` attack that does not declare one. */
-export const DEFAULT_STUN_LOCKOUT_MS = 2800;
+/** Default cooldown for a special that does not declare one. Was 1500 ms. */
+export const DEFAULT_SPECIAL_COOLDOWN_TICKS = 90;
+/** Default stun lock-out for an `aura` attack that does not declare one. Was 2800 ms. */
+export const DEFAULT_STUN_LOCKOUT_TICKS = 168;

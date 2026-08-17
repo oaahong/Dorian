@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser';
 import { getFighterConfig } from '../fighters/fighterData';
 import { gameState } from '../systems/GameState';
-import { SpriteExtractor } from '../systems/SpriteExtractor';
+import { poseTextureKey } from '../fighters/poseSheet';
 import { COLORS, FONT_FAMILY, GAME_HEIGHT, GAME_WIDTH } from '../utils/constants';
 import { AudioManager } from '../systems/AudioManager';
 
@@ -12,8 +12,8 @@ export class VsScene extends Phaser.Scene {
     const p1 = getFighterConfig(gameState.data.p1Character);
     const p2 = getFighterConfig(gameState.data.p2Character);
     for (let i=0;i<18;i+=1) this.add.rectangle(GAME_WIDTH/2, 40+i*38, GAME_WIDTH, 2, i%2?COLORS.red:COLORS.cyan, .07);
-    const left = this.add.image(320, 400, SpriteExtractor.textureKey(p1.id,'idle')).setOrigin(.5,1).setFlipX(false);
-    const right = this.add.image(960, 400, SpriteExtractor.textureKey(p2.id,'idle')).setOrigin(.5,1).setFlipX(true);
+    const left = this.add.image(320, 400, poseTextureKey(p1.id,'idle')).setOrigin(.5,1).setFlipX(false);
+    const right = this.add.image(960, 400, poseTextureKey(p2.id,'idle')).setOrigin(.5,1).setFlipX(true);
     this.normalize(left); this.normalize(right);
     this.add.text(170, 115, p1.name, { fontFamily:FONT_FAMILY, fontSize:'38px', color:'#E9B928', stroke:'#050505', strokeThickness:7 }).setOrigin(.5);
     this.add.text(1110, 115, p2.name, { fontFamily:FONT_FAMILY, fontSize:'38px', color:'#00C8FF', stroke:'#050505', strokeThickness:7 }).setOrigin(.5);

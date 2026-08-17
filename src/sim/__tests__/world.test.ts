@@ -22,8 +22,8 @@ import type { SimEvent, SimWorld } from '../types';
 
 const SETUP: MatchSetup = {
   seed: 20260815,
-  p1Character: 'collapse',
-  p2Character: 'okboss',
+  p1Character: 'pink',
+  p2Character: 'ok',
   stage: 'freezer',
 };
 
@@ -346,14 +346,14 @@ describe('match end', () => {
 });
 
 describe('projectiles', () => {
-  // 'collapse' has a `sonic` special that spawns a projectile.
+  // 'pink' has a `sonic` special that spawns a projectile.
   const fireSpecial = (w: SimWorld) => {
     run(w, 1, BUTTON.Special);
     run(w, 12);
   };
 
   it('spawns one on the tick the attack becomes active', () => {
-    const w = toFight(world({ p1Character: 'collapse' }));
+    const w = toFight(world({ p1Character: 'pink' }));
     expect(w.projectiles).toHaveLength(0);
     fireSpecial(w);
     expect(w.projectiles).toHaveLength(1);
@@ -361,7 +361,7 @@ describe('projectiles', () => {
   });
 
   it('travels in the owner’s facing direction', () => {
-    const w = toFight(world({ p1Character: 'collapse' }));
+    const w = toFight(world({ p1Character: 'pink' }));
     fireSpecial(w);
     const startX = w.projectiles[0]!.x;
     run(w, 5);
@@ -369,7 +369,7 @@ describe('projectiles', () => {
   });
 
   it('damages the opponent and despawns on contact', () => {
-    const w = toFight(world({ p1Character: 'collapse' }));
+    const w = toFight(world({ p1Character: 'pink' }));
     w.fighters[1].x = 700;
     fireSpecial(w);
     run(w, 40);
@@ -378,7 +378,7 @@ describe('projectiles', () => {
   });
 
   it('cannot hit the same target twice', () => {
-    const w = toFight(world({ p1Character: 'collapse' }));
+    const w = toFight(world({ p1Character: 'pink' }));
     w.fighters[1].x = 700;
     fireSpecial(w);
     run(w, 40);
@@ -388,7 +388,7 @@ describe('projectiles', () => {
   });
 
   it('expires once its lifetime runs out', () => {
-    const w = toFight(world({ p1Character: 'collapse' }));
+    const w = toFight(world({ p1Character: 'pink' }));
     w.fighters[1].x = ARENA_MAX_X;
     fireSpecial(w);
     run(w, 120);
@@ -396,7 +396,7 @@ describe('projectiles', () => {
   });
 
   it('despawns after leaving the screen', () => {
-    const w = toFight(world({ p1Character: 'collapse' }));
+    const w = toFight(world({ p1Character: 'pink' }));
     fireSpecial(w);
     w.projectiles[0]!.x = GAME_WIDTH + 200;
     run(w, 1);
@@ -404,7 +404,7 @@ describe('projectiles', () => {
   });
 
   it('is cleared when a new round begins', () => {
-    const w = toFight(world({ p1Character: 'collapse' }));
+    const w = toFight(world({ p1Character: 'pink' }));
     fireSpecial(w);
     expect(w.projectiles.length).toBeGreaterThan(0);
     w.fighters[1].hp = 0;
@@ -418,7 +418,7 @@ describe('zones', () => {
   it('waits out its telegraph before it can hit', () => {
     const w = toFight(world({ p1Character: 'wizard' }));
     run(w, 1, BUTTON.Special);
-    run(w, 12);
+    run(w, 22); // past the 18-tick startup, well inside the 24-tick telegraph
     expect(w.zones).toHaveLength(1);
     expect(w.zones[0]!.triggered).toBe(false);
     expect(w.fighters[1].hp).toBe(100);
@@ -436,7 +436,7 @@ describe('zones', () => {
     const w = toFight(world({ p1Character: 'wizard' }));
     w.fighters[1].x = 700;
     run(w, 1, BUTTON.Special);
-    run(w, 12);
+    run(w, 22);
     w.fighters[1].x = ARENA_MAX_X;
     run(w, 60);
     expect(w.fighters[1].hp).toBe(100);
@@ -457,7 +457,7 @@ describe('ultimates', () => {
   };
 
   it('announces itself once and freezes the action', () => {
-    const w = toFight(world({ p1Character: 'collapse' }));
+    const w = toFight(world({ p1Character: 'pink' }));
     w.fighters[0].energy = MAX_ENERGY;
     const events = run(w, 1, BUTTON.Down | BUTTON.Special);
     expect(events).toContainEqual(
@@ -471,18 +471,18 @@ describe('ultimates', () => {
   });
 
   it('lands a wide-box ultimate', () => {
-    // 'collapse' has ultimate-sonic: a tall box in front of the attacker.
-    const w = toFight(world({ p1Character: 'collapse' }));
+    // 'doge' has ultimate-sonic: a tall box in front of the attacker.
+    const w = toFight(world({ p1Character: 'doge' }));
     w.fighters[1].x = 800;
     fireUltimate(w);
     expect(w.fighters[1].hp).toBeLessThan(100);
   });
 
   it('does not let a wide-box ultimate reach across the whole arena', () => {
-    // collapse's ultimate-sonic has reach 540, so from one wall it covers roughly
+    // doge's ultimate-sonic has reach 540, so from one wall it covers roughly
     // half the 1090 px arena. It aims correctly — facing is recomputed toward the
     // opponent every tick — it simply falls short.
-    const w = toFight(world({ p1Character: 'collapse' }));
+    const w = toFight(world({ p1Character: 'doge' }));
     w.fighters[0].x = 1100;
     w.fighters[1].x = 150;
     fireUltimate(w);
@@ -491,8 +491,8 @@ describe('ultimates', () => {
   });
 
   it('lands a screen-wide ultimate regardless of distance', () => {
-    // 'cry' has ultimate-water, which hits unconditionally.
-    const w = toFight(world({ p1Character: 'cry' }));
+    // 'ya' has ultimate-social, one of the kinds that hits unconditionally.
+    const w = toFight(world({ p1Character: 'ya' }));
     w.fighters[0].x = ARENA_MAX_X;
     w.fighters[1].x = 120;
     fireUltimate(w, 120);
@@ -518,7 +518,7 @@ describe('ultimates', () => {
   });
 
   it('spends the meter even if the ultimate whiffs', () => {
-    const w = toFight(world({ p1Character: 'collapse' }));
+    const w = toFight(world({ p1Character: 'pink' }));
     w.fighters[0].energy = MAX_ENERGY;
     run(w, 1, BUTTON.Down | BUTTON.Special);
     expect(w.fighters[0].energy).toBe(0);

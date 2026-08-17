@@ -12,7 +12,7 @@ import type { SimWorld } from '../types';
  * replay fixture possible for 1P mode. See docs/sim-spec.md §10 row 8.
  */
 
-const setup = { seed: 4242, p1Character: 'collapse', p2Character: 'okboss', stage: 'freezer' };
+const setup = { seed: 4242, p1Character: 'pink', p2Character: 'ok', stage: 'freezer' };
 
 function play(difficulty: CpuDifficulty, ticks: number, seed = 99): InputFrame[] {
   const world = createWorld(setup);
@@ -118,7 +118,7 @@ describe('behaviour', () => {
     expect(brain.decide(world)).not.toBeUndefined();
   });
 
-  it.each(['collapse', 'okboss', 'drool', 'awkward', 'wizard', 'alien'])(
+  it.each(['pink', 'ok', 'scared', 'ok', 'wizard', 'alien'])(
     'drives %s, whose special has its own preferred range',
     (character) => {
       // Exercises every branch of the special-distance heuristic: sonic, dash,

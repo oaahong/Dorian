@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict';import {pathToFileURL} from 'node:url';import {spawnSync} from 'node:child_process';import process from 'node:process';
+const prep=spawnSync(process.execPath,['scripts/prepare-runtime-fallback.mjs'],{stdio:'ignore'});assert.equal(prep.status,0,'runtime transpile must succeed');
+const base=pathToFileURL(process.cwd()+'/.runtime-site/src/').href;
+const {UltimateInputState}=await import(base+'combat/UltimateInputState.js');const {ChargeableSpecialH}=await import(base+'combat/ChargeableSpecialH.js');const {FighterState}=await import(base+'fighters/FighterState.js');const {PlayerController}=await import(base+'controllers/PlayerController.js');
+const intent=(o={})=>({moveX:0,crouch:false,jump:false,guard:false,action:null,specialHeld:false,specialPressed:false,specialReleased:false,ultimateHeld:false,ultimatePressed:false,ultimateReleased:false,...o});
+// Player Ultimate protocol execution.
+const f={meter:0,memeUltimateState:'MEME_IDLE',gainMeter(n){this.meter=Math.min(100,this.meter+n)}};const u=new UltimateInputState();
+for(let i=0;i<600;i++)assert.equal(u.tick(f,intent({ultimateHeld:true})),false);assert.ok(Math.abs(f.meter-50)<1e-8);assert.equal(u.state,'MEME_CHARGING');
+f.meter=99.9;u.reset();for(let i=0;i<3;i++)u.tick(f,intent({ultimateHeld:true}));assert.equal(f.meter,100);assert.equal(u.state,'MEME_READY_WAIT_RELEASE');assert.equal(u.tick(f,intent({ultimateHeld:true,ultimatePressed:true})),false,'held/repeat cannot trigger');u.tick(f,intent({ultimateReleased:true}));assert.equal(u.state,'MEME_READY_WAIT_PRESS');assert.equal(u.tick(f,intent({ultimateHeld:true,ultimatePressed:true})),true,'new press triggers');
+u.reset();f.meter=100;u.syncAfterExternalMeterChange(f,false);assert.equal(u.state,'MEME_READY_WAIT_PRESS','external meter 100 unheld arms direct press');f.meter=75;u.syncAfterExternalMeterChange(f,false);assert.equal(u.state,'MEME_IDLE','spending meter cancels ready');
+u.reset();f.meter=100;u.syncAfterExternalMeterChange(f,true);assert.equal(u.state,'MEME_READY_WAIT_RELEASE','external meter 100 while held waits release');
+// H controller: real data, release-only levels, no cooldown/regate.
+function mockF(id='scared'){return{side:1,config:{id},state:FighterState.IDLE,hp:100,airborne:false,currentMove:null,lastCommand:'',visual:'',canAct(){return this.state===FighterState.IDLE&&!this.currentMove},enterState(s){this.state=s},setVisualOverride(k){this.visual=k},clearVisualOverride(){this.visual=''}}}
+function charge(frames,id='scared'){const h=new ChargeableSpecialH(),x=mockF(id);assert.equal(h.begin(x),true);let move;for(let i=0;i<frames;i++)h.tick(x,intent({specialHeld:true}),m=>{move=m;x.currentMove=m;return true});h.tick(x,intent({specialReleased:true}),m=>{move=m;x.currentMove=m;return true});return{h,x,move}}
+let c=charge(12);assert.equal(c.move.chargeLevel,1);assert.equal(c.move.pushbackX,120);c.x.currentMove=null;c.h.tick(c.x,intent(),()=>false);assert.ok(c.h.debug(c.x).startsWith('IDLE'));c.x.state=FighterState.IDLE;assert.equal(c.h.begin(c.x),true,'Recovery completion immediately allows new H charge');
+c=charge(35);assert.equal(c.move.chargeLevel,2);assert.equal(c.move.pushbackX,190);c=charge(70);assert.equal(c.move.chargeLevel,3);assert.equal(c.move.pushbackX,280);
+const held=new ChargeableSpecialH(),hf=mockF();held.begin(hf);for(let i=0;i<180;i++)held.tick(hf,intent({specialHeld:true}),()=>{throw new Error('must not auto release')});assert.ok(held.debug(hf).startsWith('CHARGING L3'));assert.equal(hf.currentMove,null);
+const cancel=new ChargeableSpecialH(),cf=mockF();cancel.begin(cf);cf.state=FighterState.HITSTUN;cancel.tick(cf,intent({specialHeld:true}),()=>false);assert.ok(cancel.debug(cf).startsWith('IDLE'));
+// Logical physical mapping and chord priority execute through the real PlayerController with a mocked keyboard.
+function controller(player=1){const keys={};const scene={input:{keyboard:{addKey(code){return keys[code]??=( {isDown:false} )}}}};return{pc:new PlayerController(scene,player),keys}}
+let {pc,keys}=controller(1);keys.H.isDown=true;let pi=pc.tick(1,1,false);assert.equal(pi.action,'specialH');assert.equal(pi.specialPressed,true);pi=pc.tick(2,1,false);assert.equal(pi.action,null);assert.equal(pi.specialHeld,true);keys.H.isDown=false;pi=pc.tick(3,1,false);assert.equal(pi.specialReleased,true);
+({pc,keys}=controller(1));keys.G.isDown=keys.H.isDown=true;assert.equal(pc.tick(1,1,false).action,'impact','G+H consumes bare H');
+({pc,keys}=controller(1));keys.F.isDown=keys.H.isDown=true;assert.equal(pc.tick(1,1,false).action,'parry','F+H consumes bare H');
+({pc,keys}=controller(2));keys.L.isDown=true;pi=pc.tick(1,-1,false);assert.equal(pi.action,'specialH');keys.L.isDown=false;pc.tick(2,-1,false);keys.I.isDown=true;pi=pc.tick(3,-1,false);assert.equal(pi.ultimatePressed,true,'P2 I maps to logical Ultimate input edge');
+console.log('LOGIC QA PASS: real H state machine / no-CD re-charge / Scared knockback order / Meme hold-release-new-press / P1-P2 logical input edges/chord precedence.');

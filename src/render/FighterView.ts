@@ -3,7 +3,7 @@ import { FighterState } from '../fighters/FighterState';
 import { getFighterConfig } from '../fighters/fighterData';
 import { GROUND_Y } from '../sim/constants';
 import type { SimFighter } from '../sim/types';
-import { SpriteExtractor, type PoseName } from '../systems/SpriteExtractor';
+import { poseTextureKey, type PoseName } from '../fighters/poseSheet';
 
 /**
  * Draws one fighter from simulation state.
@@ -22,7 +22,7 @@ export class FighterView {
   constructor(private readonly scene: Phaser.Scene, fighter: SimFighter) {
     const configId = fighter.configId;
     this.sprite = scene.add
-      .image(fighter.x, fighter.y, SpriteExtractor.textureKey(configId, 'idle'))
+      .image(fighter.x, fighter.y, poseTextureKey(configId, 'idle'))
       .setOrigin(0.5, 1);
     this.normalizeVisual('idle');
   }
@@ -81,7 +81,7 @@ export class FighterView {
   }
 
   private setPose(pose: PoseName, configId: string): void {
-    const key = SpriteExtractor.textureKey(configId || this.sprite.texture.key, pose);
+    const key = poseTextureKey(configId || this.sprite.texture.key, pose);
     if (this.currentPose === pose && this.sprite.texture.key === key) return;
     this.currentPose = pose;
     this.sprite.setTexture(key);

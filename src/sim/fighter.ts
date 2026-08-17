@@ -22,7 +22,18 @@ import {
   SPEED_BY_STAT,
   STUN_FRICTION_PER_TICK,
 } from './constants';
-import { BUTTON, isDown, justPressed, moveAxis, type InputFrame } from './input';
+import type { AttackSpec } from '../combat/AttackSpec';
+import {
+  DRAGON_PUNCH,
+  QUARTER_CIRCLE_BACK,
+  QUARTER_CIRCLE_FORWARD,
+  createCommandHistory,
+  matchesDoubleTap,
+  matchesMotion,
+  recordInput,
+  resetCommandHistory,
+} from './command';
+import { BUTTON, EMPTY_INPUT, isDown, justPressed, moveAxis, type InputFrame } from './input';
 import type { PlayerIndex, SimEvent, SimFighter } from './types';
 
 /**
@@ -50,6 +61,7 @@ export function createFighter(configId: string, x: number, facing: 1 | -1): SimF
     stunLockoutUntilTick: 0,
     guardHeld: false,
     prevButtons: 0,
+    commandHistory: createCommandHistory(),
     downBufferedUntilTick: 0,
   };
 }
@@ -70,6 +82,7 @@ export function resetFighter(fighter: SimFighter, x: number, facing: 1 | -1): vo
   fighter.stunLockoutUntilTick = 0;
   fighter.guardHeld = false;
   fighter.prevButtons = 0;
+  resetCommandHistory(fighter.commandHistory);
   fighter.downBufferedUntilTick = 0;
 }
 
@@ -139,7 +152,7 @@ export function stepPhysics(fighter: SimFighter): void {
  */
 function isSelfPropelledAttack(fighter: SimFighter): boolean {
   const kind = fighter.attack?.kind;
-  return kind === 'dash' || kind === 'slide';
+  return kind === 'dash' || kind === 'slide' || kind === 'dashStrike';
 }
 
 export function config(fighter: SimFighter): FighterConfig {
@@ -211,6 +224,16 @@ export function stepFighter(
     fighter.downBufferedUntilTick = tick + INPUT_BUFFER_TICKS;
   }
 
+  /**
+   * Record before the state machine runs, so a motion completed on this tick is
+   * visible to the intent that reads it on this tick.
+   *
+   * While input is disabled a neutral word is recorded rather than the real one,
+   * for the same reason `prevButtons` is cleared below: the round intro must not
+   * let a player pre-load a motion that fires the instant control is handed over.
+   */
+  recordInput(fighter.commandHistory, inputEnabled ? input : EMPTY_INPUT);
+
   if (fighter.attack) {
     advanceAttack(fighter, cfg);
   } else if (
@@ -264,6 +287,13 @@ function advanceAttack(fighter: SimFighter, cfg: FighterConfig): void {
     attack.elapsedTicks >= totalAttackTicks(spec, cfg.controlStat) &&
     fighter.state !== FighterState.KO
   ) {
+    // Paid on completion, not on contact: a taunt or a flex earns its meter for
+    // having been held all the way through, and cannot whiff. Clamped here
+    // rather than through combat.ts's `addEnergy`, which would make this module
+    // and that one import each other.
+    if (spec.meterOnComplete > 0) {
+      fighter.energy = Math.min(MAX_ENERGY, fighter.energy + spec.meterOnComplete);
+    }
     fighter.attack = null;
     fighter.state = isAirborne(fighter) ? FighterState.JUMP : FighterState.IDLE;
   }
@@ -272,7 +302,7 @@ function advanceAttack(fighter: SimFighter, cfg: FighterConfig): void {
 /** Dash, slide and heavy drag the fighter forward during their active frames. */
 function applyAttackMotion(fighter: SimFighter, spec: TickSpec): void {
   if (!attackActive(fighter)) return;
-  if (spec.kind === 'dash') {
+  if (spec.kind === 'dash' || spec.kind === 'dashStrike') {
     fighter.x += fighter.facing * DASH_ATTACK_SPEED * DT;
   } else if (spec.kind === 'slide') {
     fighter.x += fighter.facing * SLIDE_ATTACK_SPEED * DT;
@@ -298,7 +328,16 @@ function processIntent(
   const specialEdge = justPressed(input, fighter.prevButtons, BUTTON.Special);
   const downBuffered = crouch || tick <= fighter.downBufferedUntilTick;
   const specialPressed = specialEdge && !downBuffered;
-  const ultimatePressed = specialEdge && downBuffered;
+  /**
+   * Two ways to ask for an ultimate.
+   *
+   * The dedicated button is the upgraded build's scheme and the one the controls
+   * screen teaches. Down-plus-special is the trunk's original motion, kept
+   * because it is what every existing player's hands already know and because
+   * removing it would silently break them mid-match.
+   */
+  const ultimatePressed =
+    justPressed(input, fighter.prevButtons, BUTTON.Ultimate) || (specialEdge && downBuffered);
 
   const speed = SPEED_BY_STAT[cfg.speedStat] ?? SPEED_BY_STAT[3]!;
 
@@ -362,6 +401,26 @@ function processIntent(
   fighter.state = FighterState.IDLE;
 }
 
+/**
+ * Which special the player just asked for, or null for none.
+ *
+ * Checked most-specific first. A dragon punch contains a forward and a down, so a
+ * 623 read after a 236 would never fire — the more demanding motion has to win.
+ * The double tap is tested last because it is the least deliberate input and
+ * should not pre-empt a motion the player actually rolled.
+ */
+function requestedSpecial(fighter: SimFighter, cfg: FighterConfig): AttackSpec | null {
+  const history = fighter.commandHistory;
+  const facing = fighter.facing;
+  const { quarterForward, quarterBack, dragonPunch, functionMove } = cfg.specials;
+
+  if (dragonPunch && matchesMotion(history, DRAGON_PUNCH, facing)) return dragonPunch;
+  if (matchesMotion(history, QUARTER_CIRCLE_BACK, facing)) return quarterBack;
+  if (matchesMotion(history, QUARTER_CIRCLE_FORWARD, facing)) return quarterForward;
+  if (matchesDoubleTap(history, 2, facing)) return functionMove;
+  return null;
+}
+
 function startSpecial(
   fighter: SimFighter,
   tick: number,
@@ -370,7 +429,10 @@ function startSpecial(
   player: PlayerIndex,
   events: SimEvent[],
 ): void {
-  const spec = getSpec(cfg.special.id);
+  // No motion is not a whiff: a bare special button gives the fighter its
+  // defining move, so the roster stays playable without knowing any of them.
+  const chosen = requestedSpecial(fighter, cfg) ?? cfg.specials.quarterForward;
+  const spec = getSpec(chosen.id);
   // Special cooldowns use 1.08 - stat * 0.025, distinct from the 1.05 used for
   // attack recovery. The split is in the original and is preserved deliberately.
   fighter.nextSpecialTick = tick + spec.cooldownTicks * CONTROL_COOLDOWN_MULTIPLIER(cfg.controlStat);
@@ -397,6 +459,9 @@ function startAttack(
     airborne,
     hitMask: 0,
     presented: false,
+    hitsUsed: 0,
+    rehitReadyTick: 0,
+    armorUsed: 0,
   };
   events.push({ t: 'attackStart', player, specId: spec.id, state });
 }

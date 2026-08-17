@@ -232,7 +232,24 @@ function resolvePushCollision(world: SimWorld): void {
 // --- Combat -----------------------------------------------------------------
 
 /** Kinds whose hitbox is tested on every active tick rather than fired once. */
-const CONTINUOUS_KINDS = new Set(['melee', 'dash', 'slide', 'aura']);
+const CONTINUOUS_KINDS = new Set([
+  'melee', 'dash', 'slide', 'aura',
+  'strike', 'multiStrike', 'antiAir', 'burst', 'counter', 'commandThrow', 'dashStrike',
+]);
+
+/** Kinds that send something across the arena. */
+const PROJECTILE_KINDS = new Set(['sonic', 'water', 'salad', 'projectile', 'summon']);
+
+/**
+ * Kinds with no hitbox at all.
+ *
+ * They still occupy the fighter for their whole duration — that is the cost —
+ * but they do their work through armour, invulnerability or meter rather than by
+ * touching anyone. Listing them explicitly means a new kind that forgets to say
+ * what it is falls through to the melee default and is visibly wrong, rather than
+ * silently doing nothing.
+ */
+const NO_CONTACT_KINDS = new Set(['armor', 'parry', 'hide', 'install', 'meterCharge']);
 
 function stepCombat(world: SimWorld, events: SimEvent[]): void {
   processAttack(world, 0, events);
@@ -266,13 +283,14 @@ function processAttack(world: SimWorld, attackerIndex: PlayerIndex, events: SimE
 
   if (!attack.activeJustStarted) return;
   if (CONTINUOUS_KINDS.has(spec.kind)) return;
+  if (NO_CONTACT_KINDS.has(spec.kind)) return;
+
+  if (PROJECTILE_KINDS.has(spec.kind)) {
+    spawnProjectile(world, attackerIndex, spec, events);
+    return;
+  }
 
   switch (spec.kind) {
-    case 'sonic':
-    case 'water':
-    case 'salad':
-      spawnProjectile(world, attackerIndex, spec, events);
-      break;
     case 'zone':
       spawnZone(world, attackerIndex, defenderIndex, spec, events);
       break;
@@ -324,12 +342,25 @@ function tryHit(
   if (!attack) return;
 
   const bit = hitBit(defenderIndex);
-  if ((attack.hitMask & bit) !== 0) return;
+  if ((attack.hitMask & bit) !== 0) {
+    // Already connected. A multi-hit attack gets its mask cleared once the rehit
+    // gap has passed and it still has hits left to give.
+    const exhausted = attack.hitsUsed >= spec.hits.length;
+    if (exhausted || world.tick < attack.rehitReadyTick) return;
+    attack.hitMask &= ~bit;
+  }
   if (!rectsIntersect(box(), getHurtbox(defender))) return;
 
-  attack.hitMask |= bit;
   const result = resolveHit(attacker, defender, spec, world.tick, attackerIndex, events);
-  if (result) applyHitStop(world, result.hitStopTicks);
+  // A refused hit — invulnerable, or a throw against an airborne defender —
+  // leaves the mask alone, so the attack can still land later in its active
+  // window rather than being spent on a target it never touched.
+  if (!result) return;
+
+  attack.hitMask |= bit;
+  attack.hitsUsed += 1;
+  attack.rehitReadyTick = world.tick + spec.rehitTicks;
+  applyHitStop(world, result.hitStopTicks);
 }
 
 function wideUltimateBox(attacker: SimFighter, spec: TickSpec) {
@@ -612,6 +643,14 @@ export function checksum(world: SimWorld): number {
     h = hashBool(h, fighter.guardHeld);
     h = hashInt(h, fighter.prevButtons);
     h = hashInt(h, fighter.downBufferedUntilTick);
+
+    // The command ring decides whether a motion input has been completed, so two
+    // clients holding different histories would disagree about which move comes
+    // out. Hashed by absolute slot including the head, not by recent-first order:
+    // two rings holding the same inputs at different rotations are not the same
+    // state, and the next write would land in a different place.
+    h = hashInt(h, fighter.commandHistory.head);
+    for (const frame of fighter.commandHistory.frames) h = hashInt(h, frame);
 
     const attack = fighter.attack;
     h = hashBool(h, attack !== null);

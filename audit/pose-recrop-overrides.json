@@ -1,0 +1,2654 @@
+[
+  {
+    "fighterId": "alien",
+    "pose": "07",
+    "issueType": "其他動作（右側）＋格線",
+    "sourceRect": [
+      13,
+      287,
+      232,
+      471
+    ],
+    "suggestedRecrop": [
+      13,
+      287,
+      214,
+      471
+    ]
+  },
+  {
+    "fighterId": "alien",
+    "pose": "08",
+    "issueType": "其他動作（右側）＋格線",
+    "sourceRect": [
+      232,
+      287,
+      451,
+      471
+    ],
+    "suggestedRecrop": [
+      232,
+      287,
+      433,
+      471
+    ]
+  },
+  {
+    "fighterId": "alien",
+    "pose": "09",
+    "issueType": "其他動作（左右）＋格線",
+    "sourceRect": [
+      451,
+      287,
+      671,
+      471
+    ],
+    "suggestedRecrop": [
+      469,
+      287,
+      653,
+      471
+    ]
+  },
+  {
+    "fighterId": "alien",
+    "pose": "10",
+    "issueType": "其他動作（左右）＋格線",
+    "sourceRect": [
+      671,
+      287,
+      890,
+      471
+    ],
+    "suggestedRecrop": [
+      689,
+      287,
+      872,
+      471
+    ]
+  },
+  {
+    "fighterId": "alien",
+    "pose": "13",
+    "issueType": "格線（左側）",
+    "sourceRect": [
+      232,
+      502,
+      451,
+      684
+    ],
+    "suggestedRecrop": [
+      241,
+      502,
+      451,
+      684
+    ]
+  },
+  {
+    "fighterId": "alien",
+    "pose": "14",
+    "issueType": "格線（左側）",
+    "sourceRect": [
+      451,
+      502,
+      671,
+      684
+    ],
+    "suggestedRecrop": [
+      460,
+      502,
+      671,
+      684
+    ]
+  },
+  {
+    "fighterId": "alien",
+    "pose": "15",
+    "issueType": "格線（左側）",
+    "sourceRect": [
+      671,
+      502,
+      890,
+      684
+    ],
+    "suggestedRecrop": [
+      680,
+      502,
+      890,
+      684
+    ]
+  },
+  {
+    "fighterId": "alien",
+    "pose": "16",
+    "issueType": "文字殘片（左側）＋格線",
+    "sourceRect": [
+      890,
+      502,
+      1109,
+      684
+    ],
+    "suggestedRecrop": [
+      908,
+      502,
+      1109,
+      684
+    ]
+  },
+  {
+    "fighterId": "alien",
+    "pose": "18",
+    "issueType": "格線（左側）",
+    "sourceRect": [
+      232,
+      725,
+      451,
+      897
+    ],
+    "suggestedRecrop": [
+      241,
+      725,
+      451,
+      897
+    ]
+  },
+  {
+    "fighterId": "alien",
+    "pose": "19",
+    "issueType": "格線（左右）",
+    "sourceRect": [
+      451,
+      725,
+      671,
+      897
+    ],
+    "suggestedRecrop": [
+      460,
+      725,
+      662,
+      897
+    ]
+  },
+  {
+    "fighterId": "alien",
+    "pose": "21",
+    "issueType": "格線（左側）",
+    "sourceRect": [
+      890,
+      725,
+      1109,
+      897
+    ],
+    "suggestedRecrop": [
+      899,
+      725,
+      1109,
+      897
+    ]
+  },
+  {
+    "fighterId": "alien",
+    "pose": "22",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      13,
+      927,
+      232,
+      1103
+    ],
+    "suggestedRecrop": [
+      13,
+      927,
+      223,
+      1103
+    ]
+  },
+  {
+    "fighterId": "alien",
+    "pose": "24",
+    "issueType": "其他動作（右側）＋格線",
+    "sourceRect": [
+      451,
+      927,
+      671,
+      1103
+    ],
+    "suggestedRecrop": [
+      451,
+      927,
+      653,
+      1103
+    ]
+  },
+  {
+    "fighterId": "alien",
+    "pose": "25",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      671,
+      927,
+      890,
+      1103
+    ],
+    "suggestedRecrop": [
+      671,
+      927,
+      881,
+      1103
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "02",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      194,
+      84,
+      378,
+      283
+    ],
+    "suggestedRecrop": [
+      194,
+      84,
+      369,
+      283
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "03",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      378,
+      84,
+      561,
+      283
+    ],
+    "suggestedRecrop": [
+      378,
+      84,
+      552,
+      283
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "04",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      561,
+      84,
+      744,
+      283
+    ],
+    "suggestedRecrop": [
+      561,
+      84,
+      735,
+      283
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "05",
+    "issueType": "其他動作（右側）＋格線",
+    "sourceRect": [
+      744,
+      84,
+      928,
+      283
+    ],
+    "suggestedRecrop": [
+      744,
+      84,
+      910,
+      283
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "08",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      194,
+      317,
+      378,
+      519
+    ],
+    "suggestedRecrop": [
+      194,
+      317,
+      369,
+      519
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "09",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      378,
+      317,
+      561,
+      519
+    ],
+    "suggestedRecrop": [
+      378,
+      317,
+      552,
+      519
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "10",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      561,
+      317,
+      744,
+      519
+    ],
+    "suggestedRecrop": [
+      561,
+      317,
+      735,
+      519
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "11",
+    "issueType": "其他動作（左側）＋格線",
+    "sourceRect": [
+      744,
+      317,
+      928,
+      519
+    ],
+    "suggestedRecrop": [
+      762,
+      317,
+      928,
+      519
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "14",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      194,
+      561,
+      378,
+      761
+    ],
+    "suggestedRecrop": [
+      194,
+      561,
+      369,
+      761
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "15",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      378,
+      561,
+      561,
+      761
+    ],
+    "suggestedRecrop": [
+      378,
+      561,
+      552,
+      761
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "16",
+    "issueType": "其他動作（右側）＋格線",
+    "sourceRect": [
+      561,
+      561,
+      744,
+      761
+    ],
+    "suggestedRecrop": [
+      561,
+      561,
+      726,
+      761
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "17",
+    "issueType": "其他動作（右側）＋格線",
+    "sourceRect": [
+      744,
+      561,
+      928,
+      761
+    ],
+    "suggestedRecrop": [
+      744,
+      561,
+      910,
+      761
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "18",
+    "issueType": "其他動作（左側）",
+    "sourceRect": [
+      928,
+      561,
+      1111,
+      761
+    ],
+    "suggestedRecrop": [
+      946,
+      561,
+      1111,
+      761
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "19",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      11,
+      797,
+      194,
+      1003
+    ],
+    "suggestedRecrop": [
+      11,
+      797,
+      185,
+      1003
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "20",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      194,
+      797,
+      378,
+      1003
+    ],
+    "suggestedRecrop": [
+      194,
+      797,
+      369,
+      1003
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "21",
+    "issueType": "其他動作（右側）＋格線",
+    "sourceRect": [
+      378,
+      797,
+      561,
+      1003
+    ],
+    "suggestedRecrop": [
+      378,
+      797,
+      543,
+      1003
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "22",
+    "issueType": "其他動作（右側）＋格線",
+    "sourceRect": [
+      561,
+      797,
+      744,
+      1003
+    ],
+    "suggestedRecrop": [
+      561,
+      797,
+      726,
+      1003
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "23",
+    "issueType": "其他動作（右側）",
+    "sourceRect": [
+      744,
+      797,
+      928,
+      1003
+    ],
+    "suggestedRecrop": [
+      744,
+      797,
+      910,
+      1003
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "25",
+    "issueType": "其他動作（右側）",
+    "sourceRect": [
+      11,
+      1038,
+      194,
+      1266
+    ],
+    "suggestedRecrop": [
+      11,
+      1038,
+      176,
+      1266
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "28",
+    "issueType": "格線（左側）",
+    "sourceRect": [
+      561,
+      1038,
+      744,
+      1266
+    ],
+    "suggestedRecrop": [
+      570,
+      1038,
+      744,
+      1266
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "29",
+    "issueType": "其他動作（左側）＋角色被截斷（右側）",
+    "sourceRect": [
+      744,
+      1038,
+      928,
+      1266
+    ],
+    "suggestedRecrop": [
+      762,
+      1038,
+      946,
+      1266
+    ]
+  },
+  {
+    "fighterId": "doge",
+    "pose": "30",
+    "issueType": "其他動作（左側）＋格線",
+    "sourceRect": [
+      928,
+      1038,
+      1111,
+      1266
+    ],
+    "suggestedRecrop": [
+      946,
+      1038,
+      1111,
+      1266
+    ]
+  },
+  {
+    "fighterId": "ya",
+    "pose": "02",
+    "issueType": "其他動作（右側）",
+    "sourceRect": [
+      231,
+      84,
+      451,
+      260
+    ],
+    "suggestedRecrop": [
+      231,
+      84,
+      433,
+      260
+    ]
+  },
+  {
+    "fighterId": "ya",
+    "pose": "03",
+    "issueType": "其他動作（右側）",
+    "sourceRect": [
+      451,
+      84,
+      671,
+      260
+    ],
+    "suggestedRecrop": [
+      451,
+      84,
+      653,
+      260
+    ]
+  },
+  {
+    "fighterId": "ya",
+    "pose": "08",
+    "issueType": "其他動作（左側）",
+    "sourceRect": [
+      451,
+      290,
+      671,
+      459
+    ],
+    "suggestedRecrop": [
+      469,
+      290,
+      671,
+      459
+    ]
+  },
+  {
+    "fighterId": "ya",
+    "pose": "10",
+    "issueType": "其他動作（左側）",
+    "sourceRect": [
+      891,
+      290,
+      1111,
+      459
+    ],
+    "suggestedRecrop": [
+      909,
+      290,
+      1111,
+      459
+    ]
+  },
+  {
+    "fighterId": "ya",
+    "pose": "11",
+    "issueType": "其他動作（左側）",
+    "sourceRect": [
+      11,
+      490,
+      231,
+      668
+    ],
+    "suggestedRecrop": [
+      29,
+      490,
+      231,
+      668
+    ]
+  },
+  {
+    "fighterId": "ya",
+    "pose": "12",
+    "issueType": "其他動作（左側）",
+    "sourceRect": [
+      231,
+      490,
+      451,
+      668
+    ],
+    "suggestedRecrop": [
+      249,
+      490,
+      451,
+      668
+    ]
+  },
+  {
+    "fighterId": "ya",
+    "pose": "21",
+    "issueType": "其他動作（右側）",
+    "sourceRect": [
+      11,
+      900,
+      231,
+      1052
+    ],
+    "suggestedRecrop": [
+      11,
+      900,
+      213,
+      1052
+    ]
+  },
+  {
+    "fighterId": "ya",
+    "pose": "23",
+    "issueType": "其他動作（右側）",
+    "sourceRect": [
+      451,
+      900,
+      671,
+      1052
+    ],
+    "suggestedRecrop": [
+      451,
+      900,
+      653,
+      1052
+    ]
+  },
+  {
+    "fighterId": "ya",
+    "pose": "24",
+    "issueType": "其他動作（右側）",
+    "sourceRect": [
+      671,
+      900,
+      891,
+      1052
+    ],
+    "suggestedRecrop": [
+      671,
+      900,
+      873,
+      1052
+    ]
+  },
+  {
+    "fighterId": "ya",
+    "pose": "29",
+    "issueType": "其他動作（左側）",
+    "sourceRect": [
+      671,
+      1082,
+      891,
+      1282
+    ],
+    "suggestedRecrop": [
+      689,
+      1082,
+      891,
+      1282
+    ]
+  },
+  {
+    "fighterId": "ya",
+    "pose": "30",
+    "issueType": "其他動作（左側）",
+    "sourceRect": [
+      891,
+      1082,
+      1111,
+      1282
+    ],
+    "suggestedRecrop": [
+      909,
+      1082,
+      1111,
+      1282
+    ]
+  },
+  {
+    "fighterId": "tempura",
+    "pose": "01",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      11,
+      86,
+      231,
+      240
+    ],
+    "suggestedRecrop": [
+      11,
+      96,
+      231,
+      240
+    ]
+  },
+  {
+    "fighterId": "tempura",
+    "pose": "02",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      231,
+      86,
+      451,
+      240
+    ],
+    "suggestedRecrop": [
+      231,
+      96,
+      451,
+      240
+    ]
+  },
+  {
+    "fighterId": "tempura",
+    "pose": "03",
+    "issueType": "格線（上側）＋格線（右側）",
+    "sourceRect": [
+      451,
+      86,
+      671,
+      240
+    ],
+    "suggestedRecrop": [
+      451,
+      96,
+      662,
+      240
+    ]
+  },
+  {
+    "fighterId": "tempura",
+    "pose": "04",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      671,
+      86,
+      891,
+      240
+    ],
+    "suggestedRecrop": [
+      671,
+      96,
+      891,
+      240
+    ]
+  },
+  {
+    "fighterId": "tempura",
+    "pose": "05",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      891,
+      86,
+      1111,
+      240
+    ],
+    "suggestedRecrop": [
+      891,
+      96,
+      1111,
+      240
+    ]
+  },
+  {
+    "fighterId": "tempura",
+    "pose": "08",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      451,
+      292,
+      671,
+      427
+    ],
+    "suggestedRecrop": [
+      451,
+      292,
+      662,
+      427
+    ]
+  },
+  {
+    "fighterId": "tempura",
+    "pose": "17",
+    "issueType": "透明背景異常（灰色矩形殘留）",
+    "sourceRect": [
+      231,
+      663,
+      451,
+      799
+    ],
+    "suggestedRecrop": [
+      239,
+      671,
+      443,
+      787
+    ]
+  },
+  {
+    "fighterId": "tempura",
+    "pose": "29",
+    "issueType": "透明背景異常（灰色矩形殘留）",
+    "sourceRect": [
+      11,
+      1238,
+      230,
+      1375
+    ],
+    "suggestedRecrop": [
+      19,
+      1246,
+      222,
+      1363
+    ]
+  },
+  {
+    "fighterId": "tempura",
+    "pose": "30",
+    "issueType": "格線（左側）",
+    "sourceRect": [
+      230,
+      1238,
+      451,
+      1375
+    ],
+    "suggestedRecrop": [
+      239,
+      1238,
+      451,
+      1375
+    ]
+  },
+  {
+    "fighterId": "goblin",
+    "pose": "17",
+    "issueType": "其他動作（右側）",
+    "sourceRect": [
+      231,
+      702,
+      451,
+      864
+    ],
+    "suggestedRecrop": [
+      231,
+      702,
+      433,
+      864
+    ]
+  },
+  {
+    "fighterId": "goblin",
+    "pose": "19",
+    "issueType": "其他動作（右側）",
+    "sourceRect": [
+      671,
+      702,
+      891,
+      864
+    ],
+    "suggestedRecrop": [
+      671,
+      702,
+      873,
+      864
+    ]
+  },
+  {
+    "fighterId": "goblin",
+    "pose": "20",
+    "issueType": "其他動作（左右）",
+    "sourceRect": [
+      891,
+      702,
+      1111,
+      864
+    ],
+    "suggestedRecrop": [
+      909,
+      702,
+      1093,
+      864
+    ]
+  },
+  {
+    "fighterId": "goblin",
+    "pose": "26",
+    "issueType": "其他動作（右側）＋格線",
+    "sourceRect": [
+      11,
+      1086,
+      231,
+      1271
+    ],
+    "suggestedRecrop": [
+      11,
+      1086,
+      213,
+      1271
+    ]
+  },
+  {
+    "fighterId": "goblin",
+    "pose": "27",
+    "issueType": "其他動作（左右）＋格線",
+    "sourceRect": [
+      231,
+      1086,
+      451,
+      1271
+    ],
+    "suggestedRecrop": [
+      249,
+      1086,
+      433,
+      1271
+    ]
+  },
+  {
+    "fighterId": "goblin",
+    "pose": "28",
+    "issueType": "其他動作（右側）＋格線",
+    "sourceRect": [
+      451,
+      1086,
+      671,
+      1271
+    ],
+    "suggestedRecrop": [
+      451,
+      1086,
+      653,
+      1271
+    ]
+  },
+  {
+    "fighterId": "goblin",
+    "pose": "29",
+    "issueType": "其他動作（左側）＋格線",
+    "sourceRect": [
+      671,
+      1086,
+      891,
+      1271
+    ],
+    "suggestedRecrop": [
+      689,
+      1086,
+      891,
+      1271
+    ]
+  },
+  {
+    "fighterId": "goblin",
+    "pose": "30",
+    "issueType": "其他動作（左側）＋格線",
+    "sourceRect": [
+      891,
+      1086,
+      1111,
+      1271
+    ],
+    "suggestedRecrop": [
+      909,
+      1086,
+      1111,
+      1271
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "01",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      11,
+      84,
+      231,
+      212
+    ],
+    "suggestedRecrop": [
+      11,
+      84,
+      222,
+      212
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "02",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      231,
+      84,
+      451,
+      212
+    ],
+    "suggestedRecrop": [
+      231,
+      84,
+      442,
+      212
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "03",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      451,
+      84,
+      671,
+      212
+    ],
+    "suggestedRecrop": [
+      451,
+      84,
+      662,
+      212
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "04",
+    "issueType": "其他動作（下側）＋格線",
+    "sourceRect": [
+      671,
+      84,
+      891,
+      212
+    ],
+    "suggestedRecrop": [
+      671,
+      84,
+      891,
+      194
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "07",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      231,
+      269,
+      451,
+      403
+    ],
+    "suggestedRecrop": [
+      231,
+      269,
+      442,
+      403
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "08",
+    "issueType": "其他動作（左側）＋格線（右側）",
+    "sourceRect": [
+      451,
+      269,
+      671,
+      403
+    ],
+    "suggestedRecrop": [
+      469,
+      269,
+      653,
+      403
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "09",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      671,
+      269,
+      891,
+      403
+    ],
+    "suggestedRecrop": [
+      671,
+      269,
+      882,
+      403
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "10",
+    "issueType": "其他動作（下側）",
+    "sourceRect": [
+      891,
+      269,
+      1111,
+      403
+    ],
+    "suggestedRecrop": [
+      891,
+      269,
+      1111,
+      385
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "12",
+    "issueType": "格線（左側）",
+    "sourceRect": [
+      231,
+      461,
+      451,
+      609
+    ],
+    "suggestedRecrop": [
+      240,
+      461,
+      451,
+      609
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "13",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      451,
+      461,
+      671,
+      609
+    ],
+    "suggestedRecrop": [
+      451,
+      461,
+      662,
+      609
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "15",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      891,
+      461,
+      1111,
+      609
+    ],
+    "suggestedRecrop": [
+      891,
+      461,
+      1102,
+      609
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "16",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      11,
+      666,
+      231,
+      811
+    ],
+    "suggestedRecrop": [
+      11,
+      666,
+      222,
+      811
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "17",
+    "issueType": "其他動作（右側）",
+    "sourceRect": [
+      231,
+      666,
+      451,
+      811
+    ],
+    "suggestedRecrop": [
+      231,
+      666,
+      433,
+      811
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "18",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      451,
+      666,
+      671,
+      811
+    ],
+    "suggestedRecrop": [
+      451,
+      666,
+      662,
+      811
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "19",
+    "issueType": "其他動作（下側）＋格線（右側）",
+    "sourceRect": [
+      671,
+      666,
+      891,
+      811
+    ],
+    "suggestedRecrop": [
+      671,
+      666,
+      873,
+      793
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "20",
+    "issueType": "其他動作（下側）",
+    "sourceRect": [
+      891,
+      666,
+      1111,
+      811
+    ],
+    "suggestedRecrop": [
+      891,
+      666,
+      1111,
+      793
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "21",
+    "issueType": "其他動作（右側）＋格線",
+    "sourceRect": [
+      11,
+      865,
+      231,
+      997
+    ],
+    "suggestedRecrop": [
+      11,
+      865,
+      213,
+      997
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "22",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      231,
+      865,
+      451,
+      997
+    ],
+    "suggestedRecrop": [
+      231,
+      865,
+      442,
+      997
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "23",
+    "issueType": "其他動作（下側）＋格線（右側）",
+    "sourceRect": [
+      451,
+      865,
+      671,
+      997
+    ],
+    "suggestedRecrop": [
+      451,
+      865,
+      653,
+      979
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "24",
+    "issueType": "其他動作（右側）",
+    "sourceRect": [
+      671,
+      865,
+      891,
+      997
+    ],
+    "suggestedRecrop": [
+      671,
+      865,
+      873,
+      997
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "27",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      231,
+      1046,
+      451,
+      1219
+    ],
+    "suggestedRecrop": [
+      231,
+      1056,
+      451,
+      1219
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "28",
+    "issueType": "其他動作（左側）＋格線（上側）",
+    "sourceRect": [
+      451,
+      1046,
+      671,
+      1219
+    ],
+    "suggestedRecrop": [
+      469,
+      1056,
+      671,
+      1219
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "29",
+    "issueType": "其他動作（左側）",
+    "sourceRect": [
+      671,
+      1046,
+      891,
+      1219
+    ],
+    "suggestedRecrop": [
+      689,
+      1046,
+      891,
+      1219
+    ]
+  },
+  {
+    "fighterId": "salad",
+    "pose": "30",
+    "issueType": "其他動作（左側）＋格線",
+    "sourceRect": [
+      891,
+      1046,
+      1111,
+      1219
+    ],
+    "suggestedRecrop": [
+      909,
+      1046,
+      1111,
+      1219
+    ]
+  },
+  {
+    "fighterId": "wizard",
+    "pose": "01",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      10,
+      103,
+      211,
+      251
+    ],
+    "suggestedRecrop": [
+      10,
+      103,
+      202,
+      251
+    ]
+  },
+  {
+    "fighterId": "wizard",
+    "pose": "06",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      10,
+      296,
+      211,
+      448
+    ],
+    "suggestedRecrop": [
+      10,
+      296,
+      202,
+      448
+    ]
+  },
+  {
+    "fighterId": "wizard",
+    "pose": "11",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      10,
+      502,
+      211,
+      665
+    ],
+    "suggestedRecrop": [
+      10,
+      502,
+      202,
+      665
+    ]
+  },
+  {
+    "fighterId": "wizard",
+    "pose": "16",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      10,
+      723,
+      211,
+      879
+    ],
+    "suggestedRecrop": [
+      10,
+      723,
+      202,
+      879
+    ]
+  },
+  {
+    "fighterId": "wizard",
+    "pose": "21",
+    "issueType": "格線（上側＋右側）",
+    "sourceRect": [
+      10,
+      917,
+      211,
+      1093
+    ],
+    "suggestedRecrop": [
+      10,
+      927,
+      202,
+      1093
+    ]
+  },
+  {
+    "fighterId": "wizard",
+    "pose": "22",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      211,
+      917,
+      412,
+      1093
+    ],
+    "suggestedRecrop": [
+      211,
+      927,
+      412,
+      1093
+    ]
+  },
+  {
+    "fighterId": "wizard",
+    "pose": "23",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      412,
+      917,
+      612,
+      1093
+    ],
+    "suggestedRecrop": [
+      412,
+      927,
+      612,
+      1093
+    ]
+  },
+  {
+    "fighterId": "wizard",
+    "pose": "24",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      612,
+      917,
+      813,
+      1093
+    ],
+    "suggestedRecrop": [
+      612,
+      927,
+      813,
+      1093
+    ]
+  },
+  {
+    "fighterId": "wizard",
+    "pose": "25",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      813,
+      917,
+      1014,
+      1093
+    ],
+    "suggestedRecrop": [
+      813,
+      927,
+      1014,
+      1093
+    ]
+  },
+  {
+    "fighterId": "wizard",
+    "pose": "26",
+    "issueType": "格線（右側）",
+    "sourceRect": [
+      10,
+      1142,
+      211,
+      1344
+    ],
+    "suggestedRecrop": [
+      10,
+      1142,
+      202,
+      1344
+    ]
+  },
+  {
+    "fighterId": "wizard",
+    "pose": "27",
+    "issueType": "特效殘片（右側）",
+    "sourceRect": [
+      211,
+      1142,
+      412,
+      1344
+    ],
+    "suggestedRecrop": [
+      211,
+      1142,
+      394,
+      1344
+    ]
+  },
+  {
+    "fighterId": "wizard",
+    "pose": "29",
+    "issueType": "其他動作（左側）",
+    "sourceRect": [
+      612,
+      1142,
+      813,
+      1344
+    ],
+    "suggestedRecrop": [
+      630,
+      1142,
+      813,
+      1344
+    ]
+  },
+  {
+    "fighterId": "wizard",
+    "pose": "30",
+    "issueType": "其他動作（左側）＋格線",
+    "sourceRect": [
+      813,
+      1142,
+      1014,
+      1344
+    ],
+    "suggestedRecrop": [
+      831,
+      1142,
+      1014,
+      1344
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "01",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      11,
+      84,
+      231,
+      252
+    ],
+    "suggestedRecrop": [
+      11,
+      94,
+      231,
+      252
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "02",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      231,
+      84,
+      451,
+      252
+    ],
+    "suggestedRecrop": [
+      231,
+      94,
+      451,
+      252
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "03",
+    "issueType": "格線（上側＋右側）",
+    "sourceRect": [
+      451,
+      84,
+      671,
+      252
+    ],
+    "suggestedRecrop": [
+      451,
+      94,
+      662,
+      252
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "04",
+    "issueType": "格線（上側＋右側）",
+    "sourceRect": [
+      671,
+      84,
+      891,
+      252
+    ],
+    "suggestedRecrop": [
+      671,
+      94,
+      882,
+      252
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "05",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      891,
+      84,
+      1111,
+      252
+    ],
+    "suggestedRecrop": [
+      891,
+      94,
+      1111,
+      252
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "06",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      11,
+      287,
+      231,
+      450
+    ],
+    "suggestedRecrop": [
+      11,
+      297,
+      231,
+      450
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "07",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      231,
+      287,
+      451,
+      450
+    ],
+    "suggestedRecrop": [
+      231,
+      297,
+      451,
+      450
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "08",
+    "issueType": "格線（上側＋右側）",
+    "sourceRect": [
+      451,
+      287,
+      671,
+      450
+    ],
+    "suggestedRecrop": [
+      451,
+      297,
+      662,
+      450
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "09",
+    "issueType": "格線（上側＋右側）",
+    "sourceRect": [
+      671,
+      287,
+      891,
+      450
+    ],
+    "suggestedRecrop": [
+      671,
+      297,
+      882,
+      450
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "10",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      891,
+      287,
+      1111,
+      450
+    ],
+    "suggestedRecrop": [
+      891,
+      297,
+      1111,
+      450
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "11",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      11,
+      485,
+      231,
+      649
+    ],
+    "suggestedRecrop": [
+      11,
+      495,
+      231,
+      649
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "12",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      231,
+      485,
+      451,
+      649
+    ],
+    "suggestedRecrop": [
+      231,
+      495,
+      451,
+      649
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "13",
+    "issueType": "格線（上側＋右側）",
+    "sourceRect": [
+      451,
+      485,
+      671,
+      649
+    ],
+    "suggestedRecrop": [
+      451,
+      495,
+      662,
+      649
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "14",
+    "issueType": "格線（上側＋右側）",
+    "sourceRect": [
+      671,
+      485,
+      891,
+      649
+    ],
+    "suggestedRecrop": [
+      671,
+      495,
+      882,
+      649
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "15",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      891,
+      485,
+      1111,
+      649
+    ],
+    "suggestedRecrop": [
+      891,
+      495,
+      1111,
+      649
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "16",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      11,
+      684,
+      231,
+      846
+    ],
+    "suggestedRecrop": [
+      11,
+      694,
+      231,
+      846
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "17",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      231,
+      684,
+      451,
+      846
+    ],
+    "suggestedRecrop": [
+      231,
+      694,
+      451,
+      846
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "18",
+    "issueType": "格線（上側＋右側）",
+    "sourceRect": [
+      451,
+      684,
+      671,
+      846
+    ],
+    "suggestedRecrop": [
+      451,
+      694,
+      662,
+      846
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "19",
+    "issueType": "其他動作（右側）＋格線",
+    "sourceRect": [
+      671,
+      684,
+      891,
+      846
+    ],
+    "suggestedRecrop": [
+      671,
+      684,
+      873,
+      846
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "20",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      891,
+      684,
+      1111,
+      846
+    ],
+    "suggestedRecrop": [
+      891,
+      694,
+      1111,
+      846
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "21",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      11,
+      883,
+      231,
+      1046
+    ],
+    "suggestedRecrop": [
+      11,
+      893,
+      231,
+      1046
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "22",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      231,
+      883,
+      451,
+      1046
+    ],
+    "suggestedRecrop": [
+      231,
+      893,
+      451,
+      1046
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "23",
+    "issueType": "格線（上側＋右側）",
+    "sourceRect": [
+      451,
+      883,
+      671,
+      1046
+    ],
+    "suggestedRecrop": [
+      451,
+      893,
+      662,
+      1046
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "24",
+    "issueType": "其他動作（右側）＋格線",
+    "sourceRect": [
+      671,
+      883,
+      891,
+      1046
+    ],
+    "suggestedRecrop": [
+      671,
+      883,
+      873,
+      1046
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "25",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      891,
+      883,
+      1111,
+      1046
+    ],
+    "suggestedRecrop": [
+      891,
+      893,
+      1111,
+      1046
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "28",
+    "issueType": "其他動作（左右）",
+    "sourceRect": [
+      451,
+      1083,
+      671,
+      1306
+    ],
+    "suggestedRecrop": [
+      469,
+      1083,
+      653,
+      1306
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "29",
+    "issueType": "其他動作（左側）",
+    "sourceRect": [
+      671,
+      1083,
+      891,
+      1306
+    ],
+    "suggestedRecrop": [
+      689,
+      1083,
+      891,
+      1306
+    ]
+  },
+  {
+    "fighterId": "blade",
+    "pose": "30",
+    "issueType": "其他動作（左側）＋格線",
+    "sourceRect": [
+      891,
+      1083,
+      1111,
+      1306
+    ],
+    "suggestedRecrop": [
+      909,
+      1083,
+      1111,
+      1306
+    ]
+  },
+  {
+    "fighterId": "pink",
+    "pose": "07",
+    "issueType": "其他動作（左側）",
+    "sourceRect": [
+      237,
+      248,
+      453,
+      406
+    ],
+    "suggestedRecrop": [
+      255,
+      248,
+      453,
+      406
+    ]
+  },
+  {
+    "fighterId": "pink",
+    "pose": "09",
+    "issueType": "特效殘片（左側）",
+    "sourceRect": [
+      669,
+      248,
+      885,
+      406
+    ],
+    "suggestedRecrop": [
+      687,
+      248,
+      885,
+      406
+    ]
+  },
+  {
+    "fighterId": "pink",
+    "pose": "10",
+    "issueType": "特效殘片（左側）",
+    "sourceRect": [
+      885,
+      248,
+      1102,
+      406
+    ],
+    "suggestedRecrop": [
+      903,
+      248,
+      1102,
+      406
+    ]
+  },
+  {
+    "fighterId": "pink",
+    "pose": "20",
+    "issueType": "其他動作（左側）",
+    "sourceRect": [
+      885,
+      620,
+      1102,
+      791
+    ],
+    "suggestedRecrop": [
+      903,
+      620,
+      1102,
+      791
+    ]
+  },
+  {
+    "fighterId": "pink",
+    "pose": "24",
+    "issueType": "裁切不完整（右側特效被截斷）",
+    "sourceRect": [
+      669,
+      813,
+      885,
+      990
+    ],
+    "suggestedRecrop": [
+      669,
+      813,
+      903,
+      990
+    ]
+  },
+  {
+    "fighterId": "pink",
+    "pose": "26",
+    "issueType": "特效殘片（右側）",
+    "sourceRect": [
+      20,
+      1012,
+      237,
+      1251
+    ],
+    "suggestedRecrop": [
+      20,
+      1012,
+      219,
+      1251
+    ]
+  },
+  {
+    "fighterId": "pink",
+    "pose": "29",
+    "issueType": "其他動作（左側）＋文字殘片",
+    "sourceRect": [
+      669,
+      1012,
+      885,
+      1251
+    ],
+    "suggestedRecrop": [
+      687,
+      1012,
+      885,
+      1251
+    ]
+  },
+  {
+    "fighterId": "pink",
+    "pose": "30",
+    "issueType": "文字殘片（左側）",
+    "sourceRect": [
+      885,
+      1012,
+      1102,
+      1251
+    ],
+    "suggestedRecrop": [
+      903,
+      1012,
+      1102,
+      1251
+    ]
+  },
+  {
+    "fighterId": "sauce",
+    "pose": "10",
+    "issueType": "特效殘片（左側）",
+    "sourceRect": [
+      891,
+      279,
+      1111,
+      440
+    ],
+    "suggestedRecrop": [
+      909,
+      279,
+      1111,
+      440
+    ]
+  },
+  {
+    "fighterId": "sauce",
+    "pose": "26",
+    "issueType": "其他動作（右側）",
+    "sourceRect": [
+      11,
+      1070,
+      231,
+      1275
+    ],
+    "suggestedRecrop": [
+      11,
+      1070,
+      213,
+      1275
+    ]
+  },
+  {
+    "fighterId": "sauce",
+    "pose": "29",
+    "issueType": "其他動作（左側）",
+    "sourceRect": [
+      671,
+      1070,
+      891,
+      1275
+    ],
+    "suggestedRecrop": [
+      689,
+      1070,
+      891,
+      1275
+    ]
+  },
+  {
+    "fighterId": "sauce",
+    "pose": "30",
+    "issueType": "其他動作（左側）＋格線（右側）",
+    "sourceRect": [
+      891,
+      1070,
+      1111,
+      1275
+    ],
+    "suggestedRecrop": [
+      909,
+      1070,
+      1093,
+      1275
+    ]
+  },
+  {
+    "fighterId": "scared",
+    "pose": "11",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      11,
+      497,
+      231,
+      666
+    ],
+    "suggestedRecrop": [
+      11,
+      507,
+      231,
+      666
+    ]
+  },
+  {
+    "fighterId": "scared",
+    "pose": "12",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      231,
+      497,
+      451,
+      666
+    ],
+    "suggestedRecrop": [
+      231,
+      507,
+      451,
+      666
+    ]
+  },
+  {
+    "fighterId": "scared",
+    "pose": "13",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      451,
+      497,
+      671,
+      666
+    ],
+    "suggestedRecrop": [
+      451,
+      507,
+      671,
+      666
+    ]
+  },
+  {
+    "fighterId": "scared",
+    "pose": "14",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      671,
+      497,
+      891,
+      666
+    ],
+    "suggestedRecrop": [
+      671,
+      507,
+      891,
+      666
+    ]
+  },
+  {
+    "fighterId": "scared",
+    "pose": "15",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      891,
+      497,
+      1111,
+      666
+    ],
+    "suggestedRecrop": [
+      891,
+      507,
+      1111,
+      666
+    ]
+  },
+  {
+    "fighterId": "scared",
+    "pose": "26",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      11,
+      1104,
+      231,
+      1292
+    ],
+    "suggestedRecrop": [
+      11,
+      1114,
+      231,
+      1292
+    ]
+  },
+  {
+    "fighterId": "scared",
+    "pose": "27",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      231,
+      1104,
+      451,
+      1292
+    ],
+    "suggestedRecrop": [
+      231,
+      1114,
+      451,
+      1292
+    ]
+  },
+  {
+    "fighterId": "scared",
+    "pose": "28",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      451,
+      1104,
+      671,
+      1292
+    ],
+    "suggestedRecrop": [
+      451,
+      1114,
+      671,
+      1292
+    ]
+  },
+  {
+    "fighterId": "scared",
+    "pose": "29",
+    "issueType": "格線（上側＋右側）",
+    "sourceRect": [
+      671,
+      1104,
+      891,
+      1292
+    ],
+    "suggestedRecrop": [
+      671,
+      1114,
+      882,
+      1292
+    ]
+  },
+  {
+    "fighterId": "scared",
+    "pose": "30",
+    "issueType": "格線（上側）",
+    "sourceRect": [
+      891,
+      1104,
+      1111,
+      1292
+    ],
+    "suggestedRecrop": [
+      891,
+      1114,
+      1111,
+      1292
+    ]
+  },
+  {
+    "fighterId": "ok",
+    "pose": "03",
+    "issueType": "格線（左側）",
+    "sourceRect": [
+      412,
+      103,
+      612,
+      266
+    ],
+    "suggestedRecrop": [
+      421,
+      103,
+      612,
+      266
+    ]
+  },
+  {
+    "fighterId": "ok",
+    "pose": "08",
+    "issueType": "格線（左側）",
+    "sourceRect": [
+      412,
+      316,
+      612,
+      464
+    ],
+    "suggestedRecrop": [
+      421,
+      316,
+      612,
+      464
+    ]
+  },
+  {
+    "fighterId": "ok",
+    "pose": "13",
+    "issueType": "格線（左側）",
+    "sourceRect": [
+      412,
+      514,
+      612,
+      668
+    ],
+    "suggestedRecrop": [
+      421,
+      514,
+      612,
+      668
+    ]
+  },
+  {
+    "fighterId": "ok",
+    "pose": "18",
+    "issueType": "格線（左側）",
+    "sourceRect": [
+      412,
+      720,
+      612,
+      860
+    ],
+    "suggestedRecrop": [
+      421,
+      720,
+      612,
+      860
+    ]
+  },
+  {
+    "fighterId": "ok",
+    "pose": "28",
+    "issueType": "格線（左側）",
+    "sourceRect": [
+      412,
+      1105,
+      612,
+      1282
+    ],
+    "suggestedRecrop": [
+      421,
+      1105,
+      612,
+      1282
+    ]
+  }
+]

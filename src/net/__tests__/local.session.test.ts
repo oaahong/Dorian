@@ -40,8 +40,8 @@ describe('LocalSession', () => {
   });
 
   it('masks frames from either source down to the defined buttons', () => {
-    const session = new LocalSession(() => 0xff);
-    session.submitLocalInput(0, 0xff);
-    expect(session.inputsForTick(0)).toEqual([0x7f, 0x7f]);
+    const session = new LocalSession(() => 0xffff);
+    session.submitLocalInput(0, 0xffff);
+    expect(session.inputsForTick(0)).toEqual([0x1ff, 0x1ff]);
   });
 });

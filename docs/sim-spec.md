@@ -60,15 +60,21 @@ timestep the exponent is constant, and the whole call collapses to
 
 ## 2. Input
 
-The network payload is **one byte of raw button state** per player per tick
+The network payload is **one 16-bit word of raw button state** per player per tick
 ([src/sim/input.ts](../src/sim/input.ts)):
 
 ```
-bit 0 left   bit 1 right   bit 2 up   bit 3 down
-bit 4 light  bit 5 heavy   bit 6 special
+bit 0 left   bit 1 right   bit 2 up      bit 3 down
+bit 4 light  bit 5 heavy   bit 6 special bit 7 throw   bit 8 ultimate
 ```
 
-Nothing derived travels: press edges, blocking, and special-versus-ultimate are
+It was one byte with a bit spare until the upgraded build's control scheme
+arrived, needing a throw and a dedicated ultimate button — nine bits, which do not
+fit in eight. Packing the directions into a 4-bit numpad value would have bought
+the bit back, at the cost of making `moveAxis` and the block check decode a field
+rather than test a bit, on the hot path, to save one byte per tick.
+
+Nothing derived travels: press edges, blocking, and which motion was spelled are
 all recomputed inside the simulation, so a resimulation of the same bytes reaches
 the same decisions.
 
@@ -77,6 +83,23 @@ the same decisions.
   read once per tick, which is fatal to any replay.
 - **The 140 ms crouch buffer** that distinguishes a special from an ultimate is
   `downBufferedUntilTick`.
+- **Motion inputs** (236, 214, 623, double taps) are read from
+  `commandHistory`, a fixed 30-tick ring of raw input words held per fighter in
+  `SimWorld` and folded into the checksum
+  ([src/sim/command.ts](../src/sim/command.ts)). The upgraded build parsed these
+  in its controller, from a buffer holding `Set`s of pressed keys; state outside
+  the world is state the opponent never receives and a rollback never restores, so
+  the two clients would disagree about whether a fireball came out. Recording is
+  the only mutation — every query is a pure read, so it can be asked repeatedly
+  within a tick.
+- **Directions are facing-relative** (numpad notation), so one authored motion
+  works from both sides of the screen. Opposing directions cancel to neutral, as
+  keyboards report both during rollover.
+- **`22` is a genuine double tap** — press, release, press — rather than the
+  subsequence match the upgraded build used, which was satisfied by merely
+  *holding* down and so could not be told apart from crouching. It also swallowed
+  slowly-rolled 236 inputs, since those pass through two frames of down and `22`
+  was checked first.
 - **Blocking is not a button.** It is inferred from movement direction versus
   opponent position (§5), so it can only be resolved during simulation.
 - **Sampling** happens in [KeyboardSampler](../src/render/KeyboardSampler.ts),
@@ -208,21 +231,26 @@ Blocked: damage scaled to `chipRatio`, knockback to 24%, no vertical knockback,
 
 ## 6. Attacks
 
-`AttackSpec` ([AttackSpec.ts](../src/combat/AttackSpec.ts)) is authored in
-milliseconds and converted to whole ticks once at module load by
-[attackSpecs.ts](../src/sim/attackSpecs.ts), which also resolves the `?? 1500` /
-`?? 2800` / `?? 900` fallbacks that used to be scattered through the combat code.
+`AttackSpec` ([AttackSpec.ts](../src/combat/AttackSpec.ts)) is authored **in
+ticks**. [attackSpecs.ts](../src/sim/attackSpecs.ts) no longer converts anything;
+what it still does at module load is resolve the `?? 1500` / `?? 2800` / `?? 900`
+fallbacks that used to be scattered through the combat code, which is why every
+`TickSpec` field is required where its `AttackSpec` counterpart is optional.
 
-Rounding shifts some windows by a few milliseconds — `startupMs: 90` becomes
-5 ticks, or 83.3 ms. That was a deliberate one-off balance change when the fixed
-timestep landed; integer frame data is cleaner for a fighting game.
+It was authored in milliseconds until the upgraded build was merged. Two units for
+one quantity meant the numbers a designer typed were never the numbers the game
+ran — `startupMs: 90` became 5 ticks, or 83.3 ms, and nothing you could type in the
+90 would express 5.5 — and every edit re-opened the question of whether some window
+had rounded to zero and quietly stopped connecting. The current values are the old
+rounding applied once and kept, so the change was unit-only: the golden replays are
+byte-identical across it.
 
-Shared normals:
+Shared normals, in ticks:
 
 | | startup | active | recovery | damage | hitstun | blockstun | kbX | kbY | reach |
 |---|---|---|---|---|---|---|---|---|---|
-| `LIGHT_ATTACK` | 90 ms / 5t | 90 / 5t | 160 / 10t | 5 | 180 | 90 | 150 | −40 | 78 |
-| `HEAVY_ATTACK` | 180 ms / 11t | 120 / 7t | 300 / 18t | 9 | 300 | 150 | 255 | −110 | 104 |
+| `LIGHT_ATTACK` | 5 | 5 | 10 | 5 | 11 | 5 | 150 | −40 | 78 |
+| `HEAVY_ATTACK` | 11 | 7 | 18 | 9 | 18 | 9 | 255 | −110 | 104 |
 
 Per-fighter specials and ultimates live in
 [fighterData.ts](../src/fighters/fighterData.ts) and are shape-checked by
@@ -337,7 +365,7 @@ position depends on the opponent:
 | | `zone` | `ultimate-salad` |
 |---|---|---|
 | x | `clamp(defender.x + defender.vx × 0.15, 120, 1160)` | `clamp(defender.x, 130, 1150)` |
-| telegraph | `telegraphMs ?? 450` | `?? 500` |
+| telegraph | `telegraph ?? 27t` | `30t` as authored |
 | active | `spec.activeTicks` | **13 ticks, hard-coded** |
 | hit radius | `< 100` | `< 150` |
 

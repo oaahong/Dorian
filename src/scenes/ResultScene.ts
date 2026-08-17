@@ -2,7 +2,7 @@ import * as Phaser from 'phaser';
 import { getFighterConfig } from '../fighters/fighterData';
 import { gameState } from '../systems/GameState';
 import { endOnlineMatch } from '../net/onlineMatch';
-import { SpriteExtractor } from '../systems/SpriteExtractor';
+import { poseTextureKey } from '../fighters/poseSheet';
 import { COLORS, FONT_FAMILY, GAME_WIDTH } from '../utils/constants';
 import { AudioManager } from '../systems/AudioManager';
 
@@ -25,8 +25,8 @@ export class ResultScene extends Phaser.Scene {
     this.online = gameState.data.mode === 'online';
     this.add.text(GAME_WIDTH/2, 76, headline, { fontFamily:FONT_FAMILY, fontSize:'58px', color:winnerIndex===1?'#E9B928':'#00C8FF', stroke:'#050505', strokeThickness:9 }).setOrigin(.5);
     this.add.text(GAME_WIDTH/2, 138, winner.ultimate.name + ' ENERGY', { fontFamily:FONT_FAMILY, fontSize:'18px', color:'#F3E9D0' }).setOrigin(.5);
-    const winImg = this.add.image(350, 530, SpriteExtractor.textureKey(winner.id,'victory')).setOrigin(.5,1);
-    const loseImg = this.add.image(930, 545, SpriteExtractor.textureKey(loser.id,'ko')).setOrigin(.5,1).setAlpha(.78);
+    const winImg = this.add.image(350, 530, poseTextureKey(winner.id,'victory')).setOrigin(.5,1);
+    const loseImg = this.add.image(930, 545, poseTextureKey(loser.id,'ko')).setOrigin(.5,1).setAlpha(.78);
     this.normalize(winImg,340,450); this.normalize(loseImg,290,400);
     this.add.text(350, 565, winner.name, { fontFamily:FONT_FAMILY, fontSize:'28px', color:'#E9B928' }).setOrigin(.5);
     this.add.text(930, 565, loser.name, { fontFamily:FONT_FAMILY, fontSize:'24px', color:'#8e8e8e' }).setOrigin(.5);

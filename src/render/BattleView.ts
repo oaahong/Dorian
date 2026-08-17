@@ -99,7 +99,7 @@ export class BattleView {
   private onAttackStart(sim: SimWorld, event: Extract<SimEvent, { t: 'attackStart' }>): void {
     const spec = getFighterConfig(sim.fighters[event.player].configId);
     if (event.specId === spec.ultimate.id) return; // ultimateStart handles the fanfare
-    if (event.specId === spec.special.id) AudioManager.play('special');
+    if (event.specId === spec.specials.quarterForward.id) AudioManager.play('special');
   }
 
   private onHit(sim: SimWorld, event: Extract<SimEvent, { t: 'hit' }>): void {

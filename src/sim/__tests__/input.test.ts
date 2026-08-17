@@ -12,25 +12,25 @@ import {
 } from '../input';
 
 /**
- * The input frame is the network payload: one byte of raw button state per player
- * per tick. Nothing derived (jumpPressed, block, ultimate-vs-special) belongs in
- * it — those are recomputed inside the simulation so a resimulation reaches the
- * same answer. See docs/sim-spec.md §2.
+ * The input frame is the network payload: one 16-bit word of raw button state per
+ * player per tick. Nothing derived (jumpPressed, block, which motion was spelled)
+ * belongs in it — those are recomputed inside the simulation so a resimulation
+ * reaches the same answer. See docs/sim-spec.md §2.
  */
 
 const NONE: ButtonState = {
   left: false, right: false, up: false, down: false,
-  light: false, heavy: false, special: false,
+  light: false, heavy: false, special: false, throw: false, ultimate: false,
 };
 
 describe('button bits', () => {
-  it('assigns each button a distinct bit inside one byte', () => {
+  it('assigns each button a distinct bit inside the frame word', () => {
     const bits = Object.values(BUTTON);
     expect(new Set(bits).size).toBe(bits.length);
     for (const bit of bits) {
       expect(bit).toBeGreaterThan(0);
       expect(bit & (bit - 1), `${bit} is not a single bit`).toBe(0);
-      expect(bit).toBeLessThanOrEqual(0xff);
+      expect(bit).toBeLessThanOrEqual(0xffff);
     }
   });
 
@@ -48,7 +48,7 @@ describe('button bits', () => {
 });
 
 describe('packInput / unpackInput', () => {
-  it('round-trips every combination of the seven buttons', () => {
+  it('round-trips every combination of the nine buttons', () => {
     for (let frame = 0; frame <= INPUT_FRAME_MASK; frame += 1) {
       expect(packInput(unpackInput(frame))).toBe(frame);
     }
@@ -57,7 +57,7 @@ describe('packInput / unpackInput', () => {
   it('packs an all-buttons-held state into the full mask', () => {
     const all: ButtonState = {
       left: true, right: true, up: true, down: true,
-      light: true, heavy: true, special: true,
+      light: true, heavy: true, special: true, throw: true, ultimate: true,
     };
     expect(packInput(all)).toBe(INPUT_FRAME_MASK);
   });
@@ -71,9 +71,9 @@ describe('packInput / unpackInput', () => {
     expect(packInput({ ...NONE, down: true })).toBe(BUTTON.Down);
   });
 
-  it('never produces a frame outside one byte', () => {
+  it('never produces a frame outside the 16-bit wire field', () => {
     for (let frame = 0; frame <= INPUT_FRAME_MASK; frame += 1) {
-      expect(frame & ~0xff).toBe(0);
+      expect(frame & ~0xffff).toBe(0);
     }
   });
 });
