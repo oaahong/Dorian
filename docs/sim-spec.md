@@ -83,6 +83,19 @@ the same decisions.
   read once per tick, which is fatal to any replay.
 - **The 140 ms crouch buffer** that distinguishes a special from an ultimate is
   `downBufferedUntilTick`.
+- **The bare special button charges.** Pressing it with no motion behind it enters
+  `H_CHARGING` and counts `chargeTicks`; releasing fires
+  `chargeSpecials.ts`'s level 1, 2 or 3 at 0 / 24 / 54 ticks. The level is derived
+  from the counter rather than stored beside it, so there is one number to
+  snapshot. A charge never fires on its own — the counter saturates at level 3
+  rather than free-running, which also keeps the checksum stable on a fighter who
+  never lets go. Charging blocks walking, jumping, attacking **and guarding**, so
+  any hit that arrives lands; the cancel needs no code, since `H_CHARGING` is the
+  only thing keeping a charge alive and hitstun replaces it.
+- **A recognised motion beats the legacy `down + special` ultimate.** Every
+  quarter-circle passes through a down two or three ticks before the button, well
+  inside the crouch buffer, so without an explicit precedence a 236 on a full meter
+  fired the ultimate instead of the fireball.
 - **Motion inputs** (236, 214, 623, double taps) are read from
   `commandHistory`, a fixed 30-tick ring of raw input words held per fighter in
   `SimWorld` and folded into the checksum

@@ -23,6 +23,7 @@ import {
   STUN_FRICTION_PER_TICK,
 } from './constants';
 import type { AttackSpec } from '../combat/AttackSpec';
+import { CHARGE_LEVEL_3_TICKS, chargeLevel, chargeSpecialFor } from '../fighters/chargeSpecials';
 import {
   DRAGON_PUNCH,
   QUARTER_CIRCLE_BACK,
@@ -62,7 +63,15 @@ export function createFighter(configId: string, x: number, facing: 1 | -1): SimF
     guardHeld: false,
     prevButtons: 0,
     commandHistory: createCommandHistory(),
-    downBufferedUntilTick: 0,
+    /**
+     * -1, not 0: the check is `tick <= downBufferedUntilTick`, so a zero here
+     * makes the crouch buffer read as already open on tick 0 and a bare special
+     * press on the very first tick register as the ultimate motion. Unreachable in
+     * a real match, which starts in the intro phase with input disabled, but wrong
+     * in the same way wherever it is reached.
+     */
+    downBufferedUntilTick: -1,
+    chargeTicks: 0,
   };
 }
 
@@ -83,7 +92,8 @@ export function resetFighter(fighter: SimFighter, x: number, facing: 1 | -1): vo
   fighter.guardHeld = false;
   fighter.prevButtons = 0;
   resetCommandHistory(fighter.commandHistory);
-  fighter.downBufferedUntilTick = 0;
+  fighter.downBufferedUntilTick = -1;
+  fighter.chargeTicks = 0;
 }
 
 /**
@@ -216,7 +226,10 @@ export function stepFighter(
   const away = opponent.x > fighter.x ? -1 : 1;
   const move = inputEnabled ? moveAxis(input) : 0;
   const crouch = inputEnabled && isDown(input, BUTTON.Down);
-  fighter.guardHeld = inputEnabled && move === away && !crouch;
+  // A charge cannot be guarded out of — that is the risk that pays for its
+  // damage, and it is why any hit that arrives mid-charge simply lands.
+  fighter.guardHeld =
+    inputEnabled && move === away && !crouch && fighter.state !== FighterState.H_CHARGING;
 
   // The crouch buffer lets a down press count toward the ultimate motion for a
   // few ticks after release. Tracked here rather than in the controller so that a
@@ -329,19 +342,55 @@ function processIntent(
   const throwPressed = justPressed(input, fighter.prevButtons, BUTTON.Throw);
   const specialEdge = justPressed(input, fighter.prevButtons, BUTTON.Special);
   const downBuffered = crouch || tick <= fighter.downBufferedUntilTick;
-  const specialPressed = specialEdge && !downBuffered;
+  /** Which special the motion history is asking for, if any. Asked once. */
+  const motioned = requestedSpecial(fighter, cfg);
+
   /**
    * Two ways to ask for an ultimate.
    *
    * The dedicated button is the upgraded build's scheme and the one the controls
-   * screen teaches. Down-plus-special is the trunk's original motion, kept
-   * because it is what every existing player's hands already know and because
-   * removing it would silently break them mid-match.
+   * screen teaches. Down-plus-special is the trunk's original motion, kept because
+   * it is what existing hands already know.
+   *
+   * **A recognised motion beats the legacy one.** Every quarter-circle passes
+   * through a down two or three ticks before the button, comfortably inside the
+   * eight-tick crouch buffer — so without this, 236 with a full meter fired the
+   * ultimate and the fighter's own fireball became unreachable at exactly the
+   * moment it mattered. It went unnoticed at first because the motion tests ran on
+   * an empty meter, where the ultimate falls through to the motion anyway.
    */
+  const legacyUltimateMotion = specialEdge && downBuffered && !motioned;
   const ultimatePressed =
-    justPressed(input, fighter.prevButtons, BUTTON.Ultimate) || (specialEdge && downBuffered);
+    justPressed(input, fighter.prevButtons, BUTTON.Ultimate) || legacyUltimateMotion;
+  /** A special edge does its ordinary job unless the legacy motion claimed it. */
+  const specialPressed = specialEdge && !legacyUltimateMotion;
 
   const speed = SPEED_BY_STAT[cfg.speedStat] ?? SPEED_BY_STAT[3]!;
+
+  /**
+   * Winding up beats everything.
+   *
+   * A charge is a commitment: no walking, no jumping, no normals, no guard. That
+   * is what makes holding for level 3 a decision the opponent can punish rather
+   * than a free option, and it is why this returns before the rest of the intent
+   * is even looked at.
+   *
+   * Being hit cancels it, and needs no code here — a connected hit puts the
+   * fighter in HITSTUN, and `H_CHARGING` is the only thing that keeps a charge
+   * alive. Nor can the charge be blocked out of, since guard is off while
+   * charging: whatever lands, lands.
+   */
+  if (fighter.state === FighterState.H_CHARGING) {
+    fighter.vx = 0;
+    if (isDown(input, BUTTON.Special)) {
+      // Capped rather than free-running: an unbounded counter would keep changing
+      // the hash forever on a fighter who never lets go.
+      fighter.chargeTicks = Math.min(fighter.chargeTicks + 1, CHARGE_LEVEL_3_TICKS);
+      return;
+    }
+    releaseCharge(fighter, cfg, player, events);
+    return;
+  }
 
   if (isAirborne(fighter)) {
     if (lightPressed) startAttack(fighter, LIGHT_SPEC, FighterState.LIGHT_ATTACK, false, true, player, events);
@@ -367,12 +416,29 @@ function processIntent(
       return;
     }
     // An ultimate motion without meter is not a whiff — it comes out as the
-    // special instead. Ported behaviour.
-    if (canUseSpecial(fighter, tick)) startSpecial(fighter, tick, crouch, cfg, player, events);
+    // fighter's defining special instead. Ported behaviour.
+    if (canUseSpecial(fighter, tick)) {
+      const fallback = motioned ?? cfg.specials.quarterForward;
+      startMotionSpecial(fighter, tick, crouch, cfg, fallback.id, player, events);
+    }
     return;
   }
-  if (specialPressed && canUseSpecial(fighter, tick)) {
-    startSpecial(fighter, tick, crouch, cfg, player, events);
+  if (specialPressed) {
+    if (motioned) {
+      if (canUseSpecial(fighter, tick)) {
+        startMotionSpecial(fighter, tick, crouch, cfg, motioned.id, player, events);
+      }
+      return;
+    }
+    /**
+     * No motion, so this is the chargeable special — and it has no cooldown, so
+     * it is deliberately not gated on `nextSpecialTick`. A fighter who has just
+     * spent a motion special can still wind this one up; the recovery on each
+     * release is the only limiter, which is what the upgraded build specified.
+     */
+    fighter.state = FighterState.H_CHARGING;
+    fighter.chargeTicks = 0;
+    fighter.vx = 0;
     return;
   }
   /**
@@ -436,22 +502,38 @@ function requestedSpecial(fighter: SimFighter, cfg: FighterConfig): AttackSpec |
   return null;
 }
 
-function startSpecial(
+function startMotionSpecial(
   fighter: SimFighter,
   tick: number,
   crouching: boolean,
   cfg: FighterConfig,
+  specId: string,
   player: PlayerIndex,
   events: SimEvent[],
 ): void {
-  // No motion is not a whiff: a bare special button gives the fighter its
-  // defining move, so the roster stays playable without knowing any of them.
-  const chosen = requestedSpecial(fighter, cfg) ?? cfg.specials.quarterForward;
-  const spec = getSpec(chosen.id);
+  const spec = getSpec(specId);
   // Special cooldowns use 1.08 - stat * 0.025, distinct from the 1.05 used for
   // attack recovery. The split is in the original and is preserved deliberately.
   fighter.nextSpecialTick = tick + spec.cooldownTicks * CONTROL_COOLDOWN_MULTIPLIER(cfg.controlStat);
   startAttack(fighter, spec, FighterState.SPECIAL, crouching, false, player, events);
+}
+
+/**
+ * Fire the charge at whatever level the hold reached.
+ *
+ * The level is recomputed from `chargeTicks` rather than tracked alongside it, so
+ * there is one number to snapshot and no way for the two to disagree.
+ */
+function releaseCharge(
+  fighter: SimFighter,
+  cfg: FighterConfig,
+  player: PlayerIndex,
+  events: SimEvent[],
+): void {
+  const level = chargeLevel(fighter.chargeTicks);
+  const spec = getSpec(chargeSpecialFor(cfg.id).levels[level - 1]!.id);
+  fighter.chargeTicks = 0;
+  startAttack(fighter, spec, FighterState.SPECIAL, false, false, player, events);
 }
 
 function startAttack(

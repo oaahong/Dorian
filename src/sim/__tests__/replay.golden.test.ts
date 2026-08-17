@@ -53,9 +53,9 @@ function summarise(world: SimWorld) {
 
 describe('two-player scripted match', () => {
   // A rotation that exercises walking, jumping, both normals, the special and the
-  // ultimate motion for both seats. The special comes out with no motion behind
-  // it, so each fighter throws its 236 — which is the fallback the roster relies
-  // on for players who do not know the motions.
+  // ultimate motion for both seats. The special is pressed for a single tick with
+  // no motion behind it, which now winds up the chargeable special and releases it
+  // at level 1 — the shortest, most common thing a real player does with it.
   const script = (tick: number): [InputFrame, InputFrame] => {
     const p1 =
       tick % 53 === 0 ? BUTTON.Down | BUTTON.Special

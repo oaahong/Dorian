@@ -148,6 +148,11 @@ export function poseFor(fighter: SimFighter): PoseName {
       return 'ultimate';
     case FighterState.THROW:
       return 'throw';
+    case FighterState.H_CHARGING:
+      // The upgraded build had three charge frames per fighter in its skill
+      // sheets; those are not wired up yet, so a winding-up fighter holds the
+      // special pose.
+      return 'special';
     case FighterState.BLOCK:
     case FighterState.BLOCKSTUN:
       return 'block';

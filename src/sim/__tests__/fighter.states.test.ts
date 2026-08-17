@@ -258,17 +258,23 @@ describe('attack lifecycle', () => {
 describe('attack motion', () => {
   it('drags a dash attack forward only during its active frames', () => {
     // 'ok' leads with OK衝刺, a dashStrike — the kind that drives itself forward.
+    // It needs its 236 now, since a bare button winds up the chargeable special.
     const h = harness({ configId: 'ok', x: 400 }, 900);
+    h.run(BUTTON.Down);
+    h.run(BUTTON.Down | BUTTON.Right);
+    h.run(BUTTON.Right);
     h.run(BUTTON.Special);
     const spec = h.self.attack!;
     expect(spec.kind).toBe('dashStrike');
+    // Measured from where the motion left the fighter, not from its spawn: walking
+    // the 236 in moves it a few pixels first.
+    const atStart = h.self.x;
 
     h.run(EMPTY_INPUT, LIGHT_SPEC.startupTicks); // still in startup for this spec
-    const beforeActive = h.self.x;
-    expect(beforeActive).toBe(400);
+    expect(h.self.x).toBe(atStart);
 
     h.run(EMPTY_INPUT, 12);
-    expect(h.self.x).toBeGreaterThan(400);
+    expect(h.self.x).toBeGreaterThan(atStart);
   });
 
   it('drifts a heavy attack forward during its active frames', () => {

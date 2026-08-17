@@ -186,4 +186,11 @@ export interface SimFighter {
   commandHistory: CommandHistory;
   /** Absolute tick until which a crouch press still counts toward the ultimate. */
   downBufferedUntilTick: number;
+  /**
+   * Ticks the bare special button has been held while winding up.
+   *
+   * Only meaningful while `state` is `H_CHARGING`; the state is the discriminator,
+   * so there is no separate "is charging" flag to keep in step with it.
+   */
+  chargeTicks: number;
 }

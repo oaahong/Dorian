@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { allChargeLevels } from '../../fighters/chargeSpecials';
 import { allSpecials } from '../../fighters/FighterConfig';
 import { FIGHTERS } from '../../fighters/fighterData';
 import { HEAVY_ATTACK, LIGHT_ATTACK } from '../../combat/AttackSpec';
@@ -81,8 +82,9 @@ describe('spec registry', () => {
       (total, fighter) => total + allSpecials(fighter).length + 1,
       0,
     );
-    // Light, heavy and the universal throw are shared by everybody.
-    expect(allSpecs()).toHaveLength(3 + rosterSpecs);
+    // Light, heavy and the universal throw are shared by everybody; the charge
+    // levels are three more per fighter.
+    expect(allSpecs()).toHaveLength(3 + rosterSpecs + allChargeLevels().length);
   });
 
   it('resolves every id the roster references', () => {

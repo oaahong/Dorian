@@ -8,6 +8,8 @@ export enum FighterState {
   SPECIAL = 'SPECIAL',
   ULTIMATE = 'ULTIMATE',
   THROW = 'THROW',
+  /** Winding up the bare-button special. Not an attack: nothing can be hit yet. */
+  H_CHARGING = 'H_CHARGING',
   BLOCK = 'BLOCK',
   BLOCKSTUN = 'BLOCKSTUN',
   HITSTUN = 'HITSTUN',

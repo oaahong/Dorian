@@ -33,20 +33,35 @@ interface DifficultyTuning {
   specialChance: number;
   heavyChance: number;
   jumpChance: number;
+  /**
+   * How likely a special is committed to as a long charge rather than tapped out
+   * at level 1.
+   *
+   * A full charge is expensive — the fighter stands still for up to a second and
+   * cannot block — so this is what difficulty buys: easy never commits, hard often
+   * does. Tuned down from "always charge", which had the hard CPU winding up for
+   * two thirds of the match and made it *easier* to fight, not harder.
+   */
+  chargeCommitChance: number;
+  minChargeTicks: number;
+  maxChargeTicks: number;
 }
 
 const TUNING: Record<CpuDifficulty, DifficultyTuning> = {
   easy: {
     minDecisionTicks: msToTicks(430), maxDecisionTicks: msToTicks(560),
     blockChance: 0.2, specialChance: 0.15, heavyChance: 0.18, jumpChance: 0.08,
+    chargeCommitChance: 0, minChargeTicks: 20, maxChargeTicks: 30,
   },
   normal: {
     minDecisionTicks: msToTicks(280), maxDecisionTicks: msToTicks(360),
     blockChance: 0.4, specialChance: 0.32, heavyChance: 0.3, jumpChance: 0.13,
+    chargeCommitChance: 0.3, minChargeTicks: 26, maxChargeTicks: 44,
   },
   hard: {
     minDecisionTicks: msToTicks(165), maxDecisionTicks: msToTicks(225),
     blockChance: 0.6, specialChance: 0.45, heavyChance: 0.38, jumpChance: 0.18,
+    chargeCommitChance: 0.5, minChargeTicks: 30, maxChargeTicks: 62,
   },
 };
 
@@ -63,6 +78,7 @@ const OPPONENT_ATTACK_STATES = new Set([
 export class CpuBrain {
   private nextDecisionTick = 0;
   private holdUntilTick = 0;
+  private chargeUntilTick = 0;
   private current: InputFrame = EMPTY_INPUT;
 
   constructor(
@@ -74,6 +90,7 @@ export class CpuBrain {
   reset(): void {
     this.nextDecisionTick = 0;
     this.holdUntilTick = 0;
+    this.chargeUntilTick = 0;
     this.current = EMPTY_INPUT;
   }
 
@@ -81,6 +98,19 @@ export class CpuBrain {
     const self = world.fighters[this.selfIndex];
     const opponent = world.fighters[this.selfIndex === 0 ? 1 : 0];
     const tick = world.tick;
+
+    /**
+     * Charging is the one hold that must *not* release the button, because it is
+     * the release that fires the move. Checked before the ordinary hold, whose
+     * whole job is the opposite.
+     *
+     * If the charge was interrupted — a hit landed, and `H_CHARGING` is gone —
+     * there is nothing left to hold for, so stop and decide afresh.
+     */
+    if (tick < this.chargeUntilTick) {
+      if (self.state === FighterState.H_CHARGING) return BUTTON.Special;
+      this.chargeUntilTick = 0;
+    }
 
     // While holding, keep walking or crouching but let go of the action buttons,
     // so the next press registers as a fresh edge.
@@ -111,8 +141,14 @@ export class CpuBrain {
       this.specialDistanceGood(world, distance) &&
       nextFloat(this.rng) < tuning.specialChance
     ) {
+      // Hold it: the release is what fires the charge, and how long it is held is
+      // what decides the level. Most specials are tapped straight out at level 1;
+      // committing to a long wind-up is the exception.
       frame = BUTTON.Special;
-      this.holdUntilTick = tick + msToTicks(120);
+      this.chargeUntilTick =
+        nextFloat(this.rng) < tuning.chargeCommitChance
+          ? tick + this.randomTicks(tuning.minChargeTicks, tuning.maxChargeTicks)
+          : tick + this.randomTicks(2, 8);
     } else if (distance < 125) {
       frame = nextFloat(this.rng) < tuning.heavyChance ? BUTTON.Heavy : BUTTON.Light;
       this.holdUntilTick = tick + this.randomTicks(msToTicks(100), msToTicks(220));

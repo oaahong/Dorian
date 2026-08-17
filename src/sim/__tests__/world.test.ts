@@ -346,8 +346,15 @@ describe('match end', () => {
 });
 
 describe('projectiles', () => {
-  // 'pink' has a `sonic` special that spawns a projectile.
+  /**
+   * 'pink' throws a `sonic` projectile on its 236, so the motion has to be input
+   * — a bare button now winds up the chargeable special instead, which for this
+   * fighter is a beam and spawns nothing.
+   */
   const fireSpecial = (w: SimWorld) => {
+    run(w, 1, BUTTON.Down);
+    run(w, 1, BUTTON.Down | BUTTON.Right);
+    run(w, 1, BUTTON.Right);
     run(w, 1, BUTTON.Special);
     run(w, 12);
   };

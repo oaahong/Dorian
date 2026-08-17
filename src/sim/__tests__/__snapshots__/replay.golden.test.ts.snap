@@ -25,12 +25,12 @@ exports[`match played to a decision > reaches a winner and matches the recorded 
 
 exports[`one-player match against the CPU > replays identically, including every CPU decision 1`] = `
 [
-  "t150:7b5434ce",
-  "t300:a984b99b",
-  "t450:6f2091b5",
-  "t600:1c9775d",
-  "t750:6c8506b7",
-  "t900:5ef37552",
+  "t150:eae66c3c",
+  "t300:1a93ad2e",
+  "t450:a2770d1c",
+  "t600:902e39d0",
+  "t750:fee64d0a",
+  "t900:59e72862",
 ]
 `;
 
@@ -38,14 +38,14 @@ exports[`one-player match against the CPU > replays identically, including every
 {
   "matchWinner": null,
   "p1": {
-    "hp": 62.2216,
+    "hp": 66.4192,
     "state": "HEAVY_ATTACK",
-    "x": 619.9651,
+    "x": 529.0595,
   },
   "p2": {
     "hp": 100,
-    "state": "BLOCK",
-    "x": 904.5,
+    "state": "BLOCKSTUN",
+    "x": 722.77,
   },
   "phase": "fight",
   "round": 1,
@@ -59,28 +59,28 @@ exports[`one-player match against the CPU > replays identically, including every
 
 exports[`projectile and zone characters > matches the recorded checksum trail 1`] = `
 [
-  "t120:9dce3513",
-  "t240:3ff09381",
-  "t360:edd6cc9c",
-  "t480:53c9e889",
-  "t600:34b4903c",
-  "t720:cd7d69b3",
-  "t840:4b23a8aa",
+  "t120:8b818a98",
+  "t240:4cd819f1",
+  "t360:861fee0c",
+  "t480:267175b",
+  "t600:90ef117c",
+  "t720:a07d7a40",
+  "t840:35858374",
 ]
 `;
 
 exports[`two-player scripted match > matches the recorded checksum trail 1`] = `
 [
-  "t120:1e061508",
-  "t240:378bc55e",
-  "t360:ffaea34a",
-  "t480:22dd8c64",
-  "t600:1f2f9cfb",
-  "t720:f2c864d0",
-  "t840:bc7a8f02",
-  "t960:d95374d",
-  "t1080:28fd4766",
-  "t1200:ebef6c8b",
+  "t120:86b80fc9",
+  "t240:b34b8c7d",
+  "t360:29eca8c6",
+  "t480:5bb77d39",
+  "t600:213c7188",
+  "t720:ff2761cc",
+  "t840:3b2a4eb6",
+  "t960:5b83ef0",
+  "t1080:e06bda1a",
+  "t1200:5e5578c7",
 ]
 `;
 
@@ -88,20 +88,20 @@ exports[`two-player scripted match > matches the recorded final state 1`] = `
 {
   "matchWinner": null,
   "p1": {
-    "hp": 33.8878,
-    "state": "HEAVY_ATTACK",
-    "x": 389.8073,
+    "hp": 0,
+    "state": "KO",
+    "x": 160.9074,
   },
   "p2": {
-    "hp": 82.9903,
-    "state": "SPECIAL",
-    "x": 655.2838,
+    "hp": 100,
+    "state": "VICTORY",
+    "x": 765.0625,
   },
-  "phase": "fight",
+  "phase": "ending",
   "round": 1,
   "roundWins": [
     0,
-    0,
+    1,
   ],
   "tick": 1200,
 }

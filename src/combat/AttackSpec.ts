@@ -123,6 +123,16 @@ export interface AttackSpec {
   lifetime?: number;
   telegraph?: number;
   stunLockout?: number;
+  /**
+   * How long a `zone` lingers once its telegraph expires.
+   *
+   * Separate from `active`, which is how long the *fighter* is committed to the
+   * move. A zone that outlives its caster's recovery is the whole point of a
+   * setup move, and before this existed the two shared one number — so a
+   * long-lasting zone meant a fighter frozen in place for as long as it lasted.
+   * Defaults to `active`.
+   */
+  zoneDuration?: number;
 
   /**
    * Damage of each hit of a multi-hit attack, in order. One connect applies one

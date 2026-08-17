@@ -5,6 +5,7 @@ import type {
   InvulnerabilityWindow,
 } from '../combat/AttackSpec';
 import { HEAVY_ATTACK, LIGHT_ATTACK, THROW_ATTACK } from '../combat/AttackSpec';
+import { allChargeLevels } from '../fighters/chargeSpecials';
 import { allSpecials } from '../fighters/FighterConfig';
 import { FIGHTERS } from '../fighters/fighterData';
 import {
@@ -52,6 +53,8 @@ export interface TickSpec {
   telegraphTicks: number;
   /** Only meaningful for `aura`; resolved to DEFAULT_STUN_LOCKOUT_TICKS. */
   stunLockoutTicks: number;
+  /** How long a zone lingers after triggering; falls back to `activeTicks`. */
+  zoneDurationTicks: number;
 
   /**
    * Damage of each hit, always at least one entry — a single-hit attack resolves
@@ -99,6 +102,7 @@ export function toTickSpec(spec: AttackSpec): TickSpec {
     lifetimeTicks: spec.lifetime ?? DEFAULT_PROJECTILE_LIFETIME_TICKS,
     telegraphTicks: spec.telegraph ?? DEFAULT_ZONE_TELEGRAPH_TICKS,
     stunLockoutTicks: spec.stunLockout ?? DEFAULT_STUN_LOCKOUT_TICKS,
+    zoneDurationTicks: spec.zoneDuration ?? spec.active,
 
     hits: spec.hits ?? [spec.damage],
     rehitTicks: spec.rehitTicks ?? 0,
@@ -141,6 +145,7 @@ for (const spec of [LIGHT_SPEC, HEAVY_SPEC, THROW_SPEC]) REGISTRY.set(spec.id, s
 for (const fighter of FIGHTERS) {
   for (const source of [...allSpecials(fighter), fighter.ultimate]) registerSpec(source);
 }
+for (const source of allChargeLevels()) registerSpec(source);
 
 /**
  * Resolve a spec by id. Throws rather than returning undefined: an attack that

@@ -78,8 +78,9 @@ E2E_BASE_URL=https://<app> npm run test:e2e
 - Crouch: `S`
 - Light: `F`
 - Heavy: `G`
-- Special: `H` — with `236` / `214` / `623` / `SS` in front of it for the
-  fighter's other specials; bare `H` throws the 236
+- Special: `H` — **hold and release** for the chargeable special; 0.40 s and
+  0.90 s reach levels 2 and 3, and a full charge never fires on its own
+- Motion specials: `236` / `214` / `623` / `SS` then `H`, which fires at once
 - Ultimate: `T`, or `S + H`, when MEME = 100
 - Block: hold away from the opponent
 
@@ -90,7 +91,7 @@ E2E_BASE_URL=https://<app> npm run test:e2e
 - Crouch: `↓`
 - Light: `J`
 - Heavy: `K`
-- Special: `L` — same motions as P1
+- Special: `L` — hold to charge, or the same motions as P1
 - Ultimate: `I`, or `↓ + L`, when MEME = 100
 - Block: hold away from the opponent
 
@@ -226,6 +227,8 @@ exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`
   input ring so the two clients cannot disagree about what came out.
 - Invulnerability windows, armour, multi-hit strings, and the universal throw —
   unblockable, so it answers a fighter who will not stop holding back.
+- The chargeable special, in three levels, on the bare special button — including
+  a CPU that decides how long to hold it.
 - All 610 art assets and the Python pipeline that regenerates them, replacing the
   browser-side pose cutting entirely.
 - Frame-authored `AttackSpec`, in ticks, which is what made the frame data
@@ -233,15 +236,15 @@ exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`
 
 **Not yet ported**, in the order it makes sense to do it:
 
-1. **The chargeable H special**, with its 0.40 / 0.90 second levels. Needs charge
-   state in `SimFighter`, and the levels expressed as three specs.
-2. **Ultimate cut-ins** — the twelve staged presentations, with their voice lines
+1. **Ultimate cut-ins** — the twelve staged presentations, with their voice lines
    and backgrounds. The art is already in `public/assets/ultimate-backgrounds/`
    and the ultimates currently resolve without them.
-3. **Summons and installs.** `tempura`'s penguins spawn as ordinary projectiles
+2. **Summons and installs.** `tempura`'s penguins spawn as ordinary projectiles
    and `doge`/`goblin`'s installs currently only pay meter.
-4. **Training mode**, and the status effects (`sticky`, `loveStun`, `afterimage`)
-   the upgraded move data carries but the simulation does not yet read.
+3. **Training mode**, and the status effects (`sticky`, `loveStun`, `afterimage`,
+   `awkward`) the move data carries but the simulation does not yet read.
+4. **Charge visuals.** The upgraded build had three wind-up frames per fighter in
+   its skill sheets; a charging fighter currently holds the special pose.
 
 The upgraded build's own documentation is kept verbatim at
 [docs/upgraded-build.md](docs/upgraded-build.md) — it describes a tree this is not,

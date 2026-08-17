@@ -487,7 +487,7 @@ function spawnZone(
   // Placed relative to the *defender*, leading their current movement — the only
   // attack whose spawn position depends on the opponent.
   const x = clamp(defender.x + defender.vx * ZONE_LEAD_FACTOR, 120, GAME_WIDTH - 120);
-  pushZone(world, ownerIndex, spec, x, spec.telegraphTicks, spec.activeTicks, events);
+  pushZone(world, ownerIndex, spec, x, spec.telegraphTicks, spec.zoneDurationTicks, events);
 }
 
 function spawnUltimateSaladZone(
@@ -643,6 +643,7 @@ export function checksum(world: SimWorld): number {
     h = hashBool(h, fighter.guardHeld);
     h = hashInt(h, fighter.prevButtons);
     h = hashInt(h, fighter.downBufferedUntilTick);
+    h = hashInt(h, fighter.chargeTicks);
 
     // The command ring decides whether a motion input has been completed, so two
     // clients holding different histories would disagree about which move comes
