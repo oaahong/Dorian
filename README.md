@@ -211,37 +211,45 @@ subjects, and FIX_NOTES is already better than what that produces.
 
 ## The upgraded build, and what is still to come
 
-This branch merges the separately-delivered upgraded build (`project-working-upgraded`)
-back into the trunk. Both descend from the initial commit and grew in opposite
-directions: the trunk extracted the game into a deterministic simulation and put it
-online, while the upgraded build stayed on the original object-oriented Phaser 3 code
-and deepened the *fighting game* — twelve characters instead of eight, frame data with
-armour and cancel rules, motion inputs, a chargeable H special, ultimates with cut-ins,
-summons, and a training mode.
+This branch merges the separately-delivered upgraded build back into the trunk.
+Both descend from the initial commit and grew in opposite directions: the trunk
+extracted the game into a deterministic simulation and put it online, while the
+upgraded build stayed on the original object-oriented Phaser 3 code and deepened
+the *fighting game*. It could not be a text merge — the upgraded build extends
+exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`)
+— so its gameplay was re-expressed in `src/sim`, where lockstep can carry it.
 
-Nothing about that is expressible as a text merge, because the upgraded build extends
-exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`). So
-the merge is staged:
+**Ported:**
 
-- **This commit** brings in everything that does not fight the architecture: the 610
-  art assets (360 poses, 226 skill cells, 12 ultimate backgrounds, 12 cards), the twelve
-  source character sheets, and the Python asset pipeline that regenerates them.
-- **The port** re-expresses the upgraded gameplay in `src/sim`, so it keeps working
-  under lockstep. Its frame-based timing is the *better* fit, so the first step was
-  to adopt it: `AttackSpec` is now authored in ticks rather than in milliseconds
-  rounded to ticks, which is a unit change only — the golden replays are unchanged
-  across it.
+- The twelve fighters, their frame data, and their specials — chosen by motion
+  (236 / 214 / 623 / double-tap down), parsed inside the simulation from a hashed
+  input ring so the two clients cannot disagree about what came out.
+- Invulnerability windows, armour, command throws and multi-hit strings.
+- All 610 art assets and the Python pipeline that regenerates them, replacing the
+  browser-side pose cutting entirely.
+- Frame-authored `AttackSpec`, in ticks, which is what made the frame data
+  transferable as data rather than as a translation.
+
+**Not yet ported**, in the order it makes sense to do it:
+
+1. **The universal throw.** `BUTTON.Throw` is sampled and sent but nothing
+   consumes it — the only throw on the roster is goblin's command throw.
+2. **The chargeable H special**, with its 0.40 / 0.90 second levels. Needs charge
+   state in `SimFighter`, and the levels expressed as three specs.
+3. **Ultimate cut-ins** — the twelve staged presentations, with their voice lines
+   and backgrounds. The art is already in `public/assets/ultimate-backgrounds/`
+   and the ultimates currently resolve without them.
+4. **Summons and installs.** `tempura`'s penguins spawn as ordinary projectiles
+   and `doge`/`goblin`'s installs currently only pay meter.
+5. **Training mode**, and the status effects (`sticky`, `loveStun`, `afterimage`)
+   the upgraded move data carries but the simulation does not yet read.
 
 The upgraded build's own documentation is kept verbatim at
-[docs/upgraded-build.md](docs/upgraded-build.md); it is the specification for the port,
-not a description of this tree. Its delivered QA suite is kept at
-[scripts/upgraded-acceptance/](scripts/upgraded-acceptance/) for the same reason — those
-scripts assert against the un-ported source, so they do not run yet, but between them
-they pin down the roster, the ultimate names, the charge thresholds and the input
-precedence that the port has to reproduce.
-
-The characters below are the trunk's current eight. The port replaces them with the
-upgraded twelve listed in [docs/upgraded-build.md](docs/upgraded-build.md).
+[docs/upgraded-build.md](docs/upgraded-build.md) — it describes a tree this is not,
+and is the specification for the rest of the port. Its delivered QA suite is at
+[scripts/upgraded-acceptance/](scripts/upgraded-acceptance/); those scripts assert
+against the un-ported source and do not run, but between them they pin down the
+charge thresholds, the ultimate names and the input precedence still to reproduce.
 
 ## Characters
 
