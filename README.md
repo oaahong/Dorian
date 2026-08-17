@@ -124,6 +124,9 @@ anything else says which part is at fault.
 - `1P VS CPU`: Easy / Normal / Hard finite-state CPU AI
 - `2P VS P2`: two players on one keyboard
 - `ONLINE VS`: two players on different machines, matched by room code
+- `TRAINING`: pick both fighters, then drive the clock yourself — `F3` freeze,
+  `F4` advance one frame, `F5` reset the round, `F6` make the dummy hold guard.
+  The round never ends; when it would, it starts over
 - Best of 3, 60 seconds per round
 - All fighters always display 100 HP; card HP stat influences identity/balance
   indirectly rather than changing the visible health maximum
@@ -233,6 +236,7 @@ exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`
   simulation freezing itself for exactly as long as the presentation runs.
 - Summons that arrive as a column, installs that buff damage for a few seconds, and
   the movement slow that sticky and awkward hits leave behind.
+- Training mode, which is what makes any of the frame data above readable.
 - All 610 art assets and the Python pipeline that regenerates them, replacing the
   browser-side pose cutting entirely.
 - Frame-authored `AttackSpec`, in ticks, which is what made the frame data
@@ -240,12 +244,10 @@ exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`
 
 **Not yet ported**, in the order it makes sense to do it:
 
-1. **Training mode** — `F3` freeze, `F4` step one frame, `F5` reset, `F6` dummy
-   guard, which is what the frame data above is unreadable without.
-2. **Charge visuals.** The upgraded build had three wind-up frames per fighter in
+1. **Charge visuals.** The upgraded build had three wind-up frames per fighter in
    its skill sheets; a charging fighter currently holds the special pose.
-3. **Ultimate voice audio.** The cut-in shows the line; there is no clip behind it.
-4. **`afterimage`**, the one status in the move data still purely cosmetic.
+2. **Ultimate voice audio.** The cut-in shows the line; there is no clip behind it.
+3. **`afterimage`**, the one status in the move data still purely cosmetic.
 
 The upgraded build's own documentation is kept verbatim at
 [docs/upgraded-build.md](docs/upgraded-build.md) — it describes a tree this is not,

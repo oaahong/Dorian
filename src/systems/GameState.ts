@@ -1,7 +1,12 @@
 import { FIGHTERS } from '../fighters/fighterData';
 import type { CpuDifficulty } from '../sim/cpu';
 
-export type GameMode = 'cpu' | 'pvp' | 'online';
+/**
+ * `training` is `pvp` with the second seat left idle and the clock under the
+ * player's control — a mode rather than a scene, because everything about the match
+ * itself is identical and a second BattleScene would drift from the first.
+ */
+export type GameMode = 'cpu' | 'pvp' | 'online' | 'training';
 export type StageId = 'freezer' | 'magicForest' | 'diningTable';
 export type { CpuDifficulty };
 
@@ -37,6 +42,23 @@ class GameStateStore {
     matchWinner: null,
     seed: 1,
   };
+
+  /**
+   * Whether the second seat is chosen by a player rather than handed out.
+   *
+   * `pvp` and `training` both let P2 be picked; `cpu` randomises the opponent and
+   * `online` gets it from the room. Named rather than spelled out at each of the six
+   * places the select screen asks, because the fourth mode is exactly the point at
+   * which a list of `||`s starts getting one branch wrong.
+   */
+  picksBothFighters(): boolean {
+    return this.data.mode === 'pvp' || this.data.mode === 'training';
+  }
+
+  /** Training leaves the second seat idle and hands the clock to the player. */
+  get isTraining(): boolean {
+    return this.data.mode === 'training';
+  }
 
   resetMatch(): void {
     this.data.p1RoundWins = 0;
