@@ -22,7 +22,8 @@ import {
   SPEED_BY_STAT,
   STUN_FRICTION_PER_TICK,
 } from './constants';
-import { BUTTON, isDown, justPressed, moveAxis, type InputFrame } from './input';
+import { createCommandHistory, recordInput, resetCommandHistory } from './command';
+import { BUTTON, EMPTY_INPUT, isDown, justPressed, moveAxis, type InputFrame } from './input';
 import type { PlayerIndex, SimEvent, SimFighter } from './types';
 
 /**
@@ -50,6 +51,7 @@ export function createFighter(configId: string, x: number, facing: 1 | -1): SimF
     stunLockoutUntilTick: 0,
     guardHeld: false,
     prevButtons: 0,
+    commandHistory: createCommandHistory(),
     downBufferedUntilTick: 0,
   };
 }
@@ -70,6 +72,7 @@ export function resetFighter(fighter: SimFighter, x: number, facing: 1 | -1): vo
   fighter.stunLockoutUntilTick = 0;
   fighter.guardHeld = false;
   fighter.prevButtons = 0;
+  resetCommandHistory(fighter.commandHistory);
   fighter.downBufferedUntilTick = 0;
 }
 
@@ -210,6 +213,16 @@ export function stepFighter(
   if (inputEnabled && justPressed(input, fighter.prevButtons, BUTTON.Down)) {
     fighter.downBufferedUntilTick = tick + INPUT_BUFFER_TICKS;
   }
+
+  /**
+   * Record before the state machine runs, so a motion completed on this tick is
+   * visible to the intent that reads it on this tick.
+   *
+   * While input is disabled a neutral word is recorded rather than the real one,
+   * for the same reason `prevButtons` is cleared below: the round intro must not
+   * let a player pre-load a motion that fires the instant control is handed over.
+   */
+  recordInput(fighter.commandHistory, inputEnabled ? input : EMPTY_INPUT);
 
   if (fighter.attack) {
     advanceAttack(fighter, cfg);

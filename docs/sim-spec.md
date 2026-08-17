@@ -60,15 +60,21 @@ timestep the exponent is constant, and the whole call collapses to
 
 ## 2. Input
 
-The network payload is **one byte of raw button state** per player per tick
+The network payload is **one 16-bit word of raw button state** per player per tick
 ([src/sim/input.ts](../src/sim/input.ts)):
 
 ```
-bit 0 left   bit 1 right   bit 2 up   bit 3 down
-bit 4 light  bit 5 heavy   bit 6 special
+bit 0 left   bit 1 right   bit 2 up      bit 3 down
+bit 4 light  bit 5 heavy   bit 6 special bit 7 throw   bit 8 ultimate
 ```
 
-Nothing derived travels: press edges, blocking, and special-versus-ultimate are
+It was one byte with a bit spare until the upgraded build's control scheme
+arrived, needing a throw and a dedicated ultimate button — nine bits, which do not
+fit in eight. Packing the directions into a 4-bit numpad value would have bought
+the bit back, at the cost of making `moveAxis` and the block check decode a field
+rather than test a bit, on the hot path, to save one byte per tick.
+
+Nothing derived travels: press edges, blocking, and which motion was spelled are
 all recomputed inside the simulation, so a resimulation of the same bytes reaches
 the same decisions.
 
@@ -77,6 +83,23 @@ the same decisions.
   read once per tick, which is fatal to any replay.
 - **The 140 ms crouch buffer** that distinguishes a special from an ultimate is
   `downBufferedUntilTick`.
+- **Motion inputs** (236, 214, 623, double taps) are read from
+  `commandHistory`, a fixed 30-tick ring of raw input words held per fighter in
+  `SimWorld` and folded into the checksum
+  ([src/sim/command.ts](../src/sim/command.ts)). The upgraded build parsed these
+  in its controller, from a buffer holding `Set`s of pressed keys; state outside
+  the world is state the opponent never receives and a rollback never restores, so
+  the two clients would disagree about whether a fireball came out. Recording is
+  the only mutation — every query is a pure read, so it can be asked repeatedly
+  within a tick.
+- **Directions are facing-relative** (numpad notation), so one authored motion
+  works from both sides of the screen. Opposing directions cancel to neutral, as
+  keyboards report both during rollover.
+- **`22` is a genuine double tap** — press, release, press — rather than the
+  subsequence match the upgraded build used, which was satisfied by merely
+  *holding* down and so could not be told apart from crouching. It also swallowed
+  slowly-rolled 236 inputs, since those pass through two frames of down and `22`
+  was checked first.
 - **Blocking is not a button.** It is inferred from movement direction versus
   opponent position (§5), so it can only be resolved during simulation.
 - **Sampling** happens in [KeyboardSampler](../src/render/KeyboardSampler.ts),

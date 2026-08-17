@@ -613,6 +613,14 @@ export function checksum(world: SimWorld): number {
     h = hashInt(h, fighter.prevButtons);
     h = hashInt(h, fighter.downBufferedUntilTick);
 
+    // The command ring decides whether a motion input has been completed, so two
+    // clients holding different histories would disagree about which move comes
+    // out. Hashed by absolute slot including the head, not by recent-first order:
+    // two rings holding the same inputs at different rotations are not the same
+    // state, and the next write would land in a different place.
+    h = hashInt(h, fighter.commandHistory.head);
+    for (const frame of fighter.commandHistory.frames) h = hashInt(h, frame);
+
     const attack = fighter.attack;
     h = hashBool(h, attack !== null);
     if (attack) {

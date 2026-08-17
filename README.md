@@ -79,7 +79,8 @@ E2E_BASE_URL=https://<app> npm run test:e2e
 - Light: `F`
 - Heavy: `G`
 - Special: `H`
-- Ultimate: `S + H` when MEME = 100
+- Throw: `R`
+- Ultimate: `T`, or `S + H` when MEME = 100
 - Block: hold away from the opponent
 
 ### Player 2 Battle
@@ -90,7 +91,8 @@ E2E_BASE_URL=https://<app> npm run test:e2e
 - Light: `J`
 - Heavy: `K`
 - Special: `L`
-- Ultimate: `↓ + L` when MEME = 100
+- Throw: `U`
+- Ultimate: `I`, or `↓ + L` when MEME = 100
 - Block: hold away from the opponent
 
 Online, both players use the Player 1 controls on their own keyboard; the seat the
@@ -131,9 +133,9 @@ anything else says which part is at fault.
 Pick `ONLINE VS`, create a room, and read the six-character code to a friend; they
 choose `ONLINE VS`, press `J`, and type it.
 
-Matches run **input-delay lockstep**: only button state crosses the wire — about
-six bytes a tick — and both clients run the same deterministic simulation over
-the same inputs. They exchange a checksum every second, so a divergence is
+Matches run **input-delay lockstep**: only button state crosses the wire — a
+couple of bytes a tick — and both clients run the same deterministic simulation
+over the same inputs. They exchange a checksum every second, so a divergence is
 reported rather than left to show up as two screens quietly disagreeing.
 
 The two clients try to connect **directly** to each other and fall back to routing
