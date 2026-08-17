@@ -275,6 +275,42 @@ e2e/                       Playwright: the real game, and a real online match
 docs/sim-spec.md           the simulation's rules, with citations
 ```
 
+### One repo, two builds, one shared core
+
+`npm run build` bundles the client with Vite into `dist/`; `npm run build:server`
+compiles the server with `tsconfig.server.json` into `build/`. The `Dockerfile`
+runs both, which is why deploying looks like one artefact.
+
+The server is a separate build rather than a separate codebase, because both ends
+have to agree on things neither can decide alone. It imports `src/net/protocol`
+for the wire format, `src/net/roomCode` for the alphabet a code is validated
+against, and `src/sim/rng` to draw seeds and stages — and `protocol` in turn reads
+`src/sim/input` and `src/sim/types`. Duplicating any of those would mean a wire
+format that can drift on one side only, which lockstep would report as a desync
+somewhere else entirely.
+
+`tsconfig.server.json` includes all of `src/sim`, `src/fighters` and `src/combat`
+even though today's server only reaches the corners above: `sim` pulls the roster
+and frame data transitively, and the whole point of keeping it Phaser-free is that
+the server *could* run it — the escape hatch for the cheating limitation above.
+
+Two consequences that look arbitrary until you know the cause:
+
+- **The server is emitted as CommonJS**, in an ES module package. The shared code
+  is written for a bundler, so its relative imports carry no `.js` suffix; CommonJS
+  and `Node10` resolution accept that, ESM would need every import in `src/sim` and
+  `src/net` rewritten to suit one of its two consumers. `dev:server` and the
+  `Dockerfile` both drop a `{"type":"commonjs"}` marker into `build/` so Node reads
+  the output that way.
+- **Three files in `src/net` are excluded**: `OnlineClient`, `onlineMatch` and
+  `WebRtcTransport` touch `location` and `RTCPeerConnection`. The server loads
+  none of them, and including them would drag the DOM lib into a Node build.
+
+Nothing in the split is load-bearing on running in one process. `startServer` takes
+`staticDir: null` for an API-only server, and `VITE_WS_URL` points a separately
+hosted client at it; serving both from one origin is the default because it needs
+no configuration, not because the halves are entangled.
+
 ## Adding New Fighters
 
 1. Add the new card under `public/assets/cards/` using the same 1122×1402
