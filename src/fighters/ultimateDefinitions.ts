@@ -1,5 +1,6 @@
 import { TICK_HZ } from '../sim/constants';
 import { getFighterConfig } from './fighterData';
+import { ultimateVisualsFor } from './ultimateVisuals';
 
 /**
  * The staged presentation each ultimate gets: a background, a portrait, a line of
@@ -46,14 +47,19 @@ export interface UltimateDefinition {
   /** `public/assets/ultimate-backgrounds/<id>.png`, as `ultimate-bg-<id>`. */
   backgroundTexture: string;
   /**
-   * Which cell of the fighter's skill sheet is the cut-in portrait.
+   * The cut-in portrait: the fighter, in the state the ultimate puts them in.
    *
-   * Always `D`, the cell the asset pipeline categorises as `H_RELEASE_FIGHTER` —
-   * the fighter mid-release, which is the most dramatic pose of it that is
-   * guaranteed to *be* the fighter. The upgraded build named a different letter per
-   * fighter, but those pointed into the `ULTIMATE_MODULE` range, which is a mix of
-   * characters and standalone effect layers it composited together. Picking one of
-   * those to show alone got alien a beam with no cat attached.
+   * Taken from `ultimateVisuals`, not chosen again here. "Which cell shows this
+   * character mid-ultimate" is one question, and it already has an answer — the
+   * body the ultimate script gives its owner. Asking it twice is how the cut-in
+   * ends up showing a different fighter than the arena does.
+   *
+   * It used to be `D` for all twelve, the charge special's release frame. That was
+   * a retreat from the upgraded build, which names a cell per fighter but points
+   * six of them at effect layers — alien's is a green explosion with no cat in it.
+   * Neither list is right: `D` is a bare magic circle for wizard, 168x65, stretched
+   * to a 360-pixel portrait, and blade's `D` still has the shield its ultimate is
+   * about throwing away.
    */
   portraitTexture: string;
   style: CutInStyle;
@@ -79,7 +85,6 @@ const cutInTicks = (voiceText: string, minMs: number, maxMs: number): number => 
 const define = (
   fighterId: string,
   voiceText: string,
-  portraitCell: string,
   style: CutInStyle,
   minMs = 1450,
   maxMs = 2050,
@@ -88,47 +93,47 @@ const define = (
   ultimateName: getFighterConfig(fighterId).ultimate.name,
   voiceText,
   backgroundTexture: `ultimate-bg-${fighterId}`,
-  portraitTexture: `skill-${fighterId}-${portraitCell.toLowerCase()}`,
+  portraitTexture: `skill-${fighterId}-${ultimateVisualsFor(fighterId).ownerCell.toLowerCase()}`,
   style,
   cutInTicks: cutInTicks(voiceText, minMs, maxMs),
 });
 
 export const ULTIMATE_DEFINITIONS: Record<string, UltimateDefinition> = {
-  alien: define('alien', '逼逼逼——地球——鎖定喵！', 'D', {
+  alien: define('alien', '逼逼逼——地球——鎖定喵！', {
     overlay: 0x071a0b, title: '#63ff7e', bubble: 0x102f18, ink: '#ffffff', shake: 0.008,
   }),
-  doge: define('doge', '你是說克林嗎!!!!!', 'D', {
+  doge: define('doge', '你是說克林嗎!!!!!', {
     overlay: 0x4a3900, title: '#ffe34f', bubble: 0x3c3000, ink: '#ffffff', shake: 0.012,
   }),
-  ya: define('ya', '等、等一下……不要拍啦！哈ㄗ咖西...', 'D', {
+  ya: define('ya', '等、等一下……不要拍啦！哈ㄗ咖西...', {
     overlay: 0x392536, title: '#ffb6e7', bubble: 0xffffff, ink: '#2a1424', shake: 0.006,
   }, 1750, 2200),
-  tempura: define('tempura', 'oh fucking 天婦羅尬哩涼！', 'D', {
+  tempura: define('tempura', 'oh fucking 天婦羅尬哩涼！', {
     // The one fighter staged on white, so its ink and bubble outline invert.
     overlay: 0xffffff, title: '#111111', bubble: 0xffffff, ink: '#111111', shake: 0.014,
   }),
-  goblin: define('goblin', '犧牲哥布林長老十年的壽命...變帥吧！！', 'D', {
+  goblin: define('goblin', '犧牲哥布林長老十年的壽命...變帥吧！！', {
     overlay: 0x451a40, title: '#ff9de1', bubble: 0xffd7f1, ink: '#3c0f33', shake: 0.008,
   }, 1800, 2200),
-  salad: define('salad', '菜就多練啊！！', 'D', {
+  salad: define('salad', '菜就多練啊！！', {
     overlay: 0x283813, title: '#dfff6e', bubble: 0xf3ffd4, ink: '#22300f', shake: 0.014,
   }),
-  wizard: define('wizard', '偉大的喵蘇魯呀——出來吃飯啦！', 'D', {
+  wizard: define('wizard', '偉大的喵蘇魯呀——出來吃飯啦！', {
     overlay: 0x170b28, title: '#c778ff', bubble: 0x221337, ink: '#ffffff', shake: 0.009,
   }, 1750, 2150),
-  blade: define('blade', '盾？不要了！幫我撐十秒！！', 'D', {
+  blade: define('blade', '盾？不要了！幫我撐十秒！！', {
     overlay: 0x101b2b, title: '#79c9ff', bubble: 0x17263b, ink: '#ffffff', shake: 0.012,
   }),
-  pink: define('pink', '不！我怪人的真面目要被看光光了！！', 'D', {
+  pink: define('pink', '不！我怪人的真面目要被看光光了！！', {
     overlay: 0x3c0c2a, title: '#ff70c6', bubble: 0xffd3ec, ink: '#3a0a26', shake: 0.014,
   }, 1750, 2150),
-  sauce: define('sauce', '這不是胡渣！NTMD', 'D', {
+  sauce: define('sauce', '這不是胡渣！NTMD', {
     overlay: 0x382314, title: '#f0bd79', bubble: 0x6b432b, ink: '#ffffff', shake: 0.013,
   }),
-  scared: define('scared', '那...那不是夢....那是真狗！！', 'D', {
+  scared: define('scared', '那...那不是夢....那是真狗！！', {
     overlay: 0x07172a, title: '#9ed7ff', bubble: 0xeaf7ff, ink: '#0b2035', shake: 0.012,
   }),
-  ok: define('ok', '兄弟們！站著把錢給我掙了！！', 'D', {
+  ok: define('ok', '兄弟們！站著把錢給我掙了！！', {
     overlay: 0x0c0c0c, title: '#e7b74c', bubble: 0x171717, ink: '#ffffff', shake: 0.013,
   }),
 };
