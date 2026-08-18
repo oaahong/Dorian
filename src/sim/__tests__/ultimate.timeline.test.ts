@@ -53,7 +53,11 @@ function launch(w: SimWorld, fighterId: string): void {
 describe('every fighter has a timeline', () => {
   it('covers the whole roster, with no duplicate phase identities', () => {
     for (const timeline of allUltimateTimelines()) {
-      expect(timeline.phases.length, timeline.fighterId).toBeGreaterThan(0);
+      // A timeline threatens through phases, through companions, or it does
+      // nothing at all — which is the one thing an ultimate must never do.
+      const threatens = timeline.phases.length > 0 || timeline.summon !== undefined;
+      expect(threatens, timeline.fighterId).toBe(true);
+
       const seqs = timeline.phases.map((phase) => phase.seq);
       expect(new Set(seqs).size, timeline.fighterId).toBe(seqs.length);
     }
@@ -326,5 +330,158 @@ describe('an ultimate ends with its owner', () => {
 
     expect(w.ultimates).toHaveLength(0);
     expect(w.fighters[1].captureTicks).toBe(0);
+  });
+});
+
+describe('the summon ultimates', () => {
+  /**
+   * The two that leave something behind. What makes them different from every
+   * other ultimate is that the fighter is free almost immediately while the
+   * threat keeps going — ten seconds of it — so these tests are about the
+   * companions acting on their own, not about the move that made them.
+   */
+  it('puts nine clones on the field and frees their owner', () => {
+    const plan = ultimateTimelineFor('tempura').summon!;
+    const w = fight({ p1Character: 'tempura', p2Character: 'ok' });
+    launch(w, 'tempura');
+
+    while (w.ultimates[0]!.elapsedTicks < plan.atTick) run(w, 1);
+    expect(w.ultimates[0]!.summons).toHaveLength(plan.offsets!.length);
+    expect(w.fighters[0].state).not.toBe(FighterState.ULTIMATE);
+  });
+
+  it('keeps the clones near the slots they are supposed to hold', () => {
+    const plan = ultimateTimelineFor('tempura').summon!;
+    const w = fight({ p1Character: 'tempura', p2Character: 'ok' });
+    w.fighters[0].x = 500;
+    launch(w, 'tempura');
+    while (w.ultimates[0]!.elapsedTicks < plan.atTick + 40) run(w, 1);
+
+    for (const summon of w.ultimates[0]!.summons) {
+      const slot = w.fighters[0].x + plan.offsets![summon.slot]!;
+      // Eased rather than snapped, so "near" is the assertion, not "at".
+      expect(Math.abs(summon.x - slot), `slot ${summon.slot}`).toBeLessThan(60);
+    }
+  });
+
+  it('hurts an opponent who stands in the formation', () => {
+    const w = fight({ p1Character: 'tempura', p2Character: 'ok' });
+    w.fighters[0].x = 500;
+    w.fighters[1].x = 590; // inside the +90 slot
+    launch(w, 'tempura');
+    run(w, 120);
+    expect(w.fighters[1].hp).toBeLessThan(MAX_HP);
+  });
+
+  it('lets the opponent knock a clone down', () => {
+    const plan = ultimateTimelineFor('tempura').summon!;
+    const w = fight({ p1Character: 'tempura', p2Character: 'ok' });
+    w.fighters[0].x = 500;
+    w.fighters[1].x = 600;
+    launch(w, 'tempura');
+    while (w.ultimates[0]!.elapsedTicks < plan.atTick + 2) run(w, 1);
+    const before = w.ultimates[0]!.summons.length;
+
+    // Swing repeatedly at whatever is standing there.
+    for (let i = 0; i < 60; i += 1) run(w, 1, EMPTY_INPUT, i % 20 < 2 ? BUTTON.Light : EMPTY_INPUT);
+    expect(w.ultimates[0]!.summons.length).toBeLessThan(before);
+  });
+
+  it('walks the husky toward the opponent and bites', () => {
+    const plan = ultimateTimelineFor('scared').summon!;
+    const w = fight({ p1Character: 'scared', p2Character: 'ok' });
+    w.fighters[0].x = 300;
+    w.fighters[1].x = 1000;
+    launch(w, 'scared');
+    while (w.ultimates[0]!.elapsedTicks < plan.atTick) run(w, 1);
+
+    const start = w.ultimates[0]!.summons[0]!.x;
+    run(w, 200);
+    const husky = w.ultimates[0]?.summons[0];
+    expect(husky).toBeDefined();
+    expect(husky!.x).toBeGreaterThan(start);
+    expect(w.fighters[1].hp).toBeLessThan(MAX_HP);
+  });
+
+  /** Four hit points, so clearing it is a real option and a real cost. */
+  it('lets the husky be put down', () => {
+    const plan = ultimateTimelineFor('scared').summon!;
+    const w = fight({ p1Character: 'scared', p2Character: 'ok' });
+    w.fighters[0].x = 500;
+    w.fighters[1].x = 620;
+    launch(w, 'scared');
+    while (w.ultimates[0]!.elapsedTicks < plan.atTick + 1) run(w, 1);
+
+    // Park the husky next to the opponent and swing until it is gone.
+    w.ultimates[0]!.summons[0]!.x = w.fighters[1].x - 40;
+    for (let i = 0; i < 200 && (w.ultimates[0]?.summons.length ?? 0) > 0; i += 1) {
+      run(w, 1, EMPTY_INPUT, i % 20 < 2 ? BUTTON.Light : EMPTY_INPUT);
+    }
+    expect(w.ultimates[0]?.summons ?? []).toHaveLength(0);
+  });
+
+  /**
+   * A companion hitting once every `rehitTicks` is the difference between
+   * pressure and instant death — nine clones with no cooldown would delete a
+   * hundred hit points in under a second.
+   */
+  it('gives each companion a cooldown between its hits', () => {
+    const plan = ultimateTimelineFor('tempura').summon!;
+    const w = fight({ p1Character: 'tempura', p2Character: 'ok' });
+    w.fighters[0].x = 500;
+    w.fighters[1].x = 590;
+    launch(w, 'tempura');
+    run(w, 60);
+
+    const lost = MAX_HP - w.fighters[1].hp;
+    // Far below what an uncapped formation would have taken off by now.
+    expect(lost).toBeGreaterThan(0);
+    expect(lost).toBeLessThan(MAX_HP / 2);
+  });
+
+  it('clears the companions when the round restarts', () => {
+    const w = fight({ p1Character: 'tempura', p2Character: 'ok' });
+    launch(w, 'tempura');
+    run(w, 40);
+    expect(w.ultimates[0]!.summons.length).toBeGreaterThan(0);
+
+    w.fighters[1].hp = 0;
+    w.fighters[1].state = FighterState.KO;
+    for (let i = 0; i < 400 && w.phase !== 'fight'; i += 1) run(w, 1);
+    for (let i = 0; i < 400 && w.roundNumber === 1; i += 1) run(w, 1);
+    expect(w.ultimates).toHaveLength(0);
+  });
+});
+
+describe('a formation is wider than a corner', () => {
+  /**
+   * Clone slots are not clamped to the arena, and that is the whole point.
+   *
+   * Clamping is what the upgraded build does, and against a wall it folds four
+   * slots onto one point — nine clones become nine hitboxes in the same place,
+   * every one connecting on the same tick. Measured before the fix: a full-health
+   * opponent standing in a cornered formation died in under three seconds.
+   */
+  it('does not stack clones on top of each other in the corner', () => {
+    const plan = ultimateTimelineFor('tempura').summon!;
+    const w = fight({ p1Character: 'tempura', p2Character: 'ok' });
+    w.fighters[0].x = 95; // hard against the left wall
+    launch(w, 'tempura');
+    while (w.ultimates[0]!.elapsedTicks < plan.atTick) run(w, 1);
+
+    const positions = w.ultimates[0]!.summons.map((summon) => Math.round(summon.x));
+    expect(new Set(positions).size).toBe(positions.length);
+  });
+
+  it('keeps a cornered formation survivable for longer than a moment', () => {
+    const w = fight({ p1Character: 'tempura', p2Character: 'ok' });
+    w.fighters[0].x = 95;
+    w.fighters[1].x = 185; // parked inside the formation
+    launch(w, 'tempura');
+    run(w, 180); // three seconds of standing in it
+
+    // Bruising, not lethal. The answer is to leave, and leaving must be possible.
+    expect(w.fighters[1].hp).toBeLessThan(MAX_HP);
+    expect(w.fighters[1].hp).toBeGreaterThan(0);
   });
 });

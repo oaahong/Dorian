@@ -85,6 +85,47 @@ export interface UltimateTimeline {
   capture?: { from: number; to: number; range: number };
   /** The owner teleports every `everyTicks`, up to `spreadX` in either direction. */
   blink?: { fromTick: number; toTick: number; everyTicks: number; spreadX: number };
+  /** Companions put into the world, which then act on their own. */
+  summon?: SummonPlan;
+}
+
+/**
+ * What an ultimate leaves standing on the field.
+ *
+ * Two shapes, because the upgraded build has exactly two and they are opposites:
+ * a `clone` holds a fixed offset from its owner and swings at whatever is beside
+ * it, while a `husky` ignores its owner entirely and walks the opponent down. A
+ * single "summon AI" covering both would be a parameter bag with one caller each.
+ */
+export interface SummonPlan {
+  kind: 'clone' | 'husky';
+  /** When they arrive. Control is handed back on the same tick. */
+  atTick: number;
+  /** Hit points each, so the opponent can clear them out early. */
+  hp: number;
+  damage: number;
+  /** Ticks between one companion's hits. Its rhythm, not the timeline's. */
+  rehitTicks: number;
+  /**
+   * Stun and knockback for a companion's hit, which are its own and not the
+   * ultimate's.
+   *
+   * Inheriting them was wrong in both directions: the husky's bite borrowed 46
+   * ticks of hitstun against its own 54-tick cooldown, leaving the victim eight
+   * frames an attempt to answer a dog, and 520 of knockback threw them half the
+   * arena away from a nibble. A companion is pressure — it should sting and let
+   * you move, not launch you and lock you.
+   */
+  hitstun: number;
+  knockbackX: number;
+  /** The box each one swings, relative to its own position. */
+  box: { offsetX: number; y: number; width: number; height: number };
+  /** Where each stands, as offsets from the owner. Clones only. */
+  offsets?: number[];
+  /** How fast it walks toward the opponent, and how close it wants to be. Husky. */
+  chase?: { speed: number; standoff: number; reach: number };
+  /** How far behind the owner it starts. Husky. */
+  spawnOffsetX?: number;
 }
 
 const ARENA_WIDTH = ARENA_MAX_X - ARENA_MIN_X;
@@ -207,12 +248,32 @@ const TIMELINES: UltimateTimeline[] = [
    * they do, both keep the single screen-wide finish they were ported with, so
    * the ultimate still resolves rather than doing nothing at all.
    */
+  /**
+   * Nine of him, in a line, for ten seconds.
+   *
+   * The clones hold their offsets and swing at whatever is standing next to them,
+   * so the threat is positional rather than timed: walking into the formation is
+   * what hurts, and the answer is to leave — or to knock the nearest one down,
+   * since each has a single hit point. Control returns the moment they arrive,
+   * which is the whole idea. The owner is free while nine of him are not.
+   */
   {
     fighterId: 'tempura',
-    ticks: 115,
+    ticks: 620,
     targetLockTick: null,
-    releaseTick: 30,
-    phases: [fullscreen(0, 34, 6, 16, 'PENGUIN COLUMN')],
+    releaseTick: 20,
+    phases: [],
+    summon: {
+      kind: 'clone',
+      atTick: 20,
+      hp: 1,
+      damage: 3,
+      rehitTicks: 30,
+      hitstun: 16,
+      knockbackX: 90,
+      box: { offsetX: -42, y: GROUND_Y - 135, width: 84, height: 135 },
+      offsets: [-300, -230, -160, -90, 90, 160, 230, 300, 0],
+    },
   },
 
   {
@@ -285,12 +346,40 @@ const TIMELINES: UltimateTimeline[] = [
     blink: { fromTick: 11, toTick: 64, everyTicks: 7, spreadX: 210 },
   },
 
+  /**
+   * One companion that does not care where its owner is.
+   *
+   * It walks the opponent down and bites on its own clock, which makes it the
+   * only lasting pressure in the game that its owner does not have to be standing
+   * next to. Four hit points, so clearing it out is a real option and a real cost
+   * — the frames spent killing it are frames not spent on the owner.
+   */
   {
     fighterId: 'scared',
-    ticks: 115,
+    ticks: 620,
     targetLockTick: null,
-    releaseTick: 30,
-    phases: [fullscreen(0, 30, 6, 14, 'HUSKY CHARGE')],
+    releaseTick: 20,
+    phases: [],
+    summon: {
+      kind: 'husky',
+      atTick: 20,
+      hp: 4,
+      damage: 7,
+      rehitTicks: 54,
+      hitstun: 22,
+      knockbackX: 150,
+      box: { offsetX: -85, y: 330, width: 170, height: 280 },
+      /**
+       * The standoff is 100, not the upgraded build's 150.
+       *
+       * At 150 the husky stops with the opponent's hurtbox starting 98 pixels
+       * away and swings a box that reaches 85 — it can never connect, ever, and
+       * the companion is decoration with a health bar. 100 leaves a visible gap
+       * and still lands, which is what the move is for.
+       */
+      chase: { speed: 5.2, standoff: 100, reach: 170 },
+      spawnOffsetX: -220,
+    },
   },
 
   /**

@@ -122,13 +122,25 @@ describe('ultimate timelines', () => {
     tick % 6 === 0 ? BUTTON.Left : EMPTY_INPUT,
   ];
 
-  const pairs: [string, string][] = [
-    ['alien', 'salad'],   // a locked target, and an overhead-then-low mix-up
-    ['ok', 'wizard'],     // a grab, and four fixed tentacles
-    ['doge', 'sauce'],    // a transformation, and a blinking rampage
+  /**
+   * The summon pair needs the opponent to stay *in* the formation, so it gets a
+   * script that walks toward the owner and holds there. The default rotation
+   * drifts apart, which for the clones means nine of them politely swinging at
+   * nobody for ten seconds — reproducible, and worth nothing as a fixture.
+   */
+  const closeIn = (tick: number): [InputFrame, InputFrame] => [
+    tick % 200 === 0 ? BUTTON.Down | BUTTON.Special : EMPTY_INPUT,
+    BUTTON.Left,
   ];
 
-  for (const [p1, p2] of pairs) {
+  const pairs: [string, string, (tick: number) => [InputFrame, InputFrame]][] = [
+    ['alien', 'salad', fireAt],   // a locked target, and an overhead-then-low mix-up
+    ['ok', 'wizard', fireAt],     // a grab, and four fixed tentacles
+    ['doge', 'sauce', fireAt],    // a transformation, and a blinking rampage
+    ['tempura', 'scared', closeIn], // nine clones, and a husky that walks you down
+  ];
+
+  for (const [p1, p2, script] of pairs) {
     it(`replays ${p1} against ${p2} identically`, () => {
       const play = () => {
         const world = createWorld({ ...SETUP, p1Character: p1, p2Character: p2 });
@@ -137,7 +149,7 @@ describe('ultimate timelines', () => {
           // Topped up every tick, so the ultimate is always available on cue and
           // the scenario does not depend on how the meter happened to build.
           world.fighters[0].energy = MAX_ENERGY;
-          stepWorld(world, fireAt(i));
+          stepWorld(world, script(i));
           if ((i + 1) % 150 === 0) checksums.push(`t${i + 1}:${checksum(world).toString(16)}`);
         }
         return { checksums, summary: summarise(world) };

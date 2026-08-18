@@ -111,6 +111,26 @@ export interface SimZone {
  * for another fifty ticks. Modelling it as one attack would mean either freezing
  * the fighter for the whole thing or losing the second half of their own super.
  */
+/**
+ * A companion an ultimate leaves behind.
+ *
+ * Its own entity rather than another phase, because the whole point of a summon
+ * is that it outlives the move: it keeps its own position, it swings on its own
+ * schedule, and it can be knocked out before it is finished. A phase is a box on
+ * a timetable; this is a thing in the world.
+ */
+export interface SimSummon {
+  id: number;
+  kind: 'clone' | 'husky';
+  x: number;
+  y: number;
+  hp: number;
+  /** Ticks until it may connect again. Its whole attack rhythm. */
+  cooldownTicks: number;
+  /** Which formation slot a clone holds. Zero for anything that stands alone. */
+  slot: number;
+}
+
 export interface SimUltimate {
   ownerIndex: PlayerIndex;
   fighterId: string;
@@ -123,6 +143,8 @@ export interface SimUltimate {
   resolved: boolean[];
   /** Whether a grab found anybody. False for every ultimate that is not one. */
   captured: boolean;
+  /** Companions this ultimate has put into the world. */
+  summons: SimSummon[];
 }
 
 export interface SimWorld {

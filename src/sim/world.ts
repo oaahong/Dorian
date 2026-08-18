@@ -1,6 +1,10 @@
 import { FighterState } from '../fighters/FighterState';
 import { ultimateDefinitionFor } from '../fighters/ultimateDefinitions';
-import { ultimateTimelineFor, type UltimatePhase } from '../fighters/ultimateTimelines';
+import {
+  ultimateTimelineFor,
+  type SummonPlan,
+  type UltimatePhase,
+} from '../fighters/ultimateTimelines';
 import { getSpec, type TickSpec } from './attackSpecs';
 import {
   ARENA_MAX_X,
@@ -39,6 +43,7 @@ import {
   type SimEvent,
   type SimFighter,
   type SimProjectile,
+  type SimSummon,
   type SimUltimate,
   type SimWorld,
   type SimZone,
@@ -296,6 +301,9 @@ function processAttack(world: SimWorld, attackerIndex: PlayerIndex, events: SimE
 
   if (attackActive(attacker) && CONTINUOUS_KINDS.has(spec.kind)) {
     tryHit(world, attackerIndex, spec, () => getMeleeHitbox(attacker, spec), events);
+    // Companions are swatted by the same swing, and separately from it: a hit
+    // that clears a clone must not be the hit that was aimed at the fighter.
+    damageSummons(world, attackerIndex, spec);
   }
 
   if (!attack.activeJustStarted) return;
@@ -360,6 +368,7 @@ function beginUltimate(world: SimWorld, ownerIndex: PlayerIndex, spec: TickSpec)
       Math.abs(opponent.x - owner.x) <= timeline.capture.range &&
       !isAirborne(opponent) &&
       opponent.hp > 0,
+    summons: [],
   });
 }
 
@@ -427,6 +436,11 @@ function advanceUltimate(world: SimWorld, ultimate: SimUltimate, events: SimEven
     }
   }
 
+  if (timeline.summon) {
+    if (tick === timeline.summon.atTick) spawnSummons(world, ultimate, timeline.summon);
+    advanceSummons(world, ultimate, timeline.summon, events);
+  }
+
   if (timeline.blink && tick >= timeline.blink.fromTick && tick <= timeline.blink.toTick) {
     if ((tick - timeline.blink.fromTick) % timeline.blink.everyTicks === 0) {
       const spread = timeline.blink.spreadX;
@@ -456,6 +470,161 @@ function advanceUltimate(world: SimWorld, ultimate: SimUltimate, events: SimEven
       label: phase.label,
     });
   }
+}
+
+// --- Summons ----------------------------------------------------------------
+
+/** Clones stand in a shallow stagger so nine of them do not read as one shape. */
+const CLONE_ROW_OFFSET_Y = 5;
+/** How quickly a clone closes on the slot it is supposed to be holding. */
+const CLONE_FOLLOW_RATE = 0.18;
+
+function spawnSummons(world: SimWorld, ultimate: SimUltimate, plan: SummonPlan): void {
+  const owner = world.fighters[ultimate.ownerIndex]!;
+
+  if (plan.kind === 'clone') {
+    const offsets = plan.offsets ?? [];
+    for (let slot = 0; slot < offsets.length; slot += 1) {
+      ultimate.summons.push({
+        id: world.nextEntityId,
+        kind: 'clone',
+        /**
+         * Deliberately *not* clamped to the arena.
+         *
+         * Clamping is what the upgraded build does, and in a corner it collapses
+         * four slots onto one point — so nine clones become a stack of nine
+         * hitboxes in the same place, all connecting on the same tick, and the
+         * formation kills a full-health opponent in under three seconds. A clone
+         * whose slot is off the field simply stands off the field and threatens
+         * nobody, which is what "the formation is wider than the corner" should
+         * mean.
+         */
+        x: owner.x + offsets[slot]!,
+        y: owner.y + (slot % 3) * CLONE_ROW_OFFSET_Y,
+        hp: plan.hp,
+        // Staggered rather than synchronised, so nine clones do not all connect
+        // on the same tick and delete somebody who walked one step too far.
+        cooldownTicks: slot * 2,
+        slot,
+      });
+      world.nextEntityId += 1;
+    }
+    return;
+  }
+
+  ultimate.summons.push({
+    id: world.nextEntityId,
+    kind: 'husky',
+    x: clampToArena(owner.x + owner.facing * (plan.spawnOffsetX ?? 0)),
+    y: GROUND_Y,
+    hp: plan.hp,
+    cooldownTicks: 0,
+    slot: 0,
+  });
+  world.nextEntityId += 1;
+}
+
+/**
+ * Move each companion and let it swing.
+ *
+ * The two kinds move for opposite reasons: a clone is trying to hold a position
+ * relative to its owner, and a husky is trying to reach the opponent. Neither
+ * looks at the other's fields.
+ */
+function advanceSummons(
+  world: SimWorld,
+  ultimate: SimUltimate,
+  plan: SummonPlan,
+  events: SimEvent[],
+): void {
+  const owner = world.fighters[ultimate.ownerIndex]!;
+  const defenderIndex: PlayerIndex = ultimate.ownerIndex === 0 ? 1 : 0;
+  const defender = world.fighters[defenderIndex]!;
+
+  for (const summon of ultimate.summons) {
+    if (summon.cooldownTicks > 0) summon.cooldownTicks -= 1;
+
+    if (summon.kind === 'clone') {
+      const target = owner.x + (plan.offsets?.[summon.slot] ?? 0);
+      // Eased rather than snapped, so the formation trails the owner instead of
+      // teleporting with them — the lag is what makes it readable as nine bodies.
+      summon.x += (target - summon.x) * CLONE_FOLLOW_RATE;
+      summon.y = owner.y + (summon.slot % 3) * CLONE_ROW_OFFSET_Y;
+    } else if (plan.chase) {
+      const delta = defender.x - summon.x;
+      if (Math.abs(delta) > plan.chase.standoff) {
+        summon.x = clampToArena(summon.x + Math.sign(delta) * plan.chase.speed);
+      }
+    }
+
+    if (summon.cooldownTicks > 0 || isKO(defender)) continue;
+    if (plan.chase && Math.abs(defender.x - summon.x) > plan.chase.reach) continue;
+
+    const box: Rect = {
+      x: summon.x + plan.box.offsetX,
+      y: plan.box.y,
+      width: plan.box.width,
+      height: plan.box.height,
+    };
+    if (!rectsIntersect(box, getHurtbox(defender))) continue;
+
+    const spec = getSpec(ultimate.specId);
+    const result = resolveHit(
+      owner,
+      defender,
+      {
+        ...spec,
+        damage: plan.damage,
+        hits: [plan.damage],
+        attackType: 'mid',
+        hitstunTicks: plan.hitstun,
+        knockbackX: plan.knockbackX,
+        knockbackY: 0,
+      },
+      world.tick,
+      ultimate.ownerIndex,
+      events,
+    );
+    if (!result) continue;
+    summon.cooldownTicks = plan.rehitTicks;
+    applyHitStop(world, ultimatePhaseHitStop(plan.damage));
+  }
+}
+
+/**
+ * Let the opponent's own attack clear companions out of the way.
+ *
+ * Without this a summon is a wall rather than a threat: nothing on the field
+ * could be answered except by leaving, and the correct play against nine clones
+ * would be to walk to the corner and wait ten seconds. Each connected attack
+ * takes one hit point, once — the attack's own hit mask is not touched, so
+ * swatting a clone never uses up the swing that was aimed at the fighter.
+ */
+function damageSummons(world: SimWorld, attackerIndex: PlayerIndex, spec: TickSpec): void {
+  const attacker = world.fighters[attackerIndex]!;
+  const box = getMeleeHitbox(attacker, spec);
+
+  for (const ultimate of world.ultimates) {
+    if (ultimate.ownerIndex === attackerIndex) continue;
+    for (const summon of ultimate.summons) {
+      if (summon.hp <= 0) continue;
+      if (!rectsIntersect(box, summonHurtbox(summon))) continue;
+      summon.hp -= 1;
+    }
+    ultimate.summons = ultimate.summons.filter((summon) => summon.hp > 0);
+  }
+}
+
+const SUMMON_HURTBOX_WIDTH = 84;
+const SUMMON_HURTBOX_HEIGHT = 135;
+
+export function summonHurtbox(summon: SimSummon): Rect {
+  return {
+    x: summon.x - SUMMON_HURTBOX_WIDTH / 2,
+    y: summon.y - SUMMON_HURTBOX_HEIGHT,
+    width: SUMMON_HURTBOX_WIDTH,
+    height: SUMMON_HURTBOX_HEIGHT,
+  };
 }
 
 /**
@@ -884,6 +1053,14 @@ export function checksum(world: SimWorld): number {
    * been dealt yet, so two clients disagreeing about any of it diverge silently.
    */
   for (const ultimate of world.ultimates) {
+    for (const summon of ultimate.summons) {
+      h = hashInt(h, summon.id);
+      h = hashFloat(h, summon.x);
+      h = hashFloat(h, summon.y);
+      h = hashInt(h, summon.hp);
+      h = hashInt(h, summon.cooldownTicks);
+    }
+    h = hashInt(h, ultimate.summons.length);
     h = hashInt(h, ultimate.ownerIndex);
     h = hashString(h, ultimate.specId);
     h = hashInt(h, ultimate.elapsedTicks);

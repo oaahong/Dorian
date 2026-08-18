@@ -101,10 +101,14 @@ test('cuts the poses for exactly the two fighters in the match', async ({ page }
 
   const loaded = await page.evaluate(() => {
     const keys = window.__MEME_CAT_GAME__!.textures.getTextureKeys();
+    const battle = window.__MEME_CAT_GAME__!.scene.getScene('BattleScene') as unknown as {
+      world: { fighters: [{ configId: string }, { configId: string }] };
+    };
     return {
       poses: keys.filter((key) => key.startsWith('pose-')).length,
       backgrounds: keys.filter((key) => key.startsWith('ultimate-bg-')).length,
       skillCells: keys.filter((key) => key.startsWith('skill-')).length,
+      fighters: [battle.world.fighters[0].configId, battle.world.fighters[1].configId],
     };
   });
 
@@ -115,7 +119,14 @@ test('cuts the poses for exactly the two fighters in the match', async ({ page }
   // which doubles as the cut-in portrait — plus one cut-in background each. Both
   // derived, for the same reason the pose count is.
   expect(loaded.backgrounds).toBe(2);
-  expect(loaded.skillCells).toBe(2 * skillTexturesFor('alien').length);
+  // Counted from the fighters actually in the match rather than from a stand-in:
+  // two of them carry an extra cell for the companion their ultimate leaves
+  // behind, so any single fighter is the wrong yardstick for the other eleven.
+  const expectedCells = loaded.fighters.reduce(
+    (total, id) => total + skillTexturesFor(id).length,
+    0,
+  );
+  expect(loaded.skillCells).toBe(expectedCells);
 });
 
 test('navigates title -> mode select -> character select -> battle', async ({ page }) => {

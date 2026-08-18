@@ -244,17 +244,9 @@ exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`
 - Frame-authored `AttackSpec`, in ticks, which is what made the frame data
   transferable as data rather than as a translation.
 
-**Not yet ported**, in the order it makes sense to do it:
+**Not yet ported** — one item, and it is blocked rather than pending:
 
-1. **The two summon ultimates.** `tempura`'s nine mirrored clones and `scared`'s
-   husky companion are entities that outlive the move — the upgraded build keeps
-   them alive for six hundred frames, mirrors the owner's inputs onto the clones,
-   walks the husky toward the opponent under its own AI, and lets both be damaged
-   out. Everything else about those two ultimates is ported; for now each keeps a
-   single screen-wide beat in place of its companions, so the move resolves
-   rather than doing nothing.
-
-2. **Ultimate voice audio.** The cut-in shows the line; there is no clip behind it,
+1. **Ultimate voice audio.** The cut-in shows the line; there is no clip behind it,
    and there cannot be yet — the upgraded build referenced keys like
    `ult_alien_voice`, but no audio was ever delivered with it and there is none in
    `source-assets` or the pipeline archives. `AudioManager` synthesises everything

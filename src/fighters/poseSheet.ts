@@ -102,6 +102,19 @@ const LAYOUTS: Record<string, PoseNumbers> = { alien: ALIEN_LAYOUT };
 const CHARGE_CELLS = ['A', 'B', 'C'] as const;
 const RELEASE_CELL = 'D';
 
+/**
+ * The companion an ultimate leaves behind, for the two fighters that have one.
+ *
+ * Further into the same skill sheets than anything else the game loads, because
+ * these cells are the only ones that are *characters in their own right* rather
+ * than effects — tempura's penguin and scared's husky both stand on the field
+ * and can be knocked down, so they need a body rather than a flash.
+ */
+const SUMMON_CELLS: Record<string, string> = { tempura: 'I', scared: 'L' };
+
+export const summonTextureKey = (fighterId: string): string | null =>
+  SUMMON_CELLS[fighterId] ? skillTextureKey(fighterId, SUMMON_CELLS[fighterId]!) : null;
+
 const skillTextureKey = (fighterId: string, cell: string): string =>
   `skill-${fighterId}-${cell.toLowerCase()}`;
 
@@ -124,7 +137,10 @@ export const releasePath = (fighterId: string): string =>
 
 /** Every skill texture a match needs for one fighter, as key and path. */
 export function skillTexturesFor(fighterId: string): { key: string; path: string }[] {
-  return [...CHARGE_CELLS, RELEASE_CELL].map((cell) => ({
+  const cells: string[] = [...CHARGE_CELLS, RELEASE_CELL];
+  const summon = SUMMON_CELLS[fighterId];
+  if (summon) cells.push(summon);
+  return cells.map((cell) => ({
     key: skillTextureKey(fighterId, cell),
     path: skillPath(fighterId, cell),
   }));
