@@ -7,7 +7,7 @@ import { addEnergy, canBlockImpact, receiveImpact, resolveHit } from '../combat'
 import type { SimEvent, SimFighter } from '../types';
 import { attackRuntime } from './factories';
 
-/** Hit resolution, ported from CombatSystem.resolveHit. See docs/sim-spec.md §7. */
+/** Hit resolution, ported from CombatSystem.resolveHit. See docs/gameplay/sim-spec.md §7. */
 
 const attacker = (overrides: Partial<SimFighter> = {}): SimFighter => ({
   ...createFighter('pink', 500, 1), // attackStat 4 -> 1.13x
@@ -118,7 +118,7 @@ describe('canBlockImpact', () => {
   });
 
   it('accepts a grounded fighter merely holding away', () => {
-    // guardHeld has no range condition — see docs/sim-spec.md §5.
+    // guardHeld has no range condition — see docs/gameplay/sim-spec.md §5.
     expect(canBlockImpact(defender({ guardHeld: true, state: FighterState.WALK }), LIGHT_SPEC)).toBe(true);
   });
 

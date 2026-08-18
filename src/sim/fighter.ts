@@ -56,7 +56,7 @@ import type { MoveResult, PlayerIndex, SimEvent, SimFighter } from './types';
 
 /**
  * Per-fighter simulation. Ported from `src/fighters/Fighter.ts` with the Phaser
- * sprite, tweens and audio calls stripped out — see docs/sim-spec.md §3-4.
+ * sprite, tweens and audio calls stripped out — see docs/gameplay/sim-spec.md §3-4.
  *
  * Functions mutate the fighter in place rather than returning a new object: this
  * runs 60 times a second and, once rollback lands, several times per frame.
@@ -255,7 +255,7 @@ export function canUseSpecial(fighter: SimFighter, tick: number): boolean {
  * refreshed *before* the guard is evaluated, so turning around and blocking
  * resolve on the same tick.
  *
- * See docs/sim-spec.md §3.
+ * See docs/gameplay/sim-spec.md §3.
  */
 export function stepFighter(
   fighter: SimFighter,

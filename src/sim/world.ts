@@ -57,7 +57,7 @@ import {
  * tick counters in the world, because a wall-clock timer drifts between two
  * clients and cannot be replayed.
  *
- * See docs/sim-spec.md §8-9.
+ * See docs/gameplay/sim-spec.md §8-9.
  */
 
 export interface MatchSetup {

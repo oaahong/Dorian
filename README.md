@@ -8,6 +8,11 @@ Twelve fighters, each with thirty poses cut from a source character sheet ahead 
 time by the Python pipeline in `scripts/`, so the client loads finished PNGs
 instead of cropping card art on the main thread at boot.
 
+Detailed documentation — architecture, every subsystem, the asset pipeline, the
+netcode — lives in **[docs/](docs/README.md)**, written in Traditional Chinese.
+This README stays the entry point: how to run it, how to play it, and why the
+large decisions are what they are.
+
 ## Requirements
 
 - Node.js 20.19+ or 22.12+ (22 for the server)
@@ -33,7 +38,7 @@ play needs the server, which `dev:server` builds and runs as one process.
 ## Testing
 
 ```bash
-npm test             # unit, property, golden-replay and server tests
+npm test             # unit, golden-replay and server tests
 npm run test:e2e     # browser tests, including a full online match
 npm run verify       # typecheck + both suites
 ```
@@ -41,8 +46,8 @@ npm run verify       # typecheck + both suites
 The layers are tested where each is cheapest to pin down:
 
 - **`src/sim`** — pure functions, no browser. Physics, frame data, hit resolution
-  and round flow, plus property tests over random input and golden replays that
-  snapshot a whole match as a trail of checksums.
+  and round flow, plus golden replays that snapshot a whole match as a trail of
+  checksums.
 - **`src/net`** — lockstep against a simulated link with latency, jitter, loss and
   reordering. Two clients, two worlds, and a requirement that they finish
   byte-identical. This is where desyncs get caught, because reproducing one by
@@ -355,7 +360,7 @@ src/
 │  ├─ input.ts             one byte of raw buttons — the network payload
 │  ├─ rng.ts hash.ts       seeded xorshift32, FNV-1a for desync detection
 │  ├─ constants.ts types.ts
-│  └─ __tests__/           unit, property and golden-replay tests
+│  └─ __tests__/           unit, purity and golden-replay tests
 ├─ net/                    lockstep and transports
 │  ├─ Session.ts           "can this tick run yet?" — the whole seam
 │  ├─ LockstepSession.ts   input delay, retransmission, checksums
@@ -380,7 +385,7 @@ server/                    relay and room registry — it does not simulate
 └─ main.ts                 production entry point
 
 e2e/                       Playwright: the real game, and a real online match
-docs/sim-spec.md           the simulation's rules, with citations
+docs/                      full reference, in Traditional Chinese — start at docs/README.md
 ```
 
 ### One repo, two builds, one shared core
@@ -446,7 +451,7 @@ no configuration, not because the halves are entangled.
    golden replays will flag any change to existing behaviour.
 
 Anything added to the simulation has to obey the determinism rules — see
-`docs/sim-spec.md` §10 for the list and why each one matters.
+`docs/gameplay/sim-spec.md` §10 for the list and why each one matters.
 
 ## Card Art
 

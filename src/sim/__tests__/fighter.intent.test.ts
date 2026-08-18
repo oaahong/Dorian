@@ -13,7 +13,7 @@ import type { SimEvent, SimFighter } from '../types';
  * All of this used to live in PlayerController (edges via Phaser's JustDown, the
  * 140 ms crouch buffer) or was inferred from opponent position (blocking). It now
  * happens inside the simulation so a resimulation of the same raw button bytes
- * reaches the same decisions. See docs/sim-spec.md §2, §3 and §5.
+ * reaches the same decisions. See docs/gameplay/sim-spec.md §2, §3 and §5.
  */
 
 function harness(overrides: Partial<SimFighter> = {}, opponentX = 700) {
@@ -155,7 +155,7 @@ describe('special cooldown', () => {
      * cross-fighter comparison would say nothing about the scaling.
      *
      * Special cooldowns use `1.08 - stat * 0.025`, distinct from the `1.05`
-     * curve that scales attack recovery. See docs/sim-spec.md §1.
+     * curve that scales attack recovery. See docs/gameplay/sim-spec.md §1.
      */
     const h = harness({ configId: 'ok' }); // controlStat 5, 90-tick cooldown
     quarterForward(h);
@@ -290,7 +290,7 @@ describe('blocking', () => {
     /**
      * Deliberately preserved quirk: `guardHeld` has no range condition, only the
      * BLOCK *stance* does. So a fighter walking away from a distant opponent will
-     * still block an incoming projectile. See docs/sim-spec.md §5.
+     * still block an incoming projectile. See docs/gameplay/sim-spec.md §5.
      */
     const h = harness({ x: 200 }, 200 + BLOCK_STANCE_RANGE + 50);
     h.run(BUTTON.Left);

@@ -21,7 +21,7 @@ import { getSpec } from '../attackSpecs';
 import { createWorld, checksum, stepWorld, type MatchSetup } from '../world';
 import type { SimEvent, SimWorld } from '../types';
 
-/** Round and match flow, ported from BattleScene. See docs/sim-spec.md §9. */
+/** Round and match flow, ported from BattleScene. See docs/gameplay/sim-spec.md §9. */
 
 const SETUP: MatchSetup = {
   seed: 20260815,

@@ -15,7 +15,7 @@ import { BUTTON, isDown, type InputFrame } from './input';
  * pure function of it. Recording is the *only* mutation; every question asked of
  * the history is read-only and can be asked as many times per tick as needed.
  *
- * See docs/sim-spec.md §2.
+ * See docs/gameplay/sim-spec.md §2.
  */
 
 /**

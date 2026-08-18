@@ -10,7 +10,7 @@ import type { SimWorld } from '../types';
 /**
  * The CPU used seven separate `Math.random()` calls. They are now draws from a
  * seeded generator, so a CPU match replays exactly — which is what makes a golden
- * replay fixture possible for 1P mode. See docs/sim-spec.md §10 row 8.
+ * replay fixture possible for 1P mode. See docs/gameplay/sim-spec.md §10 row 8.
  */
 
 const setup = { seed: 4242, p1Character: 'pink', p2Character: 'ok', stage: 'freezer' };

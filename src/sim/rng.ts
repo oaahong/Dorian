@@ -9,7 +9,7 @@
  * Only integer bit operations are used — no `Math.pow`/`exp`/`sin`, which are not
  * guaranteed bit-identical across JavaScript engines.
  *
- * See docs/sim-spec.md §10 rows 8-9.
+ * See docs/gameplay/sim-spec.md §10 rows 8-9.
  */
 
 export interface Rng {

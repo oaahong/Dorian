@@ -10,7 +10,7 @@ import { DEFAULT_SPECIAL_COOLDOWN_TICKS, DEFAULT_STUN_LOCKOUT_TICKS } from '../c
  * Frame data and the simulation now agree on their unit: both count ticks. What
  * toTickSpec still earns its name for is resolving the optional fields, so the hot
  * path never meets an `undefined` and two clients cannot fall back differently.
- * See docs/sim-spec.md §6.
+ * See docs/gameplay/sim-spec.md §6.
  */
 
 describe('toTickSpec', () => {
