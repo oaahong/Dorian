@@ -6,12 +6,12 @@ exports[`match played to a decision > reaches a winner and matches the recorded 
   "p1": {
     "hp": 0,
     "state": "KO",
-    "x": 548.5776,
+    "x": 505.5151,
   },
   "p2": {
     "hp": 82.9903,
     "state": "VICTORY",
-    "x": 668.4809,
+    "x": 608.4667,
   },
   "phase": "ending",
   "round": 2,
@@ -19,18 +19,18 @@ exports[`match played to a decision > reaches a winner and matches the recorded 
     0,
     2,
   ],
-  "tick": 1577,
+  "tick": 1559,
 }
 `;
 
 exports[`one-player match against the CPU > replays identically, including every CPU decision 1`] = `
 [
-  "t150:e601b978",
-  "t300:fd387163",
-  "t450:9468866b",
-  "t600:25f35745",
-  "t750:35902c21",
-  "t900:f29418f1",
+  "t150:671bdb56",
+  "t300:fc6e3130",
+  "t450:94b5a7d2",
+  "t600:76ab8129",
+  "t750:9547e12f",
+  "t900:291e6799",
 ]
 `;
 
@@ -40,14 +40,14 @@ exports[`one-player match against the CPU > replays identically, including every
   "p1": {
     "hp": 100,
     "state": "IDLE",
-    "x": 350,
+    "x": 445.2007,
   },
   "p2": {
     "hp": 100,
-    "state": "IDLE",
-    "x": 930,
+    "state": "WALK",
+    "x": 738.75,
   },
-  "phase": "intro",
+  "phase": "fight",
   "round": 2,
   "roundWins": [
     0,
@@ -59,28 +59,28 @@ exports[`one-player match against the CPU > replays identically, including every
 
 exports[`projectile and zone characters > matches the recorded checksum trail 1`] = `
 [
-  "t120:5f74d251",
-  "t240:fd9e5e23",
-  "t360:e8ffb325",
-  "t480:92ba6df7",
-  "t600:4e7201fb",
-  "t720:a9a265d7",
-  "t840:6ceac325",
+  "t120:da9888ef",
+  "t240:a8c96969",
+  "t360:902a08b3",
+  "t480:8940fb3a",
+  "t600:7f745ffa",
+  "t720:53b73cdb",
+  "t840:b1d25794",
 ]
 `;
 
 exports[`two-player scripted match > matches the recorded checksum trail 1`] = `
 [
-  "t120:e30ac7",
-  "t240:ab0966ba",
-  "t360:eb514e57",
-  "t480:cac248e4",
-  "t600:9ba823aa",
-  "t720:4316206f",
-  "t840:1e43231c",
-  "t960:50cbb078",
-  "t1080:ea7194f1",
-  "t1200:1cff7464",
+  "t120:db864795",
+  "t240:50d95e6e",
+  "t360:8d834d0c",
+  "t480:93252258",
+  "t600:d97e1dbb",
+  "t720:3385ad72",
+  "t840:a401a5f2",
+  "t960:50f2b8b2",
+  "t1080:6ef59851",
+  "t1200:21a3caaa",
 ]
 `;
 
@@ -88,20 +88,20 @@ exports[`two-player scripted match > matches the recorded final state 1`] = `
 {
   "matchWinner": null,
   "p1": {
-    "hp": 27.5914,
-    "state": "DASH_BACK",
-    "x": 1185,
+    "hp": 100,
+    "state": "DASH_FORWARD",
+    "x": 473.188,
   },
   "p2": {
-    "hp": 6.4468,
+    "hp": 100,
     "state": "HEAVY_ATTACK",
-    "x": 820.3482,
+    "x": 905.5625,
   },
   "phase": "fight",
-  "round": 1,
+  "round": 2,
   "roundWins": [
     0,
-    0,
+    1,
   ],
   "tick": 1200,
 }
@@ -109,12 +109,12 @@ exports[`two-player scripted match > matches the recorded final state 1`] = `
 
 exports[`ultimate timelines > replays alien against salad identically 1`] = `
 [
-  "t150:398b37a7",
-  "t300:d410aba5",
-  "t450:8b70f8b1",
-  "t600:fbac22b5",
-  "t750:4c0eb5a8",
-  "t900:19442e2",
+  "t150:6613f48",
+  "t300:20c18bf0",
+  "t450:15599ce",
+  "t600:9d99d793",
+  "t750:c601884e",
+  "t900:973063fc",
 ]
 `;
 
@@ -127,7 +127,7 @@ exports[`ultimate timelines > replays alien against salad identically 2`] = `
     "x": 141.6667,
   },
   "p2": {
-    "hp": 30.3884,
+    "hp": 43.5372,
     "state": "DASH_FORWARD",
     "x": 362.9946,
   },
@@ -143,12 +143,12 @@ exports[`ultimate timelines > replays alien against salad identically 2`] = `
 
 exports[`ultimate timelines > replays doge against sauce identically 1`] = `
 [
-  "t150:c74c2b19",
-  "t300:b97de7da",
-  "t450:84f37f2",
-  "t600:ebb30eb6",
-  "t750:85fd4ab7",
-  "t900:f37c22d0",
+  "t150:357cd67a",
+  "t300:9bdffaa6",
+  "t450:127bc932",
+  "t600:8230d5e2",
+  "t750:b90ee878",
+  "t900:104cd017",
 ]
 `;
 
@@ -177,12 +177,12 @@ exports[`ultimate timelines > replays doge against sauce identically 2`] = `
 
 exports[`ultimate timelines > replays ok against wizard identically 1`] = `
 [
-  "t150:6e8f5426",
-  "t300:540b2dc8",
-  "t450:e4626f25",
-  "t600:bae0e96d",
-  "t750:10b2109f",
-  "t900:ac0d478d",
+  "t150:c5dfafa4",
+  "t300:902deb2",
+  "t450:7048cb91",
+  "t600:33397271",
+  "t750:6677135d",
+  "t900:4c9a724",
 ]
 `;
 
@@ -195,7 +195,7 @@ exports[`ultimate timelines > replays ok against wizard identically 2`] = `
     "x": 97.3333,
   },
   "p2": {
-    "hp": 50.2467,
+    "hp": 67.7879,
     "state": "HITSTUN",
     "x": 183.3333,
   },
@@ -211,12 +211,12 @@ exports[`ultimate timelines > replays ok against wizard identically 2`] = `
 
 exports[`ultimate timelines > replays tempura against scared identically 1`] = `
 [
-  "t150:d62b360c",
-  "t300:eadbb4e5",
-  "t450:a7b4a114",
-  "t600:767d4e86",
-  "t750:b22cb4a",
-  "t900:3216eff5",
+  "t150:16d2b41a",
+  "t300:3e76e741",
+  "t450:b4bfcdc8",
+  "t600:c6d8a294",
+  "t750:7570891",
+  "t900:a80d48b7",
 ]
 `;
 
@@ -231,7 +231,7 @@ exports[`ultimate timelines > replays tempura against scared identically 2`] = `
   "p2": {
     "hp": 0,
     "state": "KO",
-    "x": 256.005,
+    "x": 255.376,
   },
   "phase": "ending",
   "round": 1,

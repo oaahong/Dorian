@@ -223,13 +223,20 @@ describe('the grab', () => {
     expect(w.fighters[1].captureTicks).toBe(0);
   });
 
+  /**
+   * Twenty-odd points rather than the thirty-two it dealt before combo scaling
+   * existed: ten hits in a row is exactly what scaling is for, and an ultimate
+   * floors at half rather than falling further. The value of the grab is that it
+   * is guaranteed and holds them, not that it ends the round.
+   */
   it('takes a real bite out of somebody it did catch', () => {
     const w = fight({ p1Character: 'ok', p2Character: 'wizard' });
     w.fighters[0].x = 500;
     w.fighters[1].x = 620;
     launch(w, 'ok');
     runUntilUltimateEnds(w);
-    expect(w.fighters[1].hp).toBeLessThan(MAX_HP * 0.75);
+    expect(w.fighters[1].hp).toBeLessThan(MAX_HP * 0.9);
+    expect(w.fighters[1].hp).toBeGreaterThan(MAX_HP * 0.5);
   });
 });
 

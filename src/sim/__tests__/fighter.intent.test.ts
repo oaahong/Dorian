@@ -426,10 +426,21 @@ describe('the ultimate button', () => {
     expect(h.self.state).toBe(FighterState.ULTIMATE);
   });
 
-  it('comes out as a special instead when the meter is short', () => {
-    const h = harness({ energy: MAX_ENERGY - 1 });
-    h.run(BUTTON.Ultimate);
-    expect(h.self.state).toBe(FighterState.SPECIAL);
+  /**
+   * The *motion* falls back to a special when the bar is short; the dedicated
+   * button does not, and must not. Holding that button is how the bar is charged,
+   * so a fallback would mean reaching for the charge threw a fireball.
+   */
+  it('falls back to a special from the motion, but not from the button', () => {
+    const motion = harness({ energy: MAX_ENERGY - 1 });
+    motion.run(BUTTON.Down | BUTTON.Special);
+    expect(motion.self.state).toBe(FighterState.SPECIAL);
+
+    const button = harness({ energy: MAX_ENERGY - 1 });
+    button.run(BUTTON.Ultimate);
+    expect(button.self.state).not.toBe(FighterState.SPECIAL);
+    // It charged instead, which is the button's other job.
+    expect(button.self.energy).toBeGreaterThan(MAX_ENERGY - 1);
   });
 });
 

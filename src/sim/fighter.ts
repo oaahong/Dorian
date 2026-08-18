@@ -35,6 +35,7 @@ import {
   SLOW_MOVE_MULTIPLIER,
   SPEED_BY_STAT,
   STUN_FRICTION_PER_TICK,
+  ULTIMATE_CHARGE_PER_TICK,
 } from './constants';
 import type { AttackSpec, CancelRule } from '../combat/AttackSpec';
 import { CHARGE_LEVEL_3_TICKS, chargeLevel, chargeSpecialFor } from '../fighters/chargeSpecials';
@@ -91,6 +92,10 @@ export function createFighter(configId: string, x: number, facing: 1 | -1): SimF
     dashTicks: 0,
     nextParryTick: 0,
     captureTicks: 0,
+    comboHits: 0,
+    comboTicks: 0,
+    lastThrowPressTick: -999,
+    ultimateNeedsRelease: false,
     chargeTicks: 0,
     installTicks: 0,
     slowTicks: 0,
@@ -119,6 +124,10 @@ export function resetFighter(fighter: SimFighter, x: number, facing: 1 | -1): vo
   fighter.dashTicks = 0;
   fighter.nextParryTick = 0;
   fighter.captureTicks = 0;
+  fighter.comboHits = 0;
+  fighter.comboTicks = 0;
+  fighter.lastThrowPressTick = -999;
+  fighter.ultimateNeedsRelease = false;
   fighter.chargeTicks = 0;
   fighter.installTicks = 0;
   fighter.slowTicks = 0;
@@ -297,11 +306,30 @@ export function stepFighter(
    */
   recordInput(fighter.commandHistory, inputEnabled ? input : EMPTY_INPUT);
 
+  if (inputEnabled) {
+    /**
+     * Recorded whether or not the press did anything, because a throw escape is
+     * proved by having reached for one — see `THROW_TECH_TICKS`. Outside the
+     * intent branch, so a fighter already committed to a move still counts as
+     * having tried.
+     */
+    if (justPressed(input, fighter.prevButtons, BUTTON.Throw)) {
+      fighter.lastThrowPressTick = tick;
+    }
+    chargeUltimateMeter(fighter, input);
+  }
+
   // Timed statuses tick down here, once, before anything reads them. Counting down
   // rather than comparing against an absolute expiry means a snapshot restored into
   // a world at a different tick still has the right amount left on it.
   if (fighter.installTicks > 0) fighter.installTicks -= 1;
   if (fighter.slowTicks > 0) fighter.slowTicks -= 1;
+  // A combo lapses on its own clock. Counting down here, with the other statuses,
+  // keeps it out of the hit path — which only ever has to *extend* it.
+  if (fighter.comboTicks > 0) {
+    fighter.comboTicks -= 1;
+    if (fighter.comboTicks === 0) fighter.comboHits = 0;
+  }
 
   /**
    * Being held by a grab ultimate outranks everything, including an attack
@@ -362,6 +390,30 @@ export function stepFighter(
    * that buffer.
    */
   fighter.prevButtons = inputEnabled ? input : 0;
+}
+
+/**
+ * Holding the ultimate button builds the bar.
+ *
+ * The upgraded build's one piece of resource *generation* that is not a reward
+ * for fighting: five meter a second for standing still and holding a key. It is
+ * deliberately slow — twenty seconds for a full bar from empty — so it is what
+ * you do with the space a knockdown bought you, never a substitute for offence.
+ *
+ * Filling the bar sets `ultimateNeedsRelease`, because otherwise the tick it
+ * fills is the tick the ultimate comes out: the game would spend the bar the
+ * player was still building, at a moment it chose for them.
+ */
+function chargeUltimateMeter(fighter: SimFighter, input: InputFrame): void {
+  const held = isDown(input, BUTTON.Ultimate);
+  if (!held) {
+    fighter.ultimateNeedsRelease = false;
+    return;
+  }
+  if (isKO(fighter) || fighter.energy >= MAX_ENERGY) return;
+
+  fighter.energy = Math.min(MAX_ENERGY, fighter.energy + ULTIMATE_CHARGE_PER_TICK);
+  if (fighter.energy >= MAX_ENERGY) fighter.ultimateNeedsRelease = true;
 }
 
 function advanceAttack(fighter: SimFighter, cfg: FighterConfig): void {
@@ -707,15 +759,22 @@ function processIntent(
   // Chords outrank every single-button move; see `tryChord`.
   if (tryChord(fighter, tick, player, events)) return;
 
-  if (ultimatePressed) {
+  if (ultimatePressed && !fighter.ultimateNeedsRelease) {
     if (fighter.energy >= MAX_ENERGY && canUseSpecial(fighter, tick)) {
       fighter.energy = 0;
       startAttack(fighter, getSpec(cfg.ultimate.id), FighterState.ULTIMATE, crouch, false, player, events);
       return;
     }
-    // An ultimate motion without meter is not a whiff — it comes out as the
-    // fighter's defining special instead. Ported behaviour.
-    if (canUseSpecial(fighter, tick)) {
+    /**
+     * A *motion* asking for an ultimate without the meter for it is not a whiff
+     * — it comes out as the fighter's defining special instead. Ported behaviour,
+     * and it reads correctly: down-plus-special is a special input.
+     *
+     * The dedicated button gets no such fallback, and must not. Holding it is how
+     * the bar is charged, so a fallback would mean reaching for the charge threw
+     * a fireball — the opposite of standing still to build meter.
+     */
+    if (legacyUltimateMotion && canUseSpecial(fighter, tick)) {
       const fallback = motioned ?? cfg.specials.quarterForward;
       startMotionSpecial(fighter, tick, crouch, cfg, fallback.id, player, events);
     }

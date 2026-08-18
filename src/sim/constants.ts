@@ -122,6 +122,35 @@ export const DASH_SPEED = 552;
 export const BACK_DASH_SPEED = 492;
 export const DASH_SPEED_BY_STAT = (stat: number): number => 0.94 + stat * 0.03;
 
+/**
+ * Damage scaling down a combo: full, then 90%, 80%, 70%, 60%, and 50% from the
+ * sixth hit on.
+ *
+ * The reason a combo system needs this at all is that cancels removed the
+ * opponent's turn — without scaling, "can I link these" and "how much is the
+ * round worth" become the same question, and the longest string wins outright.
+ * Ultimates floor at 50% however deep they land, because a super that is worth
+ * nothing as a finisher is a super nobody finishes with.
+ */
+const COMBO_SCALE = [1, 0.9, 0.8, 0.7, 0.6, 0.5];
+export const COMBO_SCALING = (hits: number): number =>
+  COMBO_SCALE[Math.min(Math.max(hits, 1), COMBO_SCALE.length) - 1]!;
+
+/** How long a combo survives without a new hit before it lapses. */
+export const COMBO_WINDOW_TICKS = 50;
+
+/** Meter gained per tick for holding the ultimate button: five a second. */
+export const ULTIMATE_CHARGE_PER_TICK = 5 / TICK_HZ;
+
+/**
+ * How recently the victim must have reached for a throw to escape one.
+ *
+ * Five ticks — eighty milliseconds. Long enough that both players pressing at
+ * roughly the same moment counts as a contest rather than a coin flip, short
+ * enough that holding the button is not an answer to being thrown.
+ */
+export const THROW_TECH_TICKS = 5;
+
 export const ATTACK_MULTIPLIER = (stat: number): number => 0.85 + stat * 0.07;
 export const RANGE_MULTIPLIER = (stat: number): number => 0.88 + stat * 0.055;
 export const CONTROL_RECOVERY_MULTIPLIER = (stat: number): number => 1.05 - stat * 0.025;

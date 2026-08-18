@@ -1010,6 +1010,11 @@ export function checksum(world: SimWorld): number {
     h = hashBool(h, fighter.guardCrouching);
     h = hashInt(h, fighter.dashTicks);
     h = hashInt(h, fighter.nextParryTick);
+    h = hashInt(h, fighter.captureTicks);
+    h = hashInt(h, fighter.comboHits);
+    h = hashInt(h, fighter.comboTicks);
+    h = hashInt(h, fighter.lastThrowPressTick);
+    h = hashBool(h, fighter.ultimateNeedsRelease);
     h = hashInt(h, fighter.prevButtons);
     h = hashInt(h, fighter.downBufferedUntilTick);
     h = hashInt(h, fighter.chargeTicks);

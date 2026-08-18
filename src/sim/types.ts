@@ -36,6 +36,8 @@ export type SimEvent =
   /** One beat of an ultimate's timeline came out. The render layer stages it. */
   | { t: 'ultimatePhase'; player: PlayerIndex; specId: string; seq: number; label: string }
   | { t: 'ultimateEnd'; player: PlayerIndex; specId: string }
+  /** Both fighters reached for a throw, so neither got one. */
+  | { t: 'throwTech'; player: PlayerIndex }
   | { t: 'projectileSpawn'; id: number; player: PlayerIndex; specId: string; x: number; y: number }
   | { t: 'projectileEnd'; id: number }
   | { t: 'zoneSpawn'; id: number; player: PlayerIndex; specId: string; x: number }
@@ -266,6 +268,32 @@ export interface SimFighter {
   dashTicks: number;
   /** Absolute tick at which the parry comes off its cooldown. */
   nextParryTick: number;
+  /**
+   * How many hits the *current* combo has landed, and when it lapses.
+   *
+   * On the attacker, because scaling is a property of the string being dealt out
+   * rather than of the fighter receiving it. Reset by the gap rather than by any
+   * particular move ending, so a combo is defined by the opponent never getting
+   * their feet back — which is what it means.
+   */
+  comboHits: number;
+  comboTicks: number;
+  /**
+   * Absolute tick the throw button was last pressed.
+   *
+   * Kept even while the press did nothing, because that is exactly when it
+   * matters: a throw that beat you to the punch is escaped by having *also*
+   * reached for one, and the reach is all the evidence there is.
+   */
+  lastThrowPressTick: number;
+  /**
+   * Whether the ultimate button must be released before it will fire.
+   *
+   * Holding it charges the meter, so the tick it fills would otherwise be the
+   * tick the ultimate comes out — spending the bar the player was still building
+   * and choosing the moment for them.
+   */
+  ultimateNeedsRelease: boolean;
   /**
    * Ticks left held by an opponent's grab ultimate.
    *

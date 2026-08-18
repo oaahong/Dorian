@@ -244,9 +244,34 @@ exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`
 - Frame-authored `AttackSpec`, in ticks, which is what made the frame data
   transferable as data rather than as a translation.
 
-**Not yet ported** — one item, and it is blocked rather than pending:
+**Deliberately simplified**, rather than missed. Two of the upgraded build's
+defensive moves are reinterpreted here in terms this simulation already has:
+`doge-sideeye` is armour rather than a damage-reflecting counter stance, and
+`ok-fear` is an `aura` with a real hitbox rather than a conditional stun that
+reads the opponent's state. Both are one mechanic instead of two, and both are
+commented where they are authored.
 
-1. **Ultimate voice audio.** The cut-in shows the line; there is no clip behind it,
+**Not ported**, and the reasons differ:
+
+1. **Knockdown and wake-up.** The upgraded build has KNOCKDOWN, WAKEUP, a
+   throw-protection window on rising and a four-frame reversal window. Here a
+   hard knockdown is longer hitstun and nothing else. It is the largest single
+   piece of the original still outstanding, and unlike the rest of this list it
+   is a system rather than a value.
+
+2. **Per-character CPU rules.** Each fighter there carries eight bias figures —
+   desired range, aggression, retreat, projectile, throw, parry, armour and
+   ultimate — and the CPU here reads difficulty plus a range stat instead. The
+   result is a CPU that plays every fighter roughly the same way.
+
+3. **Per-move hit-stop.** Authored there as `hitstopAttacker`/`hitstopVictim`;
+   derived here from the impact's weight. That one is a choice rather than a gap:
+   two numbers per move that nothing else reads is a lot of surface for a value
+   the weight already implies.
+
+4. **The debug overlay.** A development tool, not part of the game.
+
+5. **Ultimate voice audio.** The cut-in shows the line; there is no clip behind it,
    and there cannot be yet — the upgraded build referenced keys like
    `ult_alien_voice`, but no audio was ever delivered with it and there is none in
    `source-assets` or the pipeline archives. `AudioManager` synthesises everything
