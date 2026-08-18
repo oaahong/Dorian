@@ -19,6 +19,8 @@
  * different order and gets its own.
  */
 
+import { SKILL_CELLS } from './skillCells';
+
 /** The poses the renderer knows how to ask for. */
 export type PoseName =
   | 'idle' | 'walkForward' | 'walkBack' | 'jump' | 'crouch'
@@ -135,11 +137,21 @@ export const releaseTextureKey = (fighterId: string): string =>
 export const releasePath = (fighterId: string): string =>
   skillPath(fighterId, RELEASE_CELL);
 
-/** Every skill texture a match needs for one fighter, as key and path. */
+/**
+ * Every skill texture a match needs for one fighter, as key and path.
+ *
+ * The whole sheet, not a chosen few. This used to load four cells — the three
+ * wind-up frames and the release — which is why 176 of the 226 images the asset
+ * pipeline produces had never reached a browser: the ultimates' art, the charge
+ * specials' beams and every transformed pose were on disk and unreachable.
+ *
+ * A fighter's sheet is about 1.4 MB, so a match loads under 3 MB for the two it
+ * needs. That is the same order as the one cut-in background it already loads per
+ * fighter, and it happens behind `PrepareMatchScene`'s progress bar, which exists
+ * for exactly this.
+ */
 export function skillTexturesFor(fighterId: string): { key: string; path: string }[] {
-  const cells: string[] = [...CHARGE_CELLS, RELEASE_CELL];
-  const summon = SUMMON_CELLS[fighterId];
-  if (summon) cells.push(summon);
+  const cells = SKILL_CELLS[fighterId] ?? [...CHARGE_CELLS, RELEASE_CELL];
   return cells.map((cell) => ({
     key: skillTextureKey(fighterId, cell),
     path: skillPath(fighterId, cell),
