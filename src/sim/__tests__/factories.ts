@@ -22,6 +22,7 @@ export function attackRuntime(overrides: Partial<SimAttack> = {}): SimAttack {
     hitsUsed: 0,
     rehitReadyTick: 0,
     armorUsed: 0,
+    result: 'none',
     ...overrides,
   };
 }

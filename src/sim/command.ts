@@ -152,6 +152,45 @@ export function matchesMotion(
 }
 
 /**
+ * How far apart two buttons of a chord may be pressed and still count as one.
+ *
+ * Three ticks — fifty milliseconds. A chord is two buttons meant to arrive
+ * together, and no hand presses two keys on the same tick reliably. Without the
+ * window the near-misses do not fail, which would be survivable; they come out as
+ * the *individual* moves instead, so asking for a parry gives you a light attack
+ * and whatever punish follows it.
+ */
+export const CHORD_LENIENCY = 3;
+
+/**
+ * Whether both buttons are held now and at least one of them arrived recently.
+ *
+ * The second half is what stops a chord from re-firing. Both-held alone is true
+ * for as long as the player keeps holding, so it would ask for the move again on
+ * every tick of its own recovery; requiring a rising edge inside the window makes
+ * it a single request, the same way `justPressed` does for one button.
+ */
+export function matchesChord(
+  history: CommandHistory,
+  a: number,
+  b: number,
+  leniency: number = CHORD_LENIENCY,
+): boolean {
+  const frames = recentFrames(history, leniency + 1);
+  const now = frames[frames.length - 1];
+  if (now === undefined || !isDown(now, a) || !isDown(now, b)) return false;
+
+  for (let i = 1; i < frames.length; i += 1) {
+    const previous = frames[i - 1]!;
+    const frame = frames[i]!;
+    const pressedA = isDown(frame, a) && !isDown(previous, a);
+    const pressedB = isDown(frame, b) && !isDown(previous, b);
+    if (pressedA || pressedB) return true;
+  }
+  return false;
+}
+
+/**
  * Whether `direction` was tapped twice — pressed, released, pressed again.
  *
  * Counting rising edges rather than matching `[2, 2]` as a motion is a deliberate

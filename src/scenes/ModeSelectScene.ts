@@ -7,6 +7,7 @@ const MODES: { label: string; mode: GameMode; scene: string }[] = [
   { label: '1P VS CPU', mode: 'cpu', scene: 'CharacterSelectScene' },
   { label: '2P VS P2', mode: 'pvp', scene: 'CharacterSelectScene' },
   { label: 'ONLINE VS', mode: 'online', scene: 'OnlineLobbyScene' },
+  { label: 'TRAINING', mode: 'training', scene: 'CharacterSelectScene' },
 ];
 
 export class ModeSelectScene extends Phaser.Scene {

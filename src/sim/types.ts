@@ -33,6 +33,11 @@ export type SimEvent =
   | { t: 'roundEnd'; winner: RoundWinner; reason: 'KO' | 'TIME' }
   | { t: 'matchEnd'; winner: PlayerIndex }
   | { t: 'ultimateStart'; player: PlayerIndex; specId: string }
+  /** One beat of an ultimate's timeline came out. The render layer stages it. */
+  | { t: 'ultimatePhase'; player: PlayerIndex; specId: string; seq: number; label: string }
+  | { t: 'ultimateEnd'; player: PlayerIndex; specId: string }
+  /** Both fighters reached for a throw, so neither got one. */
+  | { t: 'throwTech'; player: PlayerIndex }
   | { t: 'projectileSpawn'; id: number; player: PlayerIndex; specId: string; x: number; y: number }
   | { t: 'projectileEnd'; id: number }
   | { t: 'zoneSpawn'; id: number; player: PlayerIndex; specId: string; x: number }
@@ -100,6 +105,50 @@ export interface SimZone {
  * scene field. If it is not in this object, it cannot be snapshotted, hashed or
  * rolled back, and two clients will eventually disagree about it.
  */
+/**
+ * An ultimate playing out its timeline.
+ *
+ * Separate from the owner's `SimAttack` because the two have different lifetimes:
+ * control comes back at the timeline's `releaseTick` while the boxes keep landing
+ * for another fifty ticks. Modelling it as one attack would mean either freezing
+ * the fighter for the whole thing or losing the second half of their own super.
+ */
+/**
+ * A companion an ultimate leaves behind.
+ *
+ * Its own entity rather than another phase, because the whole point of a summon
+ * is that it outlives the move: it keeps its own position, it swings on its own
+ * schedule, and it can be knocked out before it is finished. A phase is a box on
+ * a timetable; this is a thing in the world.
+ */
+export interface SimSummon {
+  id: number;
+  kind: 'clone' | 'husky';
+  x: number;
+  y: number;
+  hp: number;
+  /** Ticks until it may connect again. Its whole attack rhythm. */
+  cooldownTicks: number;
+  /** Which formation slot a clone holds. Zero for anything that stands alone. */
+  slot: number;
+}
+
+export interface SimUltimate {
+  ownerIndex: PlayerIndex;
+  fighterId: string;
+  specId: string;
+  /** Ticks since the timeline began — after the cut-in, which is spent as hit-stop. */
+  elapsedTicks: number;
+  /** Where the opponent was at `targetLockTick`; meaningless before it. */
+  lockedTargetX: number;
+  /** One flag per phase, in the timeline's order, so each connects at most once. */
+  resolved: boolean[];
+  /** Whether a grab found anybody. False for every ultimate that is not one. */
+  captured: boolean;
+  /** Companions this ultimate has put into the world. */
+  summons: SimSummon[];
+}
+
 export interface SimWorld {
   tick: number;
   phase: RoundPhase;
@@ -112,6 +161,8 @@ export interface SimWorld {
   fighters: [SimFighter, SimFighter];
   projectiles: SimProjectile[];
   zones: SimZone[];
+  /** Ultimates currently playing out. At most one per fighter. */
+  ultimates: SimUltimate[];
   nextEntityId: number;
   roundWins: [number, number];
   matchWinner: PlayerIndex | null;
@@ -152,7 +203,19 @@ export interface SimAttack {
   rehitReadyTick: number;
   /** How many hits this instance's armour window has already absorbed. */
   armorUsed: number;
+  /**
+   * Whether this attack has connected, and how.
+   *
+   * On the attack rather than on the fighter, so it is cleared by the act of
+   * starting the next move and cannot outlive the one it describes. Cancels read
+   * it: a cancel is permitted only by a move that actually touched someone, which
+   * is what stops mashing into thin air from being free.
+   */
+  result: MoveResult;
 }
+
+/** Whether an attack has connected yet, and how. */
+export type MoveResult = 'none' | 'hit' | 'block';
 
 export interface SimFighter {
   /** Looks up the immutable FighterConfig; never holds the config object itself. */
@@ -174,6 +237,15 @@ export interface SimFighter {
   stunLockoutUntilTick: number;
   /** Holding away from the opponent — recomputed every tick from the input. */
   guardHeld: boolean;
+  /**
+   * Guarding while also holding down — the low guard.
+   *
+   * Separate from `guardHeld` rather than inferred from `FighterState.CROUCH`,
+   * because a crouch-blocking fighter is in `BLOCK`, not `CROUCH`, and because it
+   * has to stay readable through `BLOCKSTUN` — that is exactly when a defender is
+   * deciding whether the next hit of the string is high or low.
+   */
+  guardCrouching: boolean;
   /** Previous tick's raw button mask, for rising-edge detection. */
   prevButtons: number;
   /**
@@ -186,4 +258,64 @@ export interface SimFighter {
   commandHistory: CommandHistory;
   /** Absolute tick until which a crouch press still counts toward the ultimate. */
   downBufferedUntilTick: number;
+  /**
+   * Ticks left in a dash. Zero means the fighter is not dashing.
+   *
+   * A dash is committed movement, not an attack: it holds no `SimAttack`, so this
+   * counter is the only thing keeping it alive. Being hit ends it because hitstun
+   * replaces the state, which is the behaviour a dash should have anyway.
+   */
+  dashTicks: number;
+  /** Absolute tick at which the parry comes off its cooldown. */
+  nextParryTick: number;
+  /**
+   * How many hits the *current* combo has landed, and when it lapses.
+   *
+   * On the attacker, because scaling is a property of the string being dealt out
+   * rather than of the fighter receiving it. Reset by the gap rather than by any
+   * particular move ending, so a combo is defined by the opponent never getting
+   * their feet back — which is what it means.
+   */
+  comboHits: number;
+  comboTicks: number;
+  /**
+   * Absolute tick the throw button was last pressed.
+   *
+   * Kept even while the press did nothing, because that is exactly when it
+   * matters: a throw that beat you to the punch is escaped by having *also*
+   * reached for one, and the reach is all the evidence there is.
+   */
+  lastThrowPressTick: number;
+  /**
+   * Whether the ultimate button must be released before it will fire.
+   *
+   * Holding it charges the meter, so the tick it fills would otherwise be the
+   * tick the ultimate comes out — spending the bar the player was still building
+   * and choosing the moment for them.
+   */
+  ultimateNeedsRelease: boolean;
+  /**
+   * Ticks left held by an opponent's grab ultimate.
+   *
+   * While positive the fighter cannot act or move at all. It is the only status
+   * that takes control away outright, which is why it belongs to exactly one
+   * move in the game.
+   */
+  captureTicks: number;
+  /**
+   * Ticks the bare special button has been held while winding up.
+   *
+   * Only meaningful while `state` is `H_CHARGING`; the state is the discriminator,
+   * so there is no separate "is charging" flag to keep in step with it.
+   */
+  chargeTicks: number;
+  /**
+   * Ticks remaining on the install buff: harder hits and a bigger body.
+   *
+   * Counted down in the fighter step rather than compared against an absolute
+   * expiry tick, so it survives being snapshotted into a world whose tick differs.
+   */
+  installTicks: number;
+  /** Ticks remaining on the movement slow a sticky or awkward hit leaves behind. */
+  slowTicks: number;
 }

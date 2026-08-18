@@ -78,8 +78,9 @@ E2E_BASE_URL=https://<app> npm run test:e2e
 - Crouch: `S`
 - Light: `F`
 - Heavy: `G`
-- Special: `H` — with `236` / `214` / `623` / `SS` in front of it for the
-  fighter's other specials; bare `H` throws the 236
+- Special: `H` — **hold and release** for the chargeable special; 0.40 s and
+  0.90 s reach levels 2 and 3, and a full charge never fires on its own
+- Motion specials: `236` / `214` / `623` / `SS` then `H`, which fires at once
 - Ultimate: `T`, or `S + H`, when MEME = 100
 - Block: hold away from the opponent
 
@@ -90,7 +91,7 @@ E2E_BASE_URL=https://<app> npm run test:e2e
 - Crouch: `↓`
 - Light: `J`
 - Heavy: `K`
-- Special: `L` — same motions as P1
+- Special: `L` — hold to charge, or the same motions as P1
 - Ultimate: `I`, or `↓ + L`, when MEME = 100
 - Block: hold away from the opponent
 
@@ -123,6 +124,9 @@ anything else says which part is at fault.
 - `1P VS CPU`: Easy / Normal / Hard finite-state CPU AI
 - `2P VS P2`: two players on one keyboard
 - `ONLINE VS`: two players on different machines, matched by room code
+- `TRAINING`: pick both fighters, then drive the clock yourself — `F3` freeze,
+  `F4` advance one frame, `F5` reset the round, `F6` make the dummy hold guard.
+  The round never ends; when it would, it starts over
 - Best of 3, 60 seconds per round
 - All fighters always display 100 HP; card HP stat influences identity/balance
   indirectly rather than changing the visible health maximum
@@ -224,25 +228,69 @@ exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`
 - The twelve fighters, their frame data, and their specials — chosen by motion
   (236 / 214 / 623 / double-tap down), parsed inside the simulation from a hashed
   input ring so the two clients cannot disagree about what came out.
-- Invulnerability windows, armour, command throws and multi-hit strings.
+- Invulnerability windows, armour, multi-hit strings, and the universal throw —
+  unblockable, so it answers a fighter who will not stop holding back.
+- The chargeable special, in three levels, on the bare special button — including
+  a CPU that decides how long to hold it.
+- Ultimate cut-ins: background, portrait, shouted line and title card, with the
+  simulation freezing itself for exactly as long as the presentation runs.
+- Summons that arrive as a column, installs that buff damage for a few seconds, and
+  the movement slow that sticky and awkward hits leave behind.
+- Training mode, which is what makes any of the frame data above readable.
+- The skill sheet's three wind-up frames and its release frame, so a charge level is
+  something you can see rather than count, and 九命殘影's afterimage trail.
 - All 610 art assets and the Python pipeline that regenerates them, replacing the
   browser-side pose cutting entirely.
 - Frame-authored `AttackSpec`, in ticks, which is what made the frame data
   transferable as data rather than as a translation.
 
-**Not yet ported**, in the order it makes sense to do it:
+**Deliberately simplified**, rather than missed. Two of the upgraded build's
+defensive moves are reinterpreted here in terms this simulation already has:
+`doge-sideeye` is armour rather than a damage-reflecting counter stance, and
+`ok-fear` is an `aura` with a real hitbox rather than a conditional stun that
+reads the opponent's state. Both are one mechanic instead of two, and both are
+commented where they are authored. Two more — `status:'counterStance'` and
+`status:'goblinInstall'` — are dead in the upgraded build itself: authored on
+moves and read by nothing, so there was never any behaviour there to carry over.
 
-1. **The universal throw.** `BUTTON.Throw` is sampled and sent but nothing
-   consumes it — the only throw on the roster is goblin's command throw.
-2. **The chargeable H special**, with its 0.40 / 0.90 second levels. Needs charge
-   state in `SimFighter`, and the levels expressed as three specs.
-3. **Ultimate cut-ins** — the twelve staged presentations, with their voice lines
-   and backgrounds. The art is already in `public/assets/ultimate-backgrounds/`
-   and the ultimates currently resolve without them.
-4. **Summons and installs.** `tempura`'s penguins spawn as ordinary projectiles
-   and `doge`/`goblin`'s installs currently only pay meter.
-5. **Training mode**, and the status effects (`sticky`, `loveStun`, `afterimage`)
-   the upgraded move data carries but the simulation does not yet read.
+**Not ported**, and the reasons differ:
+
+1. **Knockdown and wake-up.** The upgraded build has KNOCKDOWN, WAKEUP, a
+   throw-protection window on rising and a four-frame reversal window. Here a
+   hard knockdown is longer hitstun and nothing else. It is the largest single
+   piece of the original still outstanding, and unlike the rest of this list it
+   is a system rather than a value.
+
+2. **Per-character CPU rules.** Each fighter there carries eight bias figures —
+   desired range, aggression, retreat, projectile, throw, parry, armour and
+   ultimate — and the CPU here reads difficulty plus a range stat instead. The
+   result is a CPU that plays every fighter roughly the same way.
+
+3. **Per-fighter hit-stop.** Not simply "two authored numbers instead of one
+   derived" — the difference is structural. There, `hitstopAttacker` and
+   `hitstopVictim` freeze the two fighters *separately*, and a punish freezes the
+   victim for longer; here a hit freezes the whole world for one duration. Letting
+   the attacker thaw first is where frame advantage comes from, so this is a
+   missing mechanic and not a missing value. Porting it means unpicking the global
+   freeze, which is also what the ultimate cut-in and the round clock ride on.
+
+4. **`loveStun`.** `goblin-heart` builds a gauge 35 at a time and dizzies at 100,
+   for 35 ticks with a 180-tick lockout. Goblin's own design notes call it
+   「LoveStun 逼選擇」 — forcing a choice — so it is closer to his identity than
+   the label suggests.
+
+5. **The debug overlay.** A development tool, though a wired-up one: it is
+   mounted in the upgraded build's battle scene and toggleable, showing the
+   startup/active/recovery phase, frame advantage, live statuses and the current
+   ultimate beat. Worth having eventually; worth nothing to a player.
+
+6. **Ultimate voice audio**, which is not a port at all. The upgraded build
+   authors a `voiceAudio` key per fighter — `ult_alien_voice` and so on — and
+   **nothing anywhere reads it**: no clip is loaded, no clip exists in
+   `source-assets` or the pipeline archives, and its `AudioManager` synthesises
+   every sound it makes through an `AudioContext` oscillator. The keys are a plan
+   somebody wrote down, not a feature. These lines have to be recorded before
+   there is anything to port.
 
 The upgraded build's own documentation is kept verbatim at
 [docs/upgraded-build.md](docs/upgraded-build.md) — it describes a tree this is not,

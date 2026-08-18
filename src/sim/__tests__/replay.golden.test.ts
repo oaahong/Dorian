@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { CpuBrain } from '../cpu';
 import { BUTTON, EMPTY_INPUT, type InputFrame } from '../input';
+import { MAX_ENERGY } from '../constants';
 import { createRng } from '../rng';
 import { checksum, createWorld, stepWorld, type MatchSetup } from '../world';
 import type { SimWorld } from '../types';
@@ -53,23 +54,29 @@ function summarise(world: SimWorld) {
 
 describe('two-player scripted match', () => {
   // A rotation that exercises walking, jumping, both normals, the special and the
-  // ultimate motion for both seats. The special comes out with no motion behind
-  // it, so each fighter throws its 236 — which is the fallback the roster relies
-  // on for players who do not know the motions.
+  // ultimate motion for both seats. The special is pressed for a single tick with
+  // no motion behind it, which now winds up the chargeable special and releases it
+  // at level 1 — the shortest, most common thing a real player does with it.
+  //
+  // The directions are *held* across a span of ticks rather than tapped on a
+  // modulus. Once dashes existed, a one-tick tap every third tick was a double tap
+  // by definition, so both fighters dashed for the entire match and never threw a
+  // punch — which is a fine thing for the simulation to do and a useless thing for
+  // a regression net to record.
   const script = (tick: number): [InputFrame, InputFrame] => {
     const p1 =
       tick % 53 === 0 ? BUTTON.Down | BUTTON.Special
       : tick % 31 === 0 ? BUTTON.Special
       : tick % 19 === 0 ? BUTTON.Heavy
       : tick % 7 === 0 ? BUTTON.Light
-      : tick % 3 === 0 ? BUTTON.Right
+      : tick % 12 < 6 ? BUTTON.Right
       : EMPTY_INPUT;
     const p2 =
       tick % 61 === 0 ? BUTTON.Down | BUTTON.Special
       : tick % 37 === 0 ? BUTTON.Special
       : tick % 23 === 0 ? BUTTON.Up
       : tick % 11 === 0 ? BUTTON.Heavy
-      : tick % 5 === 0 ? BUTTON.Left
+      : tick % 16 < 7 ? BUTTON.Left
       : EMPTY_INPUT;
     return [p1, p2];
   };
@@ -98,6 +105,61 @@ describe('projectile and zone characters', () => {
     const world = createWorld(setup);
     expect(trail(world, 900, script)).toMatchSnapshot();
   });
+});
+
+/**
+ * The ultimates, which none of the other scenarios ever reach.
+ *
+ * Their timelines are the most intricate thing in the simulation — up to a dozen
+ * boxes at different heights, a locked target, an install part-way through, a
+ * grab that decides on its first tick whether it caught anybody — and until this
+ * existed, none of it had a regression net at all. The meter is granted directly
+ * rather than earned, because the point is the timeline, not the road to it.
+ */
+describe('ultimate timelines', () => {
+  const fireAt = (tick: number): [InputFrame, InputFrame] => [
+    tick % 200 === 0 ? BUTTON.Down | BUTTON.Special : tick % 9 === 0 ? BUTTON.Right : EMPTY_INPUT,
+    tick % 6 === 0 ? BUTTON.Left : EMPTY_INPUT,
+  ];
+
+  /**
+   * The summon pair needs the opponent to stay *in* the formation, so it gets a
+   * script that walks toward the owner and holds there. The default rotation
+   * drifts apart, which for the clones means nine of them politely swinging at
+   * nobody for ten seconds — reproducible, and worth nothing as a fixture.
+   */
+  const closeIn = (tick: number): [InputFrame, InputFrame] => [
+    tick % 200 === 0 ? BUTTON.Down | BUTTON.Special : EMPTY_INPUT,
+    BUTTON.Left,
+  ];
+
+  const pairs: [string, string, (tick: number) => [InputFrame, InputFrame]][] = [
+    ['alien', 'salad', fireAt],   // a locked target, and an overhead-then-low mix-up
+    ['ok', 'wizard', fireAt],     // a grab, and four fixed tentacles
+    ['doge', 'sauce', fireAt],    // a transformation, and a blinking rampage
+    ['tempura', 'scared', closeIn], // nine clones, and a husky that walks you down
+  ];
+
+  for (const [p1, p2, script] of pairs) {
+    it(`replays ${p1} against ${p2} identically`, () => {
+      const play = () => {
+        const world = createWorld({ ...SETUP, p1Character: p1, p2Character: p2 });
+        const checksums: string[] = [];
+        for (let i = 0; i < 900; i += 1) {
+          // Topped up every tick, so the ultimate is always available on cue and
+          // the scenario does not depend on how the meter happened to build.
+          world.fighters[0].energy = MAX_ENERGY;
+          stepWorld(world, script(i));
+          if ((i + 1) % 150 === 0) checksums.push(`t${i + 1}:${checksum(world).toString(16)}`);
+        }
+        return { checksums, summary: summarise(world) };
+      };
+      const first = play();
+      expect(play()).toEqual(first);
+      expect(first.checksums).toMatchSnapshot();
+      expect(first.summary).toMatchSnapshot();
+    });
+  }
 });
 
 describe('match played to a decision', () => {

@@ -6,6 +6,14 @@ import { COLORS, FONT_FAMILY, GAME_WIDTH } from '../utils/constants';
 import { HealthBar } from './HealthBar';
 import { MemeMeter } from './MemeMeter';
 
+const COMBO_STYLE = {
+  fontFamily: FONT_FAMILY,
+  fontSize: '30px',
+  color: '#ffd45c',
+  stroke: '#050505',
+  strokeThickness: 7,
+} as const;
+
 /**
  * Reads straight from SimWorld each frame. Timers are shown in seconds derived
  * from tick counts rather than from the wall clock, so the number on screen
@@ -23,6 +31,7 @@ export class BattleHUD {
   private readonly p1Special: Phaser.GameObjects.Text;
   private readonly p2Special: Phaser.GameObjects.Text;
   private readonly specialNames: [string, string];
+  private readonly comboText: [Phaser.GameObjects.Text, Phaser.GameObjects.Text];
 
   constructor(scene: Phaser.Scene, world: SimWorld, modeLabel: string) {
     const p1Config = getFighterConfig(world.fighters[0].configId);
@@ -44,7 +53,20 @@ export class BattleHUD {
     this.roundTextP2 = scene.add.text(GAME_WIDTH - 45, 83, '☆ ☆', { fontFamily:FONT_FAMILY, fontSize:'19px', color:'#00C8FF' }).setOrigin(1,0).setDepth(1002);
     this.p1Special = scene.add.text(45, 655, '', { fontFamily:FONT_FAMILY, fontSize:'13px', color:'#E9B928' }).setDepth(1004);
     this.p2Special = scene.add.text(GAME_WIDTH - 45, 655, '', { fontFamily:FONT_FAMILY, fontSize:'13px', color:'#00C8FF' }).setOrigin(1,0).setDepth(1004);
-    this.help = scene.add.text(GAME_WIDTH / 2, 635, 'P1: WASD / F G H / T ULT    •    P2: ARROWS / J K L / I ULT    •    ESC PAUSE    •    M MUTE', { fontFamily:FONT_FAMILY, fontSize:'14px', color:'#d8d0bf', backgroundColor:'#050505aa', padding:{x:10,y:5} }).setOrigin(.5).setDepth(1005);
+    /**
+     * Two lines, because the second one is the only place the universal
+     * mechanics are written down anywhere in the game. A button pair is not a
+     * thing a player discovers by mashing — they will find the single buttons
+     * and stop, and the whole combo layer stays invisible.
+     */
+    const keys = 'P1: WASD / F G H / R THROW / T ULT    •    P2: ARROWS / J K L / U I    •    ESC PAUSE    •    M MUTE';
+    const combos = 'LIGHT+HEAVY RUSH (cancels)    •    LIGHT+SP PARRY    •    HEAVY+SP IMPACT    •    TAP ↔ TWICE TO DASH';
+    this.comboText = [
+      scene.add.text(150, 150, '', COMBO_STYLE).setOrigin(0, 0.5).setDepth(1006).setVisible(false),
+      scene.add.text(GAME_WIDTH - 150, 150, '', COMBO_STYLE).setOrigin(1, 0.5).setDepth(1006).setVisible(false),
+    ];
+
+    this.help = scene.add.text(GAME_WIDTH / 2, 635, `${keys}\n${combos}`, { fontFamily:FONT_FAMILY, fontSize:'14px', color:'#d8d0bf', backgroundColor:'#050505aa', align:'center', padding:{x:10,y:5} }).setOrigin(.5).setDepth(1005);
     scene.tweens.add({ targets:this.help, alpha:.28, delay:4500, duration:900 });
   }
 
@@ -59,6 +81,28 @@ export class BattleHUD {
     this.roundTextP2.setText(`${world.roundWins[1] >= 1 ? '★' : '☆'} ${world.roundWins[1] >= 2 ? '★' : '☆'}`);
     this.p1Special.setText(`${this.specialNames[0]}: ${cooldownLabel(p1.nextSpecialTick, world.tick)}`);
     this.p2Special.setText(`${this.specialNames[1]}: ${cooldownLabel(p2.nextSpecialTick, world.tick)}`);
+    this.updateCombo(0, p1);
+    this.updateCombo(1, p2);
+  }
+
+  /**
+   * The hit count, shown on the attacker's side of the screen.
+   *
+   * Combo damage scales down, and scaling that nobody can see is just a number
+   * quietly disagreeing with the player. The count is what makes "this one is
+   * worth less" legible while it is happening — which is also the information you
+   * need to decide whether to keep going or reset.
+   *
+   * Two hits, not one: every clean hit is a one-hit combo, and labelling those
+   * would put a counter on the screen for the entire match.
+   */
+  private updateCombo(seat: 0 | 1, fighter: SimWorld['fighters'][0]): void {
+    const label = this.comboText[seat]!;
+    if (fighter.comboHits < 2) {
+      label.setVisible(false);
+      return;
+    }
+    label.setVisible(true).setText(`${fighter.comboHits} HITS`);
   }
 }
 

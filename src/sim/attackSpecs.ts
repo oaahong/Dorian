@@ -2,9 +2,23 @@ import type {
   ArmorWindow,
   AttackKind,
   AttackSpec,
+  AttackType,
+  CancelRule,
   InvulnerabilityWindow,
 } from '../combat/AttackSpec';
-import { HEAVY_ATTACK, LIGHT_ATTACK } from '../combat/AttackSpec';
+import {
+  CROUCH_HEAVY_ATTACK,
+  MEME_IMPACT,
+  MEME_PARRY,
+  MEME_RUSH,
+  CROUCH_LIGHT_ATTACK,
+  HEAVY_ATTACK,
+  JUMP_HEAVY_ATTACK,
+  JUMP_LIGHT_ATTACK,
+  LIGHT_ATTACK,
+  THROW_ATTACK,
+} from '../combat/AttackSpec';
+import { allChargeLevels } from '../fighters/chargeSpecials';
 import { allSpecials } from '../fighters/FighterConfig';
 import { FIGHTERS } from '../fighters/fighterData';
 import {
@@ -28,6 +42,8 @@ export interface TickSpec {
   id: string;
   name: string;
   kind: AttackKind;
+  /** Always resolved; an unmarked move is a `mid`. */
+  attackType: AttackType;
 
   startupTicks: number;
   activeTicks: number;
@@ -52,6 +68,8 @@ export interface TickSpec {
   telegraphTicks: number;
   /** Only meaningful for `aura`; resolved to DEFAULT_STUN_LOCKOUT_TICKS. */
   stunLockoutTicks: number;
+  /** How long a zone lingers after triggering; falls back to `activeTicks`. */
+  zoneDurationTicks: number;
 
   /**
    * Damage of each hit, always at least one entry — a single-hit attack resolves
@@ -66,6 +84,16 @@ export interface TickSpec {
   hardKnockdown: boolean;
   /** Meter awarded when the move finishes recovery. Zero for most attacks. */
   meterOnComplete: number;
+  /** How many projectiles a summon puts out. One for everything else. */
+  projectileCount: number;
+  selfStatus: { kind: 'install'; ticks: number } | null;
+  hitStatus: { kind: 'slow'; ticks: number } | null;
+  /** Cosmetic: the render layer trails fading copies while this attack runs. */
+  afterimage: boolean;
+  /** Meter spent to start the move. Zero for everything that is free. */
+  meterCost: number;
+  /** Always resolved; an empty list means the move cannot be cancelled. */
+  cancels: readonly CancelRule[];
 }
 
 /** Matches the inline fallbacks in the original CombatSystem, in ticks. */
@@ -78,6 +106,7 @@ export function toTickSpec(spec: AttackSpec): TickSpec {
     id: spec.id,
     name: spec.name,
     kind: spec.kind,
+    attackType: spec.attackType ?? 'mid',
 
     startupTicks: spec.startup,
     activeTicks: spec.active,
@@ -99,6 +128,7 @@ export function toTickSpec(spec: AttackSpec): TickSpec {
     lifetimeTicks: spec.lifetime ?? DEFAULT_PROJECTILE_LIFETIME_TICKS,
     telegraphTicks: spec.telegraph ?? DEFAULT_ZONE_TELEGRAPH_TICKS,
     stunLockoutTicks: spec.stunLockout ?? DEFAULT_STUN_LOCKOUT_TICKS,
+    zoneDurationTicks: spec.zoneDuration ?? spec.active,
 
     hits: spec.hits ?? [spec.damage],
     rehitTicks: spec.rehitTicks ?? 0,
@@ -107,14 +137,48 @@ export function toTickSpec(spec: AttackSpec): TickSpec {
     unblockable: spec.unblockable ?? false,
     hardKnockdown: spec.hardKnockdown ?? false,
     meterOnComplete: spec.meterOnComplete ?? 0,
+    projectileCount: spec.projectileCount ?? 1,
+    selfStatus: spec.selfStatus ?? null,
+    hitStatus: spec.hitStatus ?? null,
+    afterimage: spec.afterimage ?? false,
+    meterCost: spec.meterCost ?? 0,
+    cancels: spec.cancels ?? EMPTY_CANCELS,
   };
 }
 
 /** Shared so every single-hit spec points at the same empty list rather than its own. */
 const EMPTY_WINDOWS: readonly InvulnerabilityWindow[] = Object.freeze([]);
+const EMPTY_CANCELS: readonly CancelRule[] = Object.freeze([]);
 
 export const LIGHT_SPEC: TickSpec = toTickSpec(LIGHT_ATTACK);
 export const HEAVY_SPEC: TickSpec = toTickSpec(HEAVY_ATTACK);
+export const CROUCH_LIGHT_SPEC: TickSpec = toTickSpec(CROUCH_LIGHT_ATTACK);
+export const CROUCH_HEAVY_SPEC: TickSpec = toTickSpec(CROUCH_HEAVY_ATTACK);
+export const JUMP_LIGHT_SPEC: TickSpec = toTickSpec(JUMP_LIGHT_ATTACK);
+export const JUMP_HEAVY_SPEC: TickSpec = toTickSpec(JUMP_HEAVY_ATTACK);
+export const THROW_SPEC: TickSpec = toTickSpec(THROW_ATTACK);
+
+/**
+ * The three universal meme moves. Shared by the whole roster, like the normals,
+ * and named individually because the state machine reaches for each by hand.
+ */
+export const RUSH_SPEC: TickSpec = toTickSpec(MEME_RUSH);
+export const PARRY_SPEC: TickSpec = toTickSpec(MEME_PARRY);
+export const IMPACT_SPEC: TickSpec = toTickSpec(MEME_IMPACT);
+
+/**
+ * The six normals, indexed the way the state machine asks for them: by the stance
+ * the fighter is in and the button they pressed.
+ *
+ * A table rather than a chain of ifs because every stance must resolve to *some*
+ * normal — leaving one out would be a button that silently does nothing in one
+ * stance, which is the kind of gap that is only ever found by a player.
+ */
+export const NORMALS: Record<'stand' | 'crouch' | 'air', Record<'light' | 'heavy', TickSpec>> = {
+  stand: { light: LIGHT_SPEC, heavy: HEAVY_SPEC },
+  crouch: { light: CROUCH_LIGHT_SPEC, heavy: CROUCH_HEAVY_SPEC },
+  air: { light: JUMP_LIGHT_SPEC, heavy: JUMP_HEAVY_SPEC },
+};
 
 const REGISTRY = new Map<string, TickSpec>();
 
@@ -136,10 +200,24 @@ export function registerSpec(spec: AttackSpec): TickSpec {
   return resolved;
 }
 
-for (const spec of [LIGHT_SPEC, HEAVY_SPEC]) REGISTRY.set(spec.id, spec);
+for (const spec of [
+  LIGHT_SPEC,
+  HEAVY_SPEC,
+  CROUCH_LIGHT_SPEC,
+  CROUCH_HEAVY_SPEC,
+  JUMP_LIGHT_SPEC,
+  JUMP_HEAVY_SPEC,
+  THROW_SPEC,
+  RUSH_SPEC,
+  PARRY_SPEC,
+  IMPACT_SPEC,
+]) {
+  REGISTRY.set(spec.id, spec);
+}
 for (const fighter of FIGHTERS) {
   for (const source of [...allSpecials(fighter), fighter.ultimate]) registerSpec(source);
 }
+for (const source of allChargeLevels()) registerSpec(source);
 
 /**
  * Resolve a spec by id. Throws rather than returning undefined: an attack that

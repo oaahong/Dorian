@@ -15,6 +15,9 @@ import {
   MAX_ENERGY,
 } from '../constants';
 import { BUTTON, EMPTY_INPUT, type InputFrame } from '../input';
+import { ultimateDefinitionFor } from '../../fighters/ultimateDefinitions';
+import { ultimateTimelineFor } from '../../fighters/ultimateTimelines';
+import { getSpec } from '../attackSpecs';
 import { createWorld, checksum, stepWorld, type MatchSetup } from '../world';
 import type { SimEvent, SimWorld } from '../types';
 
@@ -346,8 +349,15 @@ describe('match end', () => {
 });
 
 describe('projectiles', () => {
-  // 'pink' has a `sonic` special that spawns a projectile.
+  /**
+   * 'pink' throws a `sonic` projectile on its 236, so the motion has to be input
+   * — a bare button now winds up the chargeable special instead, which for this
+   * fighter is a beam and spawns nothing.
+   */
   const fireSpecial = (w: SimWorld) => {
+    run(w, 1, BUTTON.Down);
+    run(w, 1, BUTTON.Down | BUTTON.Right);
+    run(w, 1, BUTTON.Right);
     run(w, 1, BUTTON.Special);
     run(w, 12);
   };
@@ -413,6 +423,63 @@ describe('projectiles', () => {
   });
 });
 
+describe('the universal throw', () => {
+  /**
+   * The throw exists to answer a fighter who simply holds back and blocks, so the
+   * behaviour worth testing at world level is exactly that: two fighters in range,
+   * one blocking, one throwing.
+   */
+  const inRange = (w: SimWorld) => {
+    w.fighters[0].x = 600;
+    w.fighters[1].x = 660;
+    return w;
+  };
+
+  it('lands on an opponent who is holding block', () => {
+    const w = inRange(toFight(world()));
+    // P2 holds away from P1, which is the block stance.
+    run(w, 20, BUTTON.Throw, BUTTON.Right);
+    expect(w.fighters[1].hp).toBeLessThan(100);
+    expect(w.fighters[1].state).toBe(FighterState.HITSTUN);
+  });
+
+  it('leaves a blocked light doing almost nothing by comparison', () => {
+    const blocked = inRange(toFight(world()));
+    run(blocked, 20, BUTTON.Light, BUTTON.Right);
+
+    const thrown = inRange(toFight(world()));
+    run(thrown, 20, BUTTON.Throw, BUTTON.Right);
+
+    expect(thrown.fighters[1].hp).toBeLessThan(blocked.fighters[1].hp);
+  });
+
+  it('whiffs against an opponent who jumps', () => {
+    const w = inRange(toFight(world()));
+    run(w, 4, EMPTY_INPUT, BUTTON.Up); // P2 leaves the ground first
+    run(w, 16, BUTTON.Throw);
+    expect(w.fighters[1].hp).toBe(100);
+  });
+
+  it('whiffs at a range a heavy would still reach', () => {
+    // Reach is the throw's price for being unblockable: 76 against the heavy's
+    // 104. Light is 78, so the throw is only meaningfully shorter than the heavy —
+    // which is the spacing this pins down.
+    const far = (w: SimWorld) => {
+      w.fighters[0].x = 600;
+      w.fighters[1].x = 780;
+      return w;
+    };
+
+    const thrown = far(toFight(world()));
+    run(thrown, 24, BUTTON.Throw);
+    expect(thrown.fighters[1].hp).toBe(100);
+
+    const swung = far(toFight(world()));
+    run(swung, 24, BUTTON.Heavy);
+    expect(swung.fighters[1].hp).toBeLessThan(100);
+  });
+});
+
 describe('zones', () => {
   // 'wizard' has a `zone` special.
   it('waits out its telegraph before it can hit', () => {
@@ -450,9 +517,17 @@ describe('ultimates', () => {
    * the least-exercised code in the simulation and the most spectacular when they
    * break, so each family gets a case.
    */
+  /**
+   * Fire the ultimate and run past its cut-in.
+   *
+   * The simulation freezes itself for the whole cut-in — 87 ticks and up — so a
+   * fixed number of ticks afterwards is mostly spent frozen. This waits the freeze
+   * out and then gives the move `ticks` to resolve.
+   */
   const fireUltimate = (w: SimWorld, ticks = 90) => {
     w.fighters[0].energy = MAX_ENERGY;
     run(w, 1, BUTTON.Down | BUTTON.Special);
+    while (w.hitStopTicks > 0) run(w, 1);
     run(w, ticks);
   };
 
@@ -470,6 +545,31 @@ describe('ultimates', () => {
     expect(later.filter((e) => e.t === 'ultimateStart')).toHaveLength(0);
   });
 
+  it('freezes for exactly as long as the cut-in the view will play', () => {
+    /**
+     * The load-bearing invariant of the whole cut-in. The presentation is the
+     * render layer's business, but its length is the simulation's: a pause that
+     * only stopped drawing would let two clients disagree about how far the match
+     * had advanced. So the freeze comes from the ultimate's own definition, and
+     * both sides read the same number.
+     */
+    const w = toFight(world({ p1Character: 'pink' }));
+    w.fighters[0].energy = MAX_ENERGY;
+    run(w, 1, BUTTON.Down | BUTTON.Special);
+    expect(w.hitStopTicks).toBe(ultimateDefinitionFor('pink').cutInTicks);
+  });
+
+  it('holds the round clock still for the whole cut-in', () => {
+    // Freezing the action but not the timer would let a cornered player spend a
+    // second of someone else's clock by firing an ultimate.
+    const w = toFight(world({ p1Character: 'pink' }));
+    w.fighters[0].energy = MAX_ENERGY;
+    run(w, 1, BUTTON.Down | BUTTON.Special);
+    const clock = w.roundTicksRemaining;
+    run(w, ultimateDefinitionFor('pink').cutInTicks - 1);
+    expect(w.roundTicksRemaining).toBe(clock);
+  });
+
   it('lands a wide-box ultimate', () => {
     // 'doge' has ultimate-sonic: a tall box in front of the attacker.
     const w = toFight(world({ p1Character: 'doge' }));
@@ -478,16 +578,19 @@ describe('ultimates', () => {
     expect(w.fighters[1].hp).toBeLessThan(100);
   });
 
-  it('does not let a wide-box ultimate reach across the whole arena', () => {
-    // doge's ultimate-sonic has reach 540, so from one wall it covers roughly
-    // half the 1090 px arena. It aims correctly — facing is recomputed toward the
-    // opponent every tick — it simply falls short.
+  /**
+   * Reach no longer decides an ultimate — the timeline does. doge's is a
+   * transformation whose one screen-wide burst covers the arena, so the wall-to-
+   * wall case that used to fall short now connects, and the thing worth asserting
+   * is the transformation rather than the distance.
+   */
+  it('lands a transformation ultimate from across the arena, and transforms', () => {
     const w = toFight(world({ p1Character: 'doge' }));
     w.fighters[0].x = 1100;
     w.fighters[1].x = 150;
     fireUltimate(w);
-    expect(w.fighters[0].facing).toBe(-1);
-    expect(w.fighters[1].hp).toBe(100);
+    expect(w.fighters[1].hp).toBeLessThan(100);
+    expect(w.fighters[0].installTicks).toBeGreaterThan(0);
   });
 
   it('lands a screen-wide ultimate regardless of distance', () => {
@@ -499,21 +602,23 @@ describe('ultimates', () => {
     expect(w.fighters[1].hp).toBeLessThan(100);
   });
 
-  it('drops a delayed ground zone for the salad ultimate', () => {
-    // 'salad' has ultimate-salad: a telegraphed zone under the defender. The
-    // spawn tick is not asserted directly — the ultimate's own presentation
-    // hit-stop shifts it — so the test waits for the zone to appear instead.
+  /**
+   * salad's ultimate was a zone; it is now two phases with different guard
+   * heights, which is the whole reason it is worth firing. The zone machinery it
+   * used to borrow is still there for the ordinary zone specials.
+   */
+  it('gives the salad ultimate an overhead and then a low, not a zone', () => {
     const w = toFight(world({ p1Character: 'salad' }));
     w.fighters[1].x = 700;
-    w.fighters[0].energy = MAX_ENERGY;
-    run(w, 1, BUTTON.Down | BUTTON.Special);
+    // Past the startup, so the timeline has begun but none of its beats have.
+    fireUltimate(w, getSpec('salad-ult').startupTicks + 1);
+    expect(w.zones).toHaveLength(0);
+    expect(w.ultimates).toHaveLength(1);
 
-    for (let i = 0; i < 120 && w.zones.length === 0; i += 1) run(w, 1);
-    expect(w.zones).toHaveLength(1);
-    expect(w.zones[0]!.triggered).toBe(false);
-    expect(w.fighters[1].hp).toBe(100); // harmless while telegraphing
+    const heights = ultimateTimelineFor('salad').phases.map((phase) => phase.attackType);
+    expect(heights).toEqual(['overhead', 'low']);
 
-    run(w, 90);
+    run(w, 120);
     expect(w.fighters[1].hp).toBeLessThan(100);
   });
 

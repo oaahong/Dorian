@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { FighterState } from '../../fighters/FighterState';
 import { BUTTON, EMPTY_INPUT, type InputFrame } from '../input';
 import { GROUND_Y, P1_SPAWN_X, P2_SPAWN_X } from '../constants';
-import { HEAVY_SPEC, LIGHT_SPEC } from '../attackSpecs';
+import { HEAVY_SPEC, JUMP_LIGHT_SPEC, LIGHT_SPEC } from '../attackSpecs';
 import { attackActive, createFighter, stepFighter } from '../fighter';
 import type { SimEvent, SimFighter } from '../types';
 
@@ -46,6 +46,8 @@ function harness(overrides: Partial<SimFighter> = {}, opponentX = P2_SPAWN_X): H
 // 'pink' has controlStat 2, so CONTROL_RECOVERY_MULTIPLIER is exactly 1.0 and
 // attack durations are the raw spec values. That keeps the arithmetic legible.
 const LIGHT_TOTAL = LIGHT_SPEC.startupTicks + LIGHT_SPEC.activeTicks + LIGHT_SPEC.recoveryTicks;
+const JUMP_LIGHT_TOTAL =
+  JUMP_LIGHT_SPEC.startupTicks + JUMP_LIGHT_SPEC.activeTicks + JUMP_LIGHT_SPEC.recoveryTicks;
 
 describe('facing', () => {
   it('turns to face the opponent every tick', () => {
@@ -238,7 +240,10 @@ describe('attack lifecycle', () => {
     h.run(BUTTON.Up);
     h.run(BUTTON.Light);
     expect(h.self.attack?.airborne).toBe(true);
-    h.run(EMPTY_INPUT, LIGHT_TOTAL);
+    // The air light is its own move now, and a longer one — six active frames
+    // rather than two, because it has to survive the arc it is thrown from.
+    expect(h.self.attack?.specId).toBe(JUMP_LIGHT_SPEC.id);
+    h.run(EMPTY_INPUT, JUMP_LIGHT_TOTAL);
     expect(h.self.attack).toBeNull();
     expect(h.self.state).toBe(FighterState.JUMP);
   });
@@ -258,17 +263,23 @@ describe('attack lifecycle', () => {
 describe('attack motion', () => {
   it('drags a dash attack forward only during its active frames', () => {
     // 'ok' leads with OK衝刺, a dashStrike — the kind that drives itself forward.
+    // It needs its 236 now, since a bare button winds up the chargeable special.
     const h = harness({ configId: 'ok', x: 400 }, 900);
+    h.run(BUTTON.Down);
+    h.run(BUTTON.Down | BUTTON.Right);
+    h.run(BUTTON.Right);
     h.run(BUTTON.Special);
     const spec = h.self.attack!;
     expect(spec.kind).toBe('dashStrike');
+    // Measured from where the motion left the fighter, not from its spawn: walking
+    // the 236 in moves it a few pixels first.
+    const atStart = h.self.x;
 
     h.run(EMPTY_INPUT, LIGHT_SPEC.startupTicks); // still in startup for this spec
-    const beforeActive = h.self.x;
-    expect(beforeActive).toBe(400);
+    expect(h.self.x).toBe(atStart);
 
     h.run(EMPTY_INPUT, 12);
-    expect(h.self.x).toBeGreaterThan(400);
+    expect(h.self.x).toBeGreaterThan(atStart);
   });
 
   it('drifts a heavy attack forward during its active frames', () => {

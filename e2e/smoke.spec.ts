@@ -1,4 +1,5 @@
 import { test, expect, type ConsoleMessage, type Page } from '@playwright/test';
+import { POSE_NAMES, skillTexturesFor } from '../src/fighters/poseSheet';
 import {
   activeSceneKeys,
   readBattle,
@@ -98,11 +99,34 @@ test('cuts the poses for exactly the two fighters in the match', async ({ page }
   await page.goto('/');
   await startVersusBattle(page);
 
-  const keys = await page.evaluate(() =>
-    window.__MEME_CAT_GAME__!.textures.getTextureKeys().filter((key) => key.startsWith('pose-')),
+  const loaded = await page.evaluate(() => {
+    const keys = window.__MEME_CAT_GAME__!.textures.getTextureKeys();
+    const battle = window.__MEME_CAT_GAME__!.scene.getScene('BattleScene') as unknown as {
+      world: { fighters: [{ configId: string }, { configId: string }] };
+    };
+    return {
+      poses: keys.filter((key) => key.startsWith('pose-')).length,
+      backgrounds: keys.filter((key) => key.startsWith('ultimate-bg-')).length,
+      skillCells: keys.filter((key) => key.startsWith('skill-')).length,
+      fighters: [battle.world.fighters[0].configId, battle.world.fighters[1].configId],
+    };
+  });
+
+  // Derived rather than written out, so adding a pose does not fail this on a
+  // number that was never the point.
+  expect(loaded.poses).toBe(2 * POSE_NAMES.length);
+  // And the two fighters' skill sheet — three wind-up frames and the release frame,
+  // which doubles as the cut-in portrait — plus one cut-in background each. Both
+  // derived, for the same reason the pose count is.
+  expect(loaded.backgrounds).toBe(2);
+  // Counted from the fighters actually in the match rather than from a stand-in:
+  // two of them carry an extra cell for the companion their ultimate leaves
+  // behind, so any single fighter is the wrong yardstick for the other eleven.
+  const expectedCells = loaded.fighters.reduce(
+    (total, id) => total + skillTexturesFor(id).length,
+    0,
   );
-  // Thirteen poses each, and nobody else's art is cut.
-  expect(keys.length).toBe(2 * 13);
+  expect(loaded.skillCells).toBe(expectedCells);
 });
 
 test('navigates title -> mode select -> character select -> battle', async ({ page }) => {

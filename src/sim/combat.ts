@@ -1,10 +1,14 @@
 import type { HitCategory, HitCategoryFilter } from '../combat/AttackSpec';
 import { FighterState } from '../fighters/FighterState';
 import type { TickSpec } from './attackSpecs';
-import { getSpec, HEAVY_SPEC, LIGHT_SPEC } from './attackSpecs';
+import { getSpec, NORMALS } from './attackSpecs';
 import {
   ATTACK_MULTIPLIER,
+  COMBO_SCALING,
+  COMBO_WINDOW_TICKS,
+  THROW_TECH_TICKS,
   CROUCH_HURTBOX_SCALE,
+  INSTALL_DAMAGE_MULTIPLIER,
   FIGHTER_HURTBOX_HEIGHT,
   FIGHTER_HURTBOX_WIDTH,
   HP_STAT_MITIGATION,
@@ -41,7 +45,9 @@ const MELEE_BOX_HEIGHT_CROUCHING = 70;
 
 export function getHurtbox(fighter: SimFighter): Rect {
   const crouching =
-    fighter.state === FighterState.CROUCH || (fighter.attack?.crouching ?? false);
+    fighter.state === FighterState.CROUCH ||
+    fighter.guardCrouching ||
+    (fighter.attack?.crouching ?? false);
   const height = crouching
     ? FIGHTER_HURTBOX_HEIGHT * CROUCH_HURTBOX_SCALE
     : FIGHTER_HURTBOX_HEIGHT;
@@ -75,7 +81,12 @@ export function getMeleeHitbox(fighter: SimFighter, spec: TickSpec): Rect {
  * does. A fighter walking away from a distant opponent therefore still blocks an
  * incoming projectile. Preserved from the original; see docs/sim-spec.md §5.
  */
-export function canBlockImpact(fighter: SimFighter): boolean {
+export function canBlockImpact(fighter: SimFighter, spec: TickSpec): boolean {
+  return isGuarding(fighter) && guardAnswers(fighter, spec.attackType);
+}
+
+/** Whether the fighter is in a position to guard at all, height aside. */
+function isGuarding(fighter: SimFighter): boolean {
   if (fighter.state === FighterState.BLOCK || fighter.state === FighterState.BLOCKSTUN) {
     return true;
   }
@@ -87,6 +98,23 @@ export function canBlockImpact(fighter: SimFighter): boolean {
     fighter.state !== FighterState.KO &&
     fighter.state !== FighterState.VICTORY
   );
+}
+
+/**
+ * Whether the guard the fighter is *currently* holding is the right height.
+ *
+ * Read from the live stick position rather than from whatever it was when the
+ * guard started, so a defender can switch between the two mid-blockstring — which
+ * is the entire game the high/low system exists to create. Blocking the first hit
+ * of a string earns you nothing toward the second.
+ */
+function guardAnswers(fighter: SimFighter, type: TickSpec['attackType']): boolean {
+  if (type === 'low') return fighter.guardCrouching;
+  // Overheads and air attacks both come from above, and neither is answered by a
+  // low guard. Grouping them matches the upgraded build's table, where a crouching
+  // guard covers only Low, Mid and Projectile.
+  if (type === 'overhead' || type === 'air') return !fighter.guardCrouching;
+  return true;
 }
 
 // --- Categories, invulnerability and armour ---------------------------------
@@ -156,6 +184,33 @@ export function hasArmorAgainst(fighter: SimFighter, category: HitCategory): boo
 
 export function consumeArmor(fighter: SimFighter): void {
   if (fighter.attack) fighter.attack.armorUsed += 1;
+}
+
+/** Meter for reading an attack correctly, rather than for landing one. */
+const PARRY_REWARD = 7;
+const ARMOR_REWARD = 4;
+/** How far apart a teched throw leaves the two of them. */
+const THROW_TECH_PUSH = 190;
+
+/**
+ * Pay a defender who refused a hit outright.
+ *
+ * Invulnerability is otherwise its own reward and nothing more, which makes a
+ * parry strictly worse than blocking: same outcome, tighter timing, longer
+ * recovery. The meter is what turns reading an attack into a resource, and it is
+ * only paid for the moves whose *whole job* is the read.
+ */
+function rewardRefusal(defender: SimFighter): void {
+  const kind = defender.attack ? getSpec(defender.attack.specId).kind : null;
+  if (kind === 'parry' || kind === 'hide') addEnergy(defender, PARRY_REWARD);
+}
+
+function pushApart(a: SimFighter, b: SimFighter): void {
+  const direction = a.x <= b.x ? -1 : 1;
+  a.vx = direction * THROW_TECH_PUSH;
+  b.vx = -direction * THROW_TECH_PUSH;
+  a.attack = null;
+  b.attack = null;
 }
 
 // --- Impact -----------------------------------------------------------------
@@ -247,8 +302,65 @@ const HIT_STOP_TICKS: Record<ImpactWeight | 'blocked', number> = {
   ultimate: msToTicks(150),
 };
 
+/**
+ * How long the world freezes for one beat of an ultimate.
+ *
+ * Not the ultimate's own weight, which is what the spec would give every phase.
+ * A finisher earns the full stop; the nine 2.3-damage jabs of a grab do not, and
+ * charging each of them nine ticks of freeze stretched a 145-tick timeline past
+ * 250 and left the victim held long after the move should have let go. Scaled by
+ * what the beat actually did, so the pauses land where the impact is.
+ */
+export function ultimatePhaseHitStop(damage: number): number {
+  if (damage >= 12) return HIT_STOP_TICKS.ultimate;
+  if (damage >= 6) return HIT_STOP_TICKS.heavy;
+  return HIT_STOP_TICKS.light;
+}
+
 /** Meter earned on a blocked hit, as a share of the clean-hit value. */
 const BLOCKED_ENERGY_SHARE = 0.35;
+
+/**
+ * When a hit caught the defender, relative to what *they* were doing.
+ *
+ * The genre's oldest reward: interrupting a move on the way out is a counter
+ * hit, and catching one on the way back is a punish. Both mean the defender
+ * chose wrongly rather than merely stood there, and both pay more than hitting
+ * somebody who was doing nothing.
+ */
+export type HitTiming = 'neutral' | 'counter' | 'punish';
+
+const COUNTER_STUN: Record<HitTiming, number> = { neutral: 0, counter: 2, punish: 3 };
+const COUNTER_DAMAGE: Record<HitTiming, number> = { neutral: 1, counter: 1, punish: 1.1 };
+
+export function hitTiming(defender: SimFighter): HitTiming {
+  const attack = defender.attack;
+  if (!attack) return 'neutral';
+  const spec = getSpec(attack.specId);
+  if (attack.elapsedTicks < spec.startupTicks) return 'counter';
+  if (attack.elapsedTicks >= spec.startupTicks + spec.activeTicks) return 'punish';
+  return 'neutral';
+}
+
+/**
+ * Count this hit toward the attacker's string.
+ *
+ * A combo *continues* only if the defender was already in hitstun — otherwise it
+ * is a fresh opening and the count restarts. That is what makes scaling a
+ * property of the string rather than of how busy the last few seconds were.
+ */
+function extendCombo(attacker: SimFighter, defender: SimFighter): void {
+  const continuing = defender.state === FighterState.HITSTUN && attacker.comboTicks > 0;
+  attacker.comboHits = continuing ? attacker.comboHits + 1 : 1;
+  attacker.comboTicks = COMBO_WINDOW_TICKS;
+}
+
+/**
+ * Built from `NORMALS` rather than listed by hand, so that adding a stance cannot
+ * leave one of its two normals silently landing with a special's weight.
+ */
+const LIGHT_NORMAL_IDS = new Set(Object.values(NORMALS).map((pair) => pair.light.id));
+const HEAVY_NORMAL_IDS = new Set(Object.values(NORMALS).map((pair) => pair.heavy.id));
 
 /**
  * The original passed the impact weight in at each call site; deriving it from
@@ -256,8 +368,8 @@ const BLOCKED_ENERGY_SHARE = 0.35;
  * with the attack it describes.
  */
 export function impactWeight(spec: TickSpec): ImpactWeight {
-  if (spec.id === LIGHT_SPEC.id) return 'light';
-  if (spec.id === HEAVY_SPEC.id) return 'heavy';
+  if (LIGHT_NORMAL_IDS.has(spec.id)) return 'light';
+  if (HEAVY_NORMAL_IDS.has(spec.id)) return 'heavy';
   return spec.kind.startsWith('ultimate-') ? 'ultimate' : 'special';
 }
 
@@ -281,31 +393,82 @@ export function resolveHit(
 
   const category = hitCategory(spec, attacker.attack?.airborne ?? false);
 
-  if (isInvulnerableTo(defender, category)) return null;
+  if (isInvulnerableTo(defender, category)) {
+    rewardRefusal(defender);
+    return null;
+  }
   // A throw that catches nobody on the ground catches nobody. Without this an
   // anti-air command throw would beat every jump in the game.
   if (category === 'throw' && isAirborne(defender)) return null;
 
+  /**
+   * Both reached for a throw, so neither gets one.
+   *
+   * The escape is the only answer to a throw that is not "do not be standing
+   * there", and it has to be — a throw already beats blocking, and a mix-up with
+   * no answer at all is a coin flip rather than a read. Both fighters are pushed
+   * apart and nobody is hurt.
+   */
+  if (category === 'throw' && tick - defender.lastThrowPressTick <= THROW_TECH_TICKS) {
+    pushApart(attacker, defender);
+    events.push({ t: 'throwTech', player: attackerIndex });
+    return null;
+  }
+
   // Throws are the answer to blocking, so they ignore it.
-  const blocked = !spec.unblockable && canBlockImpact(defender);
+  const blocked = !spec.unblockable && canBlockImpact(defender, spec);
   const armored = !blocked && hasArmorAgainst(defender, category);
-  if (armored) consumeArmor(defender);
+  if (armored) {
+    consumeArmor(defender);
+    // Absorbing a hit is a read too, and a more expensive one — the damage still
+    // lands. Paying for it is what makes an armoured approach a decision.
+    addEnergy(defender, ARMOR_REWARD);
+  }
 
   const hitIndex = attacker.attack ? attacker.attack.hitsUsed : 0;
   const perHitDamage = spec.hits[Math.min(hitIndex, spec.hits.length - 1)]!;
   const defenderConfig = config(defender);
+  const install = attacker.installTicks > 0 ? INSTALL_DAMAGE_MULTIPLIER : 1;
+
+  /**
+   * Where in the attacker's string this hit falls.
+   *
+   * Extended before the damage is computed, so the *first* hit of a combo is hit
+   * one and scales at full. A blocked hit does not extend it — a blockstring is
+   * not a combo, and letting it count would let an attacker pre-scale their own
+   * punish by poking a guard first.
+   */
+  const timing = hitTiming(defender);
+  if (!blocked) extendCombo(attacker, defender);
+  const raw = blocked ? 1 : COMBO_SCALING(attacker.comboHits);
+  // An ultimate floors at half however deep it lands. A super worth nothing as a
+  // finisher is a super nobody finishes with, and finishing is what it is for.
+  const scaling = spec.kind.startsWith('ultimate-') ? Math.max(0.5, raw) : raw;
+
   const fullDamage =
     perHitDamage *
     ATTACK_MULTIPLIER(config(attacker).attackStat) *
+    install *
+    scaling *
+    COUNTER_DAMAGE[timing] *
     HP_STAT_MITIGATION(defenderConfig.hpStat) *
     defenderConfig.damageTakenScalar;
   const damage = blocked ? fullDamage * spec.chipRatio : fullDamage;
 
-  receiveImpact(defender, damage, spec, attacker.facing, blocked, tick, armored);
+  const stunned: TickSpec =
+    timing === 'neutral' || blocked
+      ? spec
+      : { ...spec, hitstunTicks: spec.hitstunTicks + COUNTER_STUN[timing] };
+  receiveImpact(defender, damage, stunned, attacker.facing, blocked, tick, armored);
 
   if (!blocked) {
     addEnergy(attacker, spec.energyOnHit);
     addEnergy(defender, spec.energyOnReceive);
+    // A debuff is the reward for a clean hit only. Chipping someone's guard should
+    // not also glue their feet to the floor.
+    if (!armored && spec.hitStatus?.kind === 'slow') {
+      defender.slowTicks = Math.max(defender.slowTicks, spec.hitStatus.ticks);
+    }
   } else if (spec.chipRatio > 0) {
     addEnergy(attacker, Math.ceil(spec.energyOnHit * BLOCKED_ENERGY_SHARE));
     addEnergy(defender, Math.ceil(spec.energyOnReceive * BLOCKED_ENERGY_SHARE));

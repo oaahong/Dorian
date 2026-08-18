@@ -31,12 +31,25 @@ const special = (
   spec: Omit<AttackSpec, Optional> & Partial<Pick<AttackSpec, Optional>>,
 ): AttackSpec => ({ chipRatio: 0.1, energyOnHit: 10, energyOnReceive: 7, ...spec });
 
-/** Ultimates cost the whole bar, so they grant none — the meter is the cooldown. */
+/**
+ * Ultimates cost the whole bar, so they grant none — the meter is the cooldown.
+ *
+ * They are also invulnerable for the whole of their startup, which is not how
+ * they were ported and is a deliberate change. An ultimate now begins a timeline
+ * that runs for a hundred ticks and more; without this, any light attack thrown
+ * during the startup deletes the entire thing — a full meter and every beat that
+ * would have followed — for four frames of poke. That is not a punish, it is a
+ * coin flip on whether the most expensive move in the game happens at all.
+ *
+ * The window ends when the startup does, so the recovery is still fully
+ * punishable. Firing one into a guarded opponent remains a bad idea.
+ */
 const ultimate = (spec: Omit<AttackSpec, Optional>): AttackSpec => ({
   chipRatio: 0.15,
   energyOnHit: 0,
   energyOnReceive: 10,
   ...spec,
+  invulnerable: spec.invulnerable ?? [{ against: 'all', from: 1, to: spec.startup }],
 });
 
 /** A utility move that never touches anyone: no damage, no reach, no chip. */
@@ -96,6 +109,7 @@ export const FIGHTERS: FighterConfig[] = [
         startup: 18, active: 5, recovery: 23, damage: 8,
         hitstun: 18, blockstun: 11, knockbackX: 130, knockbackY: -200,
         reach: 310, cooldown: 108, telegraph: 24,
+        hitStatus: { kind: 'slow', ticks: 48 },
       }),
       functionMove: antiAir('alien-antenna', '天線升頻', 7, 4, 24, 8, 115, 5),
     },
@@ -137,6 +151,10 @@ export const FIGHTERS: FighterConfig[] = [
       id: 'doge-ult', name: '超級賽狗', kind: 'ultimate-sonic',
       startup: 26, active: 14, recovery: 40, damage: 29,
       hitstun: 44, blockstun: 18, knockbackX: 520, knockbackY: -210, reach: 540,
+      // The transformation itself is on the timeline, at the tick the change
+      // lands — see ultimateTimelines. It used to be `selfStatus`, which fires on
+      // the move *completing*, and an ultimate no longer completes: control comes
+      // back part-way through while the rest of the timeline plays out.
     }),
   },
   {
@@ -185,6 +203,8 @@ export const FIGHTERS: FighterConfig[] = [
         hits: [4, 4, 4], rehitTicks: 14,
         hitstun: 16, blockstun: 10, knockbackX: 200, knockbackY: -40,
         reach: 520, cooldown: 114, projectileSpeed: 420, lifetime: 90,
+        // Three of them, in a column. Blocking the first still leaves two coming.
+        projectileCount: 3,
       }),
       quarterBack: special({
         id: 'tempura-paper', name: '紙片亂飛', kind: 'projectile',
@@ -192,6 +212,7 @@ export const FIGHTERS: FighterConfig[] = [
         hits: [3, 3, 3], rehitTicks: 8,
         hitstun: 15, blockstun: 10, knockbackX: 180, knockbackY: -40,
         reach: 460, cooldown: 96, projectileSpeed: 600, lifetime: 60,
+        projectileCount: 5,
       }),
       functionMove: utility({
         id: 'tempura-paperread', name: '讀報裝忙', kind: 'armor',
@@ -228,6 +249,7 @@ export const FIGHTERS: FighterConfig[] = [
       functionMove: utility({
         id: 'goblin-bangs', name: '瀏海降臨', kind: 'install',
         startup: 12, active: 1, recovery: 12, cooldown: 180, meterOnComplete: 14,
+        selfStatus: { kind: 'install', ticks: 180 },
       }),
     },
     ultimate: ultimate({
@@ -360,6 +382,9 @@ export const FIGHTERS: FighterConfig[] = [
         startup: 17, active: 4, recovery: 20, damage: 7,
         hitstun: 19, blockstun: 12, knockbackX: 300, knockbackY: -60,
         reach: 390, cooldown: 96, projectileSpeed: 540, lifetime: 54,
+        // Low damage, but it glues them down for a second — this fighter wins by
+        // attrition and needs them slow to do it.
+        hitStatus: { kind: 'slow', ticks: 60 },
       }),
       quarterBack: special({
         id: 'sauce-shake', name: '濕狗甩水', kind: 'projectile',
@@ -410,6 +435,7 @@ export const FIGHTERS: FighterConfig[] = [
         hitstun: 20, blockstun: 12, knockbackX: 340, knockbackY: -110,
         reach: 210, cooldown: 96,
         invulnerable: [{ against: 'projectile', from: 4, to: 9 }],
+        afterimage: true,
       }),
       functionMove: utility({
         id: 'scared-box', name: '紙箱避難', kind: 'hide',

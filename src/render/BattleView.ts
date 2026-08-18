@@ -6,8 +6,10 @@ import { VFXManager } from '../systems/VFXManager';
 import { StageRenderer } from '../stages/StageRenderer';
 import { BattleHUD } from '../ui/BattleHUD';
 import { COLORS, FONT_FAMILY, GAME_HEIGHT, GAME_WIDTH } from '../utils/constants';
+import { ultimateDefinitionFor } from '../fighters/ultimateDefinitions';
 import { CombatView } from './CombatView';
 import { FighterView } from './FighterView';
+import { UltimateCutIn } from './UltimateCutIn';
 
 /**
  * Everything the player sees, driven entirely by `SimWorld` plus the event stream
@@ -24,6 +26,9 @@ export class BattleView {
   private readonly combat: CombatView;
   private readonly fighters: [FighterView, FighterView];
   private readonly hud: BattleHUD;
+  private readonly cutIn: UltimateCutIn;
+  /** The last ultimate phase named on screen, so a flurry says its name once. */
+  private lastPhaseLabel = '';
 
   constructor(private readonly scene: Phaser.Scene, sim: SimWorld, modeLabel: string) {
     scene.cameras.main.setBackgroundColor(COLORS.bg);
@@ -36,11 +41,18 @@ export class BattleView {
     this.vfx = new VFXManager(scene, this.world);
     this.combat = new CombatView(scene, this.world, this.vfx);
     this.hud = new BattleHUD(scene, sim, modeLabel);
+    this.cutIn = new UltimateCutIn(scene);
+    // A round can end, or the scene can be left, in the middle of a cut-in.
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.cutIn.stop());
   }
 
   /** Draw one frame. `events` is everything the simulation emitted since the last call. */
   render(sim: SimWorld, events: readonly SimEvent[]): void {
     for (const event of events) this.handle(sim, event);
+
+    // Driven by the simulation's own freeze countdown, not by elapsed time — see
+    // UltimateCutIn for why that distinction matters.
+    if (this.cutIn.isActive) this.cutIn.sync(sim.hitStopTicks);
 
     const now = this.scene.time.now;
     this.fighters[0].sync(sim.fighters[0], now);
@@ -59,6 +71,7 @@ export class BattleView {
 
     switch (event.t) {
       case 'roundStart':
+        this.lastPhaseLabel = '';
         this.fighters[0].reset();
         this.fighters[1].reset();
         this.combat.clear();
@@ -81,6 +94,15 @@ export class BattleView {
 
       case 'ultimateStart':
         this.presentUltimate(sim, event.player, event.specId);
+        break;
+
+      case 'ultimatePhase':
+        this.presentUltimatePhase(sim, event);
+        break;
+
+      case 'ultimateEnd':
+        // So the next ultimate can announce a beat this one already named.
+        this.lastPhaseLabel = '';
         break;
 
       case 'hit':
@@ -138,17 +160,71 @@ export class BattleView {
     }
   }
 
-  private presentUltimate(sim: SimWorld, player: 0 | 1, specId: string): void {
-    const config = getFighterConfig(sim.fighters[player].configId);
-    const color = config.palette.primary;
-    const overlay = this.vfx.ultimateBackdrop(color, 1250);
-    this.vfx.popup(config.ultimate.name || specId, GAME_WIDTH / 2, 155, COLORS.white, 48);
-    this.vfx.flash(COLORS.white, 0.32, 85);
-    this.vfx.shake(0.012, 360);
-    this.vfx.pixelBlocks(color, 30);
+  private presentUltimate(sim: SimWorld, player: 0 | 1, _specId: string): void {
+    const fighter = sim.fighters[player];
+    const definition = ultimateDefinitionFor(fighter.configId);
+
+    // The simulation has already frozen itself for `cutInTicks`; the cut-in reads
+    // that countdown each frame rather than starting a clock of its own.
+    this.cutIn.start(definition, player);
+
+    this.vfx.pixelBlocks(getFighterConfig(fighter.configId).palette.primary, 30);
     this.fighters[player].punchScale(1.45, 680);
     AudioManager.play('ultimate');
-    this.scene.time.delayedCall(1250, () => overlay.destroy());
+  }
+
+  /**
+   * One beat of an ultimate's timeline.
+   *
+   * The simulation says *that* a phase landed and what it was called; everything
+   * here is the staging. Naming the beat matters more than it looks — a four-part
+   * ultimate reads as one long flash otherwise, and the labels are how a player
+   * learns that the third part is the one aimed where they used to be standing.
+   */
+  private presentUltimatePhase(
+    sim: SimWorld,
+    event: Extract<SimEvent, { t: 'ultimatePhase' }>,
+  ): void {
+    const owner = sim.fighters[event.player];
+    const palette = getFighterConfig(owner.configId).palette;
+    this.vfx.flash(palette.accent, 0.22, 90);
+    this.vfx.shake(0.009, 140);
+    this.phaseCallout(event.label, palette.primary);
+  }
+
+  /**
+   * Name the beat, high on the screen and only when the name changes.
+   *
+   * Not `announce`, which owns the centre of the screen for ROUND and K.O. — a
+   * grab's ten-hit flurry would stack ten copies of the same word over the
+   * fighters, which is worse than saying nothing. Repeats are dropped for the
+   * same reason: the flurry is one idea, not ten.
+   */
+  private phaseCallout(text: string, color: number): void {
+    if (text === this.lastPhaseLabel) return;
+    this.lastPhaseLabel = text;
+
+    const label = this.scene.add
+      .text(GAME_WIDTH / 2, 190, text, {
+        fontFamily: FONT_FAMILY,
+        fontSize: '30px',
+        color: `#${color.toString(16).padStart(6, '0')}`,
+        stroke: '#050505',
+        strokeThickness: 8,
+      })
+      .setOrigin(0.5)
+      .setDepth(1290)
+      .setAlpha(0);
+
+    this.scene.tweens.add({
+      targets: label,
+      alpha: { from: 0, to: 1 },
+      y: 160,
+      duration: 140,
+      yoyo: true,
+      hold: 260,
+      onComplete: () => label.destroy(),
+    });
   }
 
   private onRoundEnd(sim: SimWorld, event: Extract<SimEvent, { t: 'roundEnd' }>): void {

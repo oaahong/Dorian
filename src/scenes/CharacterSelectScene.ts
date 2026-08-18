@@ -98,7 +98,7 @@ export class CharacterSelectScene extends Phaser.Scene {
         if (!this.p1.locked) {
           this.p1.index = index;
           this.focusOwner = 1;
-        } else if (gameState.data.mode === 'pvp' && !this.p2.locked) {
+        } else if (gameState.picksBothFighters() && !this.p2.locked) {
           this.p2.index = index;
           this.focusOwner = 2;
         }
@@ -113,7 +113,7 @@ export class CharacterSelectScene extends Phaser.Scene {
           this.p1.index = index;
           this.focusOwner = 1;
           this.confirmP1();
-        } else if (gameState.data.mode === 'pvp' && !this.p2.locked) {
+        } else if (gameState.picksBothFighters() && !this.p2.locked) {
           this.p2.index = index;
           this.p2.locked = true;
           gameState.data.p2Character = FIGHTERS[index]!.id;
@@ -135,7 +135,7 @@ export class CharacterSelectScene extends Phaser.Scene {
     });
 
     this.p1Frame = this.add.rectangle(0, 0, 132, 162, 0x000000, 0).setStrokeStyle(5, COLORS.gold, 1).setDepth(10);
-    this.p2Frame = this.add.rectangle(0, 0, 142, 172, 0x000000, 0).setStrokeStyle(4, COLORS.cyan, 1).setDepth(11).setAlpha(gameState.data.mode === 'pvp' ? 1 : 0);
+    this.p2Frame = this.add.rectangle(0, 0, 142, 172, 0x000000, 0).setStrokeStyle(4, COLORS.cyan, 1).setDepth(11).setAlpha(gameState.picksBothFighters() ? 1 : 0);
 
     this.detailCard = this.add.image(950, 232, thumbTextureKey(FIGHTERS[0]!)).setDisplaySize(214, 268);
     // Ten lines of detail at 18px overflowed the panel and collided with the
@@ -220,7 +220,7 @@ export class CharacterSelectScene extends Phaser.Scene {
       }
     }
 
-    if (gameState.data.mode === 'pvp' && !this.p2.locked) {
+    if (gameState.picksBothFighters() && !this.p2.locked) {
       if (code === 'ArrowUp') {
         this.moveCursor(this.p2, 0, -1);
         this.focusOwner = 2;
@@ -267,7 +267,7 @@ export class CharacterSelectScene extends Phaser.Scene {
 
   private tryFinishSelection(): void {
     if (!this.p1.locked) return;
-    if (gameState.data.mode === 'pvp' && !this.p2.locked) return;
+    if (gameState.picksBothFighters() && !this.p2.locked) return;
     this.finishSelection();
   }
 
@@ -294,7 +294,7 @@ export class CharacterSelectScene extends Phaser.Scene {
     this.p1Frame.setPosition(p1.x, p1.y).setAlpha(this.p1.locked ? 0.55 : 1);
 
     const p2 = pos(this.p2.index);
-    this.p2Frame.setPosition(p2.x, p2.y).setAlpha(gameState.data.mode === 'pvp' ? (this.p2.locked ? 0.55 : 1) : 0);
+    this.p2Frame.setPosition(p2.x, p2.y).setAlpha(gameState.picksBothFighters() ? (this.p2.locked ? 0.55 : 1) : 0);
 
     const focusIndex = this.focusOwner === 1 ? this.p1.index : this.p2.index;
     // Derived from CARD rather than written out again: these were the old

@@ -22,13 +22,17 @@
 /** The poses the renderer knows how to ask for. */
 export type PoseName =
   | 'idle' | 'walkForward' | 'walkBack' | 'jump' | 'crouch'
-  | 'light' | 'heavy' | 'block' | 'hit' | 'special' | 'ultimate'
-  | 'victory' | 'ko';
+  | 'dashForward' | 'dashBack'
+  | 'light' | 'heavy' | 'crouchLight' | 'crouchHeavy' | 'jumpLight' | 'jumpHeavy'
+  | 'block' | 'hit' | 'special' | 'ultimate'
+  | 'throw' | 'victory' | 'ko';
 
 export const POSE_NAMES: readonly PoseName[] = [
   'idle', 'walkForward', 'walkBack', 'jump', 'crouch',
-  'light', 'heavy', 'block', 'hit', 'special', 'ultimate',
-  'victory', 'ko',
+  'dashForward', 'dashBack',
+  'light', 'heavy', 'crouchLight', 'crouchHeavy', 'jumpLight', 'jumpHeavy',
+  'block', 'hit', 'special', 'ultimate',
+  'throw', 'victory', 'ko',
 ];
 
 type PoseNumbers = Record<PoseName, number>;
@@ -40,12 +44,19 @@ const STANDARD_LAYOUT: PoseNumbers = {
   walkBack: 3,
   crouch: 4,
   jump: 5,
+  dashForward: 6,
+  dashBack: 7,
   light: 8,
   heavy: 9,
+  crouchLight: 10,
+  crouchHeavy: 11,
+  jumpLight: 12,
+  jumpHeavy: 13,
   block: 14,
   hit: 16,
   special: 24,
   ultimate: 28,
+  throw: 18,
   victory: 23,
   ko: 22,
 };
@@ -59,18 +70,81 @@ const ALIEN_LAYOUT: PoseNumbers = {
   walkForward: 2,
   walkBack: 3,
   jump: 4,
+  dashForward: 5,
+  dashBack: 6,
   crouch: 7,
   light: 10,
   heavy: 11,
+  crouchLight: 12,
+  crouchHeavy: 13,
+  jumpLight: 14,
+  jumpHeavy: 15,
   block: 8,
   hit: 16,
   special: 24,
   ultimate: 28,
+  throw: 22,
   victory: 21,
   ko: 20,
 };
 
 const LAYOUTS: Record<string, PoseNumbers> = { alien: ALIEN_LAYOUT };
+
+/**
+ * The skill-sheet cells the chargeable special is drawn from.
+ *
+ * `A`, `B` and `C` are the three wind-up frames — the pipeline categorises them as
+ * `H_CHARGE_FIGHTER` — and `D` is the release. They are separate from the numbered
+ * pose sheet because they come from a different source sheet with a different
+ * pipeline, so they are keyed and loaded separately rather than pretending to be
+ * poses.
+ */
+const CHARGE_CELLS = ['A', 'B', 'C'] as const;
+const RELEASE_CELL = 'D';
+
+/**
+ * The companion an ultimate leaves behind, for the two fighters that have one.
+ *
+ * Further into the same skill sheets than anything else the game loads, because
+ * these cells are the only ones that are *characters in their own right* rather
+ * than effects — tempura's penguin and scared's husky both stand on the field
+ * and can be knocked down, so they need a body rather than a flash.
+ */
+const SUMMON_CELLS: Record<string, string> = { tempura: 'I', scared: 'L' };
+
+export const summonTextureKey = (fighterId: string): string | null =>
+  SUMMON_CELLS[fighterId] ? skillTextureKey(fighterId, SUMMON_CELLS[fighterId]!) : null;
+
+const skillTextureKey = (fighterId: string, cell: string): string =>
+  `skill-${fighterId}-${cell.toLowerCase()}`;
+
+const skillPath = (fighterId: string, cell: string): string =>
+  `assets/skills/${fighterId}/${cell}.png`;
+
+/** The wind-up frame for a charge level, so the player can see what they have. */
+export const chargeTextureKey = (fighterId: string, level: 1 | 2 | 3): string =>
+  skillTextureKey(fighterId, CHARGE_CELLS[level - 1]!);
+
+export const chargePath = (fighterId: string, level: 1 | 2 | 3): string =>
+  skillPath(fighterId, CHARGE_CELLS[level - 1]!);
+
+/** The release frame, shared with the ultimate cut-in's portrait. */
+export const releaseTextureKey = (fighterId: string): string =>
+  skillTextureKey(fighterId, RELEASE_CELL);
+
+export const releasePath = (fighterId: string): string =>
+  skillPath(fighterId, RELEASE_CELL);
+
+/** Every skill texture a match needs for one fighter, as key and path. */
+export function skillTexturesFor(fighterId: string): { key: string; path: string }[] {
+  const cells: string[] = [...CHARGE_CELLS, RELEASE_CELL];
+  const summon = SUMMON_CELLS[fighterId];
+  if (summon) cells.push(summon);
+  return cells.map((cell) => ({
+    key: skillTextureKey(fighterId, cell),
+    path: skillPath(fighterId, cell),
+  }));
+}
 
 export function poseNumber(fighterId: string, pose: PoseName): number {
   return (LAYOUTS[fighterId] ?? STANDARD_LAYOUT)[pose];
