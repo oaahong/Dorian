@@ -45,7 +45,7 @@ function runUntilUltimateEnds(w: SimWorld, p2: InputFrame = EMPTY_INPUT): void {
 /** Fire p1's ultimate and skip the cut-in freeze and the move's own startup. */
 function launch(w: SimWorld, fighterId: string): void {
   w.fighters[0].energy = MAX_ENERGY;
-  run(w, 1, BUTTON.Down | BUTTON.Special);
+  run(w, 1, BUTTON.Ultimate);
   while (w.hitStopTicks > 0) run(w, 1);
   run(w, getSpec(`${fighterId}-ult`).startupTicks);
 }
@@ -295,7 +295,7 @@ describe('an ultimate survives its own startup', () => {
     w.fighters[0].x = 560;
     w.fighters[1].x = 640;
     w.fighters[0].energy = MAX_ENERGY;
-    run(w, 1, BUTTON.Down | BUTTON.Special);
+    run(w, 1, BUTTON.Ultimate);
     while (w.hitStopTicks > 0) run(w, 1);
 
     // Mash a light into the startup from point-blank range.

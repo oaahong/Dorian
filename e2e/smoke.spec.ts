@@ -115,13 +115,12 @@ test('cuts the poses for exactly the two fighters in the match', async ({ page }
   // Derived rather than written out, so adding a pose does not fail this on a
   // number that was never the point.
   expect(loaded.poses).toBe(2 * POSE_NAMES.length);
-  // And the two fighters' skill sheet — three wind-up frames and the release frame,
-  // which doubles as the cut-in portrait — plus one cut-in background each. Both
-  // derived, for the same reason the pose count is.
+  // And the two fighters' whole skill sheets, plus one cut-in background each.
+  // Both derived, for the same reason the pose count is.
   expect(loaded.backgrounds).toBe(2);
   // Counted from the fighters actually in the match rather than from a stand-in:
-  // two of them carry an extra cell for the companion their ultimate leaves
-  // behind, so any single fighter is the wrong yardstick for the other eleven.
+  // the sheets are different sizes, from fourteen cells to twenty-three, so any
+  // single fighter is the wrong yardstick for the other eleven.
   const expectedCells = loaded.fighters.reduce(
     (total, id) => total + skillTexturesFor(id).length,
     0,

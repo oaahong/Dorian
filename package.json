@@ -25,7 +25,8 @@
     "start": "node build/server/main.js",
     "assets:poses": "python3 scripts/extract_poses.py",
     "assets:poses:validate": "python3 scripts/validate_pose_regeneration.py",
-    "assets:skills": "python3 scripts/extract_skill_assets.py",
+    "assets:skills": "python3 scripts/extract_skill_assets.py && npm run assets:skills:codegen",
+    "assets:skills:codegen": "node scripts/gen-skill-cells.mjs",
     "assets:skills:validate": "python3 scripts/validate_skill_assets.py",
     "assets:skills:contacts": "python3 scripts/generate_skill_contact_sheets.py",
     "assets:thumbs": "bash -c 'for f in public/assets/cards/card-*.png; do cwebp -quiet -q 85 -alpha_q 100 -resize 476 596 \"$f\" -o \"public/assets/thumbs/$(basename \"$f\" .png).webp\"; done'"

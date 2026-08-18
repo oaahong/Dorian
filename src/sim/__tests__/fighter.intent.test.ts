@@ -82,46 +82,54 @@ describe('special versus ultimate', () => {
     expect(h.self.state).toBe(FighterState.H_CHARGING);
   });
 
-  it('treats down + special as the ultimate when the meter is full', () => {
+  /**
+   * Crouching does not change what the special button means.
+   *
+   * There used to be a second way to ask for an ultimate — down plus special —
+   * kept from before the dedicated button existed. It cost more than it was
+   * worth. Because the crouch buffer holds for eight ticks, *any* special press
+   * within eight ticks of touching down was claimed by it: with a full meter that
+   * spent the whole bar, and with an empty one it threw the 236 instead. Either
+   * way the player asked for a charge and did not get one, and the delivered
+   * notes are explicit that the bare button is always the chargeable special and
+   * that it has no cooldown at all.
+   */
+  it('starts a charge on down + special, rather than spending a full meter', () => {
     const h = harness({ energy: MAX_ENERGY });
     h.run(BUTTON.Down | BUTTON.Special);
-    expect(h.self.state).toBe(FighterState.ULTIMATE);
-    expect(h.self.energy).toBe(0);
-  });
-
-  it('honours the crouch buffer after down is released', () => {
-    // Pressing down and then special a few ticks later still reads as an
-    // ultimate motion — the 140 ms buffer, now INPUT_BUFFER_TICKS.
-    const h = harness({ energy: MAX_ENERGY });
-    h.run(BUTTON.Down);
-    h.run(EMPTY_INPUT, INPUT_BUFFER_TICKS - 2);
-    h.run(BUTTON.Special);
-    expect(h.self.state).toBe(FighterState.ULTIMATE);
-  });
-
-  it('expires the crouch buffer', () => {
-    const h = harness({ energy: MAX_ENERGY });
-    h.run(BUTTON.Down);
-    h.run(EMPTY_INPUT, INPUT_BUFFER_TICKS + 2);
-    h.run(BUTTON.Special);
-    // Past the buffer the press is an ordinary bare special, so it winds up rather
-    // than spending the meter.
     expect(h.self.state).toBe(FighterState.H_CHARGING);
     expect(h.self.energy).toBe(MAX_ENERGY);
   });
 
-  it('falls back to the special when the meter is short', () => {
-    // Ported behaviour: an ultimate motion without meter is not a whiff, it comes
-    // out as the special.
-    const h = harness({ energy: 99 });
-    h.run(BUTTON.Down | BUTTON.Special);
-    expect(h.self.state).toBe(FighterState.SPECIAL);
-    expect(h.self.energy).toBe(99);
+  it('starts a charge inside the crouch buffer, where the motion used to win', () => {
+    const h = harness({ energy: MAX_ENERGY });
+    h.run(BUTTON.Down);
+    h.run(EMPTY_INPUT, INPUT_BUFFER_TICKS - 2);
+    h.run(BUTTON.Special);
+    expect(h.self.state).toBe(FighterState.H_CHARGING);
+    expect(h.self.energy).toBe(MAX_ENERGY);
   });
 
-  it('spends the whole meter on the ultimate', () => {
+  it('starts a charge past the crouch buffer too, which never changed', () => {
     const h = harness({ energy: MAX_ENERGY });
-    h.run(BUTTON.Down | BUTTON.Special);
+    h.run(BUTTON.Down);
+    h.run(EMPTY_INPUT, INPUT_BUFFER_TICKS + 2);
+    h.run(BUTTON.Special);
+    expect(h.self.state).toBe(FighterState.H_CHARGING);
+    expect(h.self.energy).toBe(MAX_ENERGY);
+  });
+
+  it('never throws a special the player did not ask for, meter or no meter', () => {
+    for (const energy of [0, 99, MAX_ENERGY]) {
+      const h = harness({ energy });
+      h.run(BUTTON.Down | BUTTON.Special);
+      expect(h.self.state, `energy ${energy}`).toBe(FighterState.H_CHARGING);
+    }
+  });
+
+  it('spends the whole meter on the ultimate button', () => {
+    const h = harness({ energy: MAX_ENERGY });
+    h.run(BUTTON.Ultimate);
     expect(h.self.energy).toBe(0);
   });
 });
@@ -402,12 +410,22 @@ describe('motion-selected specials', () => {
       .toBe('scared-scream');
   });
 
-  it('gives a fighter without a 623 its quarter-back move for that motion', () => {
-    // `alien` has no dragon punch; the input must not resolve to nothing.
+  it('winds up the charge for a 623 on a fighter that has no 623', () => {
+    /**
+     * `alien` has no dragon punch, and the delivered notes are explicit that the
+     * third special exists only for the fighters configured with one. The motion
+     * therefore names nothing, and the press falls through to what a bare special
+     * press always means.
+     *
+     * This used to answer with the 236 instead, but not through the motion
+     * parser: the old down-plus-special ultimate input claimed the press — the
+     * 623 passes through a down — and its no-meter fallback threw the quarter
+     * forward. The dead giveaway is that it happened on an empty meter only.
+     */
     const h = harness({ configId: 'alien' });
     const specId = inputMotion(h, [BUTTON.Right, BUTTON.Down, BUTTON.Down | BUTTON.Right]);
-    expect(specId).toBeTruthy();
-    expect(specId).not.toBe('scared-nine');
+    expect(specId).toBeUndefined();
+    expect(h.self.state).toBe(FighterState.H_CHARGING);
   });
 });
 
@@ -419,27 +437,24 @@ describe('the ultimate button', () => {
     expect(h.self.energy).toBe(0);
   });
 
-  it('still accepts the original down-plus-special motion', () => {
-    // Kept so that hands trained on the trunk's controls keep working.
+  it('is the only way to ask for one', () => {
     const h = harness({ energy: MAX_ENERGY });
     h.run(BUTTON.Down | BUTTON.Special);
-    expect(h.self.state).toBe(FighterState.ULTIMATE);
+    expect(h.self.state).not.toBe(FighterState.ULTIMATE);
   });
 
   /**
-   * The *motion* falls back to a special when the bar is short; the dedicated
-   * button does not, and must not. Holding that button is how the bar is charged,
-   * so a fallback would mean reaching for the charge threw a fireball.
+   * A short bar does not turn the button into something else.
+   *
+   * Holding it is how the bar is charged, so a fallback to a special would mean
+   * that reaching for the charge threw a fireball — the exact opposite of what the
+   * button is for.
    */
-  it('falls back to a special from the motion, but not from the button', () => {
-    const motion = harness({ energy: MAX_ENERGY - 1 });
-    motion.run(BUTTON.Down | BUTTON.Special);
-    expect(motion.self.state).toBe(FighterState.SPECIAL);
-
+  it('charges rather than firing when the bar is short', () => {
     const button = harness({ energy: MAX_ENERGY - 1 });
     button.run(BUTTON.Ultimate);
     expect(button.self.state).not.toBe(FighterState.SPECIAL);
-    // It charged instead, which is the button's other job.
+    expect(button.self.state).not.toBe(FighterState.ULTIMATE);
     expect(button.self.energy).toBeGreaterThan(MAX_ENERGY - 1);
   });
 });
@@ -605,13 +620,14 @@ describe('the chargeable special', () => {
   });
 });
 
-describe('motion versus the legacy ultimate motion', () => {
-  it('throws the 236 special on a full meter, not the ultimate', () => {
+describe('motions still reach their own moves on a full meter', () => {
+  it('throws the 236 special, which a full bar used to make unreachable', () => {
     /**
      * Every quarter-circle passes through a down two or three ticks before the
-     * button, well inside the eight-tick crouch buffer that down-plus-special uses.
-     * Without an explicit precedence the fighter's own fireball became unreachable
-     * at exactly the moment a full meter made it most useful.
+     * button, well inside the eight-tick crouch buffer. While down-plus-special
+     * was also an ultimate, that made a fighter's own fireball unreachable at
+     * exactly the moment a full meter made it most useful. It needed an explicit
+     * precedence rule to work around; with the second input gone it simply works.
      */
     const h = harness({ energy: MAX_ENERGY });
     h.run(BUTTON.Down);
@@ -622,14 +638,7 @@ describe('motion versus the legacy ultimate motion', () => {
     expect(h.self.energy).toBe(MAX_ENERGY);
   });
 
-  it('still fires the ultimate for a bare down plus special', () => {
-    const h = harness({ energy: MAX_ENERGY });
-    h.run(BUTTON.Down | BUTTON.Special);
-    expect(h.self.state).toBe(FighterState.ULTIMATE);
-    expect(h.self.energy).toBe(0);
-  });
-
-  it('and for the dedicated button, even right after a motion', () => {
+  it('fires the ultimate from its button, even right after a motion', () => {
     const h = harness({ energy: MAX_ENERGY });
     h.run(BUTTON.Down);
     h.run(BUTTON.Down | BUTTON.Right);

@@ -1,3 +1,84 @@
+# v2.0.0 Two Hundred And Twenty-Six Pictures
+
+The upgraded build shipped 226 pieces of skill art and a specification for how
+the twelve ultimates should look. The port that brought its *gameplay* across —
+frame data, hitbox timelines, summons, installs — left the presentation behind.
+Fifty of those images were loaded and four per fighter were ever drawn. The other
+176 sat in `public/assets/skills/` where nothing could reach them.
+
+Numbered as a major because one control is gone; see the last section.
+
+**Every ultimate looked the same.** Twelve finishers, and each one played as a
+white flash, a camera shake and a line of English text. The timelines underneath
+were faithful — alien really does sweep low before it bombards, salad really is
+an overhead into a low — but none of it was visible, so the read the frame data
+offers was one a player had no way to take.
+*Fix: `src/fighters/ultimateVisuals.ts`, a beat table on the same tick clock as
+`ultimateTimelines.ts`, and `src/render/UltimateStage.ts` to play it. alien's
+scan lines land on the sweep and five spheres converge on the spot it locked;
+salad's bowl is visible falling for forty ticks before it lands; ok calls four
+brothers, ropes you, and pulls a gun. Nothing in the beat table draws — it is
+data, so a thirteenth fighter is an entry rather than a class.*
+
+**A transformation was a colour.** doge, goblin, blade and pink each have a full
+second set of poses drawn in their transformed body — idle, walk, crouch, jump,
+both normals, guard, flinch, knocked out. The renderer applied
+`sprite.setTint(accent)` and drew the ordinary sheet underneath. Eight seconds of
+being a different fighter looked like eight seconds of being yellow.
+*Fix: `src/fighters/installPoses.ts` maps every pose to its transformed cell, the
+body doubles as the delivered notes specify, and blade's two swords mount on left
+and right sockets. The hurtbox doubles with it — that is the trade the
+transformation makes, and it is the one part of this work inside the simulation.*
+
+**A companion had one frame.** tempura's nine clones shared a single drawing, so
+a formation of nine read as a texture rather than nine things each worth knocking
+down. scared's husky held one pose for its entire ten seconds, giving no tell
+before it bit.
+*Fix: `src/fighters/summonArt.ts` derives the frame from simulation state —
+cooldown, distance, hit points, formation slot. The husky walks, winds up, bites,
+gloats when you outrun it, flinches when hit and dissolves when it goes. The
+clones wear five faces between them.*
+
+**A charge special looked identical at all three levels.** The whole point of
+holding a button is that the opponent can see what is coming; the only tell was
+how long the wind-up lasted. Each fighter's three effect cells — alien's beam
+thickening, blade's sword lengthening, scared's portal widening — had never been
+drawn.
+*Fix: `src/render/effectCells.ts`. Six of the twelve hang their art on the
+projectile, beam or zone they spawn; the other six are melee and spawn nothing,
+so theirs is drawn at the fighter on release.*
+
+**Every cut-in showed the same cell.** All twelve portraits pointed at `D`, the
+charge special's release frame. It was a defensible retreat — the upgraded
+build's own per-fighter picks include a green explosion with no cat in it — but
+it made wizard's portrait a bare magic circle 168x65, stretched to 360 pixels
+tall, and left blade holding the shield its ultimate is about throwing away.
+*Fix: the portrait is taken from the ultimate's own script rather than chosen a
+second time, so the cut-in and the arena cannot disagree about who is fighting.*
+
+**`S + H` no longer fires the ultimate.** It was kept from before the dedicated
+button existed, and the crouch buffer holds for eight ticks — so it claimed *any*
+special press within eight ticks of touching down. With a full meter that spent
+the whole bar; with an empty one it threw the 236 instead. Either way a crouching
+player could not reach their charge special, which is the move a player who knows
+no motions actually uses. It also forced a precedence rule onto the motion parser
+that had been quietly wrong until the tests were run on a full meter.
+*Change: the ultimate is `T` (P1) and `I` (P2). The special button is always the
+special button, with no cooldown, as the delivered notes specify.*
+
+Regression cover: `src/render/__tests__/skillAssetCoverage.test.ts` asserts every
+one of the 226 images is claimed by something that draws it, with exactly one
+documented exemption — `blade/K`, the cell the two swords were split out of, which
+would put a third sword on screen. `src/net/__tests__/lockstep.install.test.ts`
+runs all four transformations across a lossy link and requires byte-identical
+worlds, because the hurtbox change is the only part of this that could desync.
+`src/sim/__tests__/replay.golden.test.ts` gained a scenario in which somebody
+actually hits a transformed fighter: the existing transformation replay ran
+doge's install for 534 ticks and sauce never once connected, so until now the
+boxes could have been changed to anything and every snapshot would still have
+passed. `e2e/ultimates.spec.ts` fires one in a browser and holds it to an object
+budget, a stall floor and a recovery check.
+
 # v1.4.1 The Letter F, And A Cat With No Eyes
 
 Numbered as a patch, and from here on the headings follow semver: nothing below

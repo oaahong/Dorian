@@ -40,6 +40,24 @@ export const FIGHTER_HURTBOX_HEIGHT = 194;
 /** Crouching shortens the hurtbox to this fraction of its standing height. */
 export const CROUCH_HURTBOX_SCALE = 0.66;
 
+/**
+ * How much larger an installed fighter's body is than its normal one.
+ *
+ * The upgraded build's delivered notes fix this at 2.0x with the feet baseline
+ * unchanged, and say the hurtbox is re-fitted to the body rather than left at the
+ * untransformed size. That is the trade the transformation makes: the four
+ * fighters who get one hit harder for eight seconds and are easier to hit for the
+ * same eight seconds.
+ *
+ * Multiplication, deliberately, and not rounding. `FIGHTER_HURTBOX_HEIGHT *
+ * CROUCH_HURTBOX_SCALE` is already a non-integer (194 x 0.66), and both clients
+ * evaluate the same IEEE-754 operations in the same order on the same inputs, so
+ * they agree bit for bit. Introducing a `Math.round` here would not make it
+ * "safer" — it would change the boxes, and it would need the golden replays
+ * rerecorded to say so.
+ */
+export const INSTALL_BODY_SCALE = 2;
+
 /** Minimum horizontal separation enforced between two grounded fighters. */
 export const PUSH_APART_DISTANCE = 86;
 

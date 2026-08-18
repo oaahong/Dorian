@@ -31,8 +31,9 @@ re-exports these for the Phaser code and keeps only colours and fonts of its own
 | `GRAVITY` | 1750 px/s² | |
 | `JUMP_VELOCITY` | −690 px/s | ≈ 47 ticks of airtime |
 | `ROUND_TICKS` | 3600 | 60 seconds |
-| `INPUT_BUFFER_TICKS` | 8 | crouch buffer for the ultimate motion |
+| `INPUT_BUFFER_TICKS` | 8 | crouch buffer, so a motion ending in down still reads as crouching |
 | `FIGHTER_HURTBOX_WIDTH` / `_HEIGHT` | 104 / 194 | |
+| `INSTALL_BODY_SCALE` | 2 | a transformed fighter's body, and its hurtbox |
 | `PUSH_APART_DISTANCE` | 86 | minimum separation between grounded fighters |
 | `P1_SPAWN_X` / `P2_SPAWN_X` | 350 / 930 | facing `+1` and `−1`, reset each round |
 
@@ -81,8 +82,9 @@ the same decisions.
 - **Edges** come from `current & ~prevButtons`, with `prevButtons` stored per
   fighter in `SimWorld`. Phaser's `JustDown()` *consumes* the flag and can only be
   read once per tick, which is fatal to any replay.
-- **The 140 ms crouch buffer** that distinguishes a special from an ultimate is
-  `downBufferedUntilTick`.
+- **The 140 ms crouch buffer** is `downBufferedUntilTick`. It exists so a motion
+  ending in a down still reads as crouching a few ticks later; it no longer
+  arbitrates between a special and an ultimate — see below.
 - **The bare special button charges.** Pressing it with no motion behind it enters
   `H_CHARGING` and counts `chargeTicks`; releasing fires
   `chargeSpecials.ts`'s level 1, 2 or 3 at 0 / 24 / 54 ticks. The level is derived
@@ -92,10 +94,15 @@ the same decisions.
   never lets go. Charging blocks walking, jumping, attacking **and guarding**, so
   any hit that arrives lands; the cancel needs no code, since `H_CHARGING` is the
   only thing keeping a charge alive and hitstun replaces it.
-- **A recognised motion beats the legacy `down + special` ultimate.** Every
-  quarter-circle passes through a down two or three ticks before the button, well
-  inside the crouch buffer, so without an explicit precedence a 236 on a full meter
-  fired the ultimate instead of the fireball.
+- **The ultimate has one input: its own button.** There used to be a second,
+  `down + special`, kept from before that button existed, and it needed a
+  precedence rule to be usable at all: every quarter-circle passes through a down
+  two or three ticks before the button, well inside the crouch buffer, so a 236 on
+  a full meter fired the ultimate instead of the fireball. The rule went unnoticed
+  as a bug while the motion tests ran on an empty meter, where the ultimate fell
+  through to the motion anyway. Removing the input removed the rule: a crouching
+  player reaches their charge special, and the special button is unconditionally
+  the special button.
 - **Motion inputs** (236, 214, 623, double taps) are read from
   `commandHistory`, a fixed 30-tick ring of raw input words held per fighter in
   `SimWorld` and folded into the checksum
@@ -170,8 +177,9 @@ its controllers outside the fight phase.
 **Grounded**, first match wins:
 1. **Block**: `move === away && !crouch && |opponent.x − x| < 340` → `BLOCK`, `vx = 0`.
 2. **Ultimate**: `ultimatePressed` and `energy ≥ 100` and `canUseSpecial` → spend
-   the whole meter. **If the meter is short it falls back to the special** rather
-   than whiffing.
+   the whole meter. **A short meter does nothing.** There is no fallback to a
+   special: holding this button is how the meter is filled, so a fallback would
+   mean that reaching for the charge threw a fireball.
 3. `specialPressed && canUseSpecial` → special.
 4. `lightPressed` → light. 5. `heavyPressed` → heavy.
 6. `jumpPressed` → `vy = JUMP_VELOCITY`, `JUMP`.
@@ -279,10 +287,21 @@ Per-fighter specials and ultimates live in
 
 Hurtbox:
 ```
-crouching = state === CROUCH || attack?.crouching
-height = crouching ? 194 × 0.66 : 194
-rect(x - 52, y - height, 104, height)
+crouching = state === CROUCH || guardCrouching || attack?.crouching
+scale     = installTicks > 0 ? 2 : 1
+height    = (crouching ? 194 × 0.66 : 194) × scale
+width     = 104 × scale
+rect(x - width / 2, y - height, width, height)
 ```
+
+**An install doubles the body, and the box follows it.** The four transformation
+ultimates make their owner physically twice the size for 480 ticks, growing upward
+and outward from the centre so the feet stay on the floor. That is the trade the
+transformation makes rather than a side effect of the art: hitting harder while
+being easier to hit. It is multiplication and not rounding — `194 × 0.66` is
+already a non-integer, both clients evaluate the same IEEE-754 operations in the
+same order, and a `Math.round` added for the look of it would change the boxes and
+need every golden replay rerecorded to say so.
 
 Melee hitbox:
 ```

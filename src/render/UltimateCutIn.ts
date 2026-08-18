@@ -50,6 +50,15 @@ const TITLE_IN_TICKS = 23;
 /** How long before the end the whole thing starts winding back out. */
 const EXIT_TICKS = 14;
 
+/** How long after the title card a transformation is announced. */
+const PEAK_DELAY_TICKS = 10;
+
+/** The two whose ultimate is a signal breaking down, and stutters to say so. */
+const GLITCHING_FIGHTERS = new Set(['alien', 'pink']);
+
+/** The four whose ultimate replaces the fighter with a different one. */
+const INSTALL_FIGHTERS = new Set(['doge', 'goblin', 'blade', 'pink']);
+
 export class UltimateCutIn {
   private objects: Phaser.GameObjects.GameObject[] = [];
   private definition: UltimateDefinition | null = null;
@@ -208,6 +217,49 @@ export class UltimateCutIn {
       this.scene.cameras.main.shake(110, definition.style.shake);
       parts.flash.setAlpha(0.7);
       this.scene.tweens.add({ targets: parts.flash, alpha: 0, duration: 100 });
+
+      /**
+       * A horizontal tear on the two fighters whose ultimate is a broken signal.
+       *
+       * alien is literally a transmission failing and pink's is a mask coming
+       * off under distortion, so the background stutters sideways for a moment
+       * rather than sitting still behind the title. It is eight pixels and it is
+       * the difference between a cut-in and a poster.
+       */
+      if (GLITCHING_FIGHTERS.has(definition.fighterId)) {
+        this.scene.tweens.add({
+          targets: parts.background,
+          x: { from: GAME_WIDTH / 2 - 4, to: GAME_WIDTH / 2 + 4 },
+          yoyo: true,
+          repeat: 5,
+          duration: 35,
+        });
+      }
+    }
+
+    /**
+     * The moment a transformation actually lands.
+     *
+     * Only the four install ultimates get it, and only they should: it is the
+     * beat where the fighter stops being the one on the character-select screen.
+     * Without it the cut-in ends and a differently-shaped fighter is simply
+     * standing there.
+     */
+    if (INSTALL_FIGHTERS.has(definition.fighterId) && this.at('peak', TITLE_IN_TICKS + PEAK_DELAY_TICKS)) {
+      const peak = this.keep(
+        this.scene.add
+          .text(GAME_WIDTH / 2, 470, 'TRANSFORMATION PEAK', {
+            fontFamily: FONT_FAMILY,
+            fontSize: '30px',
+            color: definition.style.title,
+            stroke: '#050505',
+            strokeThickness: 8,
+          })
+          .setOrigin(0.5)
+          .setDepth(DEPTH + 6)
+          .setAlpha(0),
+      );
+      this.scene.tweens.add({ targets: peak, alpha: 1, y: 440, duration: 220, yoyo: true, hold: 180 });
     }
 
     // Wind out before the freeze lifts, so control returns on a clear screen rather

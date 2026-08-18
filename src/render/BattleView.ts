@@ -10,6 +10,7 @@ import { ultimateDefinitionFor } from '../fighters/ultimateDefinitions';
 import { CombatView } from './CombatView';
 import { FighterView } from './FighterView';
 import { UltimateCutIn } from './UltimateCutIn';
+import { UltimateStage } from './UltimateStage';
 
 /**
  * Everything the player sees, driven entirely by `SimWorld` plus the event stream
@@ -27,6 +28,7 @@ export class BattleView {
   private readonly fighters: [FighterView, FighterView];
   private readonly hud: BattleHUD;
   private readonly cutIn: UltimateCutIn;
+  private readonly ultimateStage: UltimateStage;
   /** The last ultimate phase named on screen, so a flurry says its name once. */
   private lastPhaseLabel = '';
 
@@ -42,8 +44,12 @@ export class BattleView {
     this.combat = new CombatView(scene, this.world, this.vfx);
     this.hud = new BattleHUD(scene, sim, modeLabel);
     this.cutIn = new UltimateCutIn(scene);
+    this.ultimateStage = new UltimateStage(scene, this.world, this.vfx);
     // A round can end, or the scene can be left, in the middle of a cut-in.
-    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.cutIn.stop());
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.cutIn.stop();
+      this.ultimateStage.clear();
+    });
   }
 
   /** Draw one frame. `events` is everything the simulation emitted since the last call. */
@@ -58,10 +64,14 @@ export class BattleView {
     this.fighters[0].sync(sim.fighters[0], now);
     this.fighters[1].sync(sim.fighters[1], now);
     this.combat.sync(sim);
+    // After the fighters, so a beat drawn on top of its owner stays on top of the
+    // pose it belongs to rather than a frame behind it.
+    this.ultimateStage.sync(sim);
     this.hud.update(sim);
   }
 
   destroy(): void {
+    this.ultimateStage.destroy();
     this.combat.destroy();
     this.vfx.destroy();
   }
@@ -75,6 +85,7 @@ export class BattleView {
         this.fighters[0].reset();
         this.fighters[1].reset();
         this.combat.clear();
+        this.ultimateStage.clear();
         this.announce(`ROUND ${event.round}`, COLORS.cream, 58, 520);
         break;
 
@@ -119,9 +130,12 @@ export class BattleView {
   }
 
   private onAttackStart(sim: SimWorld, event: Extract<SimEvent, { t: 'attackStart' }>): void {
-    const spec = getFighterConfig(sim.fighters[event.player].configId);
+    const fighter = sim.fighters[event.player];
+    const spec = getFighterConfig(fighter.configId);
     if (event.specId === spec.ultimate.id) return; // ultimateStart handles the fanfare
     if (event.specId === spec.specials.quarterForward.id) AudioManager.play('special');
+    // A melee charge special has no entity to hang its art on; see the method.
+    this.combat.flashChargeEffect(event.specId, fighter.x, fighter.y - 110, fighter.facing);
   }
 
   private onHit(sim: SimWorld, event: Extract<SimEvent, { t: 'hit' }>): void {

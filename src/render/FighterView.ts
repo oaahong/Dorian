@@ -1,11 +1,13 @@
 import * as Phaser from 'phaser';
 import { FighterState } from '../fighters/FighterState';
 import { getFighterConfig } from '../fighters/fighterData';
-import { GROUND_Y } from '../sim/constants';
+import { GROUND_Y, INSTALL_BODY_SCALE } from '../sim/constants';
 import type { SimFighter } from '../sim/types';
 import { chargeLevel, isChargeSpecId } from '../fighters/chargeSpecials';
 import { getSpec } from '../sim/attackSpecs';
 import { chargeTextureKey, poseTextureKey, releaseTextureKey, type PoseName } from '../fighters/poseSheet';
+import { ultimateVisualsFor } from '../fighters/ultimateVisuals';
+import { INSTALL_ATTACHMENTS, installCellFor } from '../fighters/installPoses';
 
 /**
  * Draws one fighter from simulation state.
@@ -21,6 +23,8 @@ export class FighterView {
   private currentKey = '';
   private baseScale = 1;
   private wasGrounded = true;
+  /** Weapons mounted on a transformed body. Empty for everyone but blade. */
+  private attachments: Phaser.GameObjects.Image[] = [];
 
   constructor(private readonly scene: Phaser.Scene, fighter: SimFighter) {
     const art = artFor(fighter);
@@ -34,6 +38,9 @@ export class FighterView {
     this.sprite.setVisible(true).setAlpha(1).clearTint().setRotation(0);
     this.wasGrounded = true;
     this.currentKey = '';
+    // A round can end mid-transformation, and the next one starts untransformed.
+    for (const sprite of this.attachments) sprite.destroy();
+    this.attachments = [];
   }
 
   sync(fighter: SimFighter, nowMs: number): void {
@@ -137,40 +144,94 @@ export class FighterView {
     this.sprite.setOrigin(0.5, 1);
   }
 
+  /**
+   * The scale everything else is written against.
+   *
+   * A transformation makes the fighter physically twice the size, and the
+   * simulation's hurtbox is doubled to match — see `INSTALL_BODY_SCALE`. Doing it
+   * here rather than at each `setScale` call means the wobble, the landing squash
+   * and the crouch flatten all keep working, in proportion, on a body twice as
+   * big. The sprite is bottom-anchored, so growing it leaves the feet on the
+   * floor.
+   */
+  private displayScale(fighter: SimFighter): number {
+    return fighter.installTicks > 0 ? this.baseScale * INSTALL_BODY_SCALE : this.baseScale;
+  }
+
   private applyTransform(fighter: SimFighter, nowMs: number): void {
     this.sprite.setPosition(fighter.x, fighter.y).setFlipX(fighter.facing < 0);
-    /**
-     * An install has to be visible, or it is a damage buff the opponent has no way
-     * to read. The tint is the fighter's own accent colour so it says *who* is
-     * buffed rather than just that something happened.
-     */
-    if (fighter.installTicks > 0) {
-      this.sprite.setTint(paletteFor(fighter).accent);
-    } else {
-      this.sprite.clearTint();
-    }
+    this.syncAttachments(fighter);
     const airborne = fighter.y < GROUND_Y - 1;
+
+    const scale = this.displayScale(fighter);
 
     if (fighter.state === FighterState.IDLE && !airborne) {
       const wave = Math.sin(nowMs / 190) * 0.012;
-      this.sprite.setScale(this.baseScale, this.baseScale * (1 + wave));
+      this.sprite.setScale(scale, scale * (1 + wave));
       this.sprite.setRotation(Math.sin(nowMs / 420) * 0.01 * fighter.facing);
     } else if (fighter.state === FighterState.WALK) {
-      this.sprite.setScale(this.baseScale);
+      this.sprite.setScale(scale);
       this.sprite.setRotation(Math.sin(nowMs / 70) * 0.025);
     } else if (fighter.state === FighterState.JUMP) {
-      this.sprite.setScale(this.baseScale, this.baseScale * 1.04);
+      this.sprite.setScale(scale, scale * 1.04);
       this.sprite.setRotation(fighter.facing * 0.035);
     } else {
       if (fighter.attack?.crouching) {
-        this.sprite.setScale(this.baseScale * 1.06, this.baseScale * 0.8);
+        this.sprite.setScale(scale * 1.06, scale * 0.8);
       } else if (!fighter.attack) {
-        this.sprite.setScale(this.baseScale);
+        this.sprite.setScale(scale);
       }
       this.sprite.setRotation(0);
     }
   }
+
+  /**
+   * The two swords blade carries once the shield is gone.
+   *
+   * Created on demand and destroyed the moment the install ends, rather than kept
+   * hidden: they exist for eight seconds of a match and nothing else in the view
+   * needs to know about them. They hang off the transformed body's sockets, which
+   * is why the offset is scaled with it.
+   *
+   * `INSTALL_ATTACHMENTS` has one entry, and the loop is still a loop, because a
+   * socket count is exactly the kind of thing a second fighter would want.
+   */
+  private syncAttachments(fighter: SimFighter): void {
+    const wanted = fighter.installTicks > 0 ? (INSTALL_ATTACHMENTS[fighter.configId] ?? []) : [];
+
+    if (wanted.length !== this.attachments.length) {
+      for (const sprite of this.attachments) sprite.destroy();
+      this.attachments = wanted
+        .map((cell) => `skill-${fighter.configId}-${cell.toLowerCase()}`)
+        .filter((key) => this.scene.textures.exists(key))
+        .map((key) => this.scene.add.image(fighter.x, fighter.y, key).setOrigin(0.5, 0.5));
+      for (const sprite of this.attachments) this.sprite.parentContainer?.add(sprite);
+    }
+    if (this.attachments.length === 0) return;
+
+    const scale = this.displayScale(fighter);
+    this.attachments.forEach((sprite, index) => {
+      // One socket either side of the body, at about waist height on the
+      // transformed frame.
+      const side = index === 0 ? -1 : 1;
+      sprite
+        .setPosition(fighter.x + side * SOCKET_OFFSET_X * scale, fighter.y - SOCKET_HEIGHT * scale)
+        .setFlipX(fighter.facing < 0)
+        .setDepth(this.sprite.depth + (side === 1 ? 1 : -1))
+        .setScale(scale * SOCKET_SCALE);
+    });
+  }
 }
+
+/**
+ * Where a mounted weapon sits on a transformed body, in untransformed pixels.
+ *
+ * Multiplied by the display scale at use, so the swords stay on the hands rather
+ * than drifting toward the middle when the body doubles.
+ */
+const SOCKET_OFFSET_X = 46;
+const SOCKET_HEIGHT = 96;
+const SOCKET_SCALE = 0.78;
 
 /**
  * How large a given kind of art is allowed to draw.
@@ -213,6 +274,43 @@ export function artFor(fighter: SimFighter): FighterArt {
   }
 
   const pose = poseFor(fighter);
+  /**
+   * A transformation swaps the whole sheet, not just the colour.
+   *
+   * Four ultimates draw their owner a second time in a new body, one drawing per
+   * pose. The lookup falls back to the ordinary sheet rather than demanding a
+   * complete set, because the sets are not complete — doge was never drawn
+   * guarding, and a missing key renders as a green box.
+   *
+   * **Ahead of the ultimate's own frame, and the order matters.** An install lands
+   * at its timeline's peak — tick 54 for doge — while the `ULTIMATE` state runs to
+   * tick 64, so the two overlap for ten ticks. Reading the ultimate first meant
+   * the fighter stayed in its untransformed stance for a sixth of a second after
+   * the beat that announced the transformation, which is the one moment the
+   * transformation has to be legible.
+   */
+  if (fighter.installTicks > 0) {
+    const cell = installCellFor(fighter.configId, pose);
+    if (cell) {
+      return {
+        key: `skill-${fighter.configId}-${cell.toLowerCase()}`,
+        size: pose === 'ko' || pose === 'victory' ? 'downed' : 'fighter',
+      };
+    }
+  }
+  /**
+   * An ultimate holds its own frame off the skill sheet.
+   *
+   * The numbered pose sheet has one `ultimate` drawing per fighter, which was all
+   * a one-tick super needed. These run for a hundred ticks with a scripted
+   * presentation behind them, and the skill sheets were drawn for exactly that —
+   * `ultimateVisuals` names which cell is the fighter mid-cast.
+   */
+  if (fighter.state === FighterState.ULTIMATE) {
+    const cell = ultimateVisualsFor(fighter.configId).ownerCell;
+    return { key: `skill-${fighter.configId}-${cell.toLowerCase()}`, size: 'ultimate' };
+  }
+
   return {
     key: poseTextureKey(fighter.configId, pose),
     size:

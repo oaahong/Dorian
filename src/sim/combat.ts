@@ -11,6 +11,7 @@ import {
   INSTALL_DAMAGE_MULTIPLIER,
   FIGHTER_HURTBOX_HEIGHT,
   FIGHTER_HURTBOX_WIDTH,
+  INSTALL_BODY_SCALE,
   HP_STAT_MITIGATION,
   MAX_ENERGY,
   MAX_HP,
@@ -48,13 +49,18 @@ export function getHurtbox(fighter: SimFighter): Rect {
     fighter.state === FighterState.CROUCH ||
     fighter.guardCrouching ||
     (fighter.attack?.crouching ?? false);
-  const height = crouching
-    ? FIGHTER_HURTBOX_HEIGHT * CROUCH_HURTBOX_SCALE
-    : FIGHTER_HURTBOX_HEIGHT;
+  // An install makes the fighter physically bigger, and the box follows the body.
+  // See INSTALL_BODY_SCALE for why that is the point rather than a side effect.
+  const scale = fighter.installTicks > 0 ? INSTALL_BODY_SCALE : 1;
+  const height =
+    (crouching ? FIGHTER_HURTBOX_HEIGHT * CROUCH_HURTBOX_SCALE : FIGHTER_HURTBOX_HEIGHT) * scale;
+  const width = FIGHTER_HURTBOX_WIDTH * scale;
   return {
-    x: fighter.x - FIGHTER_HURTBOX_WIDTH / 2,
+    // Grows upward and outward from the centre: the feet stay where they were,
+    // which is what keeps a transformed fighter standing on the floor.
+    x: fighter.x - width / 2,
     y: fighter.y - height,
-    width: FIGHTER_HURTBOX_WIDTH,
+    width,
     height,
   };
 }

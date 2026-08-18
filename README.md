@@ -81,7 +81,7 @@ E2E_BASE_URL=https://<app> npm run test:e2e
 - Special: `H` — **hold and release** for the chargeable special; 0.40 s and
   0.90 s reach levels 2 and 3, and a full charge never fires on its own
 - Motion specials: `236` / `214` / `623` / `SS` then `H`, which fires at once
-- Ultimate: `T`, or `S + H`, when MEME = 100
+- Ultimate: `T`, when MEME = 100
 - Block: hold away from the opponent
 
 ### Player 2 Battle
@@ -92,7 +92,7 @@ E2E_BASE_URL=https://<app> npm run test:e2e
 - Light: `J`
 - Heavy: `K`
 - Special: `L` — hold to charge, or the same motions as P1
-- Ultimate: `I`, or `↓ + L`, when MEME = 100
+- Ultimate: `I`, when MEME = 100
 - Block: hold away from the opponent
 
 Online, both players use the Player 1 controls on their own keyboard; the seat the
@@ -231,16 +231,26 @@ exactly the classes the trunk deleted (`Fighter`, `CombatSystem`, `controllers/`
 - Invulnerability windows, armour, multi-hit strings, and the universal throw —
   unblockable, so it answers a fighter who will not stop holding back.
 - The chargeable special, in three levels, on the bare special button — including
-  a CPU that decides how long to hold it.
+  a CPU that decides how long to hold it. The bare button is *always* the charge,
+  with no cooldown: the trunk's old `S + H` ultimate input claimed any special
+  press within eight ticks of a crouch, and has been removed.
 - Ultimate cut-ins: background, portrait, shouted line and title card, with the
   simulation freezing itself for exactly as long as the presentation runs.
 - Summons that arrive as a column, installs that buff damage for a few seconds, and
   the movement slow that sticky and awkward hits leave behind.
+- **All 226 pieces of skill art, and everything that draws them**: the twelve
+  ultimates as scripted beat tables, the four transformations as complete second
+  pose sets with doubled bodies and blade's two mounted swords, the companions
+  animating off simulation state, and the charge special's three strengths as three
+  different pictures. `src/render/__tests__/skillAssetCoverage.test.ts` holds that
+  total — every image the pipeline produces is claimed by something that draws it,
+  with one documented exemption.
 - Training mode, which is what makes any of the frame data above readable.
 - The skill sheet's three wind-up frames and its release frame, so a charge level is
   something you can see rather than count, and 九命殘影's afterimage trail.
 - All 610 art assets and the Python pipeline that regenerates them, replacing the
-  browser-side pose cutting entirely.
+  browser-side pose cutting entirely — and, as of v2.0.0, every one of them
+  actually on screen. For a while this line was true only of the files.
 - Frame-authored `AttackSpec`, in ticks, which is what made the frame data
   transferable as data rather than as a translation.
 
@@ -417,13 +427,22 @@ no configuration, not because the halves are entangled.
 2. Add one `FighterConfig` entry in `src/fighters/fighterData.ts`.
 3. Define its specials and ultimate as data-driven `AttackSpec` entries — a 236, a
    214, a function move, and optionally a 623.
-4. If the sheet does not follow the standard pose order, add a layout to
+4. Add its ultimate's hitboxes to `src/fighters/ultimateTimelines.ts` and its art
+   to `src/fighters/ultimateVisuals.ts`. Both are keyed to the same tick clock, so
+   a beat can be written next to the box it belongs to. If the ultimate transforms
+   its owner, add a row to `src/fighters/installPoses.ts`; if it leaves a companion
+   behind, add one to `src/fighters/summonArt.ts`.
+5. Run `npm run assets:skills:codegen` so `src/fighters/skillCells.ts` knows about
+   the new sheet. `src/render/__tests__/skillAssetCoverage.test.ts` will then tell
+   you about any cell nothing draws — every image the pipeline produces has to be
+   claimed by something.
+6. If the sheet does not follow the standard pose order, add a layout to
    `src/fighters/poseSheet.ts` as `alien` does.
-5. If a move needs a genuinely new behaviour, add one reusable `AttackKind` and one
+7. If a move needs a genuinely new behaviour, add one reusable `AttackKind` and one
    handler in `src/sim/world.ts`; do not duplicate the fighter engine.
-6. Widen the select grid in `src/scenes/CharacterSelectScene.ts` — `GRID` is one
+8. Widen the select grid in `src/scenes/CharacterSelectScene.ts` — `GRID` is one
    definition and the layout, cursor wrap and highlight all follow from it.
-7. Run `npm test`. The roster tests check the shape of the new entry, and the
+9. Run `npm test`. The roster tests check the shape of the new entry, and the
    golden replays will flag any change to existing behaviour.
 
 Anything added to the simulation has to obey the determinism rules — see
@@ -479,4 +498,42 @@ for — `idle`, `walkForward`, `walkBack`, `jump`, `crouch`, `light`, `heavy`,
 of the twelve sheets share a layout; `alien` was shot in a different order and has
 its own.
 
-`PrepareMatchScene` loads only the poses the two chosen fighters need.
+`PrepareMatchScene` loads only the poses the two chosen fighters need, along with
+both of their skill sheets and cut-in backgrounds.
+
+## Skill Art
+
+A second pipeline, separate from the pose sheets and with its own source art:
+`scripts/extract_skill_assets.py` cuts `public/assets/skills/<fighter>/A..W.png`
+and writes `audit/skill-assets/skill-asset-manifest.json` beside them.
+
+```bash
+npm run assets:skills            # cut, then regenerate the cell table
+npm run assets:skills:validate
+npm run assets:skills:contacts   # contact sheets, which are how you read the cells
+```
+
+226 images across the twelve fighters. Cells are letters because the sheets are
+grids and the pipeline names them by position, so what a letter *means* differs
+per fighter — `audit/skill-assets/contact_sheets/` is the map, and it is worth
+opening before touching any of the tables below.
+
+`A`-`C` are always the three charge wind-up frames and `D` the release. Everything
+past that is assigned by name:
+
+| Where a cell is used | File |
+|---|---|
+| Which cells a fighter has, at all | [skillCells.ts](src/fighters/skillCells.ts) — generated, do not edit |
+| The charge special's three strengths | [effectCells.ts](src/render/effectCells.ts) |
+| An ultimate's beats, and its owner's frame | [ultimateVisuals.ts](src/fighters/ultimateVisuals.ts) |
+| A transformed fighter's poses and weapons | [installPoses.ts](src/fighters/installPoses.ts) |
+| A companion's poses | [summonArt.ts](src/fighters/summonArt.ts) |
+| The cut-in portrait | derived from the ultimate's owner frame |
+
+**Every cell has to be claimed by one of those.**
+`src/render/__tests__/skillAssetCoverage.test.ts` fails with the name of any that
+is not, which is the only way anyone finds out — art that exists and is never
+drawn looks exactly like art that was never drawn. There is one exemption:
+`blade/K` is both of blade's swords in a single image, and the pipeline splits it
+into the two weapon modules the transformed body mounts. Drawing the cell they
+came from as well would put a third sword on screen.
