@@ -17,3 +17,7 @@ test-results/
 # content is merged, and the delivered snapshot is a commit on `upgrade-base`, so
 # a copy here would be a second one — ignored so it cannot be swept back in.
 project-working-upgraded/
+
+# Output of `npm run assets:poses:validate`: a contact sheet, a before/after
+# sheet and a JSON summary, all regenerated from the poses and the SHA baseline.
+audit/pose-regeneration-validation/
