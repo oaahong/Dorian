@@ -249,7 +249,9 @@ defensive moves are reinterpreted here in terms this simulation already has:
 `doge-sideeye` is armour rather than a damage-reflecting counter stance, and
 `ok-fear` is an `aura` with a real hitbox rather than a conditional stun that
 reads the opponent's state. Both are one mechanic instead of two, and both are
-commented where they are authored.
+commented where they are authored. Two more — `status:'counterStance'` and
+`status:'goblinInstall'` — are dead in the upgraded build itself: authored on
+moves and read by nothing, so there was never any behaviour there to carry over.
 
 **Not ported**, and the reasons differ:
 
@@ -264,18 +266,31 @@ commented where they are authored.
    ultimate — and the CPU here reads difficulty plus a range stat instead. The
    result is a CPU that plays every fighter roughly the same way.
 
-3. **Per-move hit-stop.** Authored there as `hitstopAttacker`/`hitstopVictim`;
-   derived here from the impact's weight. That one is a choice rather than a gap:
-   two numbers per move that nothing else reads is a lot of surface for a value
-   the weight already implies.
+3. **Per-fighter hit-stop.** Not simply "two authored numbers instead of one
+   derived" — the difference is structural. There, `hitstopAttacker` and
+   `hitstopVictim` freeze the two fighters *separately*, and a punish freezes the
+   victim for longer; here a hit freezes the whole world for one duration. Letting
+   the attacker thaw first is where frame advantage comes from, so this is a
+   missing mechanic and not a missing value. Porting it means unpicking the global
+   freeze, which is also what the ultimate cut-in and the round clock ride on.
 
-4. **The debug overlay.** A development tool, not part of the game.
+4. **`loveStun`.** `goblin-heart` builds a gauge 35 at a time and dizzies at 100,
+   for 35 ticks with a 180-tick lockout. Goblin's own design notes call it
+   「LoveStun 逼選擇」 — forcing a choice — so it is closer to his identity than
+   the label suggests.
 
-5. **Ultimate voice audio.** The cut-in shows the line; there is no clip behind it,
-   and there cannot be yet — the upgraded build referenced keys like
-   `ult_alien_voice`, but no audio was ever delivered with it and there is none in
-   `source-assets` or the pipeline archives. `AudioManager` synthesises everything
-   it plays, so a voice would have to be recorded rather than ported.
+5. **The debug overlay.** A development tool, though a wired-up one: it is
+   mounted in the upgraded build's battle scene and toggleable, showing the
+   startup/active/recovery phase, frame advantage, live statuses and the current
+   ultimate beat. Worth having eventually; worth nothing to a player.
+
+6. **Ultimate voice audio**, which is not a port at all. The upgraded build
+   authors a `voiceAudio` key per fighter — `ult_alien_voice` and so on — and
+   **nothing anywhere reads it**: no clip is loaded, no clip exists in
+   `source-assets` or the pipeline archives, and its `AudioManager` synthesises
+   every sound it makes through an `AudioContext` oscillator. The keys are a plan
+   somebody wrote down, not a feature. These lines have to be recorded before
+   there is anything to port.
 
 The upgraded build's own documentation is kept verbatim at
 [docs/upgraded-build.md](docs/upgraded-build.md) — it describes a tree this is not,
