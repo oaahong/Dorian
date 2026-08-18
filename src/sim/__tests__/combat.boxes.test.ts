@@ -1,6 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { FighterState } from '../../fighters/FighterState';
-import { FIGHTER_HURTBOX_HEIGHT, FIGHTER_HURTBOX_WIDTH, GROUND_Y } from '../constants';
+import {
+  CROUCH_HURTBOX_SCALE,
+  FIGHTER_HURTBOX_HEIGHT,
+  FIGHTER_HURTBOX_WIDTH,
+  GROUND_Y,
+  INSTALL_BODY_SCALE,
+} from '../constants';
 import { HEAVY_SPEC, LIGHT_SPEC } from '../attackSpecs';
 import { createFighter } from '../fighter';
 import { getHurtbox, getMeleeHitbox, rectsIntersect } from '../combat';
@@ -162,5 +168,57 @@ describe('reach in practice', () => {
     const attacker = attacking(500, 1);
     const airborne = at(560, { y: GROUND_Y - 170 });
     expect(rectsIntersect(getMeleeHitbox(attacker, LIGHT_SPEC), getHurtbox(airborne))).toBe(false);
+  });
+});
+
+describe('a transformed fighter is a bigger target', () => {
+  /**
+   * The four install ultimates make their owner physically larger, and the
+   * upgraded build's delivered notes are explicit that the hurtbox follows the
+   * body rather than staying at the untransformed size. That is the cost of the
+   * transformation: hitting harder while being easier to hit.
+   *
+   * It is the one part of this work that reaches into the simulation, so it is
+   * pinned by behaviour and not only by arithmetic.
+   */
+  it('doubles the standing box while the install runs', () => {
+    const normal = getHurtbox(at(400));
+    const installed = getHurtbox(at(400, { installTicks: 300 }));
+
+    expect(installed.width).toBe(normal.width * INSTALL_BODY_SCALE);
+    expect(installed.height).toBe(normal.height * INSTALL_BODY_SCALE);
+  });
+
+  it('keeps the feet on the floor, growing upward and outward from centre', () => {
+    const installed = getHurtbox(at(400, { installTicks: 300, y: GROUND_Y }));
+
+    expect(installed.y + installed.height).toBe(GROUND_Y);
+    expect(installed.x + installed.width / 2).toBe(400);
+  });
+
+  it('scales the crouching box too, so ducking still lowers the head', () => {
+    const standing = getHurtbox(at(400, { installTicks: 300 }));
+    const crouching = getHurtbox(at(400, { installTicks: 300, state: FighterState.CROUCH }));
+
+    expect(crouching.height).toBeLessThan(standing.height);
+    expect(crouching.height).toBe(FIGHTER_HURTBOX_HEIGHT * CROUCH_HURTBOX_SCALE * INSTALL_BODY_SCALE);
+  });
+
+  it('goes back to normal the tick the install ends', () => {
+    expect(getHurtbox(at(400, { installTicks: 0 }))).toEqual(getHurtbox(at(400)));
+  });
+
+  it('lets an attack reach a transformed fighter that would have whiffed', () => {
+    // The behaviour, not the number: a light that falls short of the normal box
+    // connects with the transformed one, because the transformed one is wider.
+    const attacker = attacking(400, 1);
+    const box = getMeleeHitbox(attacker, LIGHT_SPEC);
+    const justOutOfRange = box.x + box.width + FIGHTER_HURTBOX_WIDTH / 2 + 4;
+
+    const normal = at(justOutOfRange);
+    const installed = at(justOutOfRange, { installTicks: 300 });
+
+    expect(rectsIntersect(box, getHurtbox(normal))).toBe(false);
+    expect(rectsIntersect(box, getHurtbox(installed))).toBe(true);
   });
 });
