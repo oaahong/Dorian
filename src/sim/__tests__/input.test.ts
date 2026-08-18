@@ -15,7 +15,7 @@ import {
  * The input frame is the network payload: one 16-bit word of raw button state per
  * player per tick. Nothing derived (jumpPressed, block, which motion was spelled)
  * belongs in it — those are recomputed inside the simulation so a resimulation
- * reaches the same answer. See docs/sim-spec.md §2.
+ * reaches the same answer. See docs/gameplay/sim-spec.md §2.
  */
 
 const NONE: ButtonState = {

@@ -5,7 +5,7 @@ import { createRng, cloneRng, nextUint32, nextFloat, nextInt, nextRange } from '
  * `Math.random()` cannot appear anywhere in src/sim — two clients would diverge
  * on the first CPU decision or stage roll. This xorshift32 is seeded from the
  * host and lives inside SimWorld, so it snapshots and replays with everything
- * else. See docs/sim-spec.md §10 rows 8-9.
+ * else. See docs/gameplay/sim-spec.md §10 rows 8-9.
  */
 
 describe('createRng', () => {

@@ -24,7 +24,7 @@ import type { ImpactWeight, PlayerIndex, Rect, SimEvent, SimFighter } from './ty
 /**
  * Collision geometry and hit resolution, ported from CombatSystem and
  * Fighter.receiveImpact with the Phaser display objects, tweens and audio calls
- * removed. See docs/sim-spec.md §5-7.
+ * removed. See docs/gameplay/sim-spec.md §5-7.
  */
 
 // --- Geometry ---------------------------------------------------------------
@@ -85,7 +85,7 @@ export function getMeleeHitbox(fighter: SimFighter, spec: TickSpec): Rect {
  *
  * Note that `guardHeld` carries no range condition — only the BLOCK *stance*
  * does. A fighter walking away from a distant opponent therefore still blocks an
- * incoming projectile. Preserved from the original; see docs/sim-spec.md §5.
+ * incoming projectile. Preserved from the original; see docs/gameplay/sim-spec.md §5.
  */
 export function canBlockImpact(fighter: SimFighter, spec: TickSpec): boolean {
   return isGuarding(fighter) && guardAnswers(fighter, spec.attackType);

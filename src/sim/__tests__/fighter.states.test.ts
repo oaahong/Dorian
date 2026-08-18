@@ -8,7 +8,7 @@ import type { SimEvent, SimFighter } from '../types';
 
 /**
  * The per-fighter state machine, ported from Fighter.update / processIntent.
- * See docs/sim-spec.md §3. Branch order is load-bearing: an attack in progress
+ * See docs/gameplay/sim-spec.md §3. Branch order is load-bearing: an attack in progress
  * beats stun, which beats input, so the tests exercise the order and not just the
  * individual transitions.
  */

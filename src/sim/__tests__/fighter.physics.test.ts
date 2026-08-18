@@ -14,7 +14,7 @@ import type { SimFighter } from '../types';
 import { attackRuntime } from './factories';
 
 /**
- * Physics is ported from Fighter.applyPhysics — see docs/sim-spec.md §4. The
+ * Physics is ported from Fighter.applyPhysics — see docs/gameplay/sim-spec.md §4. The
  * integration order (gravity, then y, then x) and the `vy < 0` lift-off term are
  * load-bearing; assert the shape of the motion, not just the endpoints.
  */

@@ -36,7 +36,7 @@ import {
  * resolved side of that: an AttackSpec field may be absent, the matching TickSpec
  * field never is.
  *
- * See docs/sim-spec.md §6.
+ * See docs/gameplay/sim-spec.md §6.
  */
 export interface TickSpec {
   id: string;

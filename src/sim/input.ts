@@ -14,7 +14,7 @@
  * making `moveAxis` and the block check decode a field instead of testing a bit,
  * on the hot path, to save one byte per tick on a 60 Hz stream. Two bytes it is.
  *
- * See docs/sim-spec.md §2.
+ * See docs/gameplay/sim-spec.md §2.
  */
 
 export const BUTTON = {

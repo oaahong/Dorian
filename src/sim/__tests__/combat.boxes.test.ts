@@ -13,7 +13,7 @@ import { getHurtbox, getMeleeHitbox, rectsIntersect } from '../combat';
 import type { SimFighter } from '../types';
 import { attackRuntime } from './factories';
 
-/** Box geometry, ported from Fighter.getHurtbox / getMeleeHitbox. See docs/sim-spec.md §6. */
+/** Box geometry, ported from Fighter.getHurtbox / getMeleeHitbox. See docs/gameplay/sim-spec.md §6. */
 
 const at = (x: number, overrides: Partial<SimFighter> = {}): SimFighter => ({
   ...createFighter('pink', x, 1),

@@ -7,7 +7,7 @@ import type { CommandHistory } from './command';
  * between entities, nothing from Phaser. Everything here must survive a
  * structured clone so a world can be snapshotted, hashed and (later) rolled back.
  *
- * See docs/sim-spec.md.
+ * See docs/gameplay/sim-spec.md.
  */
 
 /** Bit positions used by `hitMask`, so an attack can only land once per target. */
