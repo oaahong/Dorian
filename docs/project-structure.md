@@ -10,9 +10,11 @@ Dorian/
 ├─ scripts/      資產管線（Python）與發版工具（Node）
 ├─ public/       靜態資產：836 張圖
 ├─ audit/        資產管線的產出紀錄與對照表
-├─ docs/         這裡
-└─ project-working-upgraded/   upgraded build 原件（唯讀參考）
+├─ asset_pipeline_backups/   技能圖管線的來源 zip（**輸入**，不是備份）
+└─ docs/         這裡
 ```
+
+> upgraded build 的原始交付內容曾經以 `project-working-upgraded/` 放在工作區裡。它已經被刪除 — 那份快照是 `upgrade-base` 分支上的一個 commit，留一份副本在樹裡等於留了第二份。它的說明文件仍以 [upgraded-build.md](upgraded-build.md) 逐字保存。
 
 ---
 
