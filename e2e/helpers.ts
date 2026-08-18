@@ -1,4 +1,8 @@
 import type { Page } from '@playwright/test';
+import { FIGHTERS } from '../src/fighters/fighterData';
+
+/** Columns in the character-select grid, mirroring `CharacterSelectScene`. */
+const SELECT_GRID_COLS = 4;
 
 /**
  * Boot decodes eight ~3.3 MB card PNGs and then runs 8 x 13 canvas extraction
@@ -74,6 +78,47 @@ export async function startVersusBattle(page: Page): Promise<void> {
   await pressAfterInputUnlock(page, 'f');          // P1 locks in
   await page.waitForTimeout(150);
   await page.keyboard.press('j');                  // P2 locks in
+  await waitForScene(page, 'BattleScene', 20_000);
+}
+
+/**
+ * Start a two-player battle with P1 on a named fighter.
+ *
+ * The select grid wraps in both directions, so a fighter is reached by stepping
+ * the cursor rather than by pressing a key per row: the index and the column count
+ * are imported from the game's own data, which means adding a fighter moves this
+ * without anybody editing it.
+ *
+ * Worth the trouble over letting the random pick decide, for any test about a
+ * behaviour only some fighters have — a test that skips itself whenever the dice
+ * disagree is a test that mostly does not run.
+ */
+export async function startVersusBattleAs(page: Page, fighterId: string): Promise<void> {
+  const index = FIGHTERS.findIndex((fighter) => fighter.id === fighterId);
+  if (index < 0) throw new Error(`No such fighter: ${fighterId}`);
+
+  await waitForScene(page, 'TitleScene', BOOT_TIMEOUT_MS);
+  await page.keyboard.press('Space');
+  await waitForScene(page, 'ModeSelectScene');
+
+  await pressAfterInputUnlock(page, 's');          // 1P VS CPU -> 2P VS P2
+  await page.waitForTimeout(120);
+  await page.keyboard.press('f');
+  await waitForScene(page, 'CharacterSelectScene');
+  await page.waitForTimeout(450);                  // the scene's input lock
+
+  for (let step = 0; step < Math.floor(index / SELECT_GRID_COLS); step += 1) {
+    await page.keyboard.press('s');                // down a row
+    await page.waitForTimeout(90);
+  }
+  for (let step = 0; step < index % SELECT_GRID_COLS; step += 1) {
+    await page.keyboard.press('d');                // right a column
+    await page.waitForTimeout(90);
+  }
+
+  await page.keyboard.press('f');                  // P1 locks in
+  await page.waitForTimeout(150);
+  await page.keyboard.press('j');                  // P2 locks in, wherever it is
   await waitForScene(page, 'BattleScene', 20_000);
 }
 
