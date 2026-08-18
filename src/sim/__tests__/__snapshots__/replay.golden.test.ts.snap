@@ -1,5 +1,17 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`attacking a transformed fighter > replays doge being punched mid-install identically 1`] = `
+[
+  "t100:178c13b7",
+  "t200:e39aa97a",
+  "t300:29473567",
+  "t400:d69cc870",
+  "t500:2b0bee6d",
+  "t600:f0911106",
+  "t700:e1b5ad4",
+]
+`;
+
 exports[`match played to a decision > reaches a winner and matches the recorded outcome 1`] = `
 {
   "matchWinner": 1,
@@ -71,16 +83,16 @@ exports[`projectile and zone characters > matches the recorded checksum trail 1`
 
 exports[`two-player scripted match > matches the recorded checksum trail 1`] = `
 [
-  "t120:db864795",
-  "t240:50d95e6e",
-  "t360:8d834d0c",
-  "t480:93252258",
-  "t600:d97e1dbb",
-  "t720:3385ad72",
-  "t840:a401a5f2",
-  "t960:50f2b8b2",
-  "t1080:6ef59851",
-  "t1200:21a3caaa",
+  "t120:408b60b2",
+  "t240:a8a6c0a7",
+  "t360:fb971411",
+  "t480:63561ea3",
+  "t600:b670a576",
+  "t720:8e74e5b",
+  "t840:478ef03a",
+  "t960:4b43a45c",
+  "t1080:b7a8b5e8",
+  "t1200:a5d36c0e",
 ]
 `;
 
@@ -88,20 +100,20 @@ exports[`two-player scripted match > matches the recorded final state 1`] = `
 {
   "matchWinner": null,
   "p1": {
-    "hp": 100,
-    "state": "DASH_FORWARD",
-    "x": 473.188,
+    "hp": 24.6531,
+    "state": "DASH_BACK",
+    "x": 1185,
   },
   "p2": {
-    "hp": 100,
+    "hp": 63.6418,
     "state": "HEAVY_ATTACK",
-    "x": 905.5625,
+    "x": 562.2456,
   },
   "phase": "fight",
-  "round": 2,
+  "round": 1,
   "roundWins": [
     0,
-    1,
+    0,
   ],
   "tick": 1200,
 }
@@ -110,11 +122,11 @@ exports[`two-player scripted match > matches the recorded final state 1`] = `
 exports[`ultimate timelines > replays alien against salad identically 1`] = `
 [
   "t150:6613f48",
-  "t300:20c18bf0",
-  "t450:15599ce",
-  "t600:9d99d793",
-  "t750:c601884e",
-  "t900:973063fc",
+  "t300:a4d694ae",
+  "t450:af13a28d",
+  "t600:7cabab1e",
+  "t750:474e1c32",
+  "t900:c54d32d5",
 ]
 `;
 
@@ -144,11 +156,11 @@ exports[`ultimate timelines > replays alien against salad identically 2`] = `
 exports[`ultimate timelines > replays doge against sauce identically 1`] = `
 [
   "t150:357cd67a",
-  "t300:9bdffaa6",
-  "t450:127bc932",
-  "t600:8230d5e2",
-  "t750:b90ee878",
-  "t900:104cd017",
+  "t300:f2bb8355",
+  "t450:1db6e86",
+  "t600:88314b1d",
+  "t750:d5b83f89",
+  "t900:2d79d81",
 ]
 `;
 
@@ -178,11 +190,11 @@ exports[`ultimate timelines > replays doge against sauce identically 2`] = `
 exports[`ultimate timelines > replays ok against wizard identically 1`] = `
 [
   "t150:c5dfafa4",
-  "t300:902deb2",
-  "t450:7048cb91",
-  "t600:33397271",
-  "t750:6677135d",
-  "t900:4c9a724",
+  "t300:af9f0c80",
+  "t450:2f34612f",
+  "t600:956ce910",
+  "t750:fec5ec4a",
+  "t900:9e19ba8e",
 ]
 `;
 
@@ -212,11 +224,11 @@ exports[`ultimate timelines > replays ok against wizard identically 2`] = `
 exports[`ultimate timelines > replays tempura against scared identically 1`] = `
 [
   "t150:16d2b41a",
-  "t300:3e76e741",
-  "t450:b4bfcdc8",
-  "t600:c6d8a294",
-  "t750:7570891",
-  "t900:a80d48b7",
+  "t300:e2cbc05d",
+  "t450:f2881760",
+  "t600:c254cd6a",
+  "t750:95ae2fab",
+  "t900:1e1cbd1c",
 ]
 `;
 

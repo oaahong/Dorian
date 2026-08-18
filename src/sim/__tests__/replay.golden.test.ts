@@ -53,31 +53,50 @@ function summarise(world: SimWorld) {
 }
 
 describe('two-player scripted match', () => {
-  // A rotation that exercises walking, jumping, both normals, the special and the
-  // ultimate motion for both seats. The special is pressed for a single tick with
-  // no motion behind it, which now winds up the chargeable special and releases it
-  // at level 1 — the shortest, most common thing a real player does with it.
+  // A rotation that exercises walking, jumping, both normals, the bare charge
+  // special and a motion special for both seats. The bare special is pressed for a
+  // single tick with no motion behind it, which winds up the chargeable special and
+  // releases it at level 1 — the shortest, most common thing a real player does
+  // with it.
   //
   // The directions are *held* across a span of ticks rather than tapped on a
   // modulus. Once dashes existed, a one-tick tap every third tick was a double tap
   // by definition, so both fighters dashed for the entire match and never threw a
   // punch — which is a fine thing for the simulation to do and a useless thing for
   // a regression net to record.
+
+  /**
+   * A real quarter-circle-forward, spelled out over four ticks.
+   *
+   * This slot used to be `Down | Special`, back when that was a second way to ask
+   * for an ultimate. On an empty meter it fell through to the 236, so what the
+   * rotation was really exercising was a motion special — by accident, through a
+   * fallback. Now that the input is gone, asking for it directly is both what the
+   * scenario always meant and stronger than what it had: the motion parser is
+   * driven for real rather than bypassed.
+   */
+  const quarterForward = (phase: number, forward: InputFrame): InputFrame | null =>
+    phase === 0 ? BUTTON.Down
+    : phase === 1 ? BUTTON.Down | forward
+    : phase === 2 ? forward
+    : phase === 3 ? BUTTON.Special
+    : null;
+
   const script = (tick: number): [InputFrame, InputFrame] => {
     const p1 =
-      tick % 53 === 0 ? BUTTON.Down | BUTTON.Special
-      : tick % 31 === 0 ? BUTTON.Special
+      quarterForward(tick % 53, BUTTON.Right) ??
+      (tick % 31 === 0 ? BUTTON.Special
       : tick % 19 === 0 ? BUTTON.Heavy
       : tick % 7 === 0 ? BUTTON.Light
       : tick % 12 < 6 ? BUTTON.Right
-      : EMPTY_INPUT;
+      : EMPTY_INPUT);
     const p2 =
-      tick % 61 === 0 ? BUTTON.Down | BUTTON.Special
-      : tick % 37 === 0 ? BUTTON.Special
+      quarterForward(tick % 61, BUTTON.Left) ??
+      (tick % 37 === 0 ? BUTTON.Special
       : tick % 23 === 0 ? BUTTON.Up
       : tick % 11 === 0 ? BUTTON.Heavy
       : tick % 16 < 7 ? BUTTON.Left
-      : EMPTY_INPUT;
+      : EMPTY_INPUT);
     return [p1, p2];
   };
 
@@ -118,7 +137,7 @@ describe('projectile and zone characters', () => {
  */
 describe('ultimate timelines', () => {
   const fireAt = (tick: number): [InputFrame, InputFrame] => [
-    tick % 200 === 0 ? BUTTON.Down | BUTTON.Special : tick % 9 === 0 ? BUTTON.Right : EMPTY_INPUT,
+    tick % 200 === 0 ? BUTTON.Ultimate : tick % 9 === 0 ? BUTTON.Right : EMPTY_INPUT,
     tick % 6 === 0 ? BUTTON.Left : EMPTY_INPUT,
   ];
 
@@ -129,7 +148,7 @@ describe('ultimate timelines', () => {
    * nobody for ten seconds — reproducible, and worth nothing as a fixture.
    */
   const closeIn = (tick: number): [InputFrame, InputFrame] => [
-    tick % 200 === 0 ? BUTTON.Down | BUTTON.Special : EMPTY_INPUT,
+    tick % 200 === 0 ? BUTTON.Ultimate : EMPTY_INPUT,
     BUTTON.Left,
   ];
 
@@ -160,6 +179,55 @@ describe('ultimate timelines', () => {
       expect(first.summary).toMatchSnapshot();
     });
   }
+});
+
+/**
+ * Somebody actually hitting a transformed fighter.
+ *
+ * The transformation scenario above runs doge's install for 534 ticks and sauce
+ * never once connects during it, so until this existed the install's effect on
+ * the hurtbox was not netted by any replay — the boxes could have been changed to
+ * anything and every snapshot would still have passed.
+ *
+ * So this one closes the distance and swings. The opponent holds toward the
+ * transformed fighter and mashes, which is the situation the doubled body is
+ * meant to be a cost in.
+ */
+describe('attacking a transformed fighter', () => {
+  /**
+   * Timing matters more than it looks. The ultimate has to go off *before* the
+   * opponent arrives — input is ignored during the round intro, and a fighter in
+   * hitstun cannot start one — and the opponent has to spend its first two
+   * hundred ticks walking rather than swinging, because mashing while walking
+   * barely closes any distance at all.
+   */
+  const script = (tick: number): [InputFrame, InputFrame] => [
+    tick === 100 ? BUTTON.Ultimate : EMPTY_INPUT,
+    tick < 260 ? BUTTON.Left
+    : tick % 9 === 0 ? BUTTON.Heavy
+    : tick % 4 === 0 ? BUTTON.Light
+    : BUTTON.Left,
+  ];
+
+  it('replays doge being punched mid-install identically', () => {
+    const world = createWorld({ ...SETUP, p1Character: 'doge', p2Character: 'sauce' });
+    const checksums: string[] = [];
+    let hitsTaken = 0;
+    let previousHp = world.fighters[0].hp;
+
+    for (let i = 0; i < 700; i += 1) {
+      if (i < 110) world.fighters[0].energy = MAX_ENERGY;
+      stepWorld(world, script(i));
+      if (world.fighters[0].installTicks > 0 && world.fighters[0].hp < previousHp) hitsTaken += 1;
+      previousHp = world.fighters[0].hp;
+      if ((i + 1) % 100 === 0) checksums.push(`t${i + 1}:${checksum(world).toString(16)}`);
+    }
+
+    // The scenario is worthless if it stops landing hits, and it would stop
+    // silently — a spacing change is all it takes.
+    expect(hitsTaken).toBeGreaterThan(0);
+    expect(checksums).toMatchSnapshot();
+  });
 });
 
 describe('match played to a decision', () => {
