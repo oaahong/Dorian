@@ -526,7 +526,7 @@ describe('ultimates', () => {
    */
   const fireUltimate = (w: SimWorld, ticks = 90) => {
     w.fighters[0].energy = MAX_ENERGY;
-    run(w, 1, BUTTON.Down | BUTTON.Special);
+    run(w, 1, BUTTON.Ultimate);
     while (w.hitStopTicks > 0) run(w, 1);
     run(w, ticks);
   };
@@ -534,7 +534,7 @@ describe('ultimates', () => {
   it('announces itself once and freezes the action', () => {
     const w = toFight(world({ p1Character: 'pink' }));
     w.fighters[0].energy = MAX_ENERGY;
-    const events = run(w, 1, BUTTON.Down | BUTTON.Special);
+    const events = run(w, 1, BUTTON.Ultimate);
     expect(events).toContainEqual(
       expect.objectContaining({ t: 'ultimateStart', player: 0 }),
     );
@@ -555,7 +555,7 @@ describe('ultimates', () => {
      */
     const w = toFight(world({ p1Character: 'pink' }));
     w.fighters[0].energy = MAX_ENERGY;
-    run(w, 1, BUTTON.Down | BUTTON.Special);
+    run(w, 1, BUTTON.Ultimate);
     expect(w.hitStopTicks).toBe(ultimateDefinitionFor('pink').cutInTicks);
   });
 
@@ -564,7 +564,7 @@ describe('ultimates', () => {
     // second of someone else's clock by firing an ultimate.
     const w = toFight(world({ p1Character: 'pink' }));
     w.fighters[0].energy = MAX_ENERGY;
-    run(w, 1, BUTTON.Down | BUTTON.Special);
+    run(w, 1, BUTTON.Ultimate);
     const clock = w.roundTicksRemaining;
     run(w, ultimateDefinitionFor('pink').cutInTicks - 1);
     expect(w.roundTicksRemaining).toBe(clock);
@@ -625,7 +625,7 @@ describe('ultimates', () => {
   it('spends the meter even if the ultimate whiffs', () => {
     const w = toFight(world({ p1Character: 'pink' }));
     w.fighters[0].energy = MAX_ENERGY;
-    run(w, 1, BUTTON.Down | BUTTON.Special);
+    run(w, 1, BUTTON.Ultimate);
     expect(w.fighters[0].energy).toBe(0);
   });
 });

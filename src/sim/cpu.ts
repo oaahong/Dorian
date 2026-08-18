@@ -158,8 +158,13 @@ export class CpuBrain {
       if (nextFloat(this.rng) < tuning.crouchBlockChance) frame |= BUTTON.Down;
       this.holdUntilTick = tick + this.randomTicks(msToTicks(160), msToTicks(310));
     } else if (self.energy >= MAX_ENERGY && distance < 560 && nextFloat(this.rng) < 0.7) {
-      // Down + Special is the ultimate motion.
-      frame = BUTTON.Down | BUTTON.Special;
+      /**
+       * The CPU asks for the ultimate directly rather than acting out the hold,
+       * release and second press a human goes through. The delivered notes call
+       * that out: the meter protocol is an input protocol, not a CPU one, and both
+       * arrive at the same move from there.
+       */
+      frame = BUTTON.Ultimate;
       this.holdUntilTick = tick + msToTicks(130);
     } else if (
       canUseSpecial(self, tick) &&

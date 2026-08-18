@@ -230,7 +230,7 @@ describe('meter and state guards', () => {
     w.fighters[0].energy = MAX_ENERGY;
     w.fighters[0].x = 500;
     w.fighters[1].x = 620;
-    run(w, 1, BUTTON.Down | BUTTON.Special);
+    run(w, 1, BUTTON.Ultimate);
     while (w.hitStopTicks > 0) run(w, 1);
     // Hold away for the whole thing, so every phase is guarded.
     run(w, 120, EMPTY_INPUT, BUTTON.Right);
@@ -242,7 +242,7 @@ describe('meter and state guards', () => {
   it('hands control back before the timeline is over', () => {
     const w = toFight(world({ p1Character: 'alien' }));
     w.fighters[0].energy = MAX_ENERGY;
-    run(w, 1, BUTTON.Down | BUTTON.Special);
+    run(w, 1, BUTTON.Ultimate);
     while (w.hitStopTicks > 0) run(w, 1);
 
     // The timeline does not begin until the ultimate's own startup has passed —

@@ -4,6 +4,7 @@ import { createRng } from '../rng';
 import { createWorld, stepWorld } from '../world';
 import { CpuBrain, type CpuDifficulty } from '../cpu';
 import { INTRO_TICKS, MAX_ENERGY } from '../constants';
+import { FighterState } from '../../fighters/FighterState';
 import type { SimWorld } from '../types';
 
 /**
@@ -101,10 +102,27 @@ describe('behaviour', () => {
     let usedUltimate = false;
     for (let i = 0; i < 120 && !usedUltimate; i += 1) {
       const cpu = brain.decide(world);
-      if (isDown(cpu, BUTTON.Down) && isDown(cpu, BUTTON.Special)) usedUltimate = true;
+      if (isDown(cpu, BUTTON.Ultimate)) usedUltimate = true;
       stepWorld(world, [EMPTY_INPUT, cpu]);
     }
     expect(usedUltimate).toBe(true);
+  });
+
+  it('actually gets one out, rather than only asking for one', () => {
+    // Pressing the button is not the same as the move coming out — a CPU that
+    // asked at the wrong moment, or with an input the simulation no longer
+    // recognises, would satisfy the test above and never fire.
+    const world = toFight(createWorld(setup));
+    world.fighters[1].x = world.fighters[0].x + 200;
+
+    const brain = new CpuBrain(1, 'hard', createRng(11));
+    let fired = false;
+    for (let i = 0; i < 240 && !fired; i += 1) {
+      world.fighters[1].energy = MAX_ENERGY;
+      stepWorld(world, [EMPTY_INPUT, brain.decide(world)]);
+      if (world.fighters[1].state === FighterState.ULTIMATE) fired = true;
+    }
+    expect(fired).toBe(true);
   });
 
   it('clears its timers on reset so a new round starts fresh', () => {

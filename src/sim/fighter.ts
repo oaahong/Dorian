@@ -670,29 +670,30 @@ function processIntent(
   const jumpPressed = justPressed(input, fighter.prevButtons, BUTTON.Up);
   const throwPressed = justPressed(input, fighter.prevButtons, BUTTON.Throw);
   const specialEdge = justPressed(input, fighter.prevButtons, BUTTON.Special);
-  const downBuffered = crouch || tick <= fighter.downBufferedUntilTick;
   /** Which special the motion history is asking for, if any. Asked once. */
   const motioned = requestedSpecial(fighter, cfg);
 
   /**
-   * Two ways to ask for an ultimate.
+   * One way to ask for an ultimate: the button.
    *
-   * The dedicated button is the upgraded build's scheme and the one the controls
-   * screen teaches. Down-plus-special is the trunk's original motion, kept because
-   * it is what existing hands already know.
+   * There used to be a second — down plus special, from before the dedicated
+   * button existed — and it took more than it gave. The crouch buffer holds for
+   * eight ticks, so it claimed *any* special press within eight ticks of touching
+   * down: with a full meter that spent the whole bar, and with an empty one it
+   * threw the 236 instead. A crouching player could not reach their own charge
+   * special at all, and the charge special is the move a player who knows no
+   * motions actually uses.
    *
-   * **A recognised motion beats the legacy one.** Every quarter-circle passes
-   * through a down two or three ticks before the button, comfortably inside the
-   * eight-tick crouch buffer — so without this, 236 with a full meter fired the
-   * ultimate and the fighter's own fireball became unreachable at exactly the
-   * moment it mattered. It went unnoticed at first because the motion tests ran on
-   * an empty meter, where the ultimate falls through to the motion anyway.
+   * It also forced a precedence rule on the motions — a recognised quarter-circle
+   * had to be checked for first, because every quarter-circle passes through down
+   * a few ticks before the button — and that rule went unnoticed as a bug for a
+   * while because the motion tests ran on an empty meter, where the ultimate fell
+   * through to the motion anyway. With the second input gone, none of that is
+   * needed: the button fires the ultimate, and the special button is always the
+   * special button.
    */
-  const legacyUltimateMotion = specialEdge && downBuffered && !motioned;
-  const ultimatePressed =
-    justPressed(input, fighter.prevButtons, BUTTON.Ultimate) || legacyUltimateMotion;
-  /** A special edge does its ordinary job unless the legacy motion claimed it. */
-  const specialPressed = specialEdge && !legacyUltimateMotion;
+  const ultimatePressed = justPressed(input, fighter.prevButtons, BUTTON.Ultimate);
+  const specialPressed = specialEdge;
 
   const baseSpeed = SPEED_BY_STAT[cfg.speedStat] ?? SPEED_BY_STAT[3]!;
   const speed = fighter.slowTicks > 0 ? baseSpeed * SLOW_MOVE_MULTIPLIER : baseSpeed;
@@ -759,24 +760,17 @@ function processIntent(
   // Chords outrank every single-button move; see `tryChord`.
   if (tryChord(fighter, tick, player, events)) return;
 
+  /**
+   * The button fires the ultimate, or it does nothing and goes on charging.
+   *
+   * No fallback to a special when the bar is short, deliberately: holding this
+   * button is how the bar is filled, so a fallback would mean that reaching for
+   * the charge threw a fireball — the opposite of standing still to build meter.
+   */
   if (ultimatePressed && !fighter.ultimateNeedsRelease) {
     if (fighter.energy >= MAX_ENERGY && canUseSpecial(fighter, tick)) {
       fighter.energy = 0;
       startAttack(fighter, getSpec(cfg.ultimate.id), FighterState.ULTIMATE, crouch, false, player, events);
-      return;
-    }
-    /**
-     * A *motion* asking for an ultimate without the meter for it is not a whiff
-     * — it comes out as the fighter's defining special instead. Ported behaviour,
-     * and it reads correctly: down-plus-special is a special input.
-     *
-     * The dedicated button gets no such fallback, and must not. Holding it is how
-     * the bar is charged, so a fallback would mean reaching for the charge threw
-     * a fireball — the opposite of standing still to build meter.
-     */
-    if (legacyUltimateMotion && canUseSpecial(fighter, tick)) {
-      const fallback = motioned ?? cfg.specials.quarterForward;
-      startMotionSpecial(fighter, tick, crouch, cfg, fallback.id, player, events);
     }
     return;
   }
