@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import { AudioManager } from '../systems/AudioManager';
 import { gameState, type CpuDifficulty, type GameMode } from '../systems/GameState';
+import { modeMenuLayout } from '../ui/menuLayout';
 import { COLORS, FONT_FAMILY, GAME_WIDTH } from '../utils/constants';
 
 const MODES: { label: string; mode: GameMode; scene: string }[] = [
@@ -9,6 +10,14 @@ const MODES: { label: string; mode: GameMode; scene: string }[] = [
   { label: 'ONLINE VS', mode: 'online', scene: 'OnlineLobbyScene' },
   { label: 'TRAINING', mode: 'training', scene: 'CharacterSelectScene' },
 ];
+
+/**
+ * Derived from the roster above rather than typed out. When training mode made
+ * this list four long, the difficulty line's hard-coded y=530 landed inside the
+ * fourth option's box (491-559) and hid it completely; a fifth mode would have
+ * done the same to the help line. See `src/ui/menuLayout.ts`.
+ */
+const LAYOUT = modeMenuLayout(MODES.length);
 
 export class ModeSelectScene extends Phaser.Scene {
   private index = 0;
@@ -22,10 +31,10 @@ export class ModeSelectScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(COLORS.bg);
     this.drawChrome('SELECT MODE');
     this.optionTexts = MODES.map((option, i) =>
-      this.add.text(GAME_WIDTH / 2, 270 + i * 85, option.label, this.menuStyle()).setOrigin(.5),
+      this.add.text(GAME_WIDTH / 2, LAYOUT.optionY(i), option.label, this.menuStyle()).setOrigin(.5),
     );
-    this.difficultyText = this.add.text(GAME_WIDTH / 2, 530, 'CPU DIFFICULTY: NORMAL', { fontFamily:FONT_FAMILY, fontSize:'22px', color:'#00C8FF' }).setOrigin(.5);
-    this.add.text(GAME_WIDTH / 2, 600, '↑↓ / W S : SELECT     ←→ / A D : DIFFICULTY     F / ENTER : CONFIRM', { fontFamily:FONT_FAMILY, fontSize:'17px', color:'#bfb49c' }).setOrigin(.5);
+    this.difficultyText = this.add.text(GAME_WIDTH / 2, LAYOUT.difficultyY, 'CPU DIFFICULTY: NORMAL', { fontFamily:FONT_FAMILY, fontSize:'22px', color:'#00C8FF' }).setOrigin(.5);
+    this.add.text(GAME_WIDTH / 2, LAYOUT.helpY, '↑↓ / W S : SELECT     ←→ / A D : DIFFICULTY     F / ENTER : CONFIRM', { fontFamily:FONT_FAMILY, fontSize:'17px', color:'#bfb49c' }).setOrigin(.5);
     this.inputLockedUntil = this.time.now + 300;
     this.refresh();
     const kb = this.input.keyboard;

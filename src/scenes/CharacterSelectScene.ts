@@ -2,6 +2,7 @@ import * as Phaser from 'phaser';
 import { FIGHTERS, thumbTextureKey } from '../fighters/fighterData';
 import { gameState } from '../systems/GameState';
 import { AudioManager } from '../systems/AudioManager';
+import { DETAIL_LAYOUT } from '../ui/menuLayout';
 import { COLORS, FONT_FAMILY } from '../utils/constants';
 
 interface CursorState {
@@ -78,7 +79,8 @@ export class CharacterSelectScene extends Phaser.Scene {
       stroke: '#050505',
       strokeThickness: 7,
     });
-    this.add.text(32, 68, gameState.data.mode === 'cpu' ? 'P1 SELECT • CPU WILL RANDOMIZE' : 'P1 + P2 SELECT', {
+    // 76, not 68: the heading's 7px stroke carries its bounds down to y=69.
+    this.add.text(32, 76, gameState.data.mode === 'cpu' ? 'P1 SELECT • CPU WILL RANDOMIZE' : 'P1 + P2 SELECT', {
       fontFamily: FONT_FAMILY,
       fontSize: '17px',
       color: '#F3E9D0',
@@ -137,30 +139,51 @@ export class CharacterSelectScene extends Phaser.Scene {
     this.p1Frame = this.add.rectangle(0, 0, 132, 162, 0x000000, 0).setStrokeStyle(5, COLORS.gold, 1).setDepth(10);
     this.p2Frame = this.add.rectangle(0, 0, 142, 172, 0x000000, 0).setStrokeStyle(4, COLORS.cyan, 1).setDepth(11).setAlpha(gameState.picksBothFighters() ? 1 : 0);
 
-    this.detailCard = this.add.image(950, 232, thumbTextureKey(FIGHTERS[0]!)).setDisplaySize(214, 268);
-    // Ten lines of detail at 18px overflowed the panel and collided with the
-    // help line once the roster grew a stat row; tightened to fit inside it.
-    this.detailText = this.add.text(795, 386, '', {
+    /**
+     * The detail panel, laid out from `DETAIL_LAYOUT` rather than from a dozen
+     * coordinates typed in by hand.
+     *
+     * What that hand-typed version got wrong: the stat block ran to y=642 and the
+     * tagline started at y=650 — 8px, where a line of this text needs 23 — with
+     * the panel border 3px below that. It only looked intact because none of the
+     * twelve taglines happens to wrap. One that did would have pushed straight
+     * through the border and onto the controls line.
+     */
+    const layout = DETAIL_LAYOUT;
+    this.add
+      .rectangle(layout.panel.x, layout.panel.y, layout.panel.width, layout.panel.height, 0x090909, 0.65)
+      .setStrokeStyle(2, COLORS.gold, 0.55);
+
+    this.detailCard = this.add
+      .image(layout.card.x, layout.card.y, thumbTextureKey(FIGHTERS[0]!))
+      .setDisplaySize(layout.card.width, layout.card.height);
+
+    this.detailText = this.add.text(layout.stats.x, layout.stats.y, '', {
       fontFamily: FONT_FAMILY,
       fontSize: '17px',
       color: '#F3E9D0',
       lineSpacing: 5,
-      wordWrap: { width: 400 },
+      wordWrap: { width: layout.stats.wrapWidth },
     });
 
-    this.taglineText = this.add.text(795, 650, '', {
+    // A rule, so the tagline reads as its own footer rather than as a twelfth
+    // line of stats butted up against the ULTIMATE row.
+    this.add.rectangle(layout.divider.x, layout.divider.y, layout.divider.width, 1, COLORS.gold, 0.35);
+
+    this.taglineText = this.add.text(layout.tagline.x, layout.tagline.y, '', {
       fontFamily: FONT_FAMILY,
       fontSize: '16px',
       color: '#bfb49c',
-      wordWrap: { width: 380 },
+      // maxLines is the guarantee the old layout lacked: a long tagline now
+      // truncates inside its band instead of growing out through the border.
+      wordWrap: { width: layout.tagline.wrapWidth },
+      maxLines: layout.tagline.maxLines,
     });
-
-    this.add.rectangle(972, 356, 470, 630, 0x090909, 0.65).setStrokeStyle(2, COLORS.gold, 0.55).setDepth(-1);
 
     const help = gameState.data.mode === 'cpu'
       ? 'WASD / ARROWS MOVE  •  F / ENTER CONFIRM  •  G / ESC BACK'
       : 'P1 WASD + F     P2 ARROWS + J     G / ESC BACK';
-    this.add.text(960, 698, help, {
+    this.add.text(layout.panel.x, layout.helpY, help, {
       fontFamily: FONT_FAMILY,
       fontSize: '15px',
       color: '#bfb49c',
