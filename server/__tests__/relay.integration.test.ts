@@ -241,6 +241,35 @@ describe('relaying gameplay traffic', () => {
     expect(host.binaryCount).toBe(0);
   });
 
+  it('forwards an extension tail through untouched', async () => {
+    /**
+     * The ack and the piggybacked checksum ride in a tail appended after the
+     * frames. The relay validates with `decodeBinary` and drops what it cannot
+     * parse, so this is the test behind the claim that a server which predates
+     * the tail still forwards it: the length checks are minimums, so unknown
+     * trailing bytes survive the round trip byte for byte.
+     */
+    const { host, guest } = await pairUp();
+    const packet = encodeInput({
+      startTick: 42,
+      frames: [BUTTON.Right],
+      nextWanted: 39,
+      checksum: { tick: 60, hash: 0xabcdef },
+    });
+
+    host.sendRaw(packet);
+
+    const received = await guest.nextBinary();
+    expect(new Uint8Array(received)).toEqual(packet);
+    expect(decodeBinary(received)).toEqual({
+      kind: 'input',
+      startTick: 42,
+      frames: [BUTTON.Right],
+      nextWanted: 39,
+      checksum: { tick: 60, hash: 0xabcdef },
+    });
+  });
+
   it('forwards checksum packets', async () => {
     const { host, guest } = await pairUp();
     host.sendRaw(encodeChecksum({ tick: 60, hash: 0xabcdef }));

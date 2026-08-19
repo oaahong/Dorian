@@ -129,6 +129,10 @@ Dorian/
 | `generate_skill_contact_sheets.py` | 產生對照表 — **看懂每個圖格是什麼的唯一方法** |
 | `validate_pose_regeneration.py`、`validate_skill_assets.py` | SHA-256 基準驗證 |
 | `gen-skill-cells.mjs` | manifest → `src/fighters/skillCells.ts` |
+| `asset_format.py` | 輸出格式與品質（WebP q85），三個腳本共用的單一來源 |
+| `calibrate_webp_quality.py` | 產生品質對照表，用來**看圖**決定 q 值 |
+| `convert_assets_to_webp.py` | 一次性轉檔（PNG → WebP，背景順便裁切） |
+| `rebaseline_asset_hashes.py` | 格式改變後重新產生 manifest 與 SHA-256 基準 |
 | `release.mjs`、`release-notes.mjs` | 發版流程 |
 | `upgraded-acceptance/` | upgraded build 交付的 QA 腳本。**跑不起來**（它們斷言的是未移植的原始碼），留作規格參考 |
 
@@ -136,13 +140,18 @@ Dorian/
 
 ## `public/assets/`
 
+全部是 WebP，整個目錄 14 MB。一場對戰下載最壞 2.1 MB。
+
 | 目錄 | 內容 |
 |---|---|
-| `cards/` | 12 張全解析度角色卡（26 MB），只在切圖時讀 |
 | `thumbs/` | 12 張縮圖 WebP（0.55 MB），選單用 |
-| `poses/` | 360 張姿勢圖 |
-| `skills/` | 226 張技能圖 |
-| `ultimate-backgrounds/` | 12 張大招背景 |
+| `poses/` | 360 張姿勢圖（7.5 MB） |
+| `skills/` | 226 張技能圖（2.5 MB） |
+| `ultimate-backgrounds/` | 12 張大招背景，裁切成 1296×728（2.4 MB） |
+
+角色卡不在這裡 — 它們是管線的輸入，瀏覽器從不請求，所以住在
+`asset_pipeline_backups/cards/`，避免每次部署都跟著上線 26 MB。
+轉檔前的 PNG 保留在 `asset_pipeline_backups/png-originals/`。
 
 ## `audit/`
 
