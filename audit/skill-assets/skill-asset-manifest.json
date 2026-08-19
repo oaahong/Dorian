@@ -15,7 +15,7 @@
             301,
             261
           ],
-          "outputPath": "public/assets/skills/alien/A.png",
+          "outputPath": "public/assets/skills/alien/A.webp",
           "pivot": [
             0.5,
             1.0
@@ -28,7 +28,7 @@
             222,
             209
           ],
-          "sha256": "8369db2f4e05a7c1818e25f62bee36899e758c4d64b2bcbc424805994171a3b4"
+          "sha256": "779efa3844549d402d46d8e0d0c5924a3c9bfc8ef096d9c4b1bf64122807f3ef"
         },
         {
           "poseId": "B",
@@ -40,7 +40,7 @@
             614,
             261
           ],
-          "outputPath": "public/assets/skills/alien/B.png",
+          "outputPath": "public/assets/skills/alien/B.webp",
           "pivot": [
             0.5,
             1.0
@@ -53,7 +53,7 @@
             245,
             236
           ],
-          "sha256": "3a14fe38373e35e432f33ffb37840346c29f2793d6bd9a87f54621d3f4a0cc15"
+          "sha256": "ceb312e8f53fc0875d272127a57d2a3513e05278fc53ce1f92f359436851533d"
         },
         {
           "poseId": "C",
@@ -65,7 +65,7 @@
             926,
             261
           ],
-          "outputPath": "public/assets/skills/alien/C.png",
+          "outputPath": "public/assets/skills/alien/C.webp",
           "pivot": [
             0.5,
             1.0
@@ -78,7 +78,7 @@
             271,
             244
           ],
-          "sha256": "d897bdfa666d6b39841c359709ee472941c16d706c652e88205f52b2361f6bfb"
+          "sha256": "a9a74edf2947c6ab072df3f626cf0bf60c93061a5f6fb887bf3d2fb58acfde8b"
         },
         {
           "poseId": "D",
@@ -90,7 +90,7 @@
             1238,
             261
           ],
-          "outputPath": "public/assets/skills/alien/D.png",
+          "outputPath": "public/assets/skills/alien/D.webp",
           "pivot": [
             0.5,
             1.0
@@ -103,7 +103,7 @@
             288,
             174
           ],
-          "sha256": "164f08eeb7e5f90dadf4ca4f593ce0aef5d05d7b163904b703ba4adc35a43413"
+          "sha256": "e4221a1c72832b4d7d8bb909655c28ad84ad383282715f2f2fbb0ddf38c26fb1"
         },
         {
           "poseId": "E",
@@ -115,7 +115,7 @@
             302,
             572
           ],
-          "outputPath": "public/assets/skills/alien/E.png",
+          "outputPath": "public/assets/skills/alien/E.webp",
           "pivot": [
             0.5,
             0.5
@@ -128,7 +128,7 @@
             254,
             100
           ],
-          "sha256": "7c380f70f174163d12996cf7202f6b4948548ffad64a1d2ba0f1033f2fee0bef"
+          "sha256": "c56dd39af46bb592251055b3533c7524aa75ef69a4a0d8cc354ff1b87e095f6d"
         },
         {
           "poseId": "F",
@@ -140,7 +140,7 @@
             614,
             572
           ],
-          "outputPath": "public/assets/skills/alien/F.png",
+          "outputPath": "public/assets/skills/alien/F.webp",
           "pivot": [
             0.5,
             0.5
@@ -153,7 +153,7 @@
             284,
             174
           ],
-          "sha256": "b91f08f2a5c1472d0100e3564822db176cc1b4392049bff0b4926b5cd82653b9"
+          "sha256": "684480a55db176ec0d1f5f68edc5964639d3549b5ffbe0e7817d587ef429c115"
         },
         {
           "poseId": "G",
@@ -165,7 +165,7 @@
             926,
             572
           ],
-          "outputPath": "public/assets/skills/alien/G.png",
+          "outputPath": "public/assets/skills/alien/G.webp",
           "pivot": [
             0.5,
             0.5
@@ -178,7 +178,7 @@
             288,
             235
           ],
-          "sha256": "994d16da1c16b777e1076fd6ec25e82fbed17e3a7858ec23ec0b433b27b7dcae"
+          "sha256": "fce7f5ba6704f9d2a78f5df732fd860bd80c4c880799c1d3df26fcefba48f9f3"
         },
         {
           "poseId": "H",
@@ -190,7 +190,7 @@
             1238,
             572
           ],
-          "outputPath": "public/assets/skills/alien/H.png",
+          "outputPath": "public/assets/skills/alien/H.webp",
           "pivot": [
             0.5,
             0.5
@@ -203,7 +203,7 @@
             265,
             203
           ],
-          "sha256": "0759348d9f859cdc07224cd89ab34b8e73ee6202079703537da6dd517b35bb8a"
+          "sha256": "4f607ddba57c962937c3d05d128c26b847890b9bf1433baa8fe252529449c871"
         },
         {
           "poseId": "I",
@@ -215,7 +215,7 @@
             301,
             884
           ],
-          "outputPath": "public/assets/skills/alien/I.png",
+          "outputPath": "public/assets/skills/alien/I.webp",
           "pivot": [
             0.5,
             0.5
@@ -228,7 +228,7 @@
             234,
             241
           ],
-          "sha256": "558ae0fa95545dbeb593759e4be54b793ea2a07bf23563fb8c79c6a5dc15604f"
+          "sha256": "971e5754b924537f0d5b3c524a59be08575dddbf250c0723c56c41f3828273cb"
         },
         {
           "poseId": "J",
@@ -240,7 +240,7 @@
             614,
             884
           ],
-          "outputPath": "public/assets/skills/alien/J.png",
+          "outputPath": "public/assets/skills/alien/J.webp",
           "pivot": [
             0.5,
             0.5
@@ -253,7 +253,7 @@
             180,
             202
           ],
-          "sha256": "05916b392901fee6b1b41ac08a8d8b4ee865d60f5c7a53cd75b7f2e869f5e55d"
+          "sha256": "819ad8536c51325793c61e327032ca5e7f5417ccd144ecffbedd670cc50a762a"
         },
         {
           "poseId": "K",
@@ -265,7 +265,7 @@
             926,
             884
           ],
-          "outputPath": "public/assets/skills/alien/K.png",
+          "outputPath": "public/assets/skills/alien/K.webp",
           "pivot": [
             0.5,
             0.5
@@ -278,7 +278,7 @@
             288,
             246
           ],
-          "sha256": "28ec20bf9f5b563eb8b7bde37f7cf8c8f256b285068d24f81fc561553f545418"
+          "sha256": "fa17bbcd8e3ef1659f9e2601269a07a42827e9361368b2bf2555dc17d99cc02f"
         },
         {
           "poseId": "L",
@@ -290,7 +290,7 @@
             1238,
             884
           ],
-          "outputPath": "public/assets/skills/alien/L.png",
+          "outputPath": "public/assets/skills/alien/L.webp",
           "pivot": [
             0.5,
             0.5
@@ -303,7 +303,7 @@
             287,
             235
           ],
-          "sha256": "bf9805137fe08f46639d28c81c917febc5a46eb09eb636f03aad85b5e836eb41"
+          "sha256": "6b9056ecc5cca9cb18f0049930f378430f6eac2b5258a80b332e434aa782f2a2"
         },
         {
           "poseId": "M",
@@ -315,7 +315,7 @@
             302,
             1194
           ],
-          "outputPath": "public/assets/skills/alien/M.png",
+          "outputPath": "public/assets/skills/alien/M.webp",
           "pivot": [
             0.5,
             0.5
@@ -328,7 +328,7 @@
             286,
             239
           ],
-          "sha256": "95f13c9c3dfe08f3a6cc7fd2d40ffd1c9f68fdb3de6049a76cb509e03ab71cb5"
+          "sha256": "21b313dd4545cf784ce663cb262ba047b480abe62377e0bb924997fb77a1dd70"
         },
         {
           "poseId": "N",
@@ -340,7 +340,7 @@
             614,
             1194
           ],
-          "outputPath": "public/assets/skills/alien/N.png",
+          "outputPath": "public/assets/skills/alien/N.webp",
           "pivot": [
             0.5,
             0.5
@@ -353,7 +353,7 @@
             287,
             245
           ],
-          "sha256": "31fe8d1dc561ae73412ccaff0f66c63b4f6a6f4b1fa26aedda3ff88e1c10e4cd"
+          "sha256": "bbc656662e0180f4b908078c06585dc20756e7bff9e39217ab976e0039996b0e"
         },
         {
           "poseId": "O",
@@ -365,7 +365,7 @@
             926,
             1194
           ],
-          "outputPath": "public/assets/skills/alien/O.png",
+          "outputPath": "public/assets/skills/alien/O.webp",
           "pivot": [
             0.5,
             0.5
@@ -378,7 +378,7 @@
             288,
             245
           ],
-          "sha256": "593ed6add9e4ba9ef3fd08caa983b762d1c8a141a2cd9a1a713ad3c68f7c77ae"
+          "sha256": "5526dbb6b9f36514c166242270f0a34dd4f7de78817789f80531e5f88efa8010"
         },
         {
           "poseId": "P",
@@ -390,7 +390,7 @@
             1238,
             1194
           ],
-          "outputPath": "public/assets/skills/alien/P.png",
+          "outputPath": "public/assets/skills/alien/P.webp",
           "pivot": [
             0.5,
             0.5
@@ -403,7 +403,7 @@
             288,
             186
           ],
-          "sha256": "d874f9edd0fcbe5d6940195449c1a4c76cd72bf9ccc1558b8220d1a7cfd743fc"
+          "sha256": "2f7b78b6610559e8c8b29a685eb8204da80955d3bac907eaabda2cdd63877d40"
         }
       ]
     },
@@ -420,7 +420,7 @@
             250,
             271
           ],
-          "outputPath": "public/assets/skills/doge/A.png",
+          "outputPath": "public/assets/skills/doge/A.webp",
           "pivot": [
             0.5,
             1.0
@@ -433,7 +433,7 @@
             178,
             190
           ],
-          "sha256": "c51f4749bf477077f22699314f4d8ad33a8bc6a0468eca86e89fa1a17c7b1a0d"
+          "sha256": "139c4972487c7d470c9897ac05195657a22d7b6e9b17ba2714f9f6c2ac04997b"
         },
         {
           "poseId": "B",
@@ -445,7 +445,7 @@
             487,
             271
           ],
-          "outputPath": "public/assets/skills/doge/B.png",
+          "outputPath": "public/assets/skills/doge/B.webp",
           "pivot": [
             0.5,
             1.0
@@ -458,7 +458,7 @@
             212,
             205
           ],
-          "sha256": "099dbf5c0457e88a4ffc7018d0d2de86e1e4f45c5e4d7b02d502f2e0c023b9c1"
+          "sha256": "f86216c52f9d13b60c7b753ba1f1a26c12a106cfe9bb98b5648df823ccef586e"
         },
         {
           "poseId": "C",
@@ -470,7 +470,7 @@
             741,
             271
           ],
-          "outputPath": "public/assets/skills/doge/C.png",
+          "outputPath": "public/assets/skills/doge/C.webp",
           "pivot": [
             0.5,
             1.0
@@ -483,7 +483,7 @@
             244,
             233
           ],
-          "sha256": "2afe75250ffedb3cac97b149e9fd362fd186b8b286aced618d5c17622179d875"
+          "sha256": "efaca1fc9c3189796776c70381135f5e69145fed47716aa5480a95dc5a76825c"
         },
         {
           "poseId": "D",
@@ -495,7 +495,7 @@
             1012,
             271
           ],
-          "outputPath": "public/assets/skills/doge/D.png",
+          "outputPath": "public/assets/skills/doge/D.webp",
           "pivot": [
             0.5,
             1.0
@@ -508,7 +508,7 @@
             240,
             163
           ],
-          "sha256": "26caaf0027049dd58bbdabee0167813d482956119e7b1a4689e0d295ac880dc2"
+          "sha256": "214a2b548497e15425468ec7dac8a5763982fcf785f8629a1f21e569c14ee03c"
         },
         {
           "poseId": "E",
@@ -520,7 +520,7 @@
             1237,
             271
           ],
-          "outputPath": "public/assets/skills/doge/E.png",
+          "outputPath": "public/assets/skills/doge/E.webp",
           "pivot": [
             0.5,
             0.5
@@ -533,7 +533,7 @@
             182,
             104
           ],
-          "sha256": "4c608c2d2d4163b90c48a7a48dd014e64588998b312867a935e18f19a22552e0"
+          "sha256": "a0963e9ffce43eed19bc21fcb30ad1ff7e96dd98c993df0586050e0619023f24"
         },
         {
           "poseId": "F",
@@ -545,7 +545,7 @@
             1518,
             271
           ],
-          "outputPath": "public/assets/skills/doge/F.png",
+          "outputPath": "public/assets/skills/doge/F.webp",
           "pivot": [
             0.5,
             0.5
@@ -558,7 +558,7 @@
             253,
             158
           ],
-          "sha256": "f460b37b67c9471bf8f5e714486f416bb60f3f6d62281343ce3e9c88ae6bd677"
+          "sha256": "6d1e4db514a1ba4b14090ae367c10ffd781ad1fe79dfe90f3dc1b343b14b0afa"
         },
         {
           "poseId": "G",
@@ -570,7 +570,7 @@
             250,
             572
           ],
-          "outputPath": "public/assets/skills/doge/G.png",
+          "outputPath": "public/assets/skills/doge/G.webp",
           "pivot": [
             0.5,
             0.5
@@ -583,7 +583,7 @@
             222,
             210
           ],
-          "sha256": "9c6fd2146f27230d82aad37b70fc4a522e35d869ad0626afef37201b841503ee"
+          "sha256": "b2200cc631e78c112364b813597d16c4632654338ceedbba120d90d1a3d4b643"
         },
         {
           "poseId": "H",
@@ -595,7 +595,7 @@
             487,
             572
           ],
-          "outputPath": "public/assets/skills/doge/H.png",
+          "outputPath": "public/assets/skills/doge/H.webp",
           "pivot": [
             0.5,
             0.5
@@ -608,7 +608,7 @@
             170,
             183
           ],
-          "sha256": "90eb651f0e91179ce9b08a795ccffc77939962741db214e2250efe1258e3f815"
+          "sha256": "37e9ecbbd4afe73e282ef72b4371429966d8096db21f37343cbc7059dd29596a"
         },
         {
           "poseId": "I",
@@ -620,7 +620,7 @@
             741,
             572
           ],
-          "outputPath": "public/assets/skills/doge/I.png",
+          "outputPath": "public/assets/skills/doge/I.webp",
           "pivot": [
             0.5,
             0.5
@@ -633,7 +633,7 @@
             243,
             234
           ],
-          "sha256": "43923a941fdaf8de50d781ea59bae932bac9c4594c0a956c34664230c74fa93b"
+          "sha256": "9bb050e5fa8b631ee871fd27184bc6bf245c0fa954add922b05e9e3b02db3e2e"
         },
         {
           "poseId": "J",
@@ -645,7 +645,7 @@
             1012,
             572
           ],
-          "outputPath": "public/assets/skills/doge/J.png",
+          "outputPath": "public/assets/skills/doge/J.webp",
           "pivot": [
             0.5,
             0.5
@@ -658,7 +658,7 @@
             197,
             224
           ],
-          "sha256": "b385c1d7001e3caadd4d19aa50551c37c0c817d88adf82fde55362ead1b5ec5a"
+          "sha256": "b280247ba9e1c5434ca53bccb5d26dfd3beeb463befdd0e47363d876f02cec0e"
         },
         {
           "poseId": "K",
@@ -670,7 +670,7 @@
             1237,
             572
           ],
-          "outputPath": "public/assets/skills/doge/K.png",
+          "outputPath": "public/assets/skills/doge/K.webp",
           "pivot": [
             0.5,
             0.5
@@ -683,7 +683,7 @@
             206,
             194
           ],
-          "sha256": "6b0c3f61ad1f205f626de977ef62180d16b0ba4130961ebd295f3cb928977ae6"
+          "sha256": "ab1e0838b1e5343cd861323e99b4e4fcc12ffeef3107cc83f02712d9a40b779b"
         },
         {
           "poseId": "L",
@@ -695,7 +695,7 @@
             1518,
             572
           ],
-          "outputPath": "public/assets/skills/doge/L.png",
+          "outputPath": "public/assets/skills/doge/L.webp",
           "pivot": [
             0.5,
             0.5
@@ -708,7 +708,7 @@
             214,
             215
           ],
-          "sha256": "3c5a965a645370c43ca68a230a5e0515133704f04b07a9655758ecf641f0f5f7"
+          "sha256": "dd2037d159675540a5196fb5f45c47f5d11ffa24a97e9d56481a49c7c230eeff"
         },
         {
           "poseId": "M",
@@ -720,7 +720,7 @@
             250,
             890
           ],
-          "outputPath": "public/assets/skills/doge/M.png",
+          "outputPath": "public/assets/skills/doge/M.webp",
           "pivot": [
             0.5,
             0.5
@@ -733,7 +733,7 @@
             216,
             172
           ],
-          "sha256": "f209dec8913e80bb774933d83685d1b48d863cd0fac71ab7a4ca46b9c9a77a04"
+          "sha256": "1888ee0c7a718d769c649b50544641690418f49afd305b340e65cf8a28b17e9e"
         },
         {
           "poseId": "N",
@@ -745,7 +745,7 @@
             487,
             890
           ],
-          "outputPath": "public/assets/skills/doge/N.png",
+          "outputPath": "public/assets/skills/doge/N.webp",
           "pivot": [
             0.5,
             0.5
@@ -758,7 +758,7 @@
             184,
             238
           ],
-          "sha256": "0c9d5c13dec1c669bdc1962011c1c317dfea86ce21f5f62e4f295c585f26893b"
+          "sha256": "c9dd83a1b6b24455f4635bf4f575822115ab22df43a5a945229f04580025fee0"
         },
         {
           "poseId": "O",
@@ -770,7 +770,7 @@
             741,
             890
           ],
-          "outputPath": "public/assets/skills/doge/O.png",
+          "outputPath": "public/assets/skills/doge/O.webp",
           "pivot": [
             0.5,
             0.5
@@ -783,7 +783,7 @@
             242,
             235
           ],
-          "sha256": "d8613b537812d68b584930480eb944cd070f7d968dd38f3884c59cda1b1c0110"
+          "sha256": "400bc8679879a07e252d1395056da89fe92a12d29a900071276834e20976961c"
         },
         {
           "poseId": "P",
@@ -795,7 +795,7 @@
             1012,
             890
           ],
-          "outputPath": "public/assets/skills/doge/P.png",
+          "outputPath": "public/assets/skills/doge/P.webp",
           "pivot": [
             0.5,
             0.5
@@ -808,7 +808,7 @@
             249,
             225
           ],
-          "sha256": "5ac00557cd6bbec96baaa9bdf167939b0ee5b97c1f90741b45ff009f3a49d0ee"
+          "sha256": "9db8ab97f618ab99af7fcdc0de4952935a80578c1e5cffa6cdf94751d75f5593"
         },
         {
           "poseId": "Q",
@@ -820,7 +820,7 @@
             1237,
             890
           ],
-          "outputPath": "public/assets/skills/doge/Q.png",
+          "outputPath": "public/assets/skills/doge/Q.webp",
           "pivot": [
             0.5,
             0.5
@@ -833,7 +833,7 @@
             198,
             216
           ],
-          "sha256": "ac1181d22ee8bb4e5bef0b456adb1ccf32dc5b40dc0b38812935d4ae97bd5d84"
+          "sha256": "2f011e89edefc85854ca37c54ee3f5ea10121870c3ae6136c9f001c95664fbd9"
         },
         {
           "poseId": "R",
@@ -845,7 +845,7 @@
             1518,
             890
           ],
-          "outputPath": "public/assets/skills/doge/R.png",
+          "outputPath": "public/assets/skills/doge/R.webp",
           "pivot": [
             0.5,
             0.5
@@ -858,7 +858,7 @@
             265,
             203
           ],
-          "sha256": "49807465334cfc1b41300a58a6c73ddbed02e61dc68c98693c5ffa09165fabcb"
+          "sha256": "c35880f90518e0d2d16bcda2e8a4abf6ee6e32976ebd98318fcc049daf014977"
         }
       ]
     },
@@ -875,7 +875,7 @@
             298,
             275
           ],
-          "outputPath": "public/assets/skills/ya/A.png",
+          "outputPath": "public/assets/skills/ya/A.webp",
           "pivot": [
             0.5,
             1.0
@@ -888,7 +888,7 @@
             189,
             223
           ],
-          "sha256": "217949a13d9edcb79faf75564210f10c6e6084a846b4cba0f649630d7781a693"
+          "sha256": "ed16eba43b3fe54a5172ea21a56bee90a14873f8e96f783a2c1704a9502bed2e"
         },
         {
           "poseId": "B",
@@ -900,7 +900,7 @@
             593,
             275
           ],
-          "outputPath": "public/assets/skills/ya/B.png",
+          "outputPath": "public/assets/skills/ya/B.webp",
           "pivot": [
             0.5,
             1.0
@@ -913,7 +913,7 @@
             254,
             218
           ],
-          "sha256": "d79b6e270ecbda9d61337510fb10405e6a951a9f7d0b071ec9c2682f1c999f16"
+          "sha256": "fc9d03d5b3f06a6f693e2599351464cec82112772172d1074f534894ffe661d3"
         },
         {
           "poseId": "C",
@@ -925,7 +925,7 @@
             888,
             275
           ],
-          "outputPath": "public/assets/skills/ya/C.png",
+          "outputPath": "public/assets/skills/ya/C.webp",
           "pivot": [
             0.5,
             1.0
@@ -938,7 +938,7 @@
             273,
             249
           ],
-          "sha256": "a6d0e7975be2d4144e983caac0d553415eab9f61b590d583c3d078e22690bcc8"
+          "sha256": "bfafcaa8e5bea3d84e08d9d0768d74effdfe1a36895b00b0973d917ce6db8293"
         },
         {
           "poseId": "D",
@@ -950,7 +950,7 @@
             1216,
             275
           ],
-          "outputPath": "public/assets/skills/ya/D.png",
+          "outputPath": "public/assets/skills/ya/D.webp",
           "pivot": [
             0.5,
             1.0
@@ -963,7 +963,7 @@
             299,
             196
           ],
-          "sha256": "76e7c6eeffb96172cea055bc4875856ca13eb8afc97ae7d39900d396f7fd85e0"
+          "sha256": "0454ee44b7e9d66fa9178a20b4dfd147ef85c5ead475bf37d8b8f9bce32093d0"
         },
         {
           "poseId": "E",
@@ -975,7 +975,7 @@
             1518,
             275
           ],
-          "outputPath": "public/assets/skills/ya/E.png",
+          "outputPath": "public/assets/skills/ya/E.webp",
           "pivot": [
             0.5,
             0.5
@@ -988,7 +988,7 @@
             267,
             147
           ],
-          "sha256": "2e5a6cd6e3f8849775a494ba47c9d86442676448e9c09aa50aa78382003761d5"
+          "sha256": "91acaa1acbac06dcf0bab716a758a0e6fdd7d06cf4e294db1940f0bcf570e433"
         },
         {
           "poseId": "F",
@@ -1000,7 +1000,7 @@
             298,
             597
           ],
-          "outputPath": "public/assets/skills/ya/F.png",
+          "outputPath": "public/assets/skills/ya/F.webp",
           "pivot": [
             0.5,
             0.5
@@ -1013,7 +1013,7 @@
             271,
             203
           ],
-          "sha256": "03a390e678b2ab7b8a9055fb817b877079f15ffe0fce4a5a0be52349d7c256f4"
+          "sha256": "5e0f348dddb96fcf4f77db7843ef202b45ef46a7953a2967b7a65cb48ba2d1ce"
         },
         {
           "poseId": "G",
@@ -1025,7 +1025,7 @@
             593,
             597
           ],
-          "outputPath": "public/assets/skills/ya/G.png",
+          "outputPath": "public/assets/skills/ya/G.webp",
           "pivot": [
             0.5,
             0.5
@@ -1038,7 +1038,7 @@
             279,
             231
           ],
-          "sha256": "d92580f5b9c851407051165e592074c50353e7e96542ace4c4464009198f297f"
+          "sha256": "88fab3dd4634b50a308d41aad1a6fbb90ea860d8608ab24ca819681177d73cf3"
         },
         {
           "poseId": "H",
@@ -1050,7 +1050,7 @@
             888,
             597
           ],
-          "outputPath": "public/assets/skills/ya/H.png",
+          "outputPath": "public/assets/skills/ya/H.webp",
           "pivot": [
             0.5,
             0.5
@@ -1063,7 +1063,7 @@
             175,
             235
           ],
-          "sha256": "7bfddf5f86fb5b9b11cb0e8bb423dc700f90478f65fa4ac030573a96bb8017d3"
+          "sha256": "2cb788b58f5235c472279d8ac0778bc3f7b7e2336cd5a613cd3fed65c8f0fab0"
         },
         {
           "poseId": "I",
@@ -1075,7 +1075,7 @@
             1181,
             597
           ],
-          "outputPath": "public/assets/skills/ya/I.png",
+          "outputPath": "public/assets/skills/ya/I.webp",
           "pivot": [
             0.5,
             0.5
@@ -1088,7 +1088,7 @@
             271,
             229
           ],
-          "sha256": "eb33d25ec40fef0bd550579ea329dc74631cbf5fbfeca93eba9aaf0745af9e5e"
+          "sha256": "419baf819ce959a31bfcda24e8286fa158a030de4deb8f7f9514a6283ba67be1"
         },
         {
           "poseId": "J",
@@ -1100,7 +1100,7 @@
             1518,
             597
           ],
-          "outputPath": "public/assets/skills/ya/J.png",
+          "outputPath": "public/assets/skills/ya/J.webp",
           "pivot": [
             0.5,
             0.5
@@ -1113,7 +1113,7 @@
             320,
             246
           ],
-          "sha256": "a5e33ec25ebbec4e04c8d630d69d3b1f6025a8433633bd65053dc0e62d2eae90"
+          "sha256": "84ead1d87d8dff730ef5bfae4d01e13396dc43eaf79853fde939ad31381e2c71"
         },
         {
           "poseId": "K",
@@ -1125,7 +1125,7 @@
             347,
             933
           ],
-          "outputPath": "public/assets/skills/ya/K.png",
+          "outputPath": "public/assets/skills/ya/K.webp",
           "pivot": [
             0.5,
             0.5
@@ -1138,7 +1138,7 @@
             242,
             203
           ],
-          "sha256": "33687a3e9f1d99491a688339f268a9c2a715e92169571968dcd0d0508b6f1f7c"
+          "sha256": "fdcdcea9bc9efc37eb336ee02df00df8a2bb0c09a0b742464cb96029bb6e9507"
         },
         {
           "poseId": "L",
@@ -1150,7 +1150,7 @@
             664,
             933
           ],
-          "outputPath": "public/assets/skills/ya/L.png",
+          "outputPath": "public/assets/skills/ya/L.webp",
           "pivot": [
             0.5,
             0.5
@@ -1163,7 +1163,7 @@
             171,
             248
           ],
-          "sha256": "56ccd01896bf40b6a343ea1ab751ac9601bde0bc5261fa7dab8d6b352041f008"
+          "sha256": "388df0cb3f4bf1ef98dd613029c94eeb15813b78a2abeaa53740a9aa55e446dd"
         },
         {
           "poseId": "M",
@@ -1175,7 +1175,7 @@
             1053,
             933
           ],
-          "outputPath": "public/assets/skills/ya/M.png",
+          "outputPath": "public/assets/skills/ya/M.webp",
           "pivot": [
             0.5,
             0.5
@@ -1188,7 +1188,7 @@
             325,
             257
           ],
-          "sha256": "ea81de131bac492195041f04b8c76f300dadb6c63cda75e17dbb8bcdc6efacd2"
+          "sha256": "1ddb08f61936e8aa4bebb53927180f6d2ee6197a51a66aa11ff5d63d1c5209ee"
         },
         {
           "poseId": "N",
@@ -1200,7 +1200,7 @@
             1518,
             933
           ],
-          "outputPath": "public/assets/skills/ya/N.png",
+          "outputPath": "public/assets/skills/ya/N.webp",
           "pivot": [
             0.5,
             0.5
@@ -1213,7 +1213,7 @@
             428,
             259
           ],
-          "sha256": "53543ad33b37fc9ad23bdc2e999647a79ddc3e370c4140065ed5dc46b62e8ea5"
+          "sha256": "b87dcd0eb92d657aaf6c89fba8fdd3da0c8963ea9831cff7f6d469b407899bf4"
         }
       ]
     },
@@ -1230,7 +1230,7 @@
             301,
             250
           ],
-          "outputPath": "public/assets/skills/tempura/A.png",
+          "outputPath": "public/assets/skills/tempura/A.webp",
           "pivot": [
             0.5,
             1.0
@@ -1243,7 +1243,7 @@
             199,
             148
           ],
-          "sha256": "33b22291eac06abc0d4e695f7303898a868ee48886517db348a646c3cd90b32f"
+          "sha256": "2f8cf1c6b9f3fd08b2135b65bd9cab05f9ad9a41f6d30c54580339632d0a73e2"
         },
         {
           "poseId": "B",
@@ -1255,7 +1255,7 @@
             613,
             250
           ],
-          "outputPath": "public/assets/skills/tempura/B.png",
+          "outputPath": "public/assets/skills/tempura/B.webp",
           "pivot": [
             0.5,
             1.0
@@ -1268,7 +1268,7 @@
             233,
             140
           ],
-          "sha256": "0882a3bd68be987e4dfb42e337f3a96e365c8e96c38e8bdfda66aa9af8a826c0"
+          "sha256": "3ff1bc321a11f9ff10d7941c7f346ada08d9aa1f0614300454892f65db65732a"
         },
         {
           "poseId": "C",
@@ -1280,7 +1280,7 @@
             925,
             250
           ],
-          "outputPath": "public/assets/skills/tempura/C.png",
+          "outputPath": "public/assets/skills/tempura/C.webp",
           "pivot": [
             0.5,
             1.0
@@ -1293,7 +1293,7 @@
             237,
             140
           ],
-          "sha256": "e0aea5baf6b70b5054e148b0bb36f9c2e4a872925e2643cedf783f5a860015c8"
+          "sha256": "17aa89c33a4f0eeb584d1b97cc3bffa814f4595602dbb6bc1c7fb0e145aeb439"
         },
         {
           "poseId": "D",
@@ -1305,7 +1305,7 @@
             1237,
             250
           ],
-          "outputPath": "public/assets/skills/tempura/D.png",
+          "outputPath": "public/assets/skills/tempura/D.webp",
           "pivot": [
             0.5,
             1.0
@@ -1318,7 +1318,7 @@
             286,
             182
           ],
-          "sha256": "939970d4c6db5513c248b44d8df4290719fe4ee393b837c537b37889c1cbd003"
+          "sha256": "59b64ee69a7fa7d25b52fe44eda42237f1e7d06125e1c5aec12a29fe12133a5d"
         },
         {
           "poseId": "E",
@@ -1330,7 +1330,7 @@
             301,
             562
           ],
-          "outputPath": "public/assets/skills/tempura/E.png",
+          "outputPath": "public/assets/skills/tempura/E.webp",
           "pivot": [
             0.5,
             0.5
@@ -1343,7 +1343,7 @@
             260,
             104
           ],
-          "sha256": "b158e87ab26c99023950ca750728bd9a2c4a4c14a78bfe5c849b2a0e7b445428"
+          "sha256": "d42e451a9a07f599fc9cf7be8ec18529c4fed95d98173a95460b11dafcb580d0"
         },
         {
           "poseId": "F",
@@ -1355,7 +1355,7 @@
             613,
             562
           ],
-          "outputPath": "public/assets/skills/tempura/F.png",
+          "outputPath": "public/assets/skills/tempura/F.webp",
           "pivot": [
             0.5,
             0.5
@@ -1368,7 +1368,7 @@
             225,
             148
           ],
-          "sha256": "1f32fa55ef514023fa23a4db4a0fe8b2156f062505ee8d6a4b00863d31de37ab"
+          "sha256": "1edabf3170c67fea2669b7aef48ed751e4e6c5bf0b388a36fbcd484cece8b37a"
         },
         {
           "poseId": "G",
@@ -1380,7 +1380,7 @@
             925,
             562
           ],
-          "outputPath": "public/assets/skills/tempura/G.png",
+          "outputPath": "public/assets/skills/tempura/G.webp",
           "pivot": [
             0.5,
             0.5
@@ -1393,7 +1393,7 @@
             285,
             135
           ],
-          "sha256": "8dfd4d40d9d14124221a7d405e3f1fad057d4ea1a56de22d75da82485d1837e9"
+          "sha256": "fd81657dca5e1048007ce91de1cef3516d8f0acca71a615c42318551f20a28cd"
         },
         {
           "poseId": "H",
@@ -1405,7 +1405,7 @@
             1237,
             562
           ],
-          "outputPath": "public/assets/skills/tempura/H.png",
+          "outputPath": "public/assets/skills/tempura/H.webp",
           "pivot": [
             0.5,
             0.5
@@ -1418,7 +1418,7 @@
             255,
             216
           ],
-          "sha256": "83afe8274448ca8ab0bc1ae22b409fe493d7f4441add30d71a5d70197cf0c498"
+          "sha256": "53f18aff0c363e482b5ca4cdfbfbba7ac5fcc25811384ac6faa7134c3cf96a49"
         },
         {
           "poseId": "I",
@@ -1430,7 +1430,7 @@
             301,
             851
           ],
-          "outputPath": "public/assets/skills/tempura/I.png",
+          "outputPath": "public/assets/skills/tempura/I.webp",
           "pivot": [
             0.5,
             0.5
@@ -1443,7 +1443,7 @@
             241,
             198
           ],
-          "sha256": "410d050aaa3ca01534702c9e6d8740d3c2446ad6a70603389638c896a39375a1"
+          "sha256": "8317be034c1617c1f8e06ef280b7721d5bb7204c49fb5ddf466a4f54926f5cc4"
         },
         {
           "poseId": "J",
@@ -1455,7 +1455,7 @@
             613,
             851
           ],
-          "outputPath": "public/assets/skills/tempura/J.png",
+          "outputPath": "public/assets/skills/tempura/J.webp",
           "pivot": [
             0.5,
             0.5
@@ -1468,7 +1468,7 @@
             214,
             169
           ],
-          "sha256": "e52bc16df483031e21c354c7a2de34da68b1215b5b8864bb797aa7a35effbba9"
+          "sha256": "d474a4f63a3d8785d1c0e322b4a3edaf3b4a477ba8369f984b48b6fe261c4eb0"
         },
         {
           "poseId": "K",
@@ -1480,7 +1480,7 @@
             925,
             851
           ],
-          "outputPath": "public/assets/skills/tempura/K.png",
+          "outputPath": "public/assets/skills/tempura/K.webp",
           "pivot": [
             0.5,
             0.5
@@ -1493,7 +1493,7 @@
             215,
             180
           ],
-          "sha256": "4441222f04b638df5dee10061d80a6dd423bc079f315f2f6ec404afa02b44f35"
+          "sha256": "dda78f0bbfb80cee613f65e057c7feaa0adfc1a56e1ff56a7d5c1c7a80295b52"
         },
         {
           "poseId": "L",
@@ -1505,7 +1505,7 @@
             1237,
             851
           ],
-          "outputPath": "public/assets/skills/tempura/L.png",
+          "outputPath": "public/assets/skills/tempura/L.webp",
           "pivot": [
             0.5,
             0.5
@@ -1518,7 +1518,7 @@
             234,
             176
           ],
-          "sha256": "1c033551eb62bdb6e6404e1fdcea961853efcb096b3445852b8e92c0b0cd117b"
+          "sha256": "1a8dd93491c78123926808135b1a0839ae950d134e74df628bc9cdb55875b5d2"
         },
         {
           "poseId": "M",
@@ -1530,7 +1530,7 @@
             301,
             1161
           ],
-          "outputPath": "public/assets/skills/tempura/M.png",
+          "outputPath": "public/assets/skills/tempura/M.webp",
           "pivot": [
             0.5,
             0.5
@@ -1543,7 +1543,7 @@
             224,
             171
           ],
-          "sha256": "e6020a94e0071dc8ae55acb89eb23f0566297e939847228b57662ac8b520ea72"
+          "sha256": "a2cb74fbd48e66688545956a2ad3afe95c57447d11b9d615467e68ae319b75b8"
         },
         {
           "poseId": "N",
@@ -1555,7 +1555,7 @@
             613,
             1161
           ],
-          "outputPath": "public/assets/skills/tempura/N.png",
+          "outputPath": "public/assets/skills/tempura/N.webp",
           "pivot": [
             0.5,
             0.5
@@ -1568,7 +1568,7 @@
             230,
             169
           ],
-          "sha256": "6c442624594a2cdaf3d14823e176b6c271f2820b3015f46cff6d5ae260170b11"
+          "sha256": "d0de9107c231725829654e2a91e5f6c066ba0606e8d0ab634452e6d28f0252c8"
         },
         {
           "poseId": "O",
@@ -1580,7 +1580,7 @@
             925,
             1161
           ],
-          "outputPath": "public/assets/skills/tempura/O.png",
+          "outputPath": "public/assets/skills/tempura/O.webp",
           "pivot": [
             0.5,
             0.5
@@ -1593,7 +1593,7 @@
             274,
             202
           ],
-          "sha256": "9adc380437d9f300446f4d7914edb85d70eefd3e39ddd240bc7f30656f9b2200"
+          "sha256": "4c01edf2345e2f3a53d58adfd35a63387c7967922a05aaab312472aa96a2509f"
         },
         {
           "poseId": "P",
@@ -1605,7 +1605,7 @@
             1237,
             1161
           ],
-          "outputPath": "public/assets/skills/tempura/P.png",
+          "outputPath": "public/assets/skills/tempura/P.webp",
           "pivot": [
             0.5,
             0.5
@@ -1618,7 +1618,7 @@
             286,
             227
           ],
-          "sha256": "8baaa6dd759bd192622251d52c683bfaa85923da6a767768355e1bf2f500d6d0"
+          "sha256": "ad6b545d4a75b3ef4ba8a633273928864df73b68665bde505090a25dee3850b6"
         }
       ]
     },
@@ -1635,7 +1635,7 @@
             242,
             196
           ],
-          "outputPath": "public/assets/skills/goblin/A.png",
+          "outputPath": "public/assets/skills/goblin/A.webp",
           "pivot": [
             0.5,
             1.0
@@ -1648,7 +1648,7 @@
             134,
             175
           ],
-          "sha256": "c6c5aad5fc37cd6b981f3d3fa3eb1245e32fee31241a9c94216770dae57db86d"
+          "sha256": "c363f39ba5914e2e63d7e51c8d8a9a3cb0f7088f29533524d601b24993576e01"
         },
         {
           "poseId": "B",
@@ -1660,7 +1660,7 @@
             484,
             196
           ],
-          "outputPath": "public/assets/skills/goblin/B.png",
+          "outputPath": "public/assets/skills/goblin/B.webp",
           "pivot": [
             0.5,
             1.0
@@ -1673,7 +1673,7 @@
             155,
             175
           ],
-          "sha256": "c1e733f6502fac1ddf296ccae9ebd25de2735b98f1fa5ee4be22227a33092724"
+          "sha256": "d65533f76d3a47e947c3ada8324bedde2c544cb476c20fcf6a9bd44568c1d340"
         },
         {
           "poseId": "C",
@@ -1685,7 +1685,7 @@
             743,
             196
           ],
-          "outputPath": "public/assets/skills/goblin/C.png",
+          "outputPath": "public/assets/skills/goblin/C.webp",
           "pivot": [
             0.5,
             1.0
@@ -1698,7 +1698,7 @@
             233,
             174
           ],
-          "sha256": "9be5ab13baeaa588d6bed06397eee37cde18f9d9e1520124060dba68c4f1ec59"
+          "sha256": "fcd7a387f7cf536bb725b72f184d983805133acc42c014928e499eec374a429f"
         },
         {
           "poseId": "D",
@@ -1710,7 +1710,7 @@
             991,
             196
           ],
-          "outputPath": "public/assets/skills/goblin/D.png",
+          "outputPath": "public/assets/skills/goblin/D.webp",
           "pivot": [
             0.5,
             1.0
@@ -1723,7 +1723,7 @@
             205,
             155
           ],
-          "sha256": "2189c9aee409d6dadcd582380fd8eec29ecca48d088852ae2a26f2e8428556e8"
+          "sha256": "8723e105571ed3f2ef2207c1a1e3fa18c8fae45a71052766b61656165bea3021"
         },
         {
           "poseId": "E",
@@ -1735,7 +1735,7 @@
             1237,
             196
           ],
-          "outputPath": "public/assets/skills/goblin/E.png",
+          "outputPath": "public/assets/skills/goblin/E.webp",
           "pivot": [
             0.5,
             0.5
@@ -1748,7 +1748,7 @@
             126,
             125
           ],
-          "sha256": "a1a2d679be31565a862f043a0f7c1478c6a4edb3992b971723c7ad0cb8d499b9"
+          "sha256": "e668db1b99476a7d0c507d9dc76c8bf802e0792b953284021e64d9b1f10b74d8"
         },
         {
           "poseId": "F",
@@ -1760,7 +1760,7 @@
             241,
             445
           ],
-          "outputPath": "public/assets/skills/goblin/F.png",
+          "outputPath": "public/assets/skills/goblin/F.webp",
           "pivot": [
             0.5,
             0.5
@@ -1773,7 +1773,7 @@
             215,
             188
           ],
-          "sha256": "66538aa9ff56ecb0c2738030f10e8b54ac1c5e6ea6d0926fc1971533547ac835"
+          "sha256": "183f3f0b91b29039eebe5d906568a2790d92f98caae7119cf77993b5b19a70cb"
         },
         {
           "poseId": "G",
@@ -1785,7 +1785,7 @@
             484,
             445
           ],
-          "outputPath": "public/assets/skills/goblin/G.png",
+          "outputPath": "public/assets/skills/goblin/G.webp",
           "pivot": [
             0.5,
             0.5
@@ -1798,7 +1798,7 @@
             219,
             190
           ],
-          "sha256": "646702acb1059839b3681bceb92393caaa7461d2986bb896c8d1096046670441"
+          "sha256": "37dc2bf1b47ffc2f74fdd13f9250f593f599b7baba54e137f7fd504965dbe7b7"
         },
         {
           "poseId": "H",
@@ -1810,7 +1810,7 @@
             744,
             445
           ],
-          "outputPath": "public/assets/skills/goblin/H.png",
+          "outputPath": "public/assets/skills/goblin/H.webp",
           "pivot": [
             0.5,
             0.5
@@ -1823,7 +1823,7 @@
             234,
             187
           ],
-          "sha256": "a36e32409a317a289ac00f153fea7c98cbe5b541c1ed977b95cb3427dd7f82b6"
+          "sha256": "96bf762fab5ed50f834f03351b7be7e2353109e754b0a543f19c5b472717b4a2"
         },
         {
           "poseId": "I",
@@ -1835,7 +1835,7 @@
             990,
             445
           ],
-          "outputPath": "public/assets/skills/goblin/I.png",
+          "outputPath": "public/assets/skills/goblin/I.webp",
           "pivot": [
             0.5,
             0.5
@@ -1848,7 +1848,7 @@
             174,
             185
           ],
-          "sha256": "a5440183b7d6a3e74d11a943616dd7a0771d65023d3a4dcce1dacc88dcfad8e7"
+          "sha256": "1594aead39d1036b4240d18a66e4d97de96a9029cd10229d40615e77eee9d60c"
         },
         {
           "poseId": "J",
@@ -1860,7 +1860,7 @@
             1237,
             445
           ],
-          "outputPath": "public/assets/skills/goblin/J.png",
+          "outputPath": "public/assets/skills/goblin/J.webp",
           "pivot": [
             0.5,
             0.5
@@ -1873,7 +1873,7 @@
             205,
             173
           ],
-          "sha256": "7ece098598b52b66ae5cbbb42eb877e3ef4b331fc2212159206b109ab06e24a8"
+          "sha256": "07a29f26139911c4d35ed746e906475ea092675a940e210519f562f674259208"
         },
         {
           "poseId": "K",
@@ -1885,7 +1885,7 @@
             241,
             696
           ],
-          "outputPath": "public/assets/skills/goblin/K.png",
+          "outputPath": "public/assets/skills/goblin/K.webp",
           "pivot": [
             0.5,
             0.5
@@ -1898,7 +1898,7 @@
             208,
             190
           ],
-          "sha256": "0a580c3a1aa5dab0f5781b0daba7e084d86b29a91d268b8037335033ec081fe0"
+          "sha256": "a1515dc46b0fbf9bdafeacf63b7539503a8ee7fc7a3657e5e551e5bb41c42492"
         },
         {
           "poseId": "L",
@@ -1910,7 +1910,7 @@
             484,
             696
           ],
-          "outputPath": "public/assets/skills/goblin/L.png",
+          "outputPath": "public/assets/skills/goblin/L.webp",
           "pivot": [
             0.5,
             0.5
@@ -1923,7 +1923,7 @@
             122,
             190
           ],
-          "sha256": "4b2443f6bb42fb0ae1ad10cdaaf87f4435988c2b3ed3fa035fbccc16b8c18475"
+          "sha256": "ee7c11b95e50f921d365066893062ef07401c34fafd4621ee8a297ff2a2cf2c2"
         },
         {
           "poseId": "M",
@@ -1935,7 +1935,7 @@
             743,
             696
           ],
-          "outputPath": "public/assets/skills/goblin/M.png",
+          "outputPath": "public/assets/skills/goblin/M.webp",
           "pivot": [
             0.5,
             0.5
@@ -1948,7 +1948,7 @@
             161,
             190
           ],
-          "sha256": "d2f896ae0910e6e3e7bfc6fdb973a801fe2ef6a80b18b2e9b81ad18d5481761e"
+          "sha256": "53e210721cbbd6d1e4a49829da222f1a1a6647489b67c0893b9c176a95220f86"
         },
         {
           "poseId": "N",
@@ -1960,7 +1960,7 @@
             990,
             696
           ],
-          "outputPath": "public/assets/skills/goblin/N.png",
+          "outputPath": "public/assets/skills/goblin/N.webp",
           "pivot": [
             0.5,
             0.5
@@ -1973,7 +1973,7 @@
             147,
             190
           ],
-          "sha256": "fb64d3050f8699ece4126fee3aa1add6b356a2b765e7d21f640e51503f535a8b"
+          "sha256": "45b22f9af9e0173c0408d200d01f856d877f301bd0fbbbbad74996353f7987f3"
         },
         {
           "poseId": "O",
@@ -1985,7 +1985,7 @@
             1237,
             696
           ],
-          "outputPath": "public/assets/skills/goblin/O.png",
+          "outputPath": "public/assets/skills/goblin/O.webp",
           "pivot": [
             0.5,
             0.5
@@ -1998,7 +1998,7 @@
             130,
             176
           ],
-          "sha256": "636e684ead707a5f8f2ae1047a52ff10441798de4745c02c23bf32c64bff58ae"
+          "sha256": "69643c3afe8029bca52d16f85fb9df3cb590df11285c5f23d67670c50d407f0d"
         },
         {
           "poseId": "P",
@@ -2010,7 +2010,7 @@
             241,
             932
           ],
-          "outputPath": "public/assets/skills/goblin/P.png",
+          "outputPath": "public/assets/skills/goblin/P.webp",
           "pivot": [
             0.5,
             0.5
@@ -2023,7 +2023,7 @@
             175,
             176
           ],
-          "sha256": "44ee5987025f59d6cdf1c6f8ec2942ee3d0b99d237989d11361429b187e06175"
+          "sha256": "81e15f2ef2f870509808146632a4b9461f1e68ec250a49ed82555763f9b048ca"
         },
         {
           "poseId": "Q",
@@ -2035,7 +2035,7 @@
             484,
             932
           ],
-          "outputPath": "public/assets/skills/goblin/Q.png",
+          "outputPath": "public/assets/skills/goblin/Q.webp",
           "pivot": [
             0.5,
             0.5
@@ -2048,7 +2048,7 @@
             200,
             176
           ],
-          "sha256": "dd2efbec3ac6437aec987570ca8973abab2333e0fa8fa11682abd113c7734355"
+          "sha256": "24609e7425289c71e1625be6c1b1be267cf0ca598180dccb5574167910ef0efb"
         },
         {
           "poseId": "R",
@@ -2060,7 +2060,7 @@
             743,
             932
           ],
-          "outputPath": "public/assets/skills/goblin/R.png",
+          "outputPath": "public/assets/skills/goblin/R.webp",
           "pivot": [
             0.5,
             0.5
@@ -2073,7 +2073,7 @@
             226,
             175
           ],
-          "sha256": "70ba35f9d369be4aec0112a105c572984ed595ccc73bceaf795e57e6f043d61a"
+          "sha256": "07ebeeb34ece23ed8cd77a144db7a5392d0cf6cecae66fecd8ffa174a20fb282"
         },
         {
           "poseId": "S",
@@ -2085,7 +2085,7 @@
             990,
             932
           ],
-          "outputPath": "public/assets/skills/goblin/S.png",
+          "outputPath": "public/assets/skills/goblin/S.webp",
           "pivot": [
             0.5,
             0.5
@@ -2098,7 +2098,7 @@
             222,
             176
           ],
-          "sha256": "d282ab416c371b87b0f0c0193c893c316cd0bac99f0214fee3d768766e9608cd"
+          "sha256": "bd0f215c5d1c8ffa579e8c0377b5b48c6442932ac6b393def7fcc068f9683951"
         },
         {
           "poseId": "T",
@@ -2110,7 +2110,7 @@
             1238,
             932
           ],
-          "outputPath": "public/assets/skills/goblin/T.png",
+          "outputPath": "public/assets/skills/goblin/T.webp",
           "pivot": [
             0.5,
             0.5
@@ -2123,7 +2123,7 @@
             192,
             176
           ],
-          "sha256": "f9868117abcacd1b9e69cc707e9880bdd9d2a68c5c7ddbe63249528bb6ab252a"
+          "sha256": "b429766724d5d24d2ce2e964dc9c103cfe84f3748a708bb8a44aa87d6fea8c21"
         },
         {
           "poseId": "U",
@@ -2135,7 +2135,7 @@
             405,
             1186
           ],
-          "outputPath": "public/assets/skills/goblin/U.png",
+          "outputPath": "public/assets/skills/goblin/U.webp",
           "pivot": [
             0.5,
             0.5
@@ -2148,7 +2148,7 @@
             272,
             179
           ],
-          "sha256": "2f958c6f9762139c3f8a1d13daacb9c2194d1e868d3caf3e6210318e4a0861d8"
+          "sha256": "cf0d0027fe255e021fa4754fac53a2e0c6a5ad8a693b0f1d96dcd87ad1353436"
         },
         {
           "poseId": "V",
@@ -2160,7 +2160,7 @@
             761,
             1186
           ],
-          "outputPath": "public/assets/skills/goblin/V.png",
+          "outputPath": "public/assets/skills/goblin/V.webp",
           "pivot": [
             0.5,
             0.5
@@ -2173,7 +2173,7 @@
             308,
             185
           ],
-          "sha256": "327ab380c50a81d0a5609fb2c9a6de551aee82c944d3147160931a751dae4187"
+          "sha256": "16b16591074d98167cd00cdf43fe0e1722c63abaf0b96491baeef883d8a7a8fc"
         },
         {
           "poseId": "W",
@@ -2185,7 +2185,7 @@
             1139,
             1186
           ],
-          "outputPath": "public/assets/skills/goblin/W.png",
+          "outputPath": "public/assets/skills/goblin/W.webp",
           "pivot": [
             0.5,
             0.5
@@ -2198,7 +2198,7 @@
             347,
             192
           ],
-          "sha256": "e0fb09267576fe29aef04963ac9b00448c7b86cb52b0ede66e01baecd8071aeb"
+          "sha256": "c27e74dda351b6738dc0b4e8c294aa29a6e38ffbf64661a7fe7b0b10efc7269e"
         }
       ]
     },
@@ -2215,7 +2215,7 @@
             206,
             286
           ],
-          "outputPath": "public/assets/skills/salad/A.png",
+          "outputPath": "public/assets/skills/salad/A.webp",
           "pivot": [
             0.5,
             1.0
@@ -2228,7 +2228,7 @@
             189,
             189
           ],
-          "sha256": "ec13ad84e3ec2db4cf6fcd1a9f46246c21d41b400abc21ede458c6c5579f43d4"
+          "sha256": "3a0543ae182603bbeda611d12f0a4dae72b58962a46e3e0813d3ab8d69dba39a"
         },
         {
           "poseId": "B",
@@ -2240,7 +2240,7 @@
             429,
             286
           ],
-          "outputPath": "public/assets/skills/salad/B.png",
+          "outputPath": "public/assets/skills/salad/B.webp",
           "pivot": [
             0.5,
             1.0
@@ -2253,7 +2253,7 @@
             189,
             213
           ],
-          "sha256": "347356266beea6275d22fc070fcdd6ce1dbe5d22f67b7dc2a14832288194ebf1"
+          "sha256": "71735a637ab7e0be04bddd69ffc883ccb9bb2de8d30b54ee51b1e291e225dc28"
         },
         {
           "poseId": "C",
@@ -2265,7 +2265,7 @@
             642,
             286
           ],
-          "outputPath": "public/assets/skills/salad/C.png",
+          "outputPath": "public/assets/skills/salad/C.webp",
           "pivot": [
             0.5,
             1.0
@@ -2278,7 +2278,7 @@
             176,
             235
           ],
-          "sha256": "007c8c4820d494a76c4c0529145cab5da154a99ac78df321833e27cb7919eb6a"
+          "sha256": "e0952702d6f78157b77f5df6ebeaf863940233aaa54699c4b85db0f051ab4d68"
         },
         {
           "poseId": "D",
@@ -2290,7 +2290,7 @@
             869,
             286
           ],
-          "outputPath": "public/assets/skills/salad/D.png",
+          "outputPath": "public/assets/skills/salad/D.webp",
           "pivot": [
             0.5,
             1.0
@@ -2303,7 +2303,7 @@
             201,
             180
           ],
-          "sha256": "a4ef51283f85fca0992fc42b834cfb4de9e11b8f2a28ccf21d728898ccb8216a"
+          "sha256": "30f87b24c2c05894edf97098b0d79b67f129100e9f3b3cd046ecbb1bef6f6176"
         },
         {
           "poseId": "E",
@@ -2315,7 +2315,7 @@
             1091,
             286
           ],
-          "outputPath": "public/assets/skills/salad/E.png",
+          "outputPath": "public/assets/skills/salad/E.webp",
           "pivot": [
             0.5,
             0.5
@@ -2328,7 +2328,7 @@
             195,
             187
           ],
-          "sha256": "2fcf04018f45f27bf9c03a4079b75fb07749a370a5dadb82c94abb67072daa53"
+          "sha256": "0307919c7779c4fa96bd9db8cac864f11bc7c40c818e7d20ee5ccafe3164b4a7"
         },
         {
           "poseId": "F",
@@ -2340,7 +2340,7 @@
             206,
             638
           ],
-          "outputPath": "public/assets/skills/salad/F.png",
+          "outputPath": "public/assets/skills/salad/F.webp",
           "pivot": [
             0.5,
             0.5
@@ -2353,7 +2353,7 @@
             189,
             228
           ],
-          "sha256": "5407463cdf354bbbd012b426182394dcb83fddaa02eaf3024ddddd9f9ac1a8ea"
+          "sha256": "bc31aff533e7044de4a3b63013a9810ef50d4e43f21545a6ab8567355154130c"
         },
         {
           "poseId": "G",
@@ -2365,7 +2365,7 @@
             429,
             638
           ],
-          "outputPath": "public/assets/skills/salad/G.png",
+          "outputPath": "public/assets/skills/salad/G.webp",
           "pivot": [
             0.5,
             0.5
@@ -2378,7 +2378,7 @@
             197,
             275
           ],
-          "sha256": "90ea6bf7330470b37a9e12c3383be4268226f31db64d2d490c8fe6b8e3a2aa9c"
+          "sha256": "2cc347176d0704313bc2a0522ca9db64a8d18d532e8273f0c3c1d536b85afaee"
         },
         {
           "poseId": "H",
@@ -2390,7 +2390,7 @@
             642,
             638
           ],
-          "outputPath": "public/assets/skills/salad/H.png",
+          "outputPath": "public/assets/skills/salad/H.webp",
           "pivot": [
             0.5,
             0.5
@@ -2403,7 +2403,7 @@
             183,
             208
           ],
-          "sha256": "4c13b507e034ea0188317a1cac9f6d080ac36199206b6b7f836ff5e8914d73c1"
+          "sha256": "2539380e30975612744284fc4c0aae2e78fa0b16455354401e42d938ccc51fa8"
         },
         {
           "poseId": "I",
@@ -2415,7 +2415,7 @@
             869,
             638
           ],
-          "outputPath": "public/assets/skills/salad/I.png",
+          "outputPath": "public/assets/skills/salad/I.webp",
           "pivot": [
             0.5,
             0.5
@@ -2428,7 +2428,7 @@
             187,
             265
           ],
-          "sha256": "102a21168c8c3dbf7a8198c6314d395e818701f81ad89f98a5fe9208e2e0f13e"
+          "sha256": "d1ed29158d507aed2862a731b76f8be86893755a75cf1977b9ac58ea8f636790"
         },
         {
           "poseId": "J",
@@ -2440,7 +2440,7 @@
             1091,
             638
           ],
-          "outputPath": "public/assets/skills/salad/J.png",
+          "outputPath": "public/assets/skills/salad/J.webp",
           "pivot": [
             0.5,
             0.5
@@ -2453,7 +2453,7 @@
             195,
             220
           ],
-          "sha256": "9ff1907166a9c5d1d229716d52dc09b4cb2c388aa02bfca760b81fa1c4eaa796"
+          "sha256": "4d13172d57d112dc17f22a91a710151e44141b0c232a69c9b4f159702b2ffc3d"
         },
         {
           "poseId": "K",
@@ -2465,7 +2465,7 @@
             206,
             1008
           ],
-          "outputPath": "public/assets/skills/salad/K.png",
+          "outputPath": "public/assets/skills/salad/K.webp",
           "pivot": [
             0.5,
             0.5
@@ -2478,7 +2478,7 @@
             190,
             253
           ],
-          "sha256": "b517b885dde3ebda99c365c2a6a03e415d468151d3bd87a9b08881160ade607a"
+          "sha256": "d4db78aae7653418279349f0b480dc1fbad4b484ff7867d975ccd3583609c5c7"
         },
         {
           "poseId": "L",
@@ -2490,7 +2490,7 @@
             429,
             1008
           ],
-          "outputPath": "public/assets/skills/salad/L.png",
+          "outputPath": "public/assets/skills/salad/L.webp",
           "pivot": [
             0.5,
             0.5
@@ -2503,7 +2503,7 @@
             197,
             276
           ],
-          "sha256": "15be89df2aaad9bda00986e529fe766bb6fe5ce860dcb9ad4bb12e2c605eab36"
+          "sha256": "d084e1f68a9752d08565eba96b0ff57a4b5945fe70ed338fdbd961fb440e0b89"
         },
         {
           "poseId": "M",
@@ -2515,7 +2515,7 @@
             642,
             1008
           ],
-          "outputPath": "public/assets/skills/salad/M.png",
+          "outputPath": "public/assets/skills/salad/M.webp",
           "pivot": [
             0.5,
             0.5
@@ -2528,7 +2528,7 @@
             187,
             286
           ],
-          "sha256": "00a8ee2eae3ca6dd4bb52035a9df246535e7d2b148ba26afc16d8a8cda60a324"
+          "sha256": "8cdef94905106e6f0dd6b195e5b069552b9d6dc17b5ac1ca52eed67fbba247b0"
         },
         {
           "poseId": "N",
@@ -2540,7 +2540,7 @@
             869,
             1008
           ],
-          "outputPath": "public/assets/skills/salad/N.png",
+          "outputPath": "public/assets/skills/salad/N.webp",
           "pivot": [
             0.5,
             0.5
@@ -2553,7 +2553,7 @@
             201,
             285
           ],
-          "sha256": "803892dac0447b6796e3be1903ac504c9baeea0186237dcd92ddd19f1f7b0705"
+          "sha256": "7c2ed86d9e7bba3a3077ade482abeaa7fc3fda3186198026efdd43645d09e684"
         },
         {
           "poseId": "O",
@@ -2565,7 +2565,7 @@
             1091,
             1008
           ],
-          "outputPath": "public/assets/skills/salad/O.png",
+          "outputPath": "public/assets/skills/salad/O.webp",
           "pivot": [
             0.5,
             0.5
@@ -2578,7 +2578,7 @@
             195,
             251
           ],
-          "sha256": "c27d034c2489ccd247df201adb60ae97e2d860532fdd30ccaddec7025894b497"
+          "sha256": "852c98de08fec609e462c24f6f8f9f52dee9dbcccbbeb1f83cee356aa847565a"
         },
         {
           "poseId": "L2",
@@ -2590,7 +2590,7 @@
             206,
             1274
           ],
-          "outputPath": "public/assets/skills/salad/L2.png",
+          "outputPath": "public/assets/skills/salad/L2.webp",
           "pivot": [
             0.5,
             0.5
@@ -2603,7 +2603,7 @@
             188,
             167
           ],
-          "sha256": "0c9f8058fc56248c399ef4b8d475b471d294bc216edf0d3d95eddc97340234e9"
+          "sha256": "3a3e0096506e75b2c5a2bfc95fe67a52e8237d6eef03cfdd8ea4c2961a9b64df"
         },
         {
           "poseId": "M2",
@@ -2615,7 +2615,7 @@
             429,
             1274
           ],
-          "outputPath": "public/assets/skills/salad/M2.png",
+          "outputPath": "public/assets/skills/salad/M2.webp",
           "pivot": [
             0.5,
             0.5
@@ -2628,7 +2628,7 @@
             197,
             168
           ],
-          "sha256": "1d755f23026d911e25aeea5731e2f7f6b76ee0575b7121f2e928c7d120fc4b8c"
+          "sha256": "372982d799d43c23c61f5217dbf14e014f289e4c5149e90238483be78baa5459"
         },
         {
           "poseId": "N2",
@@ -2640,7 +2640,7 @@
             642,
             1274
           ],
-          "outputPath": "public/assets/skills/salad/N2.png",
+          "outputPath": "public/assets/skills/salad/N2.webp",
           "pivot": [
             0.5,
             0.5
@@ -2653,7 +2653,7 @@
             182,
             162
           ],
-          "sha256": "bdeaa1d4b04dd7d999fc032245d5c5f799d9dedbe907dc6aa8a80cdf990a33be"
+          "sha256": "01a64a630414d6c9eeaf4988a393dd184b54b29d760bb797162851a08ff28d58"
         },
         {
           "poseId": "O2",
@@ -2665,7 +2665,7 @@
             869,
             1274
           ],
-          "outputPath": "public/assets/skills/salad/O2.png",
+          "outputPath": "public/assets/skills/salad/O2.webp",
           "pivot": [
             0.5,
             0.5
@@ -2678,7 +2678,7 @@
             199,
             165
           ],
-          "sha256": "5cb4ba0486af253a2d9cec2e1f5786a7be5ff959eac1c9b722b8fe7bc66a5206"
+          "sha256": "71e196947630b0f5f2a69e157da87c979173043ccb9a8a71b1c13a44ca51dd7b"
         },
         {
           "poseId": "P",
@@ -2690,7 +2690,7 @@
             1091,
             1274
           ],
-          "outputPath": "public/assets/skills/salad/P.png",
+          "outputPath": "public/assets/skills/salad/P.webp",
           "pivot": [
             0.5,
             0.5
@@ -2703,7 +2703,7 @@
             195,
             162
           ],
-          "sha256": "2a7ffd0fb28866e9ee5c0a6cc52b1d40c658814d996cc61388b7f7ebaa5e87dd"
+          "sha256": "78bffc93df54327e82d822dded3c12e5d7153329ec78ea6b7788eb903768bad9"
         }
       ]
     },
@@ -2720,7 +2720,7 @@
             288,
             237
           ],
-          "outputPath": "public/assets/skills/wizard/A.png",
+          "outputPath": "public/assets/skills/wizard/A.webp",
           "pivot": [
             0.5,
             1.0
@@ -2733,7 +2733,7 @@
             203,
             161
           ],
-          "sha256": "6eb91b2b065b5b8d2681a945367538d5d4314a7acaa5235519b9622cbfd6a03d"
+          "sha256": "3ce745c840c067fa916c476aa2eba528ecabcbc8f70e8590c6e1c004d51c4d04"
         },
         {
           "poseId": "B",
@@ -2745,7 +2745,7 @@
             583,
             237
           ],
-          "outputPath": "public/assets/skills/wizard/B.png",
+          "outputPath": "public/assets/skills/wizard/B.webp",
           "pivot": [
             0.5,
             1.0
@@ -2758,7 +2758,7 @@
             226,
             157
           ],
-          "sha256": "2775ac8a2b5e567af515ec63d30cd4e1dcacf6cf460dc663151f2c31928b35d8"
+          "sha256": "950ed02c83249907c0189305d01b8dccc9d962a09df1195a4b0e47566c28752c"
         },
         {
           "poseId": "C",
@@ -2770,7 +2770,7 @@
             879,
             237
           ],
-          "outputPath": "public/assets/skills/wizard/C.png",
+          "outputPath": "public/assets/skills/wizard/C.webp",
           "pivot": [
             0.5,
             1.0
@@ -2783,7 +2783,7 @@
             222,
             225
           ],
-          "sha256": "c51ebad91c7bbc00ecfacb2e4c4e5e193e35b364dea047c76152261785199df7"
+          "sha256": "8fbcc275a3ce81d050c79b982e0f4a1e80b8a14c1df749c585d6aadd2183fbd7"
         },
         {
           "poseId": "D",
@@ -2795,7 +2795,7 @@
             1118,
             237
           ],
-          "outputPath": "public/assets/skills/wizard/D.png",
+          "outputPath": "public/assets/skills/wizard/D.webp",
           "pivot": [
             0.5,
             1.0
@@ -2808,7 +2808,7 @@
             168,
             65
           ],
-          "sha256": "deec4f1111ae03351a943930a3003ba11540d3d3bc73700f5153a17328e6ed22"
+          "sha256": "4e44d8c680d867817432128b43514a72b08383cfdde6f61db1abcc669c9d864e"
         },
         {
           "poseId": "E",
@@ -2820,7 +2820,7 @@
             1378,
             237
           ],
-          "outputPath": "public/assets/skills/wizard/E.png",
+          "outputPath": "public/assets/skills/wizard/E.webp",
           "pivot": [
             0.5,
             0.5
@@ -2833,7 +2833,7 @@
             246,
             119
           ],
-          "sha256": "7265335f88a7eb3210ad1b54e9dec6695eace2f31a1d5ce7cb988274840bdd07"
+          "sha256": "04d49c6338521f59b3c15d38e28d8096240acae9a49e43fb35715317a1d75ff6"
         },
         {
           "poseId": "F",
@@ -2845,7 +2845,7 @@
             1760,
             237
           ],
-          "outputPath": "public/assets/skills/wizard/F.png",
+          "outputPath": "public/assets/skills/wizard/F.webp",
           "pivot": [
             0.5,
             0.5
@@ -2858,7 +2858,7 @@
             363,
             169
           ],
-          "sha256": "528947ed7c71fc87a4703ac7625adae73dcecb04c064cefdd4cfa051150f734a"
+          "sha256": "bd4539af439fb974faf64440533112a6a2e297dc3ba82a66cfa9844682b1d4ec"
         },
         {
           "poseId": "G",
@@ -2870,7 +2870,7 @@
             288,
             514
           ],
-          "outputPath": "public/assets/skills/wizard/G.png",
+          "outputPath": "public/assets/skills/wizard/G.webp",
           "pivot": [
             0.5,
             0.5
@@ -2883,7 +2883,7 @@
             193,
             146
           ],
-          "sha256": "f6327be1baf99232cc9aeabf3fa98fc5b1fe8a00413b57d48df24bca249ad0ee"
+          "sha256": "8ca42f7b55267f2124cbdf3a8c0836d3793d9921a41bbf91848ec9cdfa1e0c95"
         },
         {
           "poseId": "H",
@@ -2895,7 +2895,7 @@
             571,
             514
           ],
-          "outputPath": "public/assets/skills/wizard/H.png",
+          "outputPath": "public/assets/skills/wizard/H.webp",
           "pivot": [
             0.5,
             0.5
@@ -2908,7 +2908,7 @@
             207,
             220
           ],
-          "sha256": "572ac3b23d2f105f470d6dc96224d40b114f07cdfe51b8111132752159e72c81"
+          "sha256": "027537d68290426ce34981ecf53e17cae17445d7369cac01dd192071fe48a897"
         },
         {
           "poseId": "I",
@@ -2920,7 +2920,7 @@
             879,
             514
           ],
-          "outputPath": "public/assets/skills/wizard/I.png",
+          "outputPath": "public/assets/skills/wizard/I.webp",
           "pivot": [
             0.5,
             0.5
@@ -2933,7 +2933,7 @@
             292,
             209
           ],
-          "sha256": "4a0429895dc505ebc9d5d609ee662a0af863fec452a9360ba475b59daf455396"
+          "sha256": "fdd3a14ba3adff1ee422203ad622f3d8e7fad0e884fff1f3ec15e7f83c64c9b7"
         },
         {
           "poseId": "J",
@@ -2945,7 +2945,7 @@
             1169,
             514
           ],
-          "outputPath": "public/assets/skills/wizard/J.png",
+          "outputPath": "public/assets/skills/wizard/J.webp",
           "pivot": [
             0.5,
             0.5
@@ -2958,7 +2958,7 @@
             276,
             205
           ],
-          "sha256": "ddc04eafbc7c95956c7bb3ea59fe9085bf4a06898d558bf8049fef59c1947110"
+          "sha256": "6d3a0ddc3b7d3038bbd4e2c5e29fc200be7717c209c404f7d8579cf30617320b"
         },
         {
           "poseId": "K",
@@ -2970,7 +2970,7 @@
             1412,
             514
           ],
-          "outputPath": "public/assets/skills/wizard/K.png",
+          "outputPath": "public/assets/skills/wizard/K.webp",
           "pivot": [
             0.5,
             0.5
@@ -2983,7 +2983,7 @@
             142,
             206
           ],
-          "sha256": "284b8b19fb66a4aa9cd07fa2f3d797a8a7e789a13004021a7a54283eb0ff0e2f"
+          "sha256": "83b11eeff53044a8bd41ea20ea7a1217cf5852289f71b5fc7676b799ff6db38f"
         },
         {
           "poseId": "L",
@@ -2995,7 +2995,7 @@
             1760,
             514
           ],
-          "outputPath": "public/assets/skills/wizard/L.png",
+          "outputPath": "public/assets/skills/wizard/L.webp",
           "pivot": [
             0.5,
             0.5
@@ -3008,7 +3008,7 @@
             293,
             211
           ],
-          "sha256": "d0528d1d410e9e1f9f258b0ba6be59da1b5456bc5742fcd4e3e5864b253c98df"
+          "sha256": "a4f24895f13937a207feb5d64976e2d03a4d26b5bd978b1167bbc17c75b6e600"
         },
         {
           "poseId": "M",
@@ -3020,7 +3020,7 @@
             288,
             823
           ],
-          "outputPath": "public/assets/skills/wizard/M.png",
+          "outputPath": "public/assets/skills/wizard/M.webp",
           "pivot": [
             0.5,
             0.5
@@ -3033,7 +3033,7 @@
             270,
             252
           ],
-          "sha256": "cff9ba9a3cdd9ee60be6bf1fef713b36550fce3ab697e1a51e63e1131061f4ef"
+          "sha256": "316af04620e942fa4e4fc88f85870710dd3e14de2d35289e9f4d8e7994e1e6de"
         },
         {
           "poseId": "N",
@@ -3045,7 +3045,7 @@
             571,
             823
           ],
-          "outputPath": "public/assets/skills/wizard/N.png",
+          "outputPath": "public/assets/skills/wizard/N.webp",
           "pivot": [
             0.5,
             0.5
@@ -3058,7 +3058,7 @@
             240,
             243
           ],
-          "sha256": "68949252e097201917bc1a0b3b85250ccfd7743d284ab07a28ac3f7146373911"
+          "sha256": "8fbed72ad21a3235184daab14fb9ad26898bb3b0b1ff539b7b41651db07fc8b3"
         },
         {
           "poseId": "O",
@@ -3070,7 +3070,7 @@
             879,
             823
           ],
-          "outputPath": "public/assets/skills/wizard/O.png",
+          "outputPath": "public/assets/skills/wizard/O.webp",
           "pivot": [
             0.5,
             0.5
@@ -3083,7 +3083,7 @@
             279,
             252
           ],
-          "sha256": "d4c5bef35020635432f3e927f68c43f1f87d6f3d1c382dd2c27f4f9c1654e0c3"
+          "sha256": "66f3ed12f9c4342747596feda6d76037f2375d67e60b083b43295bbde9ad1fbb"
         },
         {
           "poseId": "P",
@@ -3095,7 +3095,7 @@
             1135,
             823
           ],
-          "outputPath": "public/assets/skills/wizard/P.png",
+          "outputPath": "public/assets/skills/wizard/P.webp",
           "pivot": [
             0.5,
             0.5
@@ -3108,7 +3108,7 @@
             233,
             248
           ],
-          "sha256": "0fd676b8d5e45d67110bbc100fced1ab55c574c78f933cfbdf0eb13685732e89"
+          "sha256": "c87d9d366c8ae6709c9e5ef6110fbbc919409ce57061b8a304dfc7cd83c62a2e"
         },
         {
           "poseId": "Q",
@@ -3120,7 +3120,7 @@
             1432,
             823
           ],
-          "outputPath": "public/assets/skills/wizard/Q.png",
+          "outputPath": "public/assets/skills/wizard/Q.webp",
           "pivot": [
             0.5,
             0.5
@@ -3133,7 +3133,7 @@
             282,
             252
           ],
-          "sha256": "562f44585429cde706b2f08f87e695ca5c09e08dca5254001af16cb0e41e0660"
+          "sha256": "79915eef952dd516ec51e049250a926852c406a2a8ea531b9e76aabd751d6583"
         },
         {
           "poseId": "R",
@@ -3145,7 +3145,7 @@
             1760,
             823
           ],
-          "outputPath": "public/assets/skills/wizard/R.png",
+          "outputPath": "public/assets/skills/wizard/R.webp",
           "pivot": [
             0.5,
             0.5
@@ -3158,7 +3158,7 @@
             282,
             234
           ],
-          "sha256": "c7d6773ede968a1ef6a21d47e3c5d381da45e4ad183230291b8297feb8146576"
+          "sha256": "400125b645e2d829fe55a0f70520a165f9a396326dae99458881a26c6478457a"
         }
       ]
     },
@@ -3175,7 +3175,7 @@
             291,
             239
           ],
-          "outputPath": "public/assets/skills/blade/A.png",
+          "outputPath": "public/assets/skills/blade/A.webp",
           "pivot": [
             0.5,
             1.0
@@ -3188,7 +3188,7 @@
             189,
             154
           ],
-          "sha256": "61ef855c99cb65417a10bf9eb0da54db2c987ca01f21e4b3b6b1e1bc1bac0fcf"
+          "sha256": "b6aee108ccbde28ae9b7b3e5ce6504032a11d434174a1040527c7294ec3fae5e"
         },
         {
           "poseId": "B",
@@ -3200,7 +3200,7 @@
             584,
             239
           ],
-          "outputPath": "public/assets/skills/blade/B.png",
+          "outputPath": "public/assets/skills/blade/B.webp",
           "pivot": [
             0.5,
             1.0
@@ -3213,7 +3213,7 @@
             224,
             158
           ],
-          "sha256": "a68ef8c520d80917e703cba3a908a10a47653cd37a57a6c4e73b34cbd3b89ace"
+          "sha256": "b62c0ace7b6027741fe1f8521add3bb8e591d597844887a2b1bba6c544c406f0"
         },
         {
           "poseId": "C",
@@ -3225,7 +3225,7 @@
             878,
             239
           ],
-          "outputPath": "public/assets/skills/blade/C.png",
+          "outputPath": "public/assets/skills/blade/C.webp",
           "pivot": [
             0.5,
             1.0
@@ -3238,7 +3238,7 @@
             234,
             203
           ],
-          "sha256": "d3ebe9c37a7b9fa32a935ba5110fe4511c4996df34338c894852f03d6ae76453"
+          "sha256": "dceeccb5d6f86a93351badbf673b5c2568bff2e6bfcc112960822332c89c9229"
         },
         {
           "poseId": "D",
@@ -3250,7 +3250,7 @@
             1171,
             239
           ],
-          "outputPath": "public/assets/skills/blade/D.png",
+          "outputPath": "public/assets/skills/blade/D.webp",
           "pivot": [
             0.5,
             1.0
@@ -3263,7 +3263,7 @@
             277,
             157
           ],
-          "sha256": "439f38539589ae78fedd3c074411ef08efad461bd66449d72fca6fcf1c540c8a"
+          "sha256": "5336db32559ac30f288e890b31195ca3dcafb1c244cb7248e362a8d94cbf794c"
         },
         {
           "poseId": "E",
@@ -3275,7 +3275,7 @@
             1465,
             239
           ],
-          "outputPath": "public/assets/skills/blade/E.png",
+          "outputPath": "public/assets/skills/blade/E.webp",
           "pivot": [
             0.5,
             0.5
@@ -3288,7 +3288,7 @@
             112,
             85
           ],
-          "sha256": "3aaf2c153fe32dd227fa0203b8ac4f736a79e2cb2c32b46549312ed2be3c11f4"
+          "sha256": "092d37ad2091ab2a74b993e59336ea71a241fcb1e224addda4695d706ce57bbb"
         },
         {
           "poseId": "F",
@@ -3300,7 +3300,7 @@
             1758,
             239
           ],
-          "outputPath": "public/assets/skills/blade/F.png",
+          "outputPath": "public/assets/skills/blade/F.webp",
           "pivot": [
             0.5,
             0.5
@@ -3313,7 +3313,7 @@
             204,
             160
           ],
-          "sha256": "2fd7336442d7cbe5cbed3c2735c15581585fa63cc9c463f54be4d33e519bcb3c"
+          "sha256": "ec1d7a7592675403b89c4e2dc3a0f4c94313712ea32e9527e4d07e207701a7ba"
         },
         {
           "poseId": "G",
@@ -3325,7 +3325,7 @@
             291,
             523
           ],
-          "outputPath": "public/assets/skills/blade/G.png",
+          "outputPath": "public/assets/skills/blade/G.webp",
           "pivot": [
             0.5,
             0.5
@@ -3338,7 +3338,7 @@
             262,
             219
           ],
-          "sha256": "66e615c253fd33bc59df36ab4be312854dda60d5159063c73d8d065b99b34960"
+          "sha256": "5b6e92aaee0a845b0a196883447b8e5d086dfed610c7bc3a129c3423d7a199ad"
         },
         {
           "poseId": "H",
@@ -3350,7 +3350,7 @@
             584,
             523
           ],
-          "outputPath": "public/assets/skills/blade/H.png",
+          "outputPath": "public/assets/skills/blade/H.webp",
           "pivot": [
             0.5,
             0.5
@@ -3363,7 +3363,7 @@
             265,
             211
           ],
-          "sha256": "b1261ca1c2c9fa6345707165f32fdc7b171dfc3f0ef982fe13e1415166d60243"
+          "sha256": "97719ecc26216bc3849cedcdaf0305e290a4b992d15bfc1d88d6774b87537490"
         },
         {
           "poseId": "I",
@@ -3375,7 +3375,7 @@
             878,
             523
           ],
-          "outputPath": "public/assets/skills/blade/I.png",
+          "outputPath": "public/assets/skills/blade/I.webp",
           "pivot": [
             0.5,
             0.5
@@ -3388,7 +3388,7 @@
             249,
             225
           ],
-          "sha256": "726c8f376c9186feb07f69edc65145a1bc6a8bd5e7a2c2e69c11b9b18c417dd3"
+          "sha256": "f26502d8a0e94b02d762ffc9f5af7a8fe8598cf4f0dcb843fbad94687c215902"
         },
         {
           "poseId": "J",
@@ -3400,7 +3400,7 @@
             1171,
             523
           ],
-          "outputPath": "public/assets/skills/blade/J.png",
+          "outputPath": "public/assets/skills/blade/J.webp",
           "pivot": [
             0.5,
             0.5
@@ -3413,7 +3413,7 @@
             278,
             211
           ],
-          "sha256": "8a459e8c7f2bc886f4a425c1772507ff9da83f9cb0474888ca391b432d09a8fa"
+          "sha256": "8b579f3e5b17ea79e4bf770b72db77ab7a78be7ddb8598dcf8105623c40603c5"
         },
         {
           "poseId": "K",
@@ -3425,7 +3425,7 @@
             1465,
             523
           ],
-          "outputPath": "public/assets/skills/blade/K.png",
+          "outputPath": "public/assets/skills/blade/K.webp",
           "pivot": [
             0.5,
             0.5
@@ -3438,7 +3438,7 @@
             152,
             226
           ],
-          "sha256": "5b4f799f36bc4e5a0e9826c97e8a47ea2c3c0fb3ae69a2d7245ea9774252ae31"
+          "sha256": "13b8986e345e59827ee07f246dc5f4d87945f701da9de2c87dfe4f0ad15ca52e"
         },
         {
           "poseId": "L",
@@ -3450,7 +3450,7 @@
             1758,
             523
           ],
-          "outputPath": "public/assets/skills/blade/L.png",
+          "outputPath": "public/assets/skills/blade/L.webp",
           "pivot": [
             0.5,
             0.5
@@ -3463,7 +3463,7 @@
             260,
             214
           ],
-          "sha256": "a8905fa230d6cf90e97e762505924fdf6d07c59a90a2f9f861a9fc15e4c94b5f"
+          "sha256": "7267ac71407f6eaf5714da642f67a12175d513a8af08cffe7303b2975e5c5c76"
         },
         {
           "poseId": "M",
@@ -3475,7 +3475,7 @@
             291,
             806
           ],
-          "outputPath": "public/assets/skills/blade/M.png",
+          "outputPath": "public/assets/skills/blade/M.webp",
           "pivot": [
             0.5,
             0.5
@@ -3488,7 +3488,7 @@
             277,
             122
           ],
-          "sha256": "2e2f8638777842cbe9684605e6e31e31c786bace4977327d58488474b7a2c4c4"
+          "sha256": "23248128d557c796275fd6abeb6baaa19c403a2e08f615a00d2500620bf2bd7c"
         },
         {
           "poseId": "N",
@@ -3500,7 +3500,7 @@
             584,
             806
           ],
-          "outputPath": "public/assets/skills/blade/N.png",
+          "outputPath": "public/assets/skills/blade/N.webp",
           "pivot": [
             0.5,
             0.5
@@ -3513,7 +3513,7 @@
             276,
             148
           ],
-          "sha256": "5843d7a78c0c332a6bc96c806df690164cde1bbe5ac590faca60c7fd41fbccd0"
+          "sha256": "28b976e10b04279673a0c01c3458f7a7f955b7758839101298ab5a3a56905336"
         },
         {
           "poseId": "O",
@@ -3525,7 +3525,7 @@
             878,
             806
           ],
-          "outputPath": "public/assets/skills/blade/O.png",
+          "outputPath": "public/assets/skills/blade/O.webp",
           "pivot": [
             0.5,
             0.5
@@ -3538,7 +3538,7 @@
             272,
             220
           ],
-          "sha256": "d28c7a69f272041ae5d7f3c698d53fc6dd711ea1c8808d85536fd05f93da22c9"
+          "sha256": "0111c53bf5f992b5846f0b439819c6cd5547f06bddde70b723f731f19d9176ae"
         },
         {
           "poseId": "P",
@@ -3550,7 +3550,7 @@
             1171,
             806
           ],
-          "outputPath": "public/assets/skills/blade/P.png",
+          "outputPath": "public/assets/skills/blade/P.webp",
           "pivot": [
             0.5,
             0.5
@@ -3563,7 +3563,7 @@
             278,
             199
           ],
-          "sha256": "100d26f9631c1e51fb8e163c537ccc622801a1139ec53ffc0b43c54b89b5076a"
+          "sha256": "92c55ed23eb652db0badf1ee411dbb5ebff22b5eafeac918f1db2df8f98d7524"
         },
         {
           "poseId": "Q",
@@ -3575,7 +3575,7 @@
             1465,
             806
           ],
-          "outputPath": "public/assets/skills/blade/Q.png",
+          "outputPath": "public/assets/skills/blade/Q.webp",
           "pivot": [
             0.5,
             0.5
@@ -3588,7 +3588,7 @@
             268,
             193
           ],
-          "sha256": "eb90f37fe711c904028423c21e395e95cde246959c7a2512fae3665f80ee1227"
+          "sha256": "d3ff658b9eaf2a12554d980465a5844d9c5c4d2f441d27f05efba35c3b7fe23c"
         },
         {
           "poseId": "R",
@@ -3600,7 +3600,7 @@
             1758,
             806
           ],
-          "outputPath": "public/assets/skills/blade/R.png",
+          "outputPath": "public/assets/skills/blade/R.webp",
           "pivot": [
             0.5,
             0.5
@@ -3613,7 +3613,7 @@
             275,
             211
           ],
-          "sha256": "fa9f94a43348ebbcb56d41167f194ebb90722503672c30261dafe4a26084204e"
+          "sha256": "a8506851f2231e793852d50d2ed2b78da3484f58e2cb5d64bdf3927e2884a6f5"
         }
       ],
       "derivedAssets": [
@@ -3622,7 +3622,7 @@
           "textureId": "skill-blade-k_weapon_blue",
           "sourceSheet": "我的刀盾必殺技.png",
           "sourceRect": "derived from source cell K connected spatial component",
-          "outputPath": "public/assets/skills/blade/K_weapon_blue.png",
+          "outputPath": "public/assets/skills/blade/K_weapon_blue.webp",
           "pivot": [
             0.5,
             0.5
@@ -3635,14 +3635,14 @@
             88,
             226
           ],
-          "sha256": "556ac4fea37f627971797f73838f2f3fc8f5e1af534b9b184c1b9fbefdd10cec"
+          "sha256": "7ea3cd8da32b8f4f03832c99ba69ebe52dfd2194ba3a15a22140c577956c5265"
         },
         {
           "poseId": "K_weapon_black",
           "textureId": "skill-blade-k_weapon_black",
           "sourceSheet": "我的刀盾必殺技.png",
           "sourceRect": "derived from source cell K connected spatial component",
-          "outputPath": "public/assets/skills/blade/K_weapon_black.png",
+          "outputPath": "public/assets/skills/blade/K_weapon_black.webp",
           "pivot": [
             0.5,
             0.5
@@ -3655,7 +3655,7 @@
             60,
             225
           ],
-          "sha256": "f46adf762389e92bf718b977d4987c95cdecd76e085c6f3d19e19b07f4f42f23"
+          "sha256": "130e7c80101960d89a9d7ce5160d74b4ca54dfd08405a94d18da1d8cdb6ff601"
         }
       ]
     },
@@ -3672,7 +3672,7 @@
             180,
             265
           ],
-          "outputPath": "public/assets/skills/pink/A.png",
+          "outputPath": "public/assets/skills/pink/A.webp",
           "pivot": [
             0.5,
             1.0
@@ -3685,7 +3685,7 @@
             121,
             181
           ],
-          "sha256": "c8b57e93e8f80250ea3975fa99f03eec9a0dc96a570726ce035de51fd8873e25"
+          "sha256": "e8c0c206eaa81a7b0b05b2e054f21487e73e27a618c818f17cbbf9f171cb4e68"
         },
         {
           "poseId": "B",
@@ -3697,7 +3697,7 @@
             372,
             265
           ],
-          "outputPath": "public/assets/skills/pink/B.png",
+          "outputPath": "public/assets/skills/pink/B.webp",
           "pivot": [
             0.5,
             1.0
@@ -3710,7 +3710,7 @@
             121,
             177
           ],
-          "sha256": "ead2bd775c4c7418985a557af7736e16a7778943955e2f1db13324bf25a64341"
+          "sha256": "041ae9472823ee580a20635f7098009ea7f87d95a6b7a6c24d972de7b182ca38"
         },
         {
           "poseId": "C",
@@ -3722,7 +3722,7 @@
             570,
             265
           ],
-          "outputPath": "public/assets/skills/pink/C.png",
+          "outputPath": "public/assets/skills/pink/C.webp",
           "pivot": [
             0.5,
             1.0
@@ -3735,7 +3735,7 @@
             147,
             192
           ],
-          "sha256": "28d48485a8071013ba52d7174c6db9177d846c9d38eec12f50140eb33d08edf5"
+          "sha256": "78652fc2d3eb134d3489a6eed8e6d55356f89613012e24b2bbb1d6b84c5044e7"
         },
         {
           "poseId": "D",
@@ -3747,7 +3747,7 @@
             794,
             265
           ],
-          "outputPath": "public/assets/skills/pink/D.png",
+          "outputPath": "public/assets/skills/pink/D.webp",
           "pivot": [
             0.5,
             1.0
@@ -3760,7 +3760,7 @@
             191,
             168
           ],
-          "sha256": "3341bebb3a6f72f0d678755551838c7f0ad022649d148486197e4bdb74af9e41"
+          "sha256": "c0289108878a3b123d9c33014265e64431cd05e68d6f32291c6f87c7bc516444"
         },
         {
           "poseId": "E",
@@ -3772,7 +3772,7 @@
             1040,
             265
           ],
-          "outputPath": "public/assets/skills/pink/E.png",
+          "outputPath": "public/assets/skills/pink/E.webp",
           "pivot": [
             0.5,
             0.5
@@ -3785,7 +3785,7 @@
             214,
             204
           ],
-          "sha256": "b6eea7815626241157abcd93a602a6c01fa5e8b3add159bcb4e8f865e966b337"
+          "sha256": "4ad329323356d7ec7353d7738204d7676f72d409d0f75f1b0c05eb7566a45819"
         },
         {
           "poseId": "F",
@@ -3797,7 +3797,7 @@
             203,
             560
           ],
-          "outputPath": "public/assets/skills/pink/F.png",
+          "outputPath": "public/assets/skills/pink/F.webp",
           "pivot": [
             0.5,
             0.5
@@ -3810,7 +3810,7 @@
             184,
             198
           ],
-          "sha256": "c821637ad3f7797ff3bb344b036a021d959b42afc9eecd6d7b04c21dbabadb84"
+          "sha256": "2950f7341e39bbdb09809b8a3d3c51ab1ff364b439b70816decde90022205538"
         },
         {
           "poseId": "G",
@@ -3822,7 +3822,7 @@
             399,
             560
           ],
-          "outputPath": "public/assets/skills/pink/G.png",
+          "outputPath": "public/assets/skills/pink/G.webp",
           "pivot": [
             0.5,
             0.5
@@ -3835,7 +3835,7 @@
             180,
             224
           ],
-          "sha256": "1559bdc7ca03ffb6a137048e1dbfe2e7452f05c55f52bec7a6eddcfd1f0eea83"
+          "sha256": "14aedbfcb59d302d360a05ef336ac898950d0624b0ed42f2c9d0ac0c5da84096"
         },
         {
           "poseId": "H",
@@ -3847,7 +3847,7 @@
             645,
             560
           ],
-          "outputPath": "public/assets/skills/pink/H.png",
+          "outputPath": "public/assets/skills/pink/H.webp",
           "pivot": [
             0.5,
             0.5
@@ -3860,7 +3860,7 @@
             230,
             219
           ],
-          "sha256": "40a05b58b5dcd0b80bb7058917ccc0a595345738368750d7a989b1b2338beefd"
+          "sha256": "77535bce8c769aa101868f3fa3e2e9271a6183cf77278d0926cdcf92d354d462"
         },
         {
           "poseId": "I",
@@ -3872,7 +3872,7 @@
             838,
             560
           ],
-          "outputPath": "public/assets/skills/pink/I.png",
+          "outputPath": "public/assets/skills/pink/I.webp",
           "pivot": [
             0.5,
             0.5
@@ -3885,7 +3885,7 @@
             161,
             201
           ],
-          "sha256": "94f4f3863a9a159fd38559d5a69ac1d1199f4293ef5a220252b946dadb815ca1"
+          "sha256": "0ce29fd29f6e0c43365e8106eb6bb0415ddbe4375d002b9d2fbdc9ee2581e59d"
         },
         {
           "poseId": "J",
@@ -3897,7 +3897,7 @@
             1040,
             560
           ],
-          "outputPath": "public/assets/skills/pink/J.png",
+          "outputPath": "public/assets/skills/pink/J.webp",
           "pivot": [
             0.5,
             0.5
@@ -3910,7 +3910,7 @@
             187,
             197
           ],
-          "sha256": "c0a1688ab4ebc440501d1994fee5fb89fde997ef322f5557832835f98eaa103a"
+          "sha256": "e1b4ee882f02ccb1fcc0af482ed832d99f4ba0827058dad7b12032ed415507f4"
         },
         {
           "poseId": "K",
@@ -3922,7 +3922,7 @@
             206,
             854
           ],
-          "outputPath": "public/assets/skills/pink/K.png",
+          "outputPath": "public/assets/skills/pink/K.webp",
           "pivot": [
             0.5,
             0.5
@@ -3935,7 +3935,7 @@
             193,
             210
           ],
-          "sha256": "84c1b0ffa5e725d9e8fe6328b4fe5690104c81730965e698e883bd6c72ea4bd8"
+          "sha256": "84dfb927f64415e9679453215f1f82e5d9702608882110fac9b605ecc0277f15"
         },
         {
           "poseId": "L",
@@ -3947,7 +3947,7 @@
             410,
             854
           ],
-          "outputPath": "public/assets/skills/pink/L.png",
+          "outputPath": "public/assets/skills/pink/L.webp",
           "pivot": [
             0.5,
             0.5
@@ -3960,7 +3960,7 @@
             160,
             207
           ],
-          "sha256": "dfc7273da41b57e9da9b7323929c635028066d48ae47a5258a691885e1e017a5"
+          "sha256": "807910f8c8b27d8b9d7149cfaf820d5a3dc67569816e9f36d0270069d474191d"
         },
         {
           "poseId": "M",
@@ -3972,7 +3972,7 @@
             637,
             854
           ],
-          "outputPath": "public/assets/skills/pink/M.png",
+          "outputPath": "public/assets/skills/pink/M.webp",
           "pivot": [
             0.5,
             0.5
@@ -3985,7 +3985,7 @@
             213,
             205
           ],
-          "sha256": "4bc6991affa32ec5d84b2e4985a7bc20d0bf2e5b49b3661109f893ea733a2346"
+          "sha256": "58375981a10b6ac259ddc3419926be44eedfc0350b6edad5f52cd1d9e6c8d356"
         },
         {
           "poseId": "N",
@@ -3997,7 +3997,7 @@
             847,
             854
           ],
-          "outputPath": "public/assets/skills/pink/N.png",
+          "outputPath": "public/assets/skills/pink/N.webp",
           "pivot": [
             0.5,
             0.5
@@ -4010,7 +4010,7 @@
             188,
             201
           ],
-          "sha256": "040899bd2645d599d25502b6b3a62538fa95cf3ed1ae1d34dbd3e63df4947f07"
+          "sha256": "64e1022b985c93767a51286428ca49bba3c9fde98f34d5057b0d854425426e2f"
         },
         {
           "poseId": "O",
@@ -4022,7 +4022,7 @@
             1040,
             854
           ],
-          "outputPath": "public/assets/skills/pink/O.png",
+          "outputPath": "public/assets/skills/pink/O.webp",
           "pivot": [
             0.5,
             0.5
@@ -4035,7 +4035,7 @@
             159,
             189
           ],
-          "sha256": "557014395ad7e39920ad896dbb20f2cb58442ad4743cec52f135ad46dd501c32"
+          "sha256": "a66b753e52a19900326f07b07e50a22eb7db2173f227c74b7f58caa15f8085b7"
         },
         {
           "poseId": "P",
@@ -4047,7 +4047,7 @@
             183,
             1148
           ],
-          "outputPath": "public/assets/skills/pink/P.png",
+          "outputPath": "public/assets/skills/pink/P.webp",
           "pivot": [
             0.5,
             0.5
@@ -4060,7 +4060,7 @@
             168,
             209
           ],
-          "sha256": "2df1564f26c8875c3d452f7bc7e0e7727301d407a8680ec57d5efdce4c2cd44b"
+          "sha256": "62e7a77a6b3a631017118274fed1124d1ff0d77a8a64f02108dd94cb2d45ea89"
         },
         {
           "poseId": "Q",
@@ -4072,7 +4072,7 @@
             387,
             1148
           ],
-          "outputPath": "public/assets/skills/pink/Q.png",
+          "outputPath": "public/assets/skills/pink/Q.webp",
           "pivot": [
             0.5,
             0.5
@@ -4085,7 +4085,7 @@
             188,
             199
           ],
-          "sha256": "27f10f5b7dec2bb9b3c247282d51773c1835f8defa4a3f9f191249a3941d829f"
+          "sha256": "48b87a28cfea4f725b93a4c895f73a64cf145c0238b4aaa7b26f8190a966075b"
         },
         {
           "poseId": "R",
@@ -4097,7 +4097,7 @@
             627,
             1148
           ],
-          "outputPath": "public/assets/skills/pink/R.png",
+          "outputPath": "public/assets/skills/pink/R.webp",
           "pivot": [
             0.5,
             0.5
@@ -4110,7 +4110,7 @@
             224,
             209
           ],
-          "sha256": "aa985ef760d30102a912e37e5acf11be6af4beadf449f88c5967d0c62cf52db0"
+          "sha256": "881df1f04f87ef660bfd3947998c865ae7b89ccd436cc81dcee6ffbb27e83cb2"
         },
         {
           "poseId": "S",
@@ -4122,7 +4122,7 @@
             825,
             1148
           ],
-          "outputPath": "public/assets/skills/pink/S.png",
+          "outputPath": "public/assets/skills/pink/S.webp",
           "pivot": [
             0.5,
             0.5
@@ -4135,7 +4135,7 @@
             182,
             193
           ],
-          "sha256": "b464281cd73b77c412df19fc1230e8b145f043f145ed23345c3d1aaad892a9df"
+          "sha256": "f82cf5426334166fe49dea0b95258d146f1de66dcb164a27db1ec33fb53fa306"
         },
         {
           "poseId": "T",
@@ -4147,7 +4147,7 @@
             1040,
             1148
           ],
-          "outputPath": "public/assets/skills/pink/T.png",
+          "outputPath": "public/assets/skills/pink/T.webp",
           "pivot": [
             0.5,
             0.5
@@ -4160,7 +4160,7 @@
             199,
             154
           ],
-          "sha256": "200afd94095248602883c141f54e9e67734a2319c024d57393dd96c3f2a58192"
+          "sha256": "df0f6f4327a1995bce6ebebb61ad3cee5d33218132a17f85a5c7cda9dd8fdd1f"
         },
         {
           "poseId": "U",
@@ -4172,7 +4172,7 @@
             353,
             1478
           ],
-          "outputPath": "public/assets/skills/pink/U.png",
+          "outputPath": "public/assets/skills/pink/U.webp",
           "pivot": [
             0.5,
             0.5
@@ -4185,7 +4185,7 @@
             320,
             211
           ],
-          "sha256": "a1a09c15c2227b6734c69140d5d2f81e3ff5c40f2b372ffd16100c2dd8edfe23"
+          "sha256": "57b402c1c27e12f3957b20f5b75fd96a3c8bce4eb5e2097071781d4b4f635119"
         },
         {
           "poseId": "V",
@@ -4197,7 +4197,7 @@
             679,
             1478
           ],
-          "outputPath": "public/assets/skills/pink/V.png",
+          "outputPath": "public/assets/skills/pink/V.webp",
           "pivot": [
             0.5,
             0.5
@@ -4210,7 +4210,7 @@
             310,
             236
           ],
-          "sha256": "3cc16831a1653ba19c707bb9c84c65d7d3d24e9c02070bd33870798ba2980da9"
+          "sha256": "5cbc92280a1153928f5339cc96462af88e18e98ca266a0a83146c80ca696b7f7"
         },
         {
           "poseId": "W",
@@ -4222,7 +4222,7 @@
             1040,
             1478
           ],
-          "outputPath": "public/assets/skills/pink/W.png",
+          "outputPath": "public/assets/skills/pink/W.webp",
           "pivot": [
             0.5,
             0.5
@@ -4235,7 +4235,7 @@
             316,
             248
           ],
-          "sha256": "2b5c2425cae5fc55fba1ecb67bd909f6b2f818e8790d2c6ed7a09f75b8daebed"
+          "sha256": "2f68f07ffd6105cd0f933711bf48af6f7beff68e357630b0e860d5ad80eebec0"
         }
       ]
     },
@@ -4252,7 +4252,7 @@
             321,
             269
           ],
-          "outputPath": "public/assets/skills/sauce/A.png",
+          "outputPath": "public/assets/skills/sauce/A.webp",
           "pivot": [
             0.5,
             1.0
@@ -4265,7 +4265,7 @@
             242,
             196
           ],
-          "sha256": "4eabc2dee6817054af28b84427ddc525d17d27240186a0510f4b33b013808e5a"
+          "sha256": "9169d6e226535727d725bdc9ed78063bcf71c9fb575fc398abd7c78db95f3f06"
         },
         {
           "poseId": "B",
@@ -4277,7 +4277,7 @@
             641,
             269
           ],
-          "outputPath": "public/assets/skills/sauce/B.png",
+          "outputPath": "public/assets/skills/sauce/B.webp",
           "pivot": [
             0.5,
             1.0
@@ -4290,7 +4290,7 @@
             259,
             206
           ],
-          "sha256": "9b7b8b1f3f60556f2705a702fe14c8c8cc8b5b1892b1cbf48e7df2d1f2eec489"
+          "sha256": "c900fc9a34fc0fcfcbd045c66152348b9104f35bf52df76cf243ad0292c511c6"
         },
         {
           "poseId": "C",
@@ -4302,7 +4302,7 @@
             957,
             269
           ],
-          "outputPath": "public/assets/skills/sauce/C.png",
+          "outputPath": "public/assets/skills/sauce/C.webp",
           "pivot": [
             0.5,
             1.0
@@ -4315,7 +4315,7 @@
             266,
             216
           ],
-          "sha256": "ca496b1004ffaa323d8bdf0ce62f5008060472a7caab1982a4db31d2444a82ec"
+          "sha256": "d23949052304cf05ae1ea6f3be9d4652dc9a07c9860472c1eda053049ae69a85"
         },
         {
           "poseId": "D",
@@ -4327,7 +4327,7 @@
             1338,
             269
           ],
-          "outputPath": "public/assets/skills/sauce/D.png",
+          "outputPath": "public/assets/skills/sauce/D.webp",
           "pivot": [
             0.5,
             1.0
@@ -4340,7 +4340,7 @@
             361,
             176
           ],
-          "sha256": "f1c78a4f337006558c58b9075614c5dfbb8571e70d9e9fcdd2b171d331c17674"
+          "sha256": "b5c5a5187db450a4cf6341d3ac6c34de3f79543189f402c0abad3c1f60c72fea"
         },
         {
           "poseId": "E",
@@ -4352,7 +4352,7 @@
             1603,
             269
           ],
-          "outputPath": "public/assets/skills/sauce/E.png",
+          "outputPath": "public/assets/skills/sauce/E.webp",
           "pivot": [
             0.5,
             0.5
@@ -4365,7 +4365,7 @@
             124,
             76
           ],
-          "sha256": "650c06a95c16fd6e63fed20fb7240989ea57b5b56515f24dc9ead52d6affe5f8"
+          "sha256": "61454006c767d0f4bb018192bd9a6d0ac02d13bf495e0b687935e148e8f770b3"
         },
         {
           "poseId": "F",
@@ -4377,7 +4377,7 @@
             321,
             556
           ],
-          "outputPath": "public/assets/skills/sauce/F.png",
+          "outputPath": "public/assets/skills/sauce/F.webp",
           "pivot": [
             0.5,
             0.5
@@ -4390,7 +4390,7 @@
             271,
             144
           ],
-          "sha256": "a6baf7060ea290684438cb562a018af72844c0ee4e362c80a00b5aa4aeff33b6"
+          "sha256": "3ac2bc02fd43c3b2800ba99cda08aa494244411b412b802611fcd40e0f2f95ab"
         },
         {
           "poseId": "G",
@@ -4402,7 +4402,7 @@
             641,
             556
           ],
-          "outputPath": "public/assets/skills/sauce/G.png",
+          "outputPath": "public/assets/skills/sauce/G.webp",
           "pivot": [
             0.5,
             0.5
@@ -4415,7 +4415,7 @@
             301,
             199
           ],
-          "sha256": "d3efc398d1a9325df9aa9eebc5ac43d433b248f9c11b13d87126fcae1f88fd6a"
+          "sha256": "466bedd0ad7c413fb2c93417b921bfd5fdcbb3ea7ed73d3f69e542060e9eaec0"
         },
         {
           "poseId": "H",
@@ -4427,7 +4427,7 @@
             957,
             556
           ],
-          "outputPath": "public/assets/skills/sauce/H.png",
+          "outputPath": "public/assets/skills/sauce/H.webp",
           "pivot": [
             0.5,
             0.5
@@ -4440,7 +4440,7 @@
             258,
             210
           ],
-          "sha256": "896c9251e844b62dc7f349f3ca21502d7e582f2eedafb80aa38ef56780a68b0e"
+          "sha256": "b6f511e03d9d5667ed914cbd941fa501a124447b3a16779cafb53629013241d0"
         },
         {
           "poseId": "I",
@@ -4452,7 +4452,7 @@
             1338,
             556
           ],
-          "outputPath": "public/assets/skills/sauce/I.png",
+          "outputPath": "public/assets/skills/sauce/I.webp",
           "pivot": [
             0.5,
             0.5
@@ -4465,7 +4465,7 @@
             339,
             182
           ],
-          "sha256": "93abc2774692d3975b651a1a1cda6cf9c8e657177322516ae92ab68330e16740"
+          "sha256": "82618ca90ba58b90c3ca8d3232a6fb72ab4fc32ca6a055fda74ba37df85e94ad"
         },
         {
           "poseId": "J",
@@ -4477,7 +4477,7 @@
             1603,
             556
           ],
-          "outputPath": "public/assets/skills/sauce/J.png",
+          "outputPath": "public/assets/skills/sauce/J.webp",
           "pivot": [
             0.5,
             0.5
@@ -4490,7 +4490,7 @@
             218,
             199
           ],
-          "sha256": "00e7754705886b3fbcb5148c3538434ff111b91b07f81a63410cb0a780dd8627"
+          "sha256": "268398ac0994edb71d92458d5c9035963ac9fe37ee3d40b985695711a04e7190"
         },
         {
           "poseId": "K",
@@ -4502,7 +4502,7 @@
             321,
             888
           ],
-          "outputPath": "public/assets/skills/sauce/K.png",
+          "outputPath": "public/assets/skills/sauce/K.webp",
           "pivot": [
             0.5,
             0.5
@@ -4515,7 +4515,7 @@
             306,
             176
           ],
-          "sha256": "6541096843664c5991df2c304ab9b357252f8be8ecbca6f0a8c6a7089c1fc8a9"
+          "sha256": "0cb1e4649081bb7422eb8712821dd072d192abc0cc979cd70ab41502fc0bbc8e"
         },
         {
           "poseId": "L",
@@ -4527,7 +4527,7 @@
             641,
             888
           ],
-          "outputPath": "public/assets/skills/sauce/L.png",
+          "outputPath": "public/assets/skills/sauce/L.webp",
           "pivot": [
             0.5,
             0.5
@@ -4540,7 +4540,7 @@
             296,
             218
           ],
-          "sha256": "b4fbc81c820a759e34cec2f6554a6649147b9af96058bc6c38435d85a3787942"
+          "sha256": "90f1427a4b91401090e0eaec03c20fa3d3696b92ab18efa7679658e4dca2ffb5"
         },
         {
           "poseId": "M",
@@ -4552,7 +4552,7 @@
             957,
             888
           ],
-          "outputPath": "public/assets/skills/sauce/M.png",
+          "outputPath": "public/assets/skills/sauce/M.webp",
           "pivot": [
             0.5,
             0.5
@@ -4565,7 +4565,7 @@
             299,
             227
           ],
-          "sha256": "6a95ccfa893f8094f3cbf8c36a672dc5357e54bc575a3902947fe698ccafa1e8"
+          "sha256": "d19add8deaa6e26df2aa9eddbd822002870e5228a8181a8d9de1ec9e2d334262"
         },
         {
           "poseId": "N",
@@ -4577,7 +4577,7 @@
             1338,
             888
           ],
-          "outputPath": "public/assets/skills/sauce/N.png",
+          "outputPath": "public/assets/skills/sauce/N.webp",
           "pivot": [
             0.5,
             0.5
@@ -4590,7 +4590,7 @@
             358,
             243
           ],
-          "sha256": "edd8e2f4f414c7f193c0eacb422b427951f0fb80827ca636e32358e1ac3be506"
+          "sha256": "c1771aa9d35a55811bb95b86e533df0c8f37a10fda56b7d0a16499ee9aff014c"
         },
         {
           "poseId": "O",
@@ -4602,7 +4602,7 @@
             1603,
             888
           ],
-          "outputPath": "public/assets/skills/sauce/O.png",
+          "outputPath": "public/assets/skills/sauce/O.webp",
           "pivot": [
             0.5,
             0.5
@@ -4615,7 +4615,7 @@
             249,
             234
           ],
-          "sha256": "9cbcef1b43b8d20b19556b9486d998ea44b733e9c7477d5e563b84e21f8f0b04"
+          "sha256": "ebaaf1f399780258f4066c834fd0e409e3202bece3bf4fa8fb4a081fc9c96d2b"
         }
       ]
     },
@@ -4632,7 +4632,7 @@
             236,
             219
           ],
-          "outputPath": "public/assets/skills/scared/A.png",
+          "outputPath": "public/assets/skills/scared/A.webp",
           "pivot": [
             0.5,
             1.0
@@ -4645,7 +4645,7 @@
             183,
             164
           ],
-          "sha256": "563babeea3b847878227b01be7b9816f5bb4967935c640d6c7ccf996a105a4d2"
+          "sha256": "cd0f0a5d3112a27c88cc7470ddf68420fd50486acfbd232ef495e41400428665"
         },
         {
           "poseId": "B",
@@ -4657,7 +4657,7 @@
             477,
             219
           ],
-          "outputPath": "public/assets/skills/scared/B.png",
+          "outputPath": "public/assets/skills/scared/B.webp",
           "pivot": [
             0.5,
             1.0
@@ -4670,7 +4670,7 @@
             206,
             182
           ],
-          "sha256": "949273365bde10534c8f901b4289193aa939ebdf71317c051c2a5c9ae703664f"
+          "sha256": "cc2e47d9c078bddc2d8b49fd5e93a2640069f2e14ecad6cca8357700967838f9"
         },
         {
           "poseId": "C",
@@ -4682,7 +4682,7 @@
             714,
             219
           ],
-          "outputPath": "public/assets/skills/scared/C.png",
+          "outputPath": "public/assets/skills/scared/C.webp",
           "pivot": [
             0.5,
             1.0
@@ -4695,7 +4695,7 @@
             212,
             203
           ],
-          "sha256": "63b171ce3c591dbedceb50373b72f410a73a637bc42f0555a2a7893d88c8ce87"
+          "sha256": "79a007564388bdb38b7bbb3dbdafa60be9126c4991cbf069b810a19777709483"
         },
         {
           "poseId": "D",
@@ -4707,7 +4707,7 @@
             952,
             219
           ],
-          "outputPath": "public/assets/skills/scared/D.png",
+          "outputPath": "public/assets/skills/scared/D.webp",
           "pivot": [
             0.5,
             1.0
@@ -4720,7 +4720,7 @@
             214,
             155
           ],
-          "sha256": "3c59db1d3b8051fd9b9a4194d0ddfd922a3b375ce396a908cd46b2eafa8f1877"
+          "sha256": "682df2bd57eb06a6fd6636f02367005928713ffef482bb7b6e8cce890048f04f"
         },
         {
           "poseId": "E",
@@ -4732,7 +4732,7 @@
             1186,
             219
           ],
-          "outputPath": "public/assets/skills/scared/E.png",
+          "outputPath": "public/assets/skills/scared/E.webp",
           "pivot": [
             0.5,
             0.5
@@ -4745,7 +4745,7 @@
             177,
             55
           ],
-          "sha256": "163da495efab92cb4ebddcefbab36505877f5005a90e3ede3ad5eaa51ce691f4"
+          "sha256": "0907febe0b891960fd44a6bd2e6dd4935a2fbacc0d4ecf38584774878052a0a5"
         },
         {
           "poseId": "F",
@@ -4757,7 +4757,7 @@
             1429,
             219
           ],
-          "outputPath": "public/assets/skills/scared/F.png",
+          "outputPath": "public/assets/skills/scared/F.webp",
           "pivot": [
             0.5,
             0.5
@@ -4770,7 +4770,7 @@
             219,
             94
           ],
-          "sha256": "288fc91902cd12aceb7bfdf1219a1eba3cbf1eea3364f07905c402a685006895"
+          "sha256": "ea7430691d354485ef5c2f04446061b9999c9bff84bbb0276f16ebc8c3f491d0"
         },
         {
           "poseId": "G",
@@ -4782,7 +4782,7 @@
             236,
             490
           ],
-          "outputPath": "public/assets/skills/scared/G.png",
+          "outputPath": "public/assets/skills/scared/G.webp",
           "pivot": [
             0.5,
             0.5
@@ -4795,7 +4795,7 @@
             219,
             190
           ],
-          "sha256": "c4a9a6ff65bbf1d95ddd64b5a60f1edbcde3bf609ddd0be6524abdc4a92b3f09"
+          "sha256": "6ce8e905012f787a28fbbd8f94ae678a7cb039cc308dcbb4c9df7f3a52898729"
         },
         {
           "poseId": "H",
@@ -4807,7 +4807,7 @@
             477,
             490
           ],
-          "outputPath": "public/assets/skills/scared/H.png",
+          "outputPath": "public/assets/skills/scared/H.webp",
           "pivot": [
             0.5,
             0.5
@@ -4820,7 +4820,7 @@
             217,
             125
           ],
-          "sha256": "3e96916580be5ab5345f3b70792e65d0eccb3c54ac70580f3edb6fbc7793d017"
+          "sha256": "350e3f23eb414a9a10d6fc29a828000dd600e9430de80ad48bb9001c431a1cf8"
         },
         {
           "poseId": "I",
@@ -4832,7 +4832,7 @@
             714,
             490
           ],
-          "outputPath": "public/assets/skills/scared/I.png",
+          "outputPath": "public/assets/skills/scared/I.webp",
           "pivot": [
             0.5,
             0.5
@@ -4845,7 +4845,7 @@
             201,
             192
           ],
-          "sha256": "da29bb923a50e5de883b2ed4fcff77585d1f588d146f037ef6c824aed9585472"
+          "sha256": "9bc6bdf88ab75f6adf38b38f7287967eda8b7eb801a7138606143841336b6d5d"
         },
         {
           "poseId": "J",
@@ -4857,7 +4857,7 @@
             952,
             490
           ],
-          "outputPath": "public/assets/skills/scared/J.png",
+          "outputPath": "public/assets/skills/scared/J.webp",
           "pivot": [
             0.5,
             0.5
@@ -4870,7 +4870,7 @@
             173,
             157
           ],
-          "sha256": "8e5a2f019401799a5d49d1a08a7d46777ac4167b0bef3f6c495648c8fcc342e1"
+          "sha256": "fd2696c2559337a1bc322273864fc9b0bd80e873d331e801ef8b8a7126f0ab61"
         },
         {
           "poseId": "K",
@@ -4882,7 +4882,7 @@
             1186,
             490
           ],
-          "outputPath": "public/assets/skills/scared/K.png",
+          "outputPath": "public/assets/skills/scared/K.webp",
           "pivot": [
             0.5,
             0.5
@@ -4895,7 +4895,7 @@
             207,
             207
           ],
-          "sha256": "8f3e720a315c060624a83e89b056c95b2515005db21f97c722d9bbac437379c7"
+          "sha256": "1433a69662972b71a4a434c7c104285f38b2e5834945a3caaf5bb7c385d742c8"
         },
         {
           "poseId": "L",
@@ -4907,7 +4907,7 @@
             1429,
             490
           ],
-          "outputPath": "public/assets/skills/scared/L.png",
+          "outputPath": "public/assets/skills/scared/L.webp",
           "pivot": [
             0.5,
             0.5
@@ -4920,7 +4920,7 @@
             179,
             207
           ],
-          "sha256": "42b97af301fa371a5507dcb1b9adc8f2eac789aa2c8b8238ae75b314c83bc934"
+          "sha256": "517aaaa423ce4406c0638554daa1eee9c15d01e3ce34b4d94210c746c2c2d34b"
         },
         {
           "poseId": "M",
@@ -4932,7 +4932,7 @@
             236,
             750
           ],
-          "outputPath": "public/assets/skills/scared/M.png",
+          "outputPath": "public/assets/skills/scared/M.webp",
           "pivot": [
             0.5,
             0.5
@@ -4945,7 +4945,7 @@
             219,
             158
           ],
-          "sha256": "ef9ff862f022b043b4588df98b70e56e225c3eb49dd08a962e0baf0d14dc6254"
+          "sha256": "157976c036e612cf2e64277a5759d1432965e68aecf3c529546897c1a9ffab51"
         },
         {
           "poseId": "N",
@@ -4957,7 +4957,7 @@
             477,
             750
           ],
-          "outputPath": "public/assets/skills/scared/N.png",
+          "outputPath": "public/assets/skills/scared/N.webp",
           "pivot": [
             0.5,
             0.5
@@ -4970,7 +4970,7 @@
             212,
             165
           ],
-          "sha256": "46f593ba11d766d1ce2b5592c1b927a55e819e3a742a83f53d078a0453db83b5"
+          "sha256": "04f81ce41f3a649255e3f4a170e5bb9ecfc0b59bd24bcad66533feaea24b3ba9"
         },
         {
           "poseId": "O",
@@ -4982,7 +4982,7 @@
             714,
             750
           ],
-          "outputPath": "public/assets/skills/scared/O.png",
+          "outputPath": "public/assets/skills/scared/O.webp",
           "pivot": [
             0.5,
             0.5
@@ -4995,7 +4995,7 @@
             213,
             160
           ],
-          "sha256": "9e34d91ddc46a53f9fece4408cb2b7d807ed2e21b2e331201a03450e8c811c8e"
+          "sha256": "0f3e0b7949835c7486d81e9b9ae5e4a4d714a4615888085ebdc9a5d0099ca2a6"
         },
         {
           "poseId": "P",
@@ -5007,7 +5007,7 @@
             952,
             750
           ],
-          "outputPath": "public/assets/skills/scared/P.png",
+          "outputPath": "public/assets/skills/scared/P.webp",
           "pivot": [
             0.5,
             0.5
@@ -5020,7 +5020,7 @@
             177,
             195
           ],
-          "sha256": "d0ef9e78815a12308e9cedef89ca805c2c7791fa2bf3e2fa528b9f2e6b174671"
+          "sha256": "d48d9c1a990cd64f8edad372e95b83131dea6d14bc473679cb0096837311c078"
         },
         {
           "poseId": "Q",
@@ -5032,7 +5032,7 @@
             1186,
             750
           ],
-          "outputPath": "public/assets/skills/scared/Q.png",
+          "outputPath": "public/assets/skills/scared/Q.webp",
           "pivot": [
             0.5,
             0.5
@@ -5045,7 +5045,7 @@
             159,
             195
           ],
-          "sha256": "7c4eaacbfac5f53a87bdc7f02569075120e2863a0f392e1d5366c5fc67f6672d"
+          "sha256": "cf736f817b3122bcd92eecc2390067d59bd2527b76e3db0e472ae2621c4b43ce"
         },
         {
           "poseId": "R",
@@ -5057,7 +5057,7 @@
             1429,
             750
           ],
-          "outputPath": "public/assets/skills/scared/R.png",
+          "outputPath": "public/assets/skills/scared/R.webp",
           "pivot": [
             0.5,
             0.5
@@ -5070,7 +5070,7 @@
             211,
             195
           ],
-          "sha256": "f89d624ebeac652a7d8b966650c421a840aa75a3b8c36496ef5cb6efb6c85d84"
+          "sha256": "b717d87b264044f2e5edee86949696ff9d7624dee4ef2122d0017709aea2fe52"
         },
         {
           "poseId": "S",
@@ -5082,7 +5082,7 @@
             417,
             1023
           ],
-          "outputPath": "public/assets/skills/scared/S.png",
+          "outputPath": "public/assets/skills/scared/S.webp",
           "pivot": [
             0.5,
             0.5
@@ -5095,7 +5095,7 @@
             242,
             206
           ],
-          "sha256": "869657a2af43b02e1e6fe7d72390f1c3e1ad4600ef132c67b4538da309484ca8"
+          "sha256": "5007c09c1610fa6deb6177ada4d1748eae45fa4c0c4ab1f41c3359c8674e38e8"
         },
         {
           "poseId": "T",
@@ -5107,7 +5107,7 @@
             693,
             1023
           ],
-          "outputPath": "public/assets/skills/scared/T.png",
+          "outputPath": "public/assets/skills/scared/T.webp",
           "pivot": [
             0.5,
             0.5
@@ -5120,7 +5120,7 @@
             234,
             191
           ],
-          "sha256": "61371d60a3bb430527b3adbfae00eb4f8d940c1c33a75b6850be2ea152b0dc41"
+          "sha256": "22f47772c268fec48b0debef5bf66f84a5afb29afed5230586a61aa08bce98d6"
         },
         {
           "poseId": "U",
@@ -5132,7 +5132,7 @@
             976,
             1023
           ],
-          "outputPath": "public/assets/skills/scared/U.png",
+          "outputPath": "public/assets/skills/scared/U.webp",
           "pivot": [
             0.5,
             0.5
@@ -5145,7 +5145,7 @@
             199,
             162
           ],
-          "sha256": "705903fec24ffcacc90099328c41c0811cafcc7c9411baf54471358190e978f2"
+          "sha256": "d0e96e8c9ca1fa9c7e973585efbdcac664aa86aaeecaf8e7aa0f01d025220978"
         },
         {
           "poseId": "V",
@@ -5157,7 +5157,7 @@
             1244,
             1023
           ],
-          "outputPath": "public/assets/skills/scared/V.png",
+          "outputPath": "public/assets/skills/scared/V.webp",
           "pivot": [
             0.5,
             0.5
@@ -5170,7 +5170,7 @@
             243,
             186
           ],
-          "sha256": "1bed3a2419b85b29f7e90d54e98b43ac2cbb667d4d2269e8b4641d6d71e592e6"
+          "sha256": "5bafac16f024052a1034fee117618b2747a6f2506e39805f10c7ba196df6ff04"
         }
       ]
     },
@@ -5187,7 +5187,7 @@
             269,
             221
           ],
-          "outputPath": "public/assets/skills/ok/A.png",
+          "outputPath": "public/assets/skills/ok/A.webp",
           "pivot": [
             0.5,
             1.0
@@ -5200,7 +5200,7 @@
             216,
             195
           ],
-          "sha256": "85803ce2c202ce3f891d9423cf64ed053eec232152abe8013e655911a20e65c7"
+          "sha256": "cdd62546251ac2113cefd49f4cca9b9a67ecd814af8cff6683e8e8fc18f68691"
         },
         {
           "poseId": "B",
@@ -5212,7 +5212,7 @@
             541,
             221
           ],
-          "outputPath": "public/assets/skills/ok/B.png",
+          "outputPath": "public/assets/skills/ok/B.webp",
           "pivot": [
             0.5,
             1.0
@@ -5225,7 +5225,7 @@
             246,
             206
           ],
-          "sha256": "de7380cf51fdfb61d26c3102e1a87700212d8e33dc55e66a8dfd5660d023d395"
+          "sha256": "c64751ce9cf9adbc2ccba1e9df5e05c776c9e704dc4c3fcd4575a9a978c55a68"
         },
         {
           "poseId": "C",
@@ -5237,7 +5237,7 @@
             813,
             221
           ],
-          "outputPath": "public/assets/skills/ok/C.png",
+          "outputPath": "public/assets/skills/ok/C.webp",
           "pivot": [
             0.5,
             1.0
@@ -5250,7 +5250,7 @@
             256,
             206
           ],
-          "sha256": "45057ae1d9dfaaf9a3d89f6b1694937635cb49739f7b45194ecae8d9e1d2bf7a"
+          "sha256": "95e01df80efb57885185361d50a027181dd3219c0a155dcaf081cd5c74b53881"
         },
         {
           "poseId": "D",
@@ -5262,7 +5262,7 @@
             1084,
             221
           ],
-          "outputPath": "public/assets/skills/ok/D.png",
+          "outputPath": "public/assets/skills/ok/D.webp",
           "pivot": [
             0.5,
             1.0
@@ -5275,7 +5275,7 @@
             254,
             180
           ],
-          "sha256": "d89be3285aae459629a73244eb52f975852cc48418eab92b9c2095afcdf0e1dc"
+          "sha256": "a711929995675c637965d7fcba833f50849ec41af5557a36519c7a1789846d0d"
         },
         {
           "poseId": "E",
@@ -5287,7 +5287,7 @@
             1356,
             221
           ],
-          "outputPath": "public/assets/skills/ok/E.png",
+          "outputPath": "public/assets/skills/ok/E.webp",
           "pivot": [
             0.5,
             0.5
@@ -5300,7 +5300,7 @@
             230,
             100
           ],
-          "sha256": "51d928410d11e4399ef976cbf575704a546d55883f7dea0bd33acba95d9fedf2"
+          "sha256": "03f86857e5f676295726a053383b6cf6fbb8fbc506708b8e1e7ad9de383bb9b0"
         },
         {
           "poseId": "F",
@@ -5312,7 +5312,7 @@
             1628,
             221
           ],
-          "outputPath": "public/assets/skills/ok/F.png",
+          "outputPath": "public/assets/skills/ok/F.webp",
           "pivot": [
             0.5,
             0.5
@@ -5325,7 +5325,7 @@
             255,
             201
           ],
-          "sha256": "be95b490ccc3e647860bd97029f1889af659787a59987d49b1f7afb8e3516635"
+          "sha256": "59d01d18e23a8782cceea9667e1673c39f27727864ec7db77da9b78df4ad6515"
         },
         {
           "poseId": "G",
@@ -5337,7 +5337,7 @@
             1900,
             221
           ],
-          "outputPath": "public/assets/skills/ok/G.png",
+          "outputPath": "public/assets/skills/ok/G.webp",
           "pivot": [
             0.5,
             0.5
@@ -5350,7 +5350,7 @@
             255,
             206
           ],
-          "sha256": "dd3a175afcb344a5e9de540ace8810307ff1b411a27f4a0034631387984ff519"
+          "sha256": "2971674ec48d87365d19558b73e69204a24e81b49f3f37f8d04347c1113ef7eb"
         },
         {
           "poseId": "H",
@@ -5362,7 +5362,7 @@
             269,
             488
           ],
-          "outputPath": "public/assets/skills/ok/H.png",
+          "outputPath": "public/assets/skills/ok/H.webp",
           "pivot": [
             0.5,
             0.5
@@ -5375,7 +5375,7 @@
             244,
             206
           ],
-          "sha256": "47377c7993bd5566e85328df681fdaf33bf17df5f01ddd0b667821272710b6ac"
+          "sha256": "bbf4dafe4653b346646b5b8f86e7f6efcad65240b0be8c3feaaa6f3360ac676f"
         },
         {
           "poseId": "I",
@@ -5387,7 +5387,7 @@
             541,
             488
           ],
-          "outputPath": "public/assets/skills/ok/I.png",
+          "outputPath": "public/assets/skills/ok/I.webp",
           "pivot": [
             0.5,
             0.5
@@ -5400,7 +5400,7 @@
             186,
             206
           ],
-          "sha256": "dcab06e635bd9355cc527dcca75542ca011f59bc958d9189afb2e17f69a20fa3"
+          "sha256": "7fe49dba4ba5933dcd9c83eb7392b1790a8218898d0b0373434b2eb9f556f7b6"
         },
         {
           "poseId": "J",
@@ -5412,7 +5412,7 @@
             813,
             488
           ],
-          "outputPath": "public/assets/skills/ok/J.png",
+          "outputPath": "public/assets/skills/ok/J.webp",
           "pivot": [
             0.5,
             0.5
@@ -5425,7 +5425,7 @@
             203,
             147
           ],
-          "sha256": "a5af8e3680f1e9ad3c11c3725ebeadb8f78b1f26467db9c701f99f1be15403bf"
+          "sha256": "d52e8954d04173b62a2dd6f72b4408083f59c4d6f6e659351858e4fd28fa08d4"
         },
         {
           "poseId": "K",
@@ -5437,7 +5437,7 @@
             1084,
             488
           ],
-          "outputPath": "public/assets/skills/ok/K.png",
+          "outputPath": "public/assets/skills/ok/K.webp",
           "pivot": [
             0.5,
             0.5
@@ -5450,7 +5450,7 @@
             211,
             145
           ],
-          "sha256": "937774f2dc4f2904faa61dc2f97cd55b2256fb9aa795d27291eb18b8feb39c6c"
+          "sha256": "5068618726d3426c5c8b98ac8cab9967cfeff16bfcbae7350610655fc3a5cd79"
         },
         {
           "poseId": "L",
@@ -5462,7 +5462,7 @@
             1356,
             488
           ],
-          "outputPath": "public/assets/skills/ok/L.png",
+          "outputPath": "public/assets/skills/ok/L.webp",
           "pivot": [
             0.5,
             0.5
@@ -5475,7 +5475,7 @@
             215,
             160
           ],
-          "sha256": "abfa9e63964650df500065f76a32eed51e072ce17b5b682acd4896f20ef94149"
+          "sha256": "3de3775403365e2eba728ec722d1b6e4780324d2c4e0ffa6772f766b597ae23a"
         },
         {
           "poseId": "M",
@@ -5487,7 +5487,7 @@
             1628,
             488
           ],
-          "outputPath": "public/assets/skills/ok/M.png",
+          "outputPath": "public/assets/skills/ok/M.webp",
           "pivot": [
             0.5,
             0.5
@@ -5500,7 +5500,7 @@
             210,
             160
           ],
-          "sha256": "33051d421faf780618352b82a500078f2497ba18446ec45496d4e511240e5841"
+          "sha256": "c1e9045963845a6b77cc359048b205cb8e62bc1e48cef57fac78ded6bfa6ef35"
         },
         {
           "poseId": "N",
@@ -5512,7 +5512,7 @@
             1900,
             488
           ],
-          "outputPath": "public/assets/skills/ok/N.png",
+          "outputPath": "public/assets/skills/ok/N.webp",
           "pivot": [
             0.5,
             0.5
@@ -5525,7 +5525,7 @@
             237,
             179
           ],
-          "sha256": "10290155eef4cc8a55aecead0d33ec80f05ec062bcd72ea7178b1700e09f5c6a"
+          "sha256": "e2e4293bc042d1de521c667a1aca413e52d8a77bf8cd85a570f11fb09dc3b1fd"
         },
         {
           "poseId": "O",
@@ -5537,7 +5537,7 @@
             269,
             756
           ],
-          "outputPath": "public/assets/skills/ok/O.png",
+          "outputPath": "public/assets/skills/ok/O.webp",
           "pivot": [
             0.5,
             0.5
@@ -5550,7 +5550,7 @@
             255,
             202
           ],
-          "sha256": "15ff3753941e70db7a3268b09e82ab8e66d73f06c3220b980668e0493503b093"
+          "sha256": "0d88f770e5ed25379081b6133641079a1bcfbce75647774597f4df6e161cc776"
         },
         {
           "poseId": "P",
@@ -5562,7 +5562,7 @@
             541,
             756
           ],
-          "outputPath": "public/assets/skills/ok/P.png",
+          "outputPath": "public/assets/skills/ok/P.webp",
           "pivot": [
             0.5,
             0.5
@@ -5575,7 +5575,7 @@
             255,
             202
           ],
-          "sha256": "c382ecbc3992fe1d04429169cf77ef034c084d0c75350c53e16e91bd7e16ee3e"
+          "sha256": "c87ec44343a0643695d2ea415f94c3544ae723f7bc06c37718bdb6b2fd8af63a"
         },
         {
           "poseId": "Q",
@@ -5587,7 +5587,7 @@
             813,
             756
           ],
-          "outputPath": "public/assets/skills/ok/Q.png",
+          "outputPath": "public/assets/skills/ok/Q.webp",
           "pivot": [
             0.5,
             0.5
@@ -5600,7 +5600,7 @@
             248,
             154
           ],
-          "sha256": "a8a1f4fc1e78dd67ad3e0dbe696117c62f4ad2c810336a494d483a5cb5c5a27f"
+          "sha256": "9dacc3955169f461efc77e71b4e93175fcaccb4d5641cd0503173c7e3126f7ba"
         },
         {
           "poseId": "R",
@@ -5612,7 +5612,7 @@
             1084,
             756
           ],
-          "outputPath": "public/assets/skills/ok/R.png",
+          "outputPath": "public/assets/skills/ok/R.webp",
           "pivot": [
             0.5,
             0.5
@@ -5625,7 +5625,7 @@
             213,
             140
           ],
-          "sha256": "5c524a1c0b1dc4f1124e3ce1d8a6e6387d2ebeddfc364d454177774489f1f89f"
+          "sha256": "614ee29061211ba40f5a3d8331b36baa5f76227805d35b6b5d7cec3c419285d0"
         },
         {
           "poseId": "S",
@@ -5637,7 +5637,7 @@
             1356,
             756
           ],
-          "outputPath": "public/assets/skills/ok/S.png",
+          "outputPath": "public/assets/skills/ok/S.webp",
           "pivot": [
             0.5,
             0.5
@@ -5650,7 +5650,7 @@
             254,
             192
           ],
-          "sha256": "c19c7a19d9b806915254c67c9bc668d761da4dd4c577df38a532197aec950eeb"
+          "sha256": "9ca7a27d8187f302fb846f91e18f5a41490a8f72a86f5c1e92ddd6938facb89f"
         },
         {
           "poseId": "T",
@@ -5662,7 +5662,7 @@
             1628,
             756
           ],
-          "outputPath": "public/assets/skills/ok/T.png",
+          "outputPath": "public/assets/skills/ok/T.webp",
           "pivot": [
             0.5,
             0.5
@@ -5675,7 +5675,7 @@
             255,
             198
           ],
-          "sha256": "830a3a8b85cda118225d8abce6d84d88c8184c64e8754eef0597b5849faa1f0e"
+          "sha256": "8ed363069761ed6a3024e99454f2b91db03b723bed86c795e66a8f800743b229"
         },
         {
           "poseId": "U",
@@ -5687,7 +5687,7 @@
             1900,
             756
           ],
-          "outputPath": "public/assets/skills/ok/U.png",
+          "outputPath": "public/assets/skills/ok/U.webp",
           "pivot": [
             0.5,
             0.5
@@ -5700,7 +5700,7 @@
             255,
             171
           ],
-          "sha256": "06cc2402be91196c66613e57bad67c59261675d0d6b01af6ba7d9f7e4acea5c2"
+          "sha256": "ab963e8d079370b7c574e86aa004016da725e2fdaf7abd8a74855ab357ca691e"
         }
       ]
     }
@@ -5709,134 +5709,134 @@
     "alien": {
       "source": "Alien cat背景.png",
       "textureId": "ultimate-bg-alien",
-      "outputPath": "public/assets/ultimate-backgrounds/alien.png",
+      "outputPath": "public/assets/ultimate-backgrounds/alien.webp",
       "size": [
-        1672,
-        941
+        1296,
+        728
       ],
       "mode": "RGB",
-      "sha256": "f9fbf2f9c8c7cd73f35f74593aca24d7376ef794c0a6b06e688dd7fabce2d173"
+      "sha256": "7c77c79bb03f0081b016771d0a3c219ce7d9fe358bfd45577473185602f04ca2"
     },
     "doge": {
       "source": "Doge-背景.png",
       "textureId": "ultimate-bg-doge",
-      "outputPath": "public/assets/ultimate-backgrounds/doge.png",
+      "outputPath": "public/assets/ultimate-backgrounds/doge.webp",
       "size": [
-        1672,
-        941
+        1296,
+        728
       ],
       "mode": "RGB",
-      "sha256": "3dbda3905a3f51c3ce162691a789fc182a1556419bfb0f609115194dc683627b"
+      "sha256": "b4264498b3ba42b6d0a483ff91ead808ad09443b27cf627fe7e18bcc10cf6cf0"
     },
     "ya": {
       "source": "YA鼠-背景.png",
       "textureId": "ultimate-bg-ya",
-      "outputPath": "public/assets/ultimate-backgrounds/ya.png",
+      "outputPath": "public/assets/ultimate-backgrounds/ya.webp",
       "size": [
-        1672,
-        941
+        1296,
+        728
       ],
       "mode": "RGB",
-      "sha256": "4b1bdbd7e3decaa7456e7c69dfce02f27c1dfae2ee22b10c85e62a9ea28bdf96"
+      "sha256": "d88ff89a42030c44255a606b0c426c4978cb6dad5685a7a0091a3e9351a88dce"
     },
     "tempura": {
       "source": "Oh fucking 天婦羅尬哩涼-背景.png",
       "textureId": "ultimate-bg-tempura",
-      "outputPath": "public/assets/ultimate-backgrounds/tempura.png",
+      "outputPath": "public/assets/ultimate-backgrounds/tempura.webp",
       "size": [
-        1672,
-        941
+        1296,
+        728
       ],
       "mode": "RGB",
-      "sha256": "2f121969ee6b75a6cbfa78c65c7d95d47f20855fb50580debefedba00e03494f"
+      "sha256": "6a9e40aa075777c44dde22ac2c1dd15237f91e01a097c6fa7767676078731caf"
     },
     "goblin": {
       "source": "哥布林也想談戀愛-背景.png",
       "textureId": "ultimate-bg-goblin",
-      "outputPath": "public/assets/ultimate-backgrounds/goblin.png",
+      "outputPath": "public/assets/ultimate-backgrounds/goblin.webp",
       "size": [
-        1672,
-        941
+        1296,
+        728
       ],
       "mode": "RGB",
-      "sha256": "6c3e9edb0edfdd28b53d96e57f84de5e05333c6c4c9b96e0cd37765818f88789"
+      "sha256": "b1f57c24b3cb55f4c11384fcc87fcee19a435e922e2d0f6c940bada936da11b9"
     },
     "salad": {
       "source": "沙拉貓貓背景.png",
       "textureId": "ultimate-bg-salad",
-      "outputPath": "public/assets/ultimate-backgrounds/salad.png",
+      "outputPath": "public/assets/ultimate-backgrounds/salad.webp",
       "size": [
-        1672,
-        941
+        1296,
+        728
       ],
       "mode": "RGB",
-      "sha256": "fae401e3791dc8842fe013edbe83edf8e69d3e7440bc7b53ce9cc5fead7b3d6d"
+      "sha256": "6af30e0df78664548a01908049d7be6993f03f3abcfcc52a31a55ca2a68b596c"
     },
     "wizard": {
       "source": "魔法胖橘貓背景.png",
       "textureId": "ultimate-bg-wizard",
-      "outputPath": "public/assets/ultimate-backgrounds/wizard.png",
+      "outputPath": "public/assets/ultimate-backgrounds/wizard.webp",
       "size": [
-        1672,
-        941
+        1296,
+        728
       ],
       "mode": "RGB",
-      "sha256": "4d3aefebbd7bb02f196f3b792cbd262110d9be8f112b8eef9a5c89260b1c5fcb"
+      "sha256": "ada25bf92fa8df5af50ed29d2bb82a20d37585971a29ddc15f21fa3520c72043"
     },
     "blade": {
       "source": "我的刀盾-背景.png",
       "textureId": "ultimate-bg-blade",
-      "outputPath": "public/assets/ultimate-backgrounds/blade.png",
+      "outputPath": "public/assets/ultimate-backgrounds/blade.webp",
       "size": [
-        1672,
-        941
+        1296,
+        728
       ],
       "mode": "RGB",
-      "sha256": "a3e115c64f1af3c3650ba1b95cbc1013d0e08790d445c19b9760dd5d13253af3"
+      "sha256": "e744de2883f06364ad5b4c435bb63bc3abbf5b83b77c16c2dca5a75d3197f68c"
     },
     "pink": {
       "source": "粉紅星星-背景.png",
       "textureId": "ultimate-bg-pink",
-      "outputPath": "public/assets/ultimate-backgrounds/pink.png",
+      "outputPath": "public/assets/ultimate-backgrounds/pink.webp",
       "size": [
-        1672,
-        941
+        1296,
+        728
       ],
       "mode": "RGB",
-      "sha256": "7479ae6be08e7207c623ca29b313945da105399e2e79a658ad000627f3917e6d"
+      "sha256": "fb860f4b7e0b7a0d656209bb0721dd9ec7e2e5e5ed2b4cc39e67e876b6813a36"
     },
     "sauce": {
       "source": "蘸醬胡渣狗-背景.png",
       "textureId": "ultimate-bg-sauce",
-      "outputPath": "public/assets/ultimate-backgrounds/sauce.png",
+      "outputPath": "public/assets/ultimate-backgrounds/sauce.webp",
       "size": [
-        1672,
-        941
+        1296,
+        728
       ],
       "mode": "RGB",
-      "sha256": "599c58ddf4b76bc1172747304c776003864ba1e97ca239f21256ea1bd24f1ac8"
+      "sha256": "6b163a984d30987f5eba163de4876dc62da59f855d5f372c93ee92e2f5d1631c"
     },
     "scared": {
       "source": "驚嚇小貓-背景.png",
       "textureId": "ultimate-bg-scared",
-      "outputPath": "public/assets/ultimate-backgrounds/scared.png",
+      "outputPath": "public/assets/ultimate-backgrounds/scared.webp",
       "size": [
-        1672,
-        941
+        1296,
+        728
       ],
       "mode": "RGB",
-      "sha256": "89c10fab3c8fe2336c1d076eb312d12f1c2ff971d2c116982e3cbb46e475c92f"
+      "sha256": "10fab3a31a79614337e5b38c2814e7bf5c8efa481bd879de6cfe40d942d424fd"
     },
     "ok": {
       "source": "OK喵老大-背景.png",
       "textureId": "ultimate-bg-ok",
-      "outputPath": "public/assets/ultimate-backgrounds/ok.png",
+      "outputPath": "public/assets/ultimate-backgrounds/ok.webp",
       "size": [
-        1672,
-        941
+        1296,
+        728
       ],
       "mode": "RGB",
-      "sha256": "30e66961770bc6f01d5241e3ceadfd4a9eb21f32cafcf160125c905c3d8ba1cd"
+      "sha256": "c5facf4dbc36844a022a1b7ecc600aab0f7eef5b0448bfb138338bd76d2b7748"
     }
   }
 }

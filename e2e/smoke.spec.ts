@@ -126,6 +126,38 @@ test('cuts the poses for exactly the two fighters in the match', async ({ page }
     0,
   );
   expect(loaded.skillCells).toBe(expectedCells);
+
+  /**
+   * What the match actually cost to download, per directory.
+   *
+   * These are budgets, not measurements. The worst pair on the roster is 994 KB
+   * of poses, 510 KB of skill cells and 584 KB of backgrounds; the ceilings below
+   * leave about a fifth of headroom over that. Going over means the art needs
+   * re-encoding — `scripts/calibrate_webp_quality.py` produces the contact sheets
+   * for choosing a quality — and not that the ceiling needs raising.
+   *
+   * The numbers only look like this because these are WebP. As PNG the same
+   * three directories were 4.4 MB, 2.8 MB and 5.1 MB, so a pipeline that
+   * silently reverted to PNG fails here by a factor of four rather than
+   * shipping quietly.
+   */
+  const art = await page.evaluate(() => {
+    const bytesUnder = (path: string) =>
+      performance
+        .getEntriesByType('resource')
+        .filter((entry) => entry.name.includes(path))
+        .reduce((sum, entry) => sum + ((entry as PerformanceResourceTiming).encodedBodySize || 0), 0);
+    return {
+      poses: bytesUnder('/assets/poses/'),
+      skills: bytesUnder('/assets/skills/'),
+      backgrounds: bytesUnder('/assets/ultimate-backgrounds/'),
+    };
+  });
+
+  expect(art.poses, 'poses should have loaded at all').toBeGreaterThan(0);
+  expect(art.poses, 'pose budget for one match').toBeLessThan(1_150_000);
+  expect(art.skills, 'skill-sheet budget for one match').toBeLessThan(600_000);
+  expect(art.backgrounds, 'cut-in background budget for one match').toBeLessThan(700_000);
 });
 
 test('navigates title -> mode select -> character select -> battle', async ({ page }) => {

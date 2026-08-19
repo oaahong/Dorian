@@ -44,7 +44,7 @@ export interface UltimateDefinition {
   ultimateName: string;
   /** What the fighter shouts. Its length decides the cut-in's length. */
   voiceText: string;
-  /** `public/assets/ultimate-backgrounds/<id>.png`, as `ultimate-bg-<id>`. */
+  /** `public/assets/ultimate-backgrounds/<id>.webp`, as `ultimate-bg-<id>`. */
   backgroundTexture: string;
   /**
    * The cut-in portrait: the fighter, in the state the ultimate puts them in.

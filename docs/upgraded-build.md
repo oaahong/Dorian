@@ -127,7 +127,7 @@ npm run assets:skills:contacts
 輸出：
 
 - `public/assets/skills/<fighter>/...`
-- `public/assets/ultimate-backgrounds/<fighter>.png`
+- `public/assets/ultimate-backgrounds/<fighter>.webp`
 - `scripts/skill_crop_config.json`
 - `audit/skill-assets/skill-asset-manifest.json`
 - `audit/skill-assets/validation.json`

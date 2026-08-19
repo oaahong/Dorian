@@ -21,3 +21,9 @@ project-working-upgraded/
 # Output of `npm run assets:poses:validate`: a contact sheet, a before/after
 # sheet and a JSON summary, all regenerated from the poses and the SHA baseline.
 audit/pose-regeneration-validation/
+
+# Output of `npm run assets:calibrate`: contact sheets and a JSON summary, all
+# regenerated from the assets on disk. They are how the WebP quality was chosen
+# and they are worth looking at, but eight megabytes of derivable JPEG does not
+# belong in the tree — run the script when you need them.
+audit/webp-calibration/

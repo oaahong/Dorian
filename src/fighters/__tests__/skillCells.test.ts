@@ -81,7 +81,7 @@ describe('skillTexturesFor', () => {
   it('keys a texture by fighter and lower-cased cell', () => {
     expect(skillTexturesFor('alien')).toContainEqual({
       key: 'skill-alien-a',
-      path: 'assets/skills/alien/A.png',
+      path: 'assets/skills/alien/A.webp',
     });
   });
 });

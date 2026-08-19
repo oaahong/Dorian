@@ -5,7 +5,7 @@ intentionally absurd low-resolution meme-cat character cards. Two players can
 fight on one keyboard or across the internet.
 
 Twelve fighters, each with thirty poses cut from a source character sheet ahead of
-time by the Python pipeline in `scripts/`, so the client loads finished PNGs
+time by the Python pipeline in `scripts/`, so the client loads finished WebP
 instead of cropping card art on the main thread at boot.
 
 Detailed documentation — architecture, every subsystem, the asset pipeline, the
@@ -455,11 +455,16 @@ Anything added to the simulation has to obey the determinism rules — see
 
 ## Card Art
 
-`public/assets/cards/` holds the eight source cards at full resolution. They are
-only ever *displayed* at 238x298 or smaller, so the menus load downscaled WebP
-thumbnails from `public/assets/thumbs/` instead — about 0.55 MB rather than 26 MB,
-which took boot from 1495 ms to 754 ms. The full card is fetched only once a match
-knows which two fighters it needs, because pose extraction reads its pixels.
+`asset_pipeline_backups/cards/` holds the twelve source cards at full resolution.
+They are only ever *displayed* at 238x298 or smaller, so the menus load downscaled
+WebP thumbnails from `public/assets/thumbs/` instead — about 0.55 MB rather than
+26 MB, which took boot from 1495 ms to 754 ms.
+
+They live outside `public/` because nothing in the browser ever wants them: pose
+extraction reads their pixels offline, in Python. Vite copies `public/` into
+`dist` verbatim, so while they sat there every release shipped 26 MB that no
+client requested — something `e2e/smoke.spec.ts` had been asserting was never
+fetched for as long as the test existed.
 
 Regenerate the thumbnails after changing a card (requires `cwebp`):
 
@@ -474,10 +479,17 @@ the extractor no longer removes. Lossless WebP is pixel-identical (0 pixels
 changed, measured the same way) and roughly 35% smaller, if the download matters
 more than keeping the originals in a universally-editable format.
 
+That finding is about the cards specifically, and does not carry over to the
+poses, skill cells and cut-in backgrounds, which *are* lossy WebP. The difference
+is which end of the pipeline they sit at: a card is an **input** and gets measured
+against a threshold again, so moving its pixels moves where the extractor cuts.
+The others are terminal **outputs** — nothing downstream thresholds them, only a
+GPU draws them.
+
 ## Pose Extraction
 
 Poses are cut from the source character sheets ahead of time by
-`scripts/extract_poses.py`, which writes `public/assets/poses/<fighter>/01..30.png`
+`scripts/extract_poses.py`, which writes `public/assets/poses/<fighter>/01..30.webp`
 with the background already removed.
 
 ```bash
@@ -509,7 +521,7 @@ both of their skill sheets and cut-in backgrounds.
 ## Skill Art
 
 A second pipeline, separate from the pose sheets and with its own source art:
-`scripts/extract_skill_assets.py` cuts `public/assets/skills/<fighter>/A..W.png`
+`scripts/extract_skill_assets.py` cuts `public/assets/skills/<fighter>/A..W.webp`
 and writes `audit/skill-assets/skill-asset-manifest.json` beside them.
 
 ```bash
