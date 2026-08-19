@@ -19,13 +19,27 @@ export class TitleScene extends Phaser.Scene {
     this.add.text(GAME_WIDTH / 2, 335, 'ARCADE CAT BRAWL', {
       fontFamily: FONT_FAMILY, fontSize: '28px', color: '#E9B928', letterSpacing: 5,
     }).setOrigin(.5);
+    /**
+     * The prompt's backdrop is a separate rectangle, not the text's own
+     * `backgroundColor`.
+     *
+     * Phaser's alpha applies to the whole rendered text object, background fill
+     * included, so the blink tween used to fade the plate along with the letters
+     * — and at the bottom of every cycle the red perspective grid showed straight
+     * through the words. Tweening only the text leaves the plate opaque.
+     */
     const prompt = this.add.text(GAME_WIDTH / 2, 500, 'PRESS ANY KEY', {
-      fontFamily: FONT_FAMILY, fontSize: '34px', color: '#F3E9D0', backgroundColor: '#050505cc', padding: { x: 24, y: 12 },
-    }).setOrigin(.5).setStroke('#050505', 6);
+      fontFamily: FONT_FAMILY, fontSize: '34px', color: '#F3E9D0',
+    }).setOrigin(.5).setStroke('#050505', 6).setDepth(2);
+    this.plate(prompt, 0.92);
     this.tweens.add({ targets: prompt, alpha: .25, duration: 600, yoyo: true, repeat: -1 });
-    this.add.text(GAME_WIDTH / 2, 635, 'LOW-RES JPEG • HIGH-RES VIOLENCE • M = MUTE', {
-      fontFamily: FONT_FAMILY, fontSize: '15px', color: '#8c806b',
-    }).setOrigin(.5);
+
+    // The footer sits in the densest part of the grid, where #8c806b was barely
+    // legible. Same cream the other menus use for help text, over its own plate.
+    const footer = this.add.text(GAME_WIDTH / 2, 635, 'LOW-RES JPEG • HIGH-RES VIOLENCE • M = MUTE', {
+      fontFamily: FONT_FAMILY, fontSize: '15px', color: '#bfb49c',
+    }).setOrigin(.5).setDepth(2);
+    this.plate(footer, 0.8);
 
     const keyboard = this.input.keyboard;
     if (!keyboard) return;
@@ -38,6 +52,14 @@ export class TitleScene extends Phaser.Scene {
       this.cameras.main.flash(90, 255, 255, 255);
       this.time.delayedCall(130, () => this.scene.start('ModeSelectScene'));
     });
+  }
+
+  /** A backdrop sized to what it sits behind, so no second set of numbers can drift from the first. */
+  private plate(text: Phaser.GameObjects.Text, alpha: number): void {
+    const bounds = text.getBounds();
+    this.add
+      .rectangle(bounds.centerX, bounds.centerY, bounds.width + 44, bounds.height + 22, COLORS.bg, alpha)
+      .setDepth(1);
   }
 
   private drawPerspectiveGrid(): void {
