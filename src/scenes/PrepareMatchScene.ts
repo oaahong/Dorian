@@ -1,7 +1,9 @@
 import * as Phaser from 'phaser';
 import { getFighterConfig } from '../fighters/fighterData';
 import type { FighterConfig } from '../fighters/FighterConfig';
-import { POSE_NAMES, posePath, poseTextureKey, skillTexturesFor } from '../fighters/poseSheet';
+import {
+  POSE_NAMES, posePath, poseTextureKey, skillTexturesFor, ultimateBackgroundPath,
+} from '../fighters/poseSheet';
 import { ultimateDefinitionFor } from '../fighters/ultimateDefinitions';
 import { gameState } from '../systems/GameState';
 import { COLORS, FONT_FAMILY, GAME_HEIGHT, GAME_WIDTH } from '../utils/constants';
@@ -40,8 +42,9 @@ export class PrepareMatchScene extends Phaser.Scene {
       .setOrigin(0, .5);
 
     this.load.on('progress', (value: number) => { bar.displayWidth = 508 * value; });
+    // An error, not a warning — see the note on the same handler in BootScene.
     this.load.on('loaderror', (file: { key?: string }) =>
-      console.warn(`[Prepare] Asset failed: ${file.key ?? 'unknown'}`));
+      console.error(`[Prepare] Asset failed: ${file.key ?? 'unknown'}`));
     this.load.once('complete', () => {
       label.setText('FIGHTERS READY');
       barBg.setStrokeStyle(2, COLORS.cyan);
@@ -64,7 +67,7 @@ export class PrepareMatchScene extends Phaser.Scene {
       // the same reason — twelve of them is 30 MB and a match needs two.
       const ultimate = ultimateDefinitionFor(fighter.id);
       if (!this.textures.exists(ultimate.backgroundTexture)) {
-        this.load.image(ultimate.backgroundTexture, `assets/ultimate-backgrounds/${fighter.id}.png`);
+        this.load.image(ultimate.backgroundTexture, ultimateBackgroundPath(fighter.id));
       }
     }
   }

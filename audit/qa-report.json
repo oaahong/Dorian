@@ -15,7 +15,7 @@
     "derivedModules": 2,
     "generatedRgbaSkillAssets": 226,
     "ultimateBackgrounds": 12,
-    "backgroundSize": "1672x941 RGB",
+    "backgroundSize": "1296x728 RGB (cropped from 1672x941; see asset_format.ULTIMATE_BG_SIZE)",
     "validationWarnings": 0,
     "basePoseShaRegression": 0,
     "idempotent": true,

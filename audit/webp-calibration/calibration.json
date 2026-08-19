@@ -1,0 +1,77 @@
+{
+  "fighters": [
+    "ya",
+    "wizard",
+    "alien"
+  ],
+  "kinds": {
+    "poses": {
+      "files": 90,
+      "originalBytes": 10650712,
+      "candidates": {
+        "lossless": {
+          "bytes": 7036336,
+          "ratio": 1.51,
+          "worstPsnr": null,
+          "worstFile": null,
+          "alphaBitExact": true
+        },
+        "q95": {
+          "bytes": 2968956,
+          "ratio": 3.59,
+          "worstPsnr": 32.7,
+          "worstFile": "28.png",
+          "alphaBitExact": true
+        },
+        "q90": {
+          "bytes": 2417966,
+          "ratio": 4.4,
+          "worstPsnr": 32.5,
+          "worstFile": "28.png",
+          "alphaBitExact": true
+        },
+        "q85": {
+          "bytes": 2097014,
+          "ratio": 5.08,
+          "worstPsnr": 32.1,
+          "worstFile": "28.png",
+          "alphaBitExact": true
+        }
+      }
+    },
+    "skills": {
+      "files": 48,
+      "originalBytes": 4358001,
+      "candidates": {
+        "lossless": {
+          "bytes": 2254362,
+          "ratio": 1.93,
+          "worstPsnr": null,
+          "worstFile": null,
+          "alphaBitExact": true
+        },
+        "q95": {
+          "bytes": 996046,
+          "ratio": 4.38,
+          "worstPsnr": 27.9,
+          "worstFile": "G.png",
+          "alphaBitExact": true
+        },
+        "q90": {
+          "bytes": 805632,
+          "ratio": 5.41,
+          "worstPsnr": 27.7,
+          "worstFile": "G.png",
+          "alphaBitExact": true
+        },
+        "q85": {
+          "bytes": 673222,
+          "ratio": 6.47,
+          "worstPsnr": 27.5,
+          "worstFile": "G.png",
+          "alphaBitExact": true
+        }
+      }
+    }
+  }
+}

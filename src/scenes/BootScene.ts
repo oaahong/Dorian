@@ -13,7 +13,16 @@ export class BootScene extends Phaser.Scene {
     const barBg = this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 35, 520, 22, 0x111111).setStrokeStyle(2, COLORS.gold);
     const bar = this.add.rectangle(GAME_WIDTH / 2 - 254, GAME_HEIGHT / 2 + 35, 0, 14, COLORS.gold).setOrigin(0, .5);
     this.load.on('progress', (value: number) => { bar.displayWidth = 508 * value; });
-    this.load.on('loaderror', (file: { key?: string }) => console.warn(`[Boot] Asset failed: ${file.key ?? 'unknown'}`));
+    /**
+     * An error, not a warning. A missing texture is never cosmetic here: the
+     * draw-time `textures.exists` guards turn it into a fighter that renders
+     * nothing rather than a crash, so the only thing standing between a botched
+     * asset rename and a silently empty screen is this line. The e2e suite
+     * collects `console.error` and asserts it is empty, so a 404 fails a test
+     * instead of shipping.
+     */
+    this.load.on('loaderror', (file: { key?: string }) =>
+      console.error(`[Boot] Asset failed: ${file.key ?? 'unknown'}`));
     this.load.once('complete', () => { label.setText('READY'); barBg.setStrokeStyle(2, COLORS.cyan); });
     // Menus only ever show the card small, so boot fetches thumbnails: about
     // 960 KB rather than the 25 MB of source art. The poses the match actually

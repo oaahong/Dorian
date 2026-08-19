@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from collections import deque
 import zipfile, shutil, json, hashlib, re
+import asset_format
 import numpy as np
 from PIL import Image
 
@@ -170,12 +171,12 @@ def main():
         for label,rect in zip(labels,rects):
             x0,y0,x1,y1=rect; crop_cfg[fid][label]={'rect':[x0,y0,x1,y1],'note':'measured source cell; caption/grid excluded'}
             cell=im.crop(rect);clean=clean_cell(cell,fid,src.suffix.lower() in ('.jpg','.jpeg'))
-            op=outdir/f'{label}.png';clean.save(op,optimize=True)
+            op=outdir/f'{label}{asset_format.suffix()}';asset_format.save(clean,op)
             category='H_CHARGE_FIGHTER' if label in ('A','B','C') else 'H_RELEASE_FIGHTER' if label=='D' else 'H_OR_SHARED_VFX' if label in ('E','F','G') else 'ULTIMATE_MODULE'
             entries.append({'poseId':label,'textureId':f'skill-{fid}-{label.lower()}','sourceSheet':fname,'sourceRect':[x0,y0,x1,y1],'outputPath':str(op.relative_to(ROOT)).replace('\\','/'),'pivot':[0.5,1.0] if category.endswith('FIGHTER') else [0.5,0.5],'anchor':'feet' if category.endswith('FIGHTER') else 'center','feetBaseline':1.0 if category.endswith('FIGHTER') else None,'category':category,'runtimeUsage':'Chargeable Special H / Ultimate module','size':list(clean.size),'sha256':sha(op)})
         manifest['fighters'][fid]={'sourceSheet':fname,'assets':entries};expected+=len(entries)
     # Source cell K for Blade contains two clearly separated sword components. Derive two independent attached weapon modules without redrawing.
-    blade_k=OUT/'blade'/'K.png'
+    blade_k=OUT/'blade'/f'K{asset_format.suffix()}'
     karr=np.asarray(Image.open(blade_k).convert('RGBA')).copy(); occ=(karr[:,:,3]>8).any(0); idx=np.where(occ)[0]
     if len(idx):
         runs=[];start=None
@@ -187,14 +188,19 @@ def main():
         split=int((idx.min()+idx.max())/2) if not gaps else int((max(gaps,key=lambda r:r[1]-r[0])[0]+max(gaps,key=lambda r:r[1]-r[0])[1])/2)
         derived=[]
         for name,arr in [('K_weapon_blue',karr[:,:split+1]),('K_weapon_black',karr[:,split+1:])]:
-            arr=tight(arr.copy(),4);op=OUT/'blade'/f'{name}.png';Image.fromarray(arr,'RGBA').save(op,optimize=True);derived.append({'poseId':name,'textureId':f'skill-blade-{name.lower()}','sourceSheet':SHEETS['blade'][0],'sourceRect':'derived from source cell K connected spatial component','outputPath':str(op.relative_to(ROOT)).replace('\\','/'),'pivot':[0.5,0.5],'anchor':'weapon socket','feetBaseline':None,'category':'WEAPON','runtimeUsage':'DUAL_HEAVY independent attached sword','size':[arr.shape[1],arr.shape[0]],'sha256':sha(op)})
+            arr=tight(arr.copy(),4);op=OUT/'blade'/f'{name}{asset_format.suffix()}';asset_format.save(Image.fromarray(arr,'RGBA'),op);derived.append({'poseId':name,'textureId':f'skill-blade-{name.lower()}','sourceSheet':SHEETS['blade'][0],'sourceRect':'derived from source cell K connected spatial component','outputPath':str(op.relative_to(ROOT)).replace('\\','/'),'pivot':[0.5,0.5],'anchor':'weapon socket','feetBaseline':None,'category':'WEAPON','runtimeUsage':'DUAL_HEAVY independent attached sword','size':[arr.shape[1],arr.shape[0]],'sha256':sha(op)})
         manifest['fighters']['blade']['derivedAssets']=derived
     for fid,fname in BACKGROUNDS.items():
         src=bg_src/fname
         if not src.exists():raise FileNotFoundError(src)
-        op=BGOUT/f'{fid}.png';shutil.copy2(src,op);im=Image.open(op)
+        # Cropped, not copied: 40% of every source background is margin the cut-in
+        # can never show. See asset_format.ULTIMATE_BG_SIZE for the geometry.
+        op=BGOUT/f'{fid}{asset_format.suffix()}';full=Image.open(src)
+        cw,ch=asset_format.ULTIMATE_BG_SIZE;l=(full.width-cw)//2;t=(full.height-ch)//2
+        if l<0 or t<0:raise ValueError(f'{fid}: source {full.size} smaller than {cw}x{ch} crop')
+        asset_format.save(full.crop((l,t,l+cw,t+ch)),op);im=Image.open(op)
         manifest['backgrounds'][fid]={'source':fname,'textureId':f'ultimate-bg-{fid}','outputPath':str(op.relative_to(ROOT)).replace('\\','/'),'size':list(im.size),'mode':im.mode,'sha256':sha(op)}
     CFG.write_text(json.dumps(crop_cfg,ensure_ascii=False,indent=2),encoding='utf8');MANIFEST.write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf8')
-    VALIDATION.write_text(json.dumps({'expectedSourceCells':expected,'expectedGenerated':expected+2,'generated':sum(1 for _ in OUT.glob('*/*.png')),'backgrounds':sum(1 for _ in BGOUT.glob('*.png'))},indent=2),encoding='utf8')
-    print(json.dumps({'expectedSourceCells':expected,'expectedGenerated':expected+2,'generated':sum(1 for _ in OUT.glob('*/*.png')),'backgrounds':sum(1 for _ in BGOUT.glob('*.png'))},ensure_ascii=False))
+    VALIDATION.write_text(json.dumps({'expectedSourceCells':expected,'expectedGenerated':expected+2,'generated':sum(1 for _ in OUT.glob(asset_format.glob_pattern('*/*'))),'backgrounds':sum(1 for _ in BGOUT.glob(asset_format.glob_pattern()))},indent=2),encoding='utf8')
+    print(json.dumps({'expectedSourceCells':expected,'expectedGenerated':expected+2,'generated':sum(1 for _ in OUT.glob(asset_format.glob_pattern('*/*'))),'backgrounds':sum(1 for _ in BGOUT.glob(asset_format.glob_pattern()))},ensure_ascii=False))
 if __name__=='__main__':main()

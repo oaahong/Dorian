@@ -1,11 +1,19 @@
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 import argparse, hashlib, json
+import asset_format
 import numpy as np
 
 ROOT=Path(__file__).resolve().parents[1]
 POSES=ROOT/'public/assets/poses'
 BEFORE=ROOT/'audit/pose-regeneration-before'
+# The lossless record of what the pipeline cropped, kept when the shipped assets
+# became WebP. The 156-pose check below compares against this rather than against
+# `POSES`, because that check is about crop geometry and lossy re-encoding makes
+# a byte comparison meaningless — measured, the encoding moves a pose by up to
+# 3.4 mean-absolute-difference while the weakest genuine recrop moves it by 0.63,
+# so the two populations overlap and no threshold separates them.
+ARCHIVE=ROOT/'asset_pipeline_backups/png-originals/poses'
 ISSUES_FILE=ROOT/'audit/pose-recrop-overrides.json'
 BASELINE_FILE=ROOT/'audit/passing-pose-baseline-sha256.json'
 OUT=ROOT/'audit/pose-regeneration-validation'
@@ -64,7 +72,7 @@ def contact_sheet(issues):
     d.text((12,10),f'POSE REGENERATION — BEFORE / AFTER — {len(issues)} poses',fill='white',font=FONT)
     for i,item in enumerate(issues):
         fid=item['fighterId'];pose=str(item['pose']).zfill(2);x=(i%cols)*tw+5;y=42+(i//cols)*th+5
-        bef=Image.open(BEFORE/fid/f'{pose}.png').convert('RGBA');aft=Image.open(POSES/fid/f'{pose}.png').convert('RGBA')
+        bef=Image.open(BEFORE/fid/f'{pose}.png').convert('RGBA');aft=Image.open(POSES/fid/f'{pose}{asset_format.suffix()}').convert('RGBA')
         d.rectangle((x,y,x+408,y+238),outline='#666')
         d.text((x+5,y+4),f'{fid}/{pose}  {item["issueType"]}',fill='#ffe45c',font=FONT)
         d.text((x+42,y+28),'BEFORE',fill='#ff9090',font=FONT_SMALL);d.text((x+250,y+28),'AFTER',fill='#90ffae',font=FONT_SMALL)
@@ -74,10 +82,10 @@ def contact_sheet(issues):
 
 
 def all_pose_contact_sheet():
-    files=sorted(POSES.glob('*/*.png'));cols,tw,th=10,180,205
+    files=sorted(POSES.glob(asset_format.glob_pattern('*/*')));cols,tw,th=10,180,205
     rows=(len(files)+cols-1)//cols
     sheet=Image.new('RGB',(cols*tw,34+rows*th),'#1e1e1e');d=ImageDraw.Draw(sheet)
-    d.text((12,8),f'FULL POSE AUDIT — {len(files)} RGBA PNG',fill='white',font=FONT)
+    d.text((12,8),f'FULL POSE AUDIT — {len(files)} RGBA {asset_format.ASSET_FORMAT.upper()}',fill='white',font=FONT)
     for i,p in enumerate(files):
         x=(i%cols)*tw;y=34+(i//cols)*th
         d.text((x+5,y+3),f'{p.parent.name}/{p.stem}',fill='#ffe45c',font=FONT_SMALL)
@@ -92,8 +100,8 @@ def main():
     ap=argparse.ArgumentParser();ap.add_argument('--write-contact',action='store_true');args=ap.parse_args()
     issues=json.loads(ISSUES_FILE.read_text());baseline=json.loads(BASELINE_FILE.read_text())
     target={(x['fighterId'],str(x['pose']).zfill(2)) for x in issues}
-    files=sorted(POSES.glob('*/*.png'));errors=[];warnings=[]
-    if len(files)!=360:errors.append(f'expected 360 png, got {len(files)}')
+    files=sorted(POSES.glob(asset_format.glob_pattern('*/*')));errors=[];warnings=[]
+    if len(files)!=360:errors.append(f'expected 360 {asset_format.ASSET_FORMAT}, got {len(files)}')
     fighters={p.parent.name for p in files}
     if len(fighters)!=12:errors.append(f'expected 12 fighters, got {len(fighters)}')
     for p in files:
@@ -104,9 +112,9 @@ def main():
     changed_passing=[]
     for key,digest in baseline.items():
         fid,pose=key.split('/')
-        if sha(POSES/fid/f'{pose}.png')!=digest:changed_passing.append(key)
+        if sha(POSES/fid/f'{pose}{asset_format.suffix()}')!=digest:changed_passing.append(key)
     if changed_passing:errors.append(f'passing-pose regression: {changed_passing}')
-    regenerated=sum(sha(POSES/fid/f'{pose}.png')!=sha(BEFORE/fid/f'{pose}.png') for fid,pose in target)
+    regenerated=sum(sha(ARCHIVE/fid/f'{pose}.png')!=sha(BEFORE/fid/f'{pose}.png') for fid,pose in target)
     if regenerated!=156:errors.append(f'expected 156 changed problem poses, got {regenerated}')
     result={'posesPresent':len(files),'fighters':len(fighters),'problemPosesChanged':regenerated,'passingPoseRegressions':changed_passing,'errors':errors,'warnings':warnings}
     OUT.mkdir(parents=True,exist_ok=True);(OUT/'validation.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')

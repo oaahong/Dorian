@@ -6,11 +6,14 @@
 
 | 目錄 | 數量 | 產生者 |
 |---|---|---|
-| `public/assets/cards/` | 12 | 原始角色卡（26 MB），只在切圖時讀 |
+| `asset_pipeline_backups/cards/` | 12 | 原始角色卡（26 MB），只在切圖時讀，**不在 `public/` 底下** |
 | `public/assets/thumbs/` | 12 | `assets:thumbs`（WebP 縮圖，0.55 MB） |
-| `public/assets/poses/` | **360** | `extract_poses.py` |
-| `public/assets/skills/` | **226** | `extract_skill_assets.py` |
-| `public/assets/ultimate-backgrounds/` | 12 | 技能管線 |
+| `public/assets/poses/` | **360** | `extract_poses.py`（WebP，7.5 MB） |
+| `public/assets/skills/` | **226** | `extract_skill_assets.py`（WebP，2.5 MB） |
+| `public/assets/ultimate-backgrounds/` | 12 | 技能管線（裁切後的 WebP，2.4 MB） |
+| `asset_pipeline_backups/png-originals/` | 598 | 轉檔前的 PNG，保留但不部署 |
+
+`public/assets/` 從 112 MB 降到 14 MB，一場對戰的素材下載從 12.3 MB 降到最壞 2.1 MB。
 
 ## 為什麼是離線切圖
 
@@ -45,8 +48,8 @@ npm run assets:skills:contacts   # 產生對照表
 
 輸出：
 
-- `public/assets/skills/<fighter>/A..W.png`
-- `public/assets/ultimate-backgrounds/<fighter>.png`
+- `public/assets/skills/<fighter>/A..W.webp`
+- `public/assets/ultimate-backgrounds/<fighter>.webp`
 - `audit/skill-assets/skill-asset-manifest.json`
 - `audit/skill-assets/contact_sheets/`
 
@@ -99,10 +102,31 @@ npm run assets:skills:contacts   # 產生對照表
 
 手抄一份會**無聲地漂移** — 少一筆就是一張永遠不載入的資產、一個永遠不繪製的貼圖。所以測試會讀 manifest 本身並比對產物：重跑 `npm run assets:skills` 之後忘了 codegen，會紅。
 
+## 輸出格式：WebP q85
+
+格式與品質定義在 [`scripts/asset_format.py`](../../scripts/asset_format.py)，三個腳本共用。改 q 值是改一個常數，不是改八個地方。
+
+**q85 是看圖決定的，不是查表決定的。** [`calibrate_webp_quality.py`](../../scripts/calibrate_webp_quality.py) 產生 `audit/webp-calibration/` 底下的對照表：每個候選品質一欄，取 PSNR 最差的六張當列 — **不是字母序前六張，因為決策取決於最糟的那幾張**。pose 那張表以變身放大後的 500 px 呈現，因為 `INSTALL_BODY_SCALE = 2` 會把 360 px 的原圖放大到 1.39 倍，缺陷也跟著放大。
+
+兩個不能隨便動的參數：
+
+- **`alpha_quality=100`** 讓 alpha 通道無損。實測 586 張全部逐位元組相同 — 而 `validate_pose_regeneration.py` 與 `validate_skill_assets.py` 都斷言「至少一個完全透明的像素」。有損 alpha 會把這兩個驗證器變成偶爾紅的測試。
+- **`method=4`** 是壓縮強度。實測 360×360 的 pose：method 6 要 3088 毫秒、method 4 要 59 毫秒，而 method 6 只小 2.6%。全套 586 張是半小時對三十五秒，換 230 KB — 不划算。
+
+### 大招背景是裁切，不是縮放
+
+背景原圖 1672×941，但 cut-in 把它置中畫在 1280×720 的畫布上，scale 從 1.05 補間到 **1.0**。靜止在 1.0 時，看得到的恰好是正中央的 1280×720 — **1:1 像素對映**。唯一會伸出去的是 glitch 抖動的 ±4 px。
+
+所以能被看到的最大範圍是 1288×720，而**原圖有 40% 的面積從來沒出現在任何螢幕上**。裁到 1296×728 是零視覺差異的。
+
+**必須是裁不是縮**：既然靜止時已經是 1:1，縮小只會讓它變糊。
+
 ## 卡片為什麼還是 PNG
 
 有損 WebP 能把它們縮小 90%，但實測它對切圖用的 `RGB < 25` 閾值有影響：約 1% 的像素越過門檻，而且是往錯的方向越 — 留下切圖器不再會移除的背景。
 
 無損 WebP 是像素完全相同（用同樣方法量到 0 個像素改變）且小約 35%，如果下載量比「保留通用可編輯格式的原檔」更重要，可以換。
+
+**這個結論只適用於卡片，不適用於 pose / skill / 背景** — 那三類就是有損 WebP。差別在它們處在管線的哪一端：卡片是**輸入**，會再被閾值判斷一次，所以動它的像素就是動切圖器的下刀位置；另外三類是**終端輸出**，下游沒有任何閾值，只有 GPU 把它畫出來。
 
 延伸閱讀：[渲染層](rendering.md)、[大招與變身](../gameplay/ultimates-and-installs.md)。

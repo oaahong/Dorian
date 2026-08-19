@@ -1,5 +1,6 @@
 from pathlib import Path
 from PIL import Image, ImageFilter
+import asset_format
 import numpy as np, json, shutil
 from collections import deque
 import argparse
@@ -32,7 +33,12 @@ class cv2:
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / 'source-assets' / '迷因大亂鬥'
-CARDS = ROOT / 'public' / 'assets' / 'cards'
+# Renamed copies of the source sheets, kept as a stable-named intermediate for
+# the thumbnail step. Deliberately not under `public/`: Vite copies that
+# directory into `dist` verbatim, so 25 MB of card art that no browser ever
+# requests was being deployed on every release. `e2e/smoke.spec.ts` has asserted
+# that nothing under it is fetched at boot for as long as it has existed.
+CARDS = ROOT / 'asset_pipeline_backups' / 'cards'
 POSES = ROOT / 'public' / 'assets' / 'poses'
 AUDIT = ROOT / 'audit'
 OVERRIDES_FILE = AUDIT / 'pose-recrop-overrides.json'
@@ -343,7 +349,7 @@ for idx,(fid,filename,cardname,display) in enumerate(fighters,1):
         effective_rect=tuple(processing.get('rect',override['suggestedRecrop'])) if override else rect
         issue=processing.get('cleanupIssue',override['issueType']) if override else ''
         pose=extract_pose(img,effective_rect,(0.02 if profile.get('rowAreasPx') else (profile.get('caption',.17) if profile.get('forceUniformRows') else 0.035)),profile.get('topTrim',.01),issue)
-        if not args.problem_only or override:pose.save(outdir/f'{i:02d}.png',optimize=True)
+        if not args.problem_only or override:asset_format.save(pose,outdir/f'{i:02d}{asset_format.suffix()}')
         x0,y0,x1,y1=[float(v) for v in rect]
         merged=(x1-x0)>median_width*1.28
         if merged:

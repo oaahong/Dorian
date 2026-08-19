@@ -5,7 +5,7 @@
  * 3 MB PNG per fighter, cropped thirteen panels out of it, flood-filled the black
  * backdrop and registered each result as a CanvasTexture. That work is now done
  * ahead of time by `scripts/extract_poses.py`, which writes
- * `public/assets/poses/<fighter>/01..30.png` with the background already removed.
+ * `public/assets/poses/<fighter>/01..30.webp` with the background already removed.
  *
  * Doing it offline is strictly better: the cropping rectangles and the threshold
  * live next to the art they were tuned against, a bad crop is visible in a contact
@@ -117,11 +117,31 @@ const SUMMON_CELLS: Record<string, string> = { tempura: 'I', scared: 'L' };
 export const summonTextureKey = (fighterId: string): string | null =>
   SUMMON_CELLS[fighterId] ? skillTextureKey(fighterId, SUMMON_CELLS[fighterId]!) : null;
 
+/**
+ * Extension for every image the pipeline generates.
+ *
+ * Poses, skill cells and cut-in backgrounds are WebP at quality 85, chosen
+ * against contact sheets in `audit/webp-calibration/` — the PNGs they replaced
+ * were 85 MB and are 12 MB now, which is the difference between a match
+ * downloading twelve megabytes of art and two.
+ *
+ * It is a constant because the three builders below must never disagree: a
+ * mismatch is a 404, a 404 is a `loaderror`, and the draw-time `textures.exists`
+ * guards then render nothing rather than throwing. `assetPaths.test.ts` and
+ * `skillCells.test.ts` check every one of these against the filesystem for
+ * exactly that reason.
+ *
+ * The thumbnails are also WebP but predate this and build their own path in
+ * `BootScene`; the source cards stay PNG, and the reason is in
+ * `docs/client/art-pipeline.md`.
+ */
+const ASSET_EXT = '.webp';
+
 const skillTextureKey = (fighterId: string, cell: string): string =>
   `skill-${fighterId}-${cell.toLowerCase()}`;
 
 const skillPath = (fighterId: string, cell: string): string =>
-  `assets/skills/${fighterId}/${cell}.png`;
+  `assets/skills/${fighterId}/${cell}${ASSET_EXT}`;
 
 /** The wind-up frame for a charge level, so the player can see what they have. */
 export const chargeTextureKey = (fighterId: string, level: 1 | 2 | 3): string =>
@@ -170,5 +190,17 @@ export function poseTextureKey(fighterId: string, pose: PoseName): string {
 /** Path the pose image is served from, relative to the site root. */
 export function posePath(fighterId: string, pose: PoseName): string {
   const number = String(poseNumber(fighterId, pose)).padStart(2, '0');
-  return `assets/poses/${fighterId}/${number}.png`;
+  return `assets/poses/${fighterId}/${number}${ASSET_EXT}`;
+}
+
+/**
+ * Path the ultimate cut-in background is served from.
+ *
+ * Here rather than in `ultimateDefinitions`, which owns the texture *key*, so
+ * that all three asset paths a match loads are built in one file. The extension
+ * appears in this module and nowhere else in `src/`; a format change is three
+ * lines here instead of a hunt through the scenes.
+ */
+export function ultimateBackgroundPath(fighterId: string): string {
+  return `assets/ultimate-backgrounds/${fighterId}${ASSET_EXT}`;
 }
