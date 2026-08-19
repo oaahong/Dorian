@@ -120,9 +120,9 @@ export const summonTextureKey = (fighterId: string): string | null =>
 /**
  * Extension for every image the pipeline generates.
  *
- * Poses, skill cells and cut-in backgrounds are WebP at quality 85, chosen
- * against contact sheets in `audit/webp-calibration/` — the PNGs they replaced
- * were 85 MB and are 12 MB now, which is the difference between a match
+ * Poses, skill cells and cut-in backgrounds are WebP at quality 85, chosen by
+ * looking at contact sheets `npm run assets:calibrate` produces — the PNGs they
+ * replaced were 85 MB and are 12 MB now, which is the difference between a match
  * downloading twelve megabytes of art and two.
  *
  * It is a constant because the three builders below must never disagree: a

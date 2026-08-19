@@ -106,7 +106,7 @@ npm run assets:skills:contacts   # 產生對照表
 
 格式與品質定義在 [`scripts/asset_format.py`](../../scripts/asset_format.py)，三個腳本共用。改 q 值是改一個常數，不是改八個地方。
 
-**q85 是看圖決定的，不是查表決定的。** [`calibrate_webp_quality.py`](../../scripts/calibrate_webp_quality.py) 產生 `audit/webp-calibration/` 底下的對照表：每個候選品質一欄，取 PSNR 最差的六張當列 — **不是字母序前六張，因為決策取決於最糟的那幾張**。pose 那張表以變身放大後的 500 px 呈現，因為 `INSTALL_BODY_SCALE = 2` 會把 360 px 的原圖放大到 1.39 倍，缺陷也跟著放大。
+**q85 是看圖決定的，不是查表決定的。** 跑 `npm run assets:calibrate` 會在 `audit/webp-calibration/` 產生對照表（產生物，不進版本庫）：每個候選品質一欄，取 PSNR 最差的六張當列 — **不是字母序前六張，因為決策取決於最糟的那幾張**。pose 那張表以變身放大後的 500 px 呈現，因為 `INSTALL_BODY_SCALE = 2` 會把 360 px 的原圖放大到 1.39 倍，缺陷也跟著放大。
 
 兩個不能隨便動的參數：
 

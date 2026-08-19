@@ -5,10 +5,10 @@ extension written out in each of the eight places that need it — is how you en
 up with a pipeline that emits `.webp` and a validator that counts `.png` and
 cheerfully reports zero files.
 
-WebP at quality 85 was chosen against contact sheets, not from a table. The
-measurements behind it are in `audit/webp-calibration/`; `scripts/calibrate_webp_quality.py`
-regenerates them, and a different quality is one constant away rather than a
-rewrite.
+WebP at quality 85 was chosen against contact sheets, not from a table. Run
+`npm run assets:calibrate` to regenerate them — they are derivable from the
+assets on disk, so they are not kept in the tree. A different quality is one
+constant away rather than a rewrite.
 
 Two parameters are load-bearing and should not be changed casually:
 

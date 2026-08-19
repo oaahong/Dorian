@@ -17,3 +17,9 @@ test-results/
 # content is merged, and the delivered snapshot is a commit on `upgrade-base`, so
 # a copy here would be a second one — ignored so it cannot be swept back in.
 project-working-upgraded/
+
+# Output of `npm run assets:calibrate`: contact sheets and a JSON summary, all
+# regenerated from the assets on disk. They are how the WebP quality was chosen
+# and they are worth looking at, but eight megabytes of derivable JPEG does not
+# belong in the tree — run the script when you need them.
+audit/webp-calibration/

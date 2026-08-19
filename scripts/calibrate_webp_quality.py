@@ -42,7 +42,12 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-ASSETS = ROOT / 'public' / 'assets'
+
+# The lossless originals, not `public/assets` — those are already WebP, and
+# re-encoding an encoded image measures the wrong thing. This is what the
+# archive is for.
+ASSETS = ROOT / 'asset_pipeline_backups' / 'png-originals'
+
 OUT = ROOT / 'audit' / 'webp-calibration'
 
 # COLORS.bg in src/utils/constants.ts — what every one of these is drawn onto.
@@ -168,6 +173,9 @@ def scaled(image: Image.Image, factor: float) -> Image.Image:
 def calibrate(kind: str, files: list[Path], display_scale: float) -> dict:
     """Encode every file at every candidate, then report and draw the result."""
     print(f'\n=== {kind}: {len(files)} files ===')
+    if not files:
+        print(f'  no source images under {ASSETS / kind} — nothing to compare against')
+        return {'files': 0, 'originalBytes': 0, 'candidates': {}}
     original_bytes = sum(f.stat().st_size for f in files)
     results = {}
 

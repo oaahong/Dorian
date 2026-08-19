@@ -29,6 +29,8 @@
     "assets:skills:codegen": "node scripts/gen-skill-cells.mjs",
     "assets:skills:validate": "python3 scripts/validate_skill_assets.py",
     "assets:skills:contacts": "python3 scripts/generate_skill_contact_sheets.py",
+    "assets:calibrate": "python3 scripts/calibrate_webp_quality.py",
+    "assets:rebaseline": "python3 scripts/rebaseline_asset_hashes.py",
     "assets:thumbs": "bash -c 'for f in asset_pipeline_backups/cards/card-*.png; do cwebp -quiet -q 85 -alpha_q 100 -resize 476 596 \"$f\" -o \"public/assets/thumbs/$(basename \"$f\" .png).webp\"; done'"
   },
   "dependencies": {
