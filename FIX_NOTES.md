@@ -1,3 +1,90 @@
+# v2.1.0 Ninety-One Percent Of It Was Pictures
+
+The question was what to do about network traffic. Measuring it first turned the
+answer around: a three-minute match pulled about 12.3 MB of art and 1.24 MB of
+netcode, so 91% of what a player downloads is pictures. Of the netcode's share,
+only 320 KB is payload — the rest is IP/UDP/DTLS/SCTP framing around one packet
+per tick. Compressing every input byte to nothing would have saved a quarter of
+the smaller half.
+
+Both halves are addressed, in proportion.
+
+**The art was PNG.** All 598 generated images, including twelve cut-in
+backgrounds stored as 1672x941 PNG — a photographic full-screen image in the one
+format least suited to it. They are WebP at quality 85 now, chosen by looking at
+contact sheets of the six *worst* files at 4x magnification rather than by
+picking a number, which `npm run assets:calibrate` regenerates.
+*Fix: `scripts/asset_format.py` holds the format and quality for all three
+pipelines, so a different quality is one constant rather than eight edits.
+`alpha_quality=100` keeps the alpha channel bit-exact, which is what lets both
+validators go on asserting that a fully transparent pixel is exactly zero.*
+
+**Forty percent of every cut-in background had never been on a screen.** The
+cut-in draws them centred at a resting scale of 1.0 on a 1280x720 canvas, so the
+middle 1280x720 pixels map 1:1 and only the glitch tween's four pixels of travel
+reach further. The rest was margin.
+*Fix: cropped to 1296x728 in `extract_skill_assets.py`. A crop and not a resize —
+at 1:1, resizing would blur what cropping leaves pixel-exact. Poses are the
+opposite case and were left alone: `INSTALL_BODY_SCALE` is 2, so a transformation
+already draws a 360x360 source at 500 px.*
+
+**Twenty-six megabytes shipped on every release that no browser ever asked
+for.** The source cards live under `public/`, which Vite copies into `dist`
+verbatim, but only the offline Python pipeline reads them — something
+`e2e/smoke.spec.ts` had been asserting was never fetched for as long as it
+existed.
+*Fix: moved to `asset_pipeline_backups/cards/`. The pre-conversion PNGs are kept
+beside them, out of `public/`, and the calibration script reads them: measuring a
+candidate encoding against an already-encoded image would answer the wrong
+question.*
+
+**Every input message repeated frames the opponent already had.** The
+retransmission window was `max(12, 3 * inputDelay)` frames wide regardless of
+what had arrived — over-provisioned on a healthy link and a guess on a bad one.
+*Fix: each packet now carries `nextWanted`, the lowest tick its sender still
+needs, and only unacked frames are repeated. The invariant is that a frame leaves
+the send buffer only once the peer has said, in a packet we parsed, that it has
+it. The old window discarded by age with no evidence of receipt, which is the
+mechanism behind the deadlock its own comment warned about; with no ack ever
+received the window is the old formula byte for byte, so the worst case is not
+worse than before.*
+
+**The wire codec had never been tested on a bad link.** `linkHarness` passed
+message objects between the two ends and never called `encodeInput`, so five
+latency and loss scenarios exercised the session and none of them exercised the
+bytes.
+*Fix: the harness encodes and decodes for real, and counts what it sends, which
+turns the saving into a regression test — `lockstep.bandwidth.test.ts` runs the
+same match twice, once with acks and once against a simulated older peer, and
+asserts the two worlds finish byte-identical while the traffic drops.*
+
+**A missing asset was a warning.** Poses and cut-in backgrounds had no on-disk
+existence test the way skill cells did, and a failed load logged
+`console.warn`, which the browser tests ignore — so a bad rename would have
+rendered an invisible fighter and passed.
+*Fix: `assetPaths.test.ts` checks all 240 pose paths and twelve backgrounds
+against the filesystem, load failures are `console.error`, and `smoke.spec.ts`
+carries a per-directory byte budget that fails by a factor of four if the
+pipeline ever reverts to PNG.*
+
+## Measured
+
+    dist                113.5 MB -> 14.75 MB
+    per match            12.3 MB -> 2.1 MB worst case
+
+    netcode payload per packet
+    delay 3, clean        29.4 B -> 18.8 B   -36%
+    delay 8, 20% loss     52.4 B -> 28.6 B   -45%
+    delay 12, relay       74.8 B -> 37.8 B   -50%
+
+Headers are untouched, so total netcode traffic falls by about a tenth on a
+direct link and a third on the relay. Minor rather than major: the wire format
+is backward compatible by construction — an older peer that sends no ack leaves
+its opponent on the old fixed window, and the tail rides on the existing kind
+byte so a relay that predates it forwards the packet untouched.
+
+---
+
 # v2.0.0 Two Hundred And Twenty-Six Pictures
 
 The upgraded build shipped 226 pieces of skill art and a specification for how
