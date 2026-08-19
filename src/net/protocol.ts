@@ -156,6 +156,15 @@ export const MAX_INPUT_BATCH = 64;
 export interface InputPacket {
   startTick: number;
   frames: InputFrame[];
+  /**
+   * Lowest tick the sender still needs back from the peer.
+   *
+   * Absent when the sender does not speak the extension — an older build — which
+   * is a state the receiver has to keep telling apart from "wants tick 0".
+   */
+  nextWanted?: number;
+  /** World fingerprint, riding along instead of costing its own datagram. */
+  checksum?: ChecksumPacket;
 }
 
 export interface ChecksumPacket {
@@ -164,8 +173,19 @@ export interface ChecksumPacket {
 }
 
 /**
- * `[kind:u8][startTick:u32][count:u8][frames:u16le...]` — six bytes plus two per
- * frame.
+ * Tail markers. Values are arbitrary but must not be plausible as stray bytes:
+ * the tail is validated by tag *and* exact length, because a decoder that
+ * accepted any trailing bytes as an ack would let a peer forge the one field
+ * that shrinks our retransmission window.
+ */
+const EXT_ACK = 0xa1;
+const EXT_ACK_CHECKSUM = 0xa2;
+const TAIL_ACK_BYTES = 5;
+const TAIL_ACK_CHECKSUM_BYTES = 13;
+
+/**
+ * `[kind:u8][startTick:u32][count:u8][frames:u16le...]`, then an optional tail:
+ * `[extTag:u8][nextWanted:u32]` and, with tag `0xA2`, `[tick:u32][hash:u32]`.
  *
  * A frame was one byte until the control scheme grew a throw and a dedicated
  * ultimate button, which put it at nine bits. Both clients are served the same
@@ -173,16 +193,39 @@ export interface ChecksumPacket {
  * needs no version negotiation — but it does mean an old client and a new one
  * would talk past each other rather than fail loudly, which is worth knowing if a
  * deploy is ever staged rather than atomic.
+ *
+ * The tail is why the ack extension reuses `KIND_INPUT` rather than taking a new
+ * kind byte. The relay validates with `decodeBinary` and drops what it cannot
+ * parse (`server/index.ts`), so a new kind would mean an old server black-holes
+ * every packet a new client sends — every relayed match dead, and the client can
+ * legitimately be a version ahead because it may be served from a CDN while the
+ * server is deployed separately (see `OnlineClient.url`). Appending instead
+ * degrades on both sides: the length checks below are minimums, so an old
+ * decoder ignores the tail and an old relay forwards it untouched, and a client
+ * that never receives a `nextWanted` simply falls back to the fixed window.
  */
 export function encodeInput(packet: InputPacket): Uint8Array {
   const count = Math.min(packet.frames.length, MAX_INPUT_BATCH);
-  const bytes = new Uint8Array(6 + count * 2);
+  const tail =
+    packet.nextWanted === undefined ? 0
+    : packet.checksum ? TAIL_ACK_CHECKSUM_BYTES
+    : TAIL_ACK_BYTES;
+  const bytes = new Uint8Array(6 + count * 2 + tail);
   const view = new DataView(bytes.buffer);
   view.setUint8(0, KIND_INPUT);
   view.setUint32(1, packet.startTick, true);
   view.setUint8(5, count);
   for (let i = 0; i < count; i += 1) {
     view.setUint16(6 + i * 2, packet.frames[i]! & INPUT_FRAME_MASK, true);
+  }
+  if (tail !== 0) {
+    const at = 6 + count * 2;
+    view.setUint8(at, packet.checksum ? EXT_ACK_CHECKSUM : EXT_ACK);
+    view.setUint32(at + 1, packet.nextWanted! >>> 0, true);
+    if (packet.checksum) {
+      view.setUint32(at + 5, packet.checksum.tick >>> 0, true);
+      view.setUint32(at + 9, packet.checksum.hash >>> 0, true);
+    }
   }
   return bytes;
 }
@@ -220,7 +263,31 @@ export function decodeBinary(data: ArrayBufferView | ArrayBuffer): BinaryPacket 
       for (let i = 0; i < count; i += 1) {
         frames.push(view.getUint16(6 + i * 2, true) & INPUT_FRAME_MASK);
       }
-      return { kind: 'input', startTick: view.getUint32(1, true), frames };
+      const packet: { kind: 'input' } & InputPacket = {
+        kind: 'input',
+        startTick: view.getUint32(1, true),
+        frames,
+      };
+
+      // Nothing, or one of exactly two shapes. Trailing bytes that are neither
+      // are a corrupt or hostile packet, not an old peer: an old peer sends no
+      // tail at all.
+      const at = 6 + count * 2;
+      const rest = bytes.length - at;
+      if (rest === 0) return packet;
+      if (rest === TAIL_ACK_BYTES && view.getUint8(at) === EXT_ACK) {
+        packet.nextWanted = view.getUint32(at + 1, true);
+        return packet;
+      }
+      if (rest === TAIL_ACK_CHECKSUM_BYTES && view.getUint8(at) === EXT_ACK_CHECKSUM) {
+        packet.nextWanted = view.getUint32(at + 1, true);
+        packet.checksum = {
+          tick: view.getUint32(at + 5, true),
+          hash: view.getUint32(at + 9, true),
+        };
+        return packet;
+      }
+      return null;
     }
     case KIND_CHECKSUM: {
       if (bytes.length < 9) return null;

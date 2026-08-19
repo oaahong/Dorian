@@ -205,7 +205,12 @@ export class OnlineClient implements Transport {
       const packet = decodeBinary(data as ArrayBuffer);
       if (!packet) return;
       if (packet.kind === 'input') {
-        this.inputHandler?.({ startTick: packet.startTick, frames: packet.frames });
+        this.inputHandler?.({
+          startTick: packet.startTick,
+          frames: packet.frames,
+          nextWanted: packet.nextWanted,
+          checksum: packet.checksum,
+        });
       } else {
         this.checksumHandler?.({ tick: packet.tick, hash: packet.hash });
       }

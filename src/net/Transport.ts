@@ -13,6 +13,17 @@ export interface InputMessage {
   /** Tick the first frame applies to. */
   startTick: number;
   frames: InputFrame[];
+  /**
+   * Lowest tick the sender still needs back.
+   *
+   * This is what lets the sender stop repeating frames the peer already has,
+   * instead of guessing a window width from the input delay. Optional because an
+   * older peer sends none, and "absent" has to stay distinguishable from
+   * "wants tick 0" — see `LockstepSession`.
+   */
+  nextWanted?: number;
+  /** A checksum riding along, rather than paying for its own datagram. */
+  checksum?: ChecksumMessage;
 }
 
 /** A periodic fingerprint of the sender's world, for desync detection. */

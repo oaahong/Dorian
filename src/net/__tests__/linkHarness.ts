@@ -5,6 +5,7 @@ import { checksum, createWorld, stepWorld, type MatchSetup } from '../../sim/wor
 import type { PlayerIndex, SimWorld } from '../../sim/types';
 import { LockstepSession } from '../LockstepSession';
 import type { ChecksumMessage, InputMessage, Transport } from '../Transport';
+import { MAX_INPUT_BATCH, decodeBinary, encodeChecksum, encodeInput } from '../protocol';
 
 /**
  * A two-client lockstep match over a link you can make as bad as you like.
@@ -34,11 +35,27 @@ export interface LinkOptions {
   /** Fraction of messages dropped outright. */
   lossRate?: number;
   seed?: number;
+  /**
+   * Per seat, whether that client sends packets with no extension tail — that is,
+   * whether it behaves as a build from before the ack existed.
+   *
+   * The point is the staged deploy: clients are served separately from the
+   * server and can be a version apart, so a modern client has to keep playing
+   * against one that never acks. Setting a seat here makes it that old client.
+   */
+  legacySender?: [boolean, boolean];
 }
 
-type Envelope =
-  | { kind: 'input'; to: 0 | 1; deliverAt: number; message: InputMessage }
-  | { kind: 'checksum'; to: 0 | 1; deliverAt: number; message: ChecksumMessage };
+/**
+ * What actually crosses the link: bytes.
+ *
+ * This used to be the message objects, passed straight through. That made every
+ * latency and loss test blind to `protocol.ts` — the wire codec had only its own
+ * unit tests, in isolation, on a perfect link, so nothing exercised the u16
+ * masking, the batch cap or the tail parse under the conditions they exist for.
+ * Encoding here closes that, and makes `bytesSent` mean what it says.
+ */
+type Envelope = { to: 0 | 1; deliverAt: number; bytes: Uint8Array };
 
 /**
  * A two-ended link with a virtual clock.
@@ -59,6 +76,20 @@ export class FakeLink {
 
   dropped = 0;
   delivered = 0;
+  /** Bytes handed to the link, counted before the loss draw — what a client pays. */
+  bytesSent = 0;
+  bytesSentTo: [number, number] = [0, 0];
+  packetsSent = 0;
+  bytesDropped = 0;
+  /**
+   * Times a batch was longer than the wire format can carry.
+   *
+   * `encodeInput` truncates silently at `MAX_INPUT_BATCH`, which as a plain
+   * object pass-through was invisible and is now real frame loss. Every match
+   * asserts this stays zero, which is the direct test that the send window is
+   * clamped rather than merely expected to behave.
+   */
+  truncations = 0;
 
   constructor(private readonly options: LinkOptions) {
     this.rng = createRng(options.seed ?? 1);
@@ -68,8 +99,16 @@ export class FakeLink {
   private makeTransport(from: 0 | 1): Transport {
     const to: 0 | 1 = from === 0 ? 1 : 0;
     return {
-      sendInput: (message) => this.enqueue({ kind: 'input', to, deliverAt: this.deliveryTick(), message }),
-      sendChecksum: (message) => this.enqueue({ kind: 'checksum', to, deliverAt: this.deliveryTick(), message }),
+      sendInput: (message) => {
+        if (message.frames.length > MAX_INPUT_BATCH) this.truncations += 1;
+        const outgoing = this.options.legacySender?.[from]
+          ? { startTick: message.startTick, frames: message.frames }
+          : message;
+        this.enqueue({ to, deliverAt: this.deliveryTick(), bytes: encodeInput(outgoing) });
+      },
+      sendChecksum: (message) => {
+        this.enqueue({ to, deliverAt: this.deliveryTick(), bytes: encodeChecksum(message) });
+      },
       onInput: (handler) => { this.handlers[from].input = handler; },
       onChecksum: (handler) => { this.handlers[from].checksum = handler; },
     };
@@ -81,8 +120,12 @@ export class FakeLink {
   }
 
   private enqueue(envelope: Envelope): void {
+    this.bytesSent += envelope.bytes.byteLength;
+    this.bytesSentTo[envelope.to] += envelope.bytes.byteLength;
+    this.packetsSent += 1;
     if (this.options.lossRate && nextFloat(this.rng) < this.options.lossRate) {
       this.dropped += 1;
+      this.bytesDropped += envelope.bytes.byteLength;
       return;
     }
     this.queue.push(envelope);
@@ -107,8 +150,20 @@ export class FakeLink {
     for (const envelope of due) {
       this.delivered += 1;
       const handler = this.handlers[envelope.to];
-      if (envelope.kind === 'input') handler.input?.(envelope.message);
-      else handler.checksum?.(envelope.message);
+      // Decoded, not remembered: a packet that cannot survive the round trip
+      // through `protocol.ts` must not reach a session in this harness either.
+      const packet = decodeBinary(envelope.bytes);
+      if (!packet) continue;
+      if (packet.kind === 'input') {
+        handler.input?.({
+          startTick: packet.startTick,
+          frames: packet.frames,
+          nextWanted: packet.nextWanted,
+          checksum: packet.checksum,
+        });
+      } else {
+        handler.checksum?.({ tick: packet.tick, hash: packet.hash });
+      }
     }
   }
 }

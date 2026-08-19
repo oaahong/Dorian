@@ -274,17 +274,45 @@ describe('LockstepSession', () => {
       expect(transport.sentInputs).toHaveLength(afterFirst);
     });
 
-    it('still resends periodically, so a lost message can be recovered', () => {
-      // Going fully silent would deadlock both clients if the message carrying
-      // that frame was the one that got dropped.
+    it('keeps the first few resends fast, then backs off to a floor', () => {
+      /**
+       * Going fully silent would deadlock both clients if the message carrying
+       * that frame was the one that got dropped, so the schedule backs off to a
+       * rate and never to zero. The early resends stay at the original 16 ms
+       * because the bug this class had before was resending too *slowly*.
+       */
       session.submitLocalInput(0, BUTTON.Right);
-      const afterFirst = transport.sentInputs.length;
+      const sentAt: number[] = [];
+      const before = transport.sentInputs.length;
 
-      for (let i = 0; i < 40; i += 1) {
-        clock += 20;
+      for (let i = 0; i < 400; i += 1) {
+        clock += 4;
+        const was = transport.sentInputs.length;
         session.resend();
+        if (transport.sentInputs.length > was) sentAt.push(clock);
       }
-      expect(transport.sentInputs.length).toBeGreaterThan(afterFirst + 30);
+
+      expect(transport.sentInputs.length).toBeGreaterThan(before);
+      const gaps = sentAt.slice(1).map((at, i) => at - sentAt[i]!);
+      // 16, 16, 32, 64, 64... measured in 4 ms steps, so each lands on a multiple.
+      expect(gaps.slice(0, 2)).toEqual([16, 16]);
+      expect(Math.max(...gaps)).toBeLessThanOrEqual(64);
+      // Fifteen a second at the floor is still far above the two a second that
+      // made a dropped packet cost half a second of standing still.
+      expect(sentAt.length).toBeGreaterThan(20);
+    });
+
+    it('starts the backoff over once the caller makes progress', () => {
+      // The backoff must not leak into a healthy stretch: a newly sampled tick
+      // means the stall is over.
+      session.submitLocalInput(0, BUTTON.Right);
+      for (let i = 0; i < 20; i += 1) { clock += 100; session.resend(); }
+
+      session.submitLocalInput(1, BUTTON.Left);
+      const afterProgress = transport.sentInputs.length;
+      clock += 16;
+      session.resend();
+      expect(transport.sentInputs.length).toBe(afterProgress + 1);
     });
 
     it('does not resend faster than the throttle allows', () => {
@@ -313,6 +341,148 @@ describe('LockstepSession', () => {
         session.submitLocalInput(0, BUTTON.Left);
       }
       expect(transport.sentInputs.length).toBeGreaterThan(afterFirst);
+    });
+  });
+
+  describe('the ack window', () => {
+    /**
+     * The window used to be a fixed `max(12, 3 * delay)` frames, repeated whether
+     * or not the opponent already had them. It is now derived from what the peer
+     * says it still needs, with a floor. The invariant underneath every test here
+     * is that a frame leaves the send buffer only once the peer has said, in a
+     * packet we parsed, that it has it.
+     */
+    const last = () => transport.sentInputs[transport.sentInputs.length - 1]!;
+    const advance = (through: number) => {
+      for (let tick = 0; tick <= through; tick += 1) session.submitLocalInput(tick, BUTTON.Right);
+    };
+
+    it('advertises the first tick it still needs, counting the primed opening', () => {
+      session.submitLocalInput(0, BUTTON.Right);
+      expect(last().nextWanted).toBe(DELAY);
+    });
+
+    it('advances the ack only across a contiguous run', () => {
+      // A hole keeps the ack parked on it, which is what makes the peer resend
+      // exactly that frame and nothing else.
+      transport.deliverInput({ startTick: DELAY, frames: [1, 1] });
+      transport.deliverInput({ startTick: DELAY + 3, frames: [1] });
+      session.submitLocalInput(0, BUTTON.Right);
+      expect(last().nextWanted).toBe(DELAY + 2);
+
+      transport.deliverInput({ startTick: DELAY + 2, frames: [1] });
+      session.submitLocalInput(1, BUTTON.Right);
+      expect(last().nextWanted).toBe(DELAY + 4);
+    });
+
+    it('keeps the old fixed window until the peer acks at all', () => {
+      // Byte for byte what this class always sent, which is what makes an older
+      // peer — or a peer whose packets are all being lost — no worse off.
+      advance(40);
+      expect(last().frames).toHaveLength(Math.max(12, DELAY * 3));
+    });
+
+    it('shrinks to the floor once the peer acks', () => {
+      advance(40);
+      const newest = last().startTick + last().frames.length - 1;
+      transport.deliverInput({ startTick: DELAY, frames: [1], nextWanted: newest });
+      session.submitLocalInput(41, BUTTON.Left);
+      expect(last().frames.length).toBeLessThan(Math.max(12, DELAY * 3));
+    });
+
+    it('never drops a frame the peer has not acked', () => {
+      /**
+       * The whole point of the change: retention is gated on evidence of receipt
+       * rather than on age. The ack has to arrive while the frames are still held
+       * — before any ack, the window is trimmed by the legacy width exactly as it
+       * always was, and a later ack cannot resurrect what that already discarded.
+       * That bound is inherited from the old behaviour, not introduced here.
+       */
+      advance(10);
+      transport.deliverInput({ startTick: DELAY, frames: [1], nextWanted: 5 });
+      for (let tick = 11; tick <= 40; tick += 1) session.submitLocalInput(tick, BUTTON.Right);
+      expect(last().startTick).toBeLessThanOrEqual(5);
+    });
+
+    it('ignores an ack that arrives out of order and would widen nothing', () => {
+      // Acks are cumulative, so a late lower one is a stale under-estimate. Taking
+      // the max is correct; regressing on it would only cost bandwidth, but
+      // pretending it moved forward would drop frames still in flight.
+      advance(40);
+      const newest = last().startTick + last().frames.length - 1;
+      transport.deliverInput({ startTick: DELAY, frames: [1], nextWanted: newest });
+      session.submitLocalInput(41, BUTTON.Left);
+      const tight = last().startTick;
+
+      transport.deliverInput({ startTick: DELAY, frames: [1], nextWanted: 5 });
+      session.submitLocalInput(42, BUTTON.Left);
+      expect(last().startTick).toBeGreaterThanOrEqual(tight);
+    });
+
+    it('clamps an ack that runs ahead of anything it could have received', () => {
+      // The dangerous direction, and the one a hostile peer would pick: it
+      // shrinks the window past frames still in flight.
+      advance(20);
+      transport.deliverInput({ startTick: DELAY, frames: [1], nextWanted: 10_000_000 });
+      session.submitLocalInput(21, BUTTON.Left);
+      const newest = last().startTick + last().frames.length - 1;
+      expect(last().startTick).toBeLessThanOrEqual(newest);
+      expect(last().frames.length).toBeGreaterThan(0);
+    });
+
+    it.each([
+      ['not an integer', 12.5],
+      ['negative', -1],
+      ['beyond a u32', 0x1_0000_0000],
+      ['NaN', Number.NaN],
+    ])('ignores an ack that is %s', (_name, nextWanted) => {
+      advance(20);
+      const before = last().startTick;
+      expect(() =>
+        transport.deliverInput({ startTick: DELAY, frames: [1], nextWanted }),
+      ).not.toThrow();
+      session.submitLocalInput(21, BUTTON.Left);
+      expect(last().startTick).toBeLessThanOrEqual(before + 1);
+    });
+
+    it('never exceeds what the wire format can carry', () => {
+      // `encodeInput` truncates silently at MAX_INPUT_BATCH, so a window wider
+      // than that is frame loss dressed up as a successful send.
+      for (let tick = 0; tick <= 400; tick += 1) {
+        session.submitLocalInput(tick, BUTTON.Right);
+        transport.deliverInput({ startTick: DELAY, frames: [1], nextWanted: 0 });
+      }
+      for (const message of transport.sentInputs) {
+        expect(message.frames.length).toBeLessThanOrEqual(64);
+      }
+    });
+  });
+
+  describe('the piggybacked checksum', () => {
+    it('sends its own packet until the peer proves it understands the tail', () => {
+      // Against an older peer, piggybacking would switch desync detection off
+      // without saying so.
+      session.recordChecksum(60, 0xabcdef);
+      expect(transport.sentChecksums).toHaveLength(1);
+    });
+
+    it('rides along on the next input packet once the peer has acked', () => {
+      transport.deliverInput({ startTick: DELAY, frames: [1], nextWanted: DELAY });
+      session.recordChecksum(60, 0xabcdef);
+      expect(transport.sentChecksums).toHaveLength(0);
+
+      session.submitLocalInput(0, BUTTON.Right);
+      expect(transport.sentInputs[transport.sentInputs.length - 1]!.checksum)
+        .toEqual({ tick: 60, hash: 0xabcdef });
+    });
+
+    it('carries it once, not on every retransmission', () => {
+      transport.deliverInput({ startTick: DELAY, frames: [1], nextWanted: DELAY });
+      session.recordChecksum(60, 1);
+      session.submitLocalInput(0, BUTTON.Right);
+      clock += 200;
+      session.resend();
+      expect(transport.sentInputs[transport.sentInputs.length - 1]!.checksum).toBeUndefined();
     });
   });
 
